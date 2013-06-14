@@ -6,8 +6,8 @@
 (setq evil-default-cursor t) ;; see http://blog.gmane.org/gmane.emacs.vim-emulation/month=20110801
 (setq evil-cross-lines t)
 
-(add-to-list 'evil-emacs-state-modes 'org-mode) 
-(add-to-list 'evil-emacs-state-modes 'helm-mode) 
+(add-to-list 'evil-emacs-state-modes 'org-mode)
+(add-to-list 'evil-emacs-state-modes 'helm-mode)
 
 (setq-default evil-auto-indent t)
 (setq evil-shift-width 4)
@@ -43,16 +43,34 @@
 (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
 
 (require-package 'evil-leader)
-(setq evil-leader/leader "," evil-leader/in-all-states t)
 (require 'evil-leader)
+(global-evil-leader-mode)
+
+(require-package 'evil-nerd-commenter)
+
+(setq evil-leader/leader "," evil-leader/in-all-states t)
 (evil-leader/set-key
-  "w" 'save-buffer
-  "W" 'save-some-buffers
-  "K" 'kill-buffer-and-window
-  "p" 'previous-error
-  "n" 'next-error
-  "g" 'magit-status
-  "." 'evil-ex
+  "w"  'save-buffer
+  "ci" 'evilnc-comment-or-uncomment-lines
+  "W"  'save-some-buffers
+  "K"  'kill-buffer-and-window
+  "p"  'previous-error
+  "n"  'next-error
+  "g"  'magit-status
+  "."  'evil-ex
 )
+
+;; change mode-line color by evil state
+(lexical-let ((default-color (cons (face-background 'mode-line)
+                                   (face-foreground 'mode-line))))
+  (add-hook 'post-command-hook
+    (lambda ()
+      (let ((color (cond ((minibufferp) default-color)
+                         ((evil-insert-state-p) '("#e80000" . "#ffffff"))
+                         ((evil-emacs-state-p)  '("#444488" . "#ffffff"))
+                         ((buffer-modified-p)   '("#006fa0" . "#ffffff"))
+                         (t default-color))))
+        (set-face-background 'mode-line (car color))
+        (set-face-foreground 'mode-line (cdr color))))))
 
 (provide 'init-evil)

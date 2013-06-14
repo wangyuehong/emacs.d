@@ -21,10 +21,10 @@
 ;;(global-set-key (kbd "C-x x") 'thing-paste-word)
 (global-set-key (kbd "C-v") 'whole-line-or-region-yank)
 
-
-(global-set-key [M-up] 'es-move-text-up)
-(global-set-key [M-down] 'es-move-text-down)
-(global-set-key [M-left] 'es-move-text-left)
-(global-set-key [M-right] 'es-move-text-right) 
+(require-package 'move-text)
+(global-set-key [M-up] 'move-text-up)
+(global-set-key [M-down] 'move-text-down)
+(global-set-key [M-left] 'move-text-left)
+(global-set-key [M-right] 'move-text-right)
 
 (provide 'init-keybind)

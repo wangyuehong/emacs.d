@@ -110,6 +110,7 @@
 (require 'init-highlight-symbol)
 (require 'init-open-junk-file)
 (require 'init-ace-jump)
+(require 'init-rainbow)
 
 (require 'init-perl)
 
