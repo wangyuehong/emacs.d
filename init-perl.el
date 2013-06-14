@@ -49,7 +49,12 @@
 
 
 (add-hook 'cperl-mode-hook 'my-cperl-mode-defaults)
-;;(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+
+(require-package 'tt-mode)
+(autoload 'tt-mode "tt-mode")
+(add-to-list 'auto-mode-alist '("\\.tt$" . tt-mode))
 
 
+(require-package 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 (provide 'init-perl)
