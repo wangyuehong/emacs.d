@@ -12,4 +12,7 @@
 
 (global-set-key (kbd "C-c t") 'helm-cmd-t)
 
+(require-package 'helm-git-grep)
+(require 'helm-git-grep)
+
 (provide 'init-helm)
