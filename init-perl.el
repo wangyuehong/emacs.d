@@ -31,19 +31,11 @@
   ;;(add-to-list 'ac-sources 'ac-source-perl-completion)
   ;;(add-to-list 'ac-sources 'ac-source-yasnippet)
 
-  ;;(define-key cperl-mode-map (kbd ".") (smartchr '("." "->" "=>")))
-
-  ;;(flymake-mode t)
-  ;;(set-face-background 'flymake-errline "antique white")
-  ;;(set-face-background 'flymake-warnline "lavender")
-  ;;(setq flymake-no-changes-timeout 9999)
-  ;;(setq flymake-start-syntax-check-on-newline nil)
-
   (load "pde-load")
   ;; run perl with f5
   (defun perl-eval () "Run selected region as Perl code" (interactive)
   (shell-command-on-region (mark) (point) "perl "))
-  ;;(global-set-key (kbd "<f5>") 'perl-eval)
+  ;; (global-set-key (kbd "<f5>") 'perl-eval)
 
 )
 

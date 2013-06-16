@@ -32,15 +32,18 @@
 (key-chord-define evil-insert-state-map ";;" "\C-e;")
 (key-chord-define evil-insert-state-map ",," "\C-e,")
 (key-chord-define evil-insert-state-map "//" (smartchr '("$" "%")))
-
+(key-chord-define evil-insert-state-map ".." (smartchr '("." "->" "=>")))
 ;;esc
-(define-key evil-normal-state-map [escape] 'keyboard-quit)
-(define-key evil-visual-state-map [escape] 'keyboard-quit)
-(define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
+;; (define-key evil-normal-state-map [escape] 'keyboard-quit)
+;; (define-key evil-visual-state-map [escape] 'keyboard-quit)
+;; (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
+;; (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
+;; (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
+;; (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
+;; (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
+
+(key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+
 
 (require-package 'evil-leader)
 (require 'evil-leader)
@@ -51,9 +54,9 @@
 (setq evil-leader/leader "," evil-leader/in-all-states t)
 (evil-leader/set-key
   "w"  'save-buffer
-  "ci" 'evilnc-comment-or-uncomment-lines
+  "/" 'evilnc-comment-or-uncomment-lines
   "W"  'save-some-buffers
-  "K"  'kill-buffer-and-window
+  "k"  'kill-buffer-and-window
   "p"  'previous-error
   "n"  'next-error
   "g"  'magit-status
