@@ -25,14 +25,12 @@
 (define-key evil-normal-state-map (kbd "SPC") 'ace-jump-mode)
 
 (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
-(define-key evil-insert-state-map (kbd "C-n") 'next-line)
-(define-key evil-insert-state-map (kbd "C-p") 'previous-line)
 (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
 
 (key-chord-define evil-insert-state-map ";;" "\C-e;")
 (key-chord-define evil-insert-state-map ",," "\C-e,")
 (key-chord-define evil-insert-state-map "//" (smartchr '("$" "%")))
-(key-chord-define evil-insert-state-map ".." (smartchr '("." "->" "=>")))
+(key-chord-define evil-insert-state-map ".." (smartchr '("->" "=>")))
 ;;esc
 ;; (define-key evil-normal-state-map [escape] 'keyboard-quit)
 ;; (define-key evil-visual-state-map [escape] 'keyboard-quit)
