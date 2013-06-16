@@ -1,9 +1,7 @@
 (require-package 'unfill)
 (require-package 'whole-line-or-region)
 
-(when (fboundp 'electric-pair-mode)
-  (setq-default electric-pair-mode 1))
-
+(electric-pair-mode t)
 ;;----------------------------------------------------------------------------
 ;; Some basic preferences
 ;;----------------------------------------------------------------------------
@@ -115,11 +113,6 @@
 
 (global-set-key (kbd "C-.") 'set-mark-command)
 (global-set-key (kbd "C-x C-.") 'pop-global-mark)
-
-;;(require-package 'ace-jump-mode)
-;;(global-set-key (kbd "C-;") 'ace-jump-mode)
-;;(global-set-key (kbd "C-:") 'ace-jump-word-mode)
-
 
 (require-package 'multiple-cursors)
 ;; multiple-cursors
