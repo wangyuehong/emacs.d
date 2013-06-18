@@ -24,3 +24,4 @@ site-lisp/package/
 /var
 .DS_Store
 /abbrev_defs
+/eshell
