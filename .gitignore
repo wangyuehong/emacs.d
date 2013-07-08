@@ -26,3 +26,5 @@ site-lisp/package/
 /abbrev_defs
 .bookmarks.el
 /eshell
+/.sqli_history
+/frame-restore-parameters
