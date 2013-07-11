@@ -29,8 +29,13 @@
 
 (key-chord-define evil-insert-state-map ";;" "\C-e;")
 (key-chord-define evil-insert-state-map ",," "\C-e,")
-(key-chord-define evil-insert-state-map "//" (smartchr '("$" "%")))
-(key-chord-define evil-insert-state-map ".." (smartchr '("->" "=>")))
+(key-chord-define evil-insert-state-map "44" (smartchr '("$" "%")))
+(key-chord-define evil-insert-state-map "--" (smartchr '("->" "=>")))
+
+
+(key-chord-define evil-normal-state-map "qq" 'goto-last-change)
+;; (key-chord-define evil-normal-state-map "fa" 'ffap)
+
 ;;esc
 ;; (define-key evil-normal-state-map [escape] 'keyboard-quit)
 ;; (define-key evil-visual-state-map [escape] 'keyboard-quit)
@@ -67,9 +72,9 @@
   (add-hook 'post-command-hook
     (lambda ()
       (let ((color (cond ((minibufferp) default-color)
-                         ((evil-insert-state-p) '("#e80000" . "#ffffff"))
+                         ((evil-insert-state-p) '("#cd0000" . "#ffffff"))
                          ((evil-emacs-state-p)  '("#444488" . "#ffffff"))
-                         ((buffer-modified-p)   '("#006fa0" . "#ffffff"))
+                         ((buffer-modified-p)   '("#0000ee" . "#ffffff"))
                          (t default-color))))
         (set-face-background 'mode-line (car color))
         (set-face-foreground 'mode-line (cdr color))))))

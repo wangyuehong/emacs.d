@@ -31,10 +31,10 @@
   ;;(add-to-list 'ac-sources 'ac-source-perl-completion)
   ;;(add-to-list 'ac-sources 'ac-source-yasnippet)
 
-  (load "pde-load")
+  ;; (load "pde-load")
   ;; run perl with f5
-  (defun perl-eval () "Run selected region as Perl code" (interactive)
-  (shell-command-on-region (mark) (point) "perl "))
+  ;; (defun perl-eval () "Run selected region as Perl code" (interactive)
+  ;; (shell-command-on-region (mark) (point) "perl "))
   ;; (global-set-key (kbd "<f5>") 'perl-eval)
 
 )

@@ -2,8 +2,10 @@
 (require 'auto-complete-config)
 (global-auto-complete-mode t)
 (setq ac-expand-on-auto-complete nil)
-(setq ac-auto-start nil)
+(setq ac-auto-start 3)
 (setq ac-dwim nil) ; To get pop-ups with docs even if a word is uniquely completed
+(setq ac-use-fuzzy t)
+(setq ac-fuzzy-enable t)
 
 ;;----------------------------------------------------------------------------
 ;; Use Emacs' built-in TAB completion hooks to trigger AC (Emacs >= 23.2)
@@ -29,6 +31,7 @@
 (set-default 'ac-sources
              '(ac-source-imenu
                ac-source-dictionary
+               ac-source-yasnippet
                ac-source-words-in-buffer
                ac-source-words-in-same-mode-buffers
                ac-source-words-in-all-buffer))
@@ -38,7 +41,7 @@
                 html-mode nxml-mode sh-mode smarty-mode clojure-mode
                 lisp-mode textile-mode markdown-mode tuareg-mode
                 js3-mode css-mode less-css-mode sql-mode ielm-mode
-				cperl-mode))
+                tt-mode cperl-mode))
   (add-to-list 'ac-modes mode))
 
 

@@ -111,6 +111,7 @@
 (require 'init-open-junk-file)
 (require 'init-ace-jump)
 (require 'init-rainbow)
+(require 'init-iedit)
 
 (require 'init-perl)
 

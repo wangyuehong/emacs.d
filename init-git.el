@@ -39,12 +39,31 @@
   (diminish 'magit-wip-save-mode))
 
 
-;;; Use the fringe version of git-gutter
+(require 'git-gutter)
 
-(after-load 'git-gutter
-  (require 'git-gutter-fringe))
+;; (global-git-gutter-mode t)
+(setq git-gutter:separator-sign "|")
 
-
+(defun toggle-git-gutter-linum ()
+  "toggle git-gutter and linum mode."
+  (interactive)
+  (if (or linum-mode git-gutter-mode)
+      (if linum-mode 
+          (progn
+              (linum-mode 0)
+              (git-gutter-mode 1))
+          (progn
+              (git-gutter-mode 0)
+              (linum-mode 1)))))
+
+(define-prefix-command 'git-gutter-map)
+(global-set-key (kbd "C-x g") 'git-gutter-map)
+(define-key git-gutter-map "j" 'git-gutter:next-hunk)
+(define-key git-gutter-map "k" 'git-gutter:previous-hunk)
+(define-key git-gutter-map "p" 'git-gutter:popup-hunk)
+(define-key git-gutter-map "r" 'git-gutter:revert-hunk)
+(define-key git-gutter-map "t" 'toggle-git-gutter-linum)
+
 (when *is-a-mac*
   (after-load 'magit
     (add-hook 'magit-mode-hook (lambda () (local-unset-key [(meta h)])))))

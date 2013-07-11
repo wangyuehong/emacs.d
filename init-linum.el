@@ -1,3 +1,3 @@
-(global-linum-mode t)
+(global-linum-mode 1)
 (setq linum-format 'dynamic)
 (provide 'init-linum)
