@@ -112,7 +112,7 @@
 (require 'init-ace-jump)
 (require 'init-rainbow)
 (require 'init-iedit)
-
+(require 'init-golden-ratio)
 (require 'init-perl)
 
 ;;----------------------------------------------------------------------------
