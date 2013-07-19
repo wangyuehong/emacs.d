@@ -35,13 +35,14 @@ by the :height face attribute."
 (global-set-key (kbd "C-M-=") 'sanityinc/increase-default-font-height)
 (global-set-key (kbd "C-M--") 'sanityinc/decrease-default-font-height)
 
-;; English Font
-;;(set-face-attribute 'default nil :font "DejaVu Sans Mono 11")
- 
-;; Chinese Font 
-;;(dolist (charset '(kana han symbol cjk-misc bopomofo))
-;;  (set-fontset-font (frame-parameter nil 'font)
-;;                    charset (font-spec :family "Microsoft Yahei"
-;;                                       :size 12)))
+(when (window-system)
+  ;; English Font
+  (set-face-attribute 'default nil :font "Menlo 12")
+
+  ;; CJK Font
+  (dolist (charset '(kana han symbol cjk-misc bopomofo))
+    (set-fontset-font (frame-parameter nil 'font)
+                      charset (font-spec :family "Microsoft Yahei"
+                                         :size 12))))
 
 (provide 'init-fonts)

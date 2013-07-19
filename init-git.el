@@ -39,10 +39,22 @@
   (diminish 'magit-wip-save-mode))
 
 
-(require 'git-gutter)
+(define-prefix-command 'git-gutter-map)
+(global-set-key (kbd "C-x g") 'git-gutter-map)
 
-;; (global-git-gutter-mode t)
-(setq git-gutter:separator-sign "|")
+(if (window-system)
+    ;; window-system
+    (progn
+      (require 'git-gutter-fringe)
+      (global-git-gutter-mode t))
+  ;; terminal
+  (progn
+    (require 'git-gutter)
+    ;; (global-git-gutter-mode t)
+    (setq git-gutter:separator-sign "|")
+
+    (define-key git-gutter-map "t" 'toggle-git-gutter-linum)))
+
 
 (defun toggle-git-gutter-linum ()
   "toggle git-gutter and linum mode."
@@ -56,13 +68,10 @@
               (git-gutter-mode 0)
               (linum-mode 1)))))
 
-(define-prefix-command 'git-gutter-map)
-(global-set-key (kbd "C-x g") 'git-gutter-map)
 (define-key git-gutter-map "j" 'git-gutter:next-hunk)
 (define-key git-gutter-map "k" 'git-gutter:previous-hunk)
 (define-key git-gutter-map "p" 'git-gutter:popup-hunk)
 (define-key git-gutter-map "r" 'git-gutter:revert-hunk)
-(define-key git-gutter-map "t" 'toggle-git-gutter-linum)
 
 (when *is-a-mac*
   (after-load 'magit
