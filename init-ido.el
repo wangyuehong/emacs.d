@@ -27,6 +27,7 @@
 
  (global-set-key [(meta f11)] 'sanityinc/ido-choose-from-recentf))
 
-
+(when *is-a-mac*
+  (add-to-list 'ido-ignore-files "\\.DS_Store"))
 
 (provide 'init-ido)
