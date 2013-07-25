@@ -72,6 +72,7 @@
 (define-key git-gutter-map "k" 'git-gutter:previous-hunk)
 (define-key git-gutter-map "p" 'git-gutter:popup-hunk)
 (define-key git-gutter-map "r" 'git-gutter:revert-hunk)
+(define-key git-gutter-map "l" 'magit-file-log)
 
 (when *is-a-mac*
   (after-load 'magit
