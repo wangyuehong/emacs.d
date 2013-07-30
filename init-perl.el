@@ -1,7 +1,7 @@
 ;; use cperl-mode instead of perl-mode
 (defalias 'perl-mode 'cperl-mode)
 
-;;(require-package 'anything)
+(require-package 'cperl-mode)
 
 (defun my-cperl-mode-defaults ()
   (setq cperl-indent-level 4)
@@ -26,26 +26,13 @@
   
 ;;  (setenv "PERL5LIB" "/home/ou.g/dev/HEAD/ATL/lib:/home/ou.g/dev/HEAD/Catalyst-Shanon/lib:/home/ou.g/dev/HEAD/SS/lib:/home/ou.g/dev/HEAD/SS/t/lib")
 
-  ;;(require 'perl-completion)
-  ;;(perl-completion-mode t)
-  ;;(add-to-list 'ac-sources 'ac-source-perl-completion)
-  ;;(add-to-list 'ac-sources 'ac-source-yasnippet)
-
-  ;; (load "pde-load")
-  ;; run perl with f5
-  ;; (defun perl-eval () "Run selected region as Perl code" (interactive)
-  ;; (shell-command-on-region (mark) (point) "perl "))
-  ;; (global-set-key (kbd "<f5>") 'perl-eval)
-
 )
-
 
 (add-hook 'cperl-mode-hook 'my-cperl-mode-defaults)
 
 (require-package 'tt-mode)
 (autoload 'tt-mode "tt-mode")
 (add-to-list 'auto-mode-alist '("\\.tt$" . tt-mode))
-
 
 (require-package 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
