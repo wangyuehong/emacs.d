@@ -4,6 +4,7 @@
 
 (require-package 'helm-ls-git)
 (require 'helm-ls-git)
+(setq helm-ls-git-show-abs-or-relative 'relative)
 
 (global-set-key (kbd "C-c l") 'helm-ls-git-ls)
 
