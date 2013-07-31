@@ -3,11 +3,12 @@
 
 (require-package 'cperl-mode)
 
-(defun my-cperl-mode-defaults ()
+(after-load 'cperl-mode
+  (setq cperl-close-paren-offset -4)
+  (setq cperl-continued-statement-offset 4)
   (setq cperl-indent-level 4)
-  (setq cperl-continued-statement-offset 0)
-  ;; cperl-hairy affects all those variables, but I prefer
-  ;; a more fine-grained approach as far as they are concerned
+  (setq cperl-indent-parens-as-block t)
+  (setq cperl-tab-always-indent t)
   (setq cperl-font-lock t)
   (setq cperl-electric-lbrace-space t)
   (setq cperl-electric-parens nil)
@@ -16,24 +17,17 @@
   (setq cperl-info-on-command-no-prompt t)
   (setq cperl-clobber-lisp-bindings t)
   (setq cperl-lazy-help-time 3)
-  (modify-syntax-entry ?_ "w")
-  ;; if you want all the bells and whistles
-  ;; (setq cperl-hairy)
+  (setq cperl-invalid-face nil)
 
   (set-face-background 'cperl-array-face nil)
   (set-face-background 'cperl-hash-face nil)
-  (setq cperl-invalid-face nil)
-  
-;;  (setenv "PERL5LIB" "/home/ou.g/dev/HEAD/ATL/lib:/home/ou.g/dev/HEAD/Catalyst-Shanon/lib:/home/ou.g/dev/HEAD/SS/lib:/home/ou.g/dev/HEAD/SS/t/lib")
 
-)
+  ;;  (setenv "PERL5LIB" "/home/ou.g/dev/HEAD/ATL/lib:/home/ou.g/dev/HEAD/Catalyst-Shanon/lib:/home/ou.g/dev/HEAD/SS/lib:/home/ou.g/dev/HEAD/SS/t/lib")
 
-(add-hook 'cperl-mode-hook 'my-cperl-mode-defaults)
+  (modify-syntax-entry ?_ "w"))
 
 (require-package 'tt-mode)
 (autoload 'tt-mode "tt-mode")
 (add-to-list 'auto-mode-alist '("\\.tt$" . tt-mode))
 
-(require-package 'yaml-mode)
-(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 (provide 'init-perl)
