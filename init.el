@@ -114,6 +114,7 @@
 (require 'init-iedit)
 (require 'init-golden-ratio)
 (require 'init-perl)
+(require 'init-bookmark)
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient

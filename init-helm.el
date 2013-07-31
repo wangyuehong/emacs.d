@@ -1,6 +1,7 @@
 (require-package 'helm)
 (require 'helm-config)
 (global-set-key (kbd "C-x C-b") 'helm-mini)
+(global-set-key (kbd "C-x r h") 'helm-bookmarks)
 
 (require-package 'helm-ls-git)
 (require 'helm-ls-git)
