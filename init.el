@@ -115,6 +115,7 @@
 (require 'init-golden-ratio)
 (require 'init-perl)
 (require 'init-bookmark)
+(require 'init-ctags)
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
