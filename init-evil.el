@@ -1,13 +1,14 @@
 (require-package 'evil)
 (evil-mode 1)
 
-;;(require 'surround)
-;;(global-surround-mode 1)
+(require-package 'surround)
+(require 'surround)
+(global-surround-mode 1)
+
 (setq evil-default-cursor t) ;; see http://blog.gmane.org/gmane.emacs.vim-emulation/month=20110801
 (setq evil-cross-lines t)
 
 (add-to-list 'evil-emacs-state-modes 'org-mode)
-(add-to-list 'evil-emacs-state-modes 'helm-mode)
 
 (setq-default evil-auto-indent t)
 (setq evil-shift-width 4)
@@ -26,6 +27,7 @@
 
 (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
 (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
+(define-key evil-normal-state-map "Y" (kbd "y$"))
 
 (key-chord-define evil-insert-state-map ";;" "\C-e;")
 (key-chord-define evil-insert-state-map ",," "\C-e,")
@@ -36,17 +38,10 @@
 (key-chord-define evil-normal-state-map "qq" 'goto-last-change)
 ;; (key-chord-define evil-normal-state-map "fa" 'ffap)
 
-;;esc
-;; (define-key evil-normal-state-map [escape] 'keyboard-quit)
-;; (define-key evil-visual-state-map [escape] 'keyboard-quit)
-;; (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
-;; (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
-;; (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
-;; (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
-;; (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
-
 (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 
+(require-package 'evil-numbers)
+(require 'evil-numbers)
 
 (require-package 'evil-leader)
 (require 'evil-leader)
@@ -65,6 +60,8 @@
   "n"  'next-error
   "g"  'magit-status
   "."  'evil-ex
+  "+"  'evil-numbers/inc-at-pt
+  "-"  'evil-numbers/dec-at-pt
 )
 
 ;; change mode-line color by evil state
