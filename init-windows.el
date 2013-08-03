@@ -62,5 +62,9 @@ Call a second time to restore the original window configuration."
                   (interactive)
                   (switch-to-buffer nil)))
 
+(defun kill-other-buffers ()
+  "Kill all other buffers."
+  (interactive)
+  (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
 (provide 'init-windows)

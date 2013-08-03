@@ -60,6 +60,7 @@
   "/" 'evilnc-comment-or-uncomment-lines
   "W"  'save-some-buffers
   "k"  'kill-buffer-and-window
+  "K"  'kill-other-buffers
   "p"  'previous-error
   "n"  'next-error
   "g"  'magit-status
