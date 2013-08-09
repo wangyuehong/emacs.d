@@ -28,3 +28,4 @@ site-lisp/package/
 /eshell
 /.sqli_history
 /frame-restore-parameters
+/init-local.el
