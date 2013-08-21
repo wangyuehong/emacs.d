@@ -59,6 +59,7 @@
   "p"  'previous-error
   "n"  'next-error
   "g"  'magit-status
+  "r"  'revert-buffer
   "."  'evil-ex
   "+"  'evil-numbers/inc-at-pt
   "-"  'evil-numbers/dec-at-pt
