@@ -60,6 +60,7 @@
   "n"  'next-error
   "g"  'magit-status
   "r"  'revert-buffer
+  "d"  'delete-trailing-whitespace
   "."  'evil-ex
   "+"  'evil-numbers/inc-at-pt
   "-"  'evil-numbers/dec-at-pt
