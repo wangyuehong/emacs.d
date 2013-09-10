@@ -1,0 +1,6 @@
+# name: while (...) { ... }
+# key: while
+# --
+while (my ($key, $value) = each %$1) {
+    $0
+}

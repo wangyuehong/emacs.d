@@ -30,15 +30,14 @@
 (define-key evil-normal-state-map "Y" (kbd "y$"))
 
 (key-chord-define evil-insert-state-map ";;" "\C-e;")
-(key-chord-define evil-insert-state-map ",," "\C-e,")
-(key-chord-define evil-insert-state-map "44" (smartchr '("$" "%")))
+;; (key-chord-define evil-insert-state-map ",," "\C-e,")
+;; (key-chord-define evil-insert-state-map "44" (smartchr '("$" "%")))
 (key-chord-define evil-insert-state-map "--" (smartchr '("->" "=>")))
-
 
 (key-chord-define evil-normal-state-map "qq" 'goto-last-change)
 ;; (key-chord-define evil-normal-state-map "fa" 'ffap)
 
-(key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+;;(key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 
 (require-package 'evil-numbers)
 (require 'evil-numbers)
@@ -51,6 +50,7 @@
 
 (setq evil-leader/leader "," evil-leader/in-all-states t)
 (evil-leader/set-key
+  "a"  'ag-project
   "w"  'save-buffer
   "/" 'evilnc-comment-or-uncomment-lines
   "W"  'save-some-buffers
