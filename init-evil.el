@@ -35,9 +35,10 @@
 (key-chord-define evil-insert-state-map "--" (smartchr '("->" "=>")))
 
 (key-chord-define evil-normal-state-map "qq" 'goto-last-change)
+(key-chord-define evil-normal-state-map "@@" 'er/expand-region)
 ;; (key-chord-define evil-normal-state-map "fa" 'ffap)
 
-;;(key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+(key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 
 (require-package 'evil-numbers)
 (require 'evil-numbers)
