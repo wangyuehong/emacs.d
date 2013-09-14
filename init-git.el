@@ -1,7 +1,6 @@
 (require-package 'magit)
 (require-package 'git-gutter-fringe)
 
-
 (setq-default
  magit-save-some-buffers nil
  magit-process-popup-time 10
@@ -79,8 +78,5 @@
 (global-set-key (kbd "C-x v f") 'vc-git-grep)
 
 
-(require-package 'git-messenger)
-(global-set-key (kbd "C-x v p") #'git-messenger:popup-message)
-
 
 (provide 'init-git)
