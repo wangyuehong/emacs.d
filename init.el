@@ -25,7 +25,7 @@
 ;;----------------------------------------------------------------------------
 
 (require-package 'wgrep)
-(require-package 'project-local-variables)
+;;(require-package 'project-local-variables)
 (require-package 'diminish)
 ;;(require-package 'scratch)
 (require-package 'mwe-log-commands)
@@ -45,7 +45,7 @@
 
 (require 'init-recentf)
 (require 'init-ido)
-(require 'init-hippie-expand)
+;;(require 'init-hippie-expand)
 (require 'init-auto-complete)
 (require 'init-windows)
 (require 'init-sessions)

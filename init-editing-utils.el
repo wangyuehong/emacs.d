@@ -75,7 +75,7 @@
 ;; Expand region
 ;;----------------------------------------------------------------------------
 (require-package 'expand-region)
-(global-set-key (kbd "C-=") 'er/expand-region)
+;;(global-set-key (kbd "C-=") 'er/expand-region)
 
 
 ;;----------------------------------------------------------------------------
@@ -129,7 +129,7 @@
   (interactive "*p")
   (whole-line-or-region-call-with-region 'duplicate-region prefix t))
 
-(global-set-key (kbd "C-c p") 'duplicate-line-or-region)
+;;(global-set-key (kbd "C-c p") 'duplicate-line-or-region)
 
 ;; Train myself to use M-f and M-b instead
 (global-unset-key [M-left])
