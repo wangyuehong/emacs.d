@@ -1,7 +1,17 @@
 (require-package 'unfill)
 (require-package 'whole-line-or-region)
 
-(electric-pair-mode t)
+;; (setq-default electric-pair-mode 1)
+
+(require-package 'autopair)
+(require 'autopair)
+;; (setq autopair-autowrap t)
+(autopair-global-mode)
+
+;; disable it in org-mode
+(add-hook 'org-mode-hook
+          (autopair-mode -1))
+
 ;;----------------------------------------------------------------------------
 ;; Some basic preferences
 ;;----------------------------------------------------------------------------
