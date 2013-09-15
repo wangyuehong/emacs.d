@@ -52,18 +52,24 @@
   "a"  'ag
   "A"  'ag-project
   "b"  'ido-switch-buffer
+  "B"  'helm-mini
+  "e"  'iedit-mode-toggle-on-function
+  "E"  'iedit-mode
   "f"  'ido-find-file
   "F"  'helm-find-files
   "w"  'save-buffer
-  "l"  'helm-ls-git-ls
-  "/"  'evilnc-comment-or-uncomment-lines
   "W"  'save-some-buffers
+  "l"  'helm-ls-git-ls
+  ","  'evilnc-comment-or-uncomment-lines
   "k"  'kill-buffer-and-window
   "K"  'kill-other-buffers
   "g"  'magit-status
   "r"  'revert-buffer
+  "x"  'smex
+  "nn" 'narrow-to-region
+  "nd" 'narrow-to-defun
+  "nw" 'widen
   "d"  'delete-trailing-whitespace
-  "."  'evil-ex
   "+"  'evil-numbers/inc-at-pt
   "-"  'evil-numbers/dec-at-pt
 )
