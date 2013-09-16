@@ -41,8 +41,6 @@
  truncate-partial-width-windows nil
  visible-bell t)
 
-(global-hl-line-mode 1)
-
 (when *is-a-mac*
   (setq-default locate-command "mdfind"))
 

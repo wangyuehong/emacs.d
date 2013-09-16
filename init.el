@@ -106,7 +106,7 @@
 (require 'init-linum)
 (require 'init-sr-speedbar)
 (require 'init-yasnippet)
-(require 'init-highlight-symbol)
+(require 'init-highlight)
 (require 'init-open-junk-file)
 (require 'init-ace-jump)
 (require 'init-rainbow)
