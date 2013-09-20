@@ -8,13 +8,10 @@
 (global-set-key (kbd "ESC <f3>") 'highlight-symbol-remove-all)
 (global-set-key (kbd "M-<f3>") 'highlight-symbol-remove-all)
 
-(setq highlight-symbol-colors (quote ("brightgreen" "brightblue" "brightyellow" "brightmagenta" "brightred" "brightcyan")))
+(setq highlight-symbol-colors (quote ("brightgreen" "brightblue" "brightred" "brightyellow" "brightmagenta" "brightcyan")))
 
-(require-package 'hl-line+)
-(require 'hl-line+)
+(add-hook 'prog-mode-hook 'hl-line-mode)
 
-(toggle-hl-line-when-idle 1)
-;; (hl-line-when-idle-interval 3)
-(set-face-background 'hl-line "brightblack")
+(set-face-background 'hl-line "#3a3a3a")
 
 (provide 'init-highlight)
