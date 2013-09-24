@@ -60,7 +60,7 @@
   "w"  'save-buffer
   "W"  'save-some-buffers
   "l"  'helm-ls-git-ls
-  ","  'evilnc-comment-or-uncomment-lines
+  "/"  'evilnc-comment-or-uncomment-lines
   "k"  'kill-buffer-and-window
   "K"  'kill-other-buffers
   "g"  'magit-status
