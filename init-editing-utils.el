@@ -39,6 +39,7 @@
  tooltip-delay 1.5
  truncate-lines nil
  truncate-partial-width-windows nil
+ debug-on-error t
  visible-bell t)
 
 (when *is-a-mac*
