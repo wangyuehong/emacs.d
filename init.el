@@ -111,7 +111,7 @@
 (require 'init-ace-jump)
 (require 'init-rainbow)
 (require 'init-iedit)
-(require 'init-golden-ratio)
+;; (require 'init-golden-ratio)
 (require 'init-perl)
 (require 'init-bookmark)
 (require 'init-ctags)
