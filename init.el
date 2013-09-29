@@ -115,6 +115,7 @@
 (require 'init-perl)
 (require 'init-bookmark)
 (require 'init-ctags)
+(require 'init-quickrun)
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
