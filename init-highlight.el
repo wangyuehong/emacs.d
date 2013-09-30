@@ -12,6 +12,6 @@
 
 (add-hook 'prog-mode-hook 'hl-line-mode)
 
-(set-face-background 'hl-line "#3a3a3a")
+;; (set-face-background 'hl-line "#3a3a3a")
 
 (provide 'init-highlight)
