@@ -4,8 +4,8 @@
 (setq ac-expand-on-auto-complete nil)
 (setq ac-auto-start 3)
 (setq ac-dwim nil) ; To get pop-ups with docs even if a word is uniquely completed
-(setq ac-use-fuzzy t)
-(setq ac-fuzzy-enable t)
+;; (setq ac-use-fuzzy t)
+;; (setq ac-fuzzy-enable t)
 
 ;;----------------------------------------------------------------------------
 ;; Use Emacs' built-in TAB completion hooks to trigger AC (Emacs >= 23.2)
