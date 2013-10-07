@@ -38,6 +38,9 @@
 
 (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 
+(require-package 'evil-visualstar)
+(require 'evil-visualstar)
+
 (require-package 'evil-numbers)
 (require 'evil-numbers)
 
@@ -69,6 +72,10 @@
   "nn" 'narrow-to-region
   "nd" 'narrow-to-defun
   "nw" 'widen
+  ;; "pp" 'wgrep-toggle-readonly-area
+  ;; "pe" 'wgrep-finish-edit
+  ;; "pk" 'wgrep-abort-changes
+  ;; "ps" 'wgrep-save-all-buffers
   "d"  'delete-trailing-whitespace
   "+"  'evil-numbers/inc-at-pt
   "-"  'evil-numbers/dec-at-pt
