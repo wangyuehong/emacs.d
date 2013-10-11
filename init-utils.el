@@ -94,7 +94,7 @@
   (interactive)
   (when buffer-file-name
     (kill-new (file-truename buffer-file-name))
-    (message "full path of current buffer => yank ring")
+    (message "full path %s => yank ring" (file-truename buffer-file-name))
     ))
 
 
