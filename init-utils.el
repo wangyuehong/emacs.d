@@ -44,7 +44,7 @@
 ;;----------------------------------------------------------------------------
 ;; Delete the current file
 ;;----------------------------------------------------------------------------
-(defun delete-this-file ()
+(defun delete-current-file ()
   "Delete the current file, and kill the buffer."
   (interactive)
   (or (buffer-file-name) (error "No file is currently being edited"))
@@ -53,24 +53,50 @@
     (delete-file (buffer-file-name))
     (kill-this-buffer)))
 
+;; https://github.com/redguardtoo/emacs.d
+;;----------------------------------------------------------------------------
+;; convert a buffer from dos ^M end of lines to unix end of lines
+;;----------------------------------------------------------------------------
+(defun dos2unix ()
+  (interactive)
+  (goto-char (point-min))
+  (while (search-forward "\r" nil t) (replace-match "")))
+
 
 ;;----------------------------------------------------------------------------
-;; Rename the current file
+;; unix to dos
 ;;----------------------------------------------------------------------------
-(defun rename-this-file-and-buffer (new-name)
-  "Renames both current buffer and file it's visiting to NEW-NAME."
-  (interactive "sNew name: ")
-  (let ((name (buffer-name))
-        (filename (buffer-file-name)))
-    (unless filename
-      (error "Buffer '%s' is not visiting a file!" name))
-    (if (get-buffer new-name)
-        (message "A buffer named '%s' already exists!" new-name)
-      (progn
-        (rename-file filename new-name 1)
-        (rename-buffer new-name)
-        (set-visited-file-name new-name)
-        (set-buffer-modified-p nil)))))
+(defun unix2dos ()
+  (interactive)
+  (goto-char (point-min))
+  (while (search-forward "\n" nil t) (replace-match "\r\n")))
+
+
+;;----------------------------------------------------------------------------
+;; copy filename of current buffer
+;;----------------------------------------------------------------------------
+(defun copy-current-filename ()
+  "copy file name (NOT full path) into the yank ring"
+  (interactive)
+  (let ((filename))
+    (when buffer-file-name
+      (setq filename (file-name-nondirectory buffer-file-name))
+      (kill-new filename)
+      (message "filename %s => yank ring" filename)
+      )))
+
+
+;;----------------------------------------------------------------------------
+;; copy full path
+;;----------------------------------------------------------------------------
+(defun copy-current-file-full-path()
+  "copy full path into the yank ring"
+  (interactive)
+  (when buffer-file-name
+    (kill-new (file-truename buffer-file-name))
+    (message "full path of current buffer => yank ring")
+    ))
+
 
 ;;----------------------------------------------------------------------------
 ;; Browse current HTML file
