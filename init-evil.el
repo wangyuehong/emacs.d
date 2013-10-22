@@ -52,8 +52,8 @@
 
 (setq evil-leader/leader "," evil-leader/in-all-states t)
 (evil-leader/set-key
-  "a"  'ag
-  "A"  'ag-project
+  "a"  'ag-project
+  "A"  'ag
   "b"  'ido-switch-buffer
   "B"  'helm-mini
   "e"  'iedit-mode-toggle-on-function
@@ -67,11 +67,11 @@
   "k"  'kill-buffer-and-window
   "K"  'kill-other-buffers
   "g"  'magit-status
-  "tt"  'toggle-git-gutter-linum
-  "tj"  'git-gutter:next-hunk
-  "tk"  'git-gutter:previous-hunk
-  "tp"  'git-gutter:popup-hunk
-  "tr"  'git-gutter:revert-hunk
+  "tt" 'toggle-git-gutter-linum
+  "tj" 'git-gutter:next-hunk
+  "tk" 'git-gutter:previous-hunk
+  "tp" 'git-gutter:popup-hunk
+  "tr" 'git-gutter:revert-hunk
   "r"  'revert-buffer
   "x"  'smex
   "nn" 'narrow-to-region
