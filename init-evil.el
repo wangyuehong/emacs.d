@@ -51,6 +51,8 @@
 (require-package 'evil-nerd-commenter)
 
 (setq evil-leader/leader "," evil-leader/in-all-states t)
+(setq evil-leader/no-prefix-mode-rx '("magit-.*-mode"))
+
 (evil-leader/set-key
   "a"  'ag-project
   "A"  'ag
