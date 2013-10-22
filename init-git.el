@@ -54,7 +54,7 @@
   "toggle git-gutter and linum mode."
   (interactive)
   (if (or linum-mode git-gutter-mode)
-      (if linum-mode 
+      (if linum-mode
           (progn
               (linum-mode 0)
               (git-gutter-mode 1))

@@ -67,6 +67,11 @@
   "k"  'kill-buffer-and-window
   "K"  'kill-other-buffers
   "g"  'magit-status
+  "tt"  'toggle-git-gutter-linum
+  "tj"  'git-gutter:next-hunk
+  "tk"  'git-gutter:previous-hunk
+  "tp"  'git-gutter:popup-hunk
+  "tr"  'git-gutter:revert-hunk
   "r"  'revert-buffer
   "x"  'smex
   "nn" 'narrow-to-region
@@ -77,6 +82,7 @@
   ;; "pk" 'wgrep-abort-changes
   ;; "ps" 'wgrep-save-all-buffers
   "d"  'delete-trailing-whitespace
+  "D"  'ediff-revision
   "+"  'evil-numbers/inc-at-pt
   "-"  'evil-numbers/dec-at-pt
 )
