@@ -73,8 +73,8 @@
   "tj" 'git-gutter:next-hunk
   "tk" 'git-gutter:previous-hunk
   "tp" 'git-gutter:popup-hunk
-  "tr" 'git-gutter:revert-hunk
-  "r"  'revert-buffer
+  "tv" 'git-gutter:revert-hunk
+  "v"  'revert-buffer
   "x"  'smex
   "nn" 'narrow-to-region
   "nd" 'narrow-to-defun
