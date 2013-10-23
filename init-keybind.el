@@ -21,4 +21,7 @@
 (global-set-key [(meta down)] 'move-text-down)
 (global-set-key (kbd "C-c i") 'imenu)
 
+(global-set-key (kbd "<f1>") 'delete-other-windows)
+(global-set-key (kbd "<f2>") 'delete-window)
+
 (provide 'init-keybind)
