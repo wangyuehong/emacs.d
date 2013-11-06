@@ -65,6 +65,7 @@
   "w"  'save-buffer
   "W"  'save-some-buffers
   "l"  'helm-ls-git-ls
+  "i"  'imenu
   "/"  'evilnc-comment-or-uncomment-lines
   "k"  'kill-buffer-and-window
   "K"  'kill-other-buffers
