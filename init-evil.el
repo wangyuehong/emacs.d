@@ -100,6 +100,7 @@
                          ((evil-emacs-state-p)  '("#444488" . "#ffffff"))
                          ((buffer-modified-p)   '("#0000ee" . "#ffffff"))
                          (t default-color))))
+        (set-face-foreground 'mode-line-buffer-id (cdr color))
         (set-face-background 'mode-line (car color))
         (set-face-foreground 'mode-line (cdr color))))))
 
