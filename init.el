@@ -100,7 +100,6 @@
 
 (require 'init-keybind)
 (require 'init-helm)
-(require 'init-evil)
 (require 'init-whitespace)
 (require 'init-linum)
 (require 'init-sr-speedbar)
@@ -115,6 +114,9 @@
 (require 'init-bookmark)
 (require 'init-ctags)
 (require 'init-quickrun)
+
+;; make evil config at last
+(require 'init-evil)
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
