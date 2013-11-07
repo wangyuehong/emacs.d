@@ -1,4 +1,5 @@
 (require 'whitespace)
+
 (global-whitespace-mode t)
 (setq whitespace-style
       '(face spaces tabs newline space-mark tab-mark newline-mark))
@@ -14,15 +15,10 @@
         (space-mark 3872 [3876] [95])
         ;;(newline-mark 10 [8629 10]) ; newlne, ?
         (tab-mark 9 [187 9] [92 9]) ; tab, ?
-  ))
-;;(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- ;;'(whitespace-newline ((t (:foreground "dodger blue"))))
- ;;'(whitespace-space ((t (:foreground "dodger blue"))))
- ;;'(whitespace-tab ((t (:foreground "dodger blue"))))
-;;)
+        ))
+;; color
+(set-face-foreground 'whitespace-newline "#5c5cff")
+(set-face-foreground 'whitespace-space "#5c5cff")
+(set-face-foreground 'whitespace-tab "#5c5cff")
 
 (provide 'init-whitespace)
