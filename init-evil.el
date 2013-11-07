@@ -6,6 +6,7 @@
 (global-surround-mode 1)
 
 (add-to-list 'evil-emacs-state-modes 'org-mode)
+(add-to-list 'evil-emacs-state-modes 'quickrun/mode)
 
 (setq evil-default-cursor t)
 (setq evil-cross-lines t)
