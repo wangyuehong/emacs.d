@@ -19,7 +19,7 @@
 (define-key input-decode-map "\e\eOB" [(meta down)])
 (global-set-key [(meta up)] 'move-text-up)
 (global-set-key [(meta down)] 'move-text-down)
-(global-set-key (kbd "C-c i") 'imenu)
+;; (global-set-key (kbd "C-c i") 'imenu)
 
 (global-set-key (kbd "<f1>") 'delete-other-windows)
 (global-set-key (kbd "<f2>") 'delete-window)
