@@ -83,7 +83,7 @@
   (add-hook (derived-mode-hook-name mode) 'sanityinc/ensure-mmm-erb-loaded)
   (mmm-add-mode-ext-class mode "\\.erb\\'" 'erb))
 
-(let ((html-erb-modes '(html-mode html-erb-mode nxml-mode)))
+(let ((html-erb-modes '(html-mode html-erb-mode web-mode)))
   (dolist (mode html-erb-modes)
     (sanityinc/set-up-mode-for-erb mode)
     (mmm-add-mode-ext-class mode "\\.r?html\\(\\.erb\\)?\\'" 'html-js)
