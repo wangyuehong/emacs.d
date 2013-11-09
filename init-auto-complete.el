@@ -2,7 +2,7 @@
 (require 'auto-complete-config)
 (global-auto-complete-mode t)
 (setq ac-expand-on-auto-complete nil)
-(setq ac-auto-start 3)
+(setq ac-auto-start 2)
 (setq ac-dwim nil) ; To get pop-ups with docs even if a word is uniquely completed
 ;; (setq ac-use-fuzzy t)
 ;; (setq ac-fuzzy-enable t)
@@ -13,25 +13,9 @@
 (setq tab-always-indent 'complete)  ;; use 't when auto-complete is disabled
 (add-to-list 'completion-styles 'initials t)
 
-;; TODO: find solution for php, c++, haskell modes where TAB always does something
-
-;; hook AC into completion-at-point
-(defun sanityinc/auto-complete-at-point ()
-  (when (and (not (minibufferp)) 
-	     (fboundp 'auto-complete-mode)
-	     auto-complete-mode)
-    (auto-complete)))
-
-(defun set-auto-complete-as-completion-at-point-function ()
-  (setq completion-at-point-functions
-        (cons 'sanityinc/auto-complete-at-point
-              (remove 'sanityinc/auto-complete-at-point completion-at-point-functions))))
-
-(add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
-
-
 (set-default 'ac-sources
              '(ac-source-imenu
+               ac-source-filename
                ac-source-dictionary
                ac-source-yasnippet
                ac-source-words-in-buffer
@@ -51,7 +35,6 @@
   (< (buffer-size other-buffer) (* 1 1024 1024)))
 
 (setq dabbrev-friend-buffer-function 'sanityinc/dabbrev-friend-buffer)
-
 
 ;; work with linum
 (ac-linum-workaround)
