@@ -67,15 +67,12 @@
   "W"  'save-some-buffers
   "l"  'helm-ls-git-ls
   "i"  'imenu
+  "q"  'quickrun
   "/"  'evilnc-comment-or-uncomment-lines
   "k"  'kill-buffer-and-window
   "K"  'kill-other-buffers
   "g"  'magit-status
-  "tt" 'toggle-git-gutter-linum
-  "tj" 'git-gutter:next-hunk
-  "tk" 'git-gutter:previous-hunk
-  "tp" 'git-gutter:popup-hunk
-  "tv" 'git-gutter:revert-hunk
+  "t"  'git-gutter-map
   "v"  'revert-buffer
   "x"  'smex
   "nn" 'narrow-to-region

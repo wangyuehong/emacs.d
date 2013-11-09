@@ -1,5 +1,4 @@
 (require-package 'magit)
-(require-package 'git-gutter-fringe)
 
 (setq-default
  magit-save-some-buffers nil
@@ -33,6 +32,10 @@
   (diminish 'magit-wip-save-mode))
 
 
+(require-package 'git-gutter-fringe)
+
+(setq git-gutter:diff-option "HEAD")
+
 (define-prefix-command 'git-gutter-map)
 (global-set-key (kbd "C-x g") 'git-gutter-map)
 
@@ -49,7 +52,6 @@
 
     (define-key git-gutter-map "t" 'toggle-git-gutter-linum)))
 
-
 (defun toggle-git-gutter-linum ()
   "toggle git-gutter and linum mode."
   (interactive)
@@ -62,10 +64,33 @@
               (git-gutter-mode 0)
               (linum-mode 1)))))
 
+(defun change-git-gutter-diff-option (option)
+  "set git-gutter:diff-option and reload"
+  (setq git-gutter:diff-option option)
+  (git-gutter))
+
+(defun git-gutter-diff-none ()
+  "git-gutter with git diff, no diff if staged"
+  (interactive)
+  (change-git-gutter-diff-option ""))
+
+(defun git-gutter-diff-head ()
+  "git-gutter with git HEAD, include diff of staged and unstaged"
+  (interactive)
+  (change-git-gutter-diff-option "HEAD"))
+
+(defun git-gutter-diff-cached ()
+  "git-gutter with git --cached, only show diff of staged"
+  (interactive)
+  (change-git-gutter-diff-option "--cached"))
+
 (define-key git-gutter-map "j" 'git-gutter:next-hunk)
 (define-key git-gutter-map "k" 'git-gutter:previous-hunk)
 (define-key git-gutter-map "p" 'git-gutter:popup-hunk)
-(define-key git-gutter-map "r" 'git-gutter:revert-hunk)
+(define-key git-gutter-map "v" 'git-gutter:revert-hunk)
+(define-key git-gutter-map "dn" 'git-gutter-diff-none)
+(define-key git-gutter-map "dh" 'git-gutter-diff-head)
+(define-key git-gutter-map "dc" 'git-gutter-diff-cached)
 (define-key git-gutter-map "l" 'magit-file-log)
 
 (when *is-a-mac*
