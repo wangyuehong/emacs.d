@@ -13,36 +13,30 @@
   (setq-default ruby-use-smie nil)
   (define-key ruby-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
   ;; (define-key ruby-mode-map (kbd "TAB") 'indent-for-tab-command)
+  )
 
+(defun my/ruby-mode-hook ()
   ;; Stupidly the non-bundled ruby-mode isn't a derived mode of
   ;; prog-mode: we run the latter's hooks anyway in that case.
-  (add-hook 'ruby-mode-hook
-            (lambda ()
-              (unless (derived-mode-p 'prog-mode)
-                (run-hooks 'prog-mode-hook)))))
+  (unless (derived-mode-p 'prog-mode)
+    (run-hooks 'prog-mode-hook)))
 
+(add-hook 'ruby-mode-hook 'my/ruby-mode-hook)
 
-;; TODO: hippie-expand ignoring : for names in ruby-mode
-;; TODO: hippie-expand adaptor for auto-complete sources
-
-
 ;;; Inferior ruby
 (require-package 'inf-ruby)
 
-
 ;;; Ruby compilation
 (require-package 'ruby-compilation)
 
-
 ;;; ri support
 (require-package 'yari)
 (defalias 'ri 'yari)
 
-
-
 ;;; YAML
 (require-package 'yaml-mode)
 
+;;; rails config
 (require-package 'rinari)
 (after-load 'rinari
   (diminish 'rinari-minor-mode "Rin"))
