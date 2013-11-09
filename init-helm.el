@@ -22,7 +22,4 @@
 (require 'helm-ls-git)
 (setq helm-ls-git-show-abs-or-relative 'relative)
 
-(require-package 'helm-git-grep)
-(require 'helm-git-grep)
-
 (provide 'init-helm)
