@@ -3,14 +3,18 @@
 
 ;; (setq-default electric-pair-mode 1)
 
-(require-package 'autopair)
-(require 'autopair)
-;; (setq autopair-autowrap t)
-(autopair-global-mode)
+;; (require-package 'autopair)
+;; (require 'autopair)
+;; ;; (setq autopair-autowrap t)
+;; (autopair-global-mode)
 
-;; disable it in org-mode
-(add-hook 'org-mode-hook
-          (autopair-mode -1))
+;; ;; disable it in org-mode
+;; (add-hook 'org-mode-hook
+;;           (autopair-mode -1))
+
+(require-package 'smartparens)
+(require 'smartparens-config)
+(show-smartparens-global-mode t)
 
 ;;----------------------------------------------------------------------------
 ;; Some basic preferences
