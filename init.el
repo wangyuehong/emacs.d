@@ -114,6 +114,7 @@
 (require 'init-bookmark)
 (require 'init-ctags)
 (require 'init-quickrun)
+(require 'init-smartparens)
 
 ;; make evil config at last
 (require 'init-evil)
