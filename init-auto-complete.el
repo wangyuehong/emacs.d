@@ -21,7 +21,9 @@
                ac-source-words-in-buffer
                ac-source-words-in-same-mode-buffers))
 
-(dolist (mode '(magit-log-edit-mode log-edit-mode org-mode text-mode haml-mode
+(dolist (mode '(magit-log-edit-mode
+                log-edit-mode org-mode text-mode haml-mode
+                git-commit-mode
                 sass-mode yaml-mode csv-mode espresso-mode haskell-mode
                 html-mode web-mode sh-mode smarty-mode clojure-mode
                 lisp-mode textile-mode markdown-mode tuareg-mode
