@@ -34,7 +34,7 @@
 
 (require-package 'git-gutter-fringe)
 
-(setq git-gutter:diff-option "HEAD")
+;; (setq git-gutter:diff-option "HEAD")
 
 (define-prefix-command 'git-gutter-map)
 (global-set-key (kbd "C-x g") 'git-gutter-map)
