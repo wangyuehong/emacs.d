@@ -7,6 +7,7 @@
 
 (add-to-list 'evil-emacs-state-modes 'org-mode)
 (add-to-list 'evil-emacs-state-modes 'quickrun/mode)
+(add-to-list 'evil-emacs-state-modes 'inf-ruby-mode)
 
 (setq evil-default-cursor t)
 (setq evil-cross-lines t)
