@@ -289,7 +289,8 @@ With arg N, insert N newlines."
 (when (executable-find "ag")
   (require-package 'ag)
   (require-package 'wgrep-ag)
-  (setq-default ag-highlight-search t))
+  (setq-default ag-highlight-search t)
+  (setq-default ag-reuse-window t))
 
 
 
