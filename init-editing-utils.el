@@ -29,7 +29,8 @@
  truncate-lines nil
  truncate-partial-width-windows nil
 ;; debug-on-error t
- visible-bell t)
+;; visible-bell t
+ )
 
 (when *is-a-mac*
   (setq-default locate-command "mdfind"))
