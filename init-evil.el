@@ -26,6 +26,7 @@
 
 (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
 (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
+(define-key evil-insert-state-map (kbd "C-d") 'delete-char)
 
 (define-key evil-normal-state-map "Y" (kbd "y$"))
 (define-key evil-normal-state-map (kbd "TAB") 'evil-indent-line)
