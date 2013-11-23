@@ -8,4 +8,9 @@
 (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
+(set-face-foreground 'web-mode-html-tag-face "#268bd2")
+(set-face-foreground 'web-mode-html-attr-name-face "#dc322f")
+(set-face-foreground 'web-mode-html-attr-equal-face "#268bd2")
+(set-face-foreground 'web-mode-html-attr-value-face "#859900")
+
 (provide 'init-web-mode)
