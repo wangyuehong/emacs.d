@@ -49,6 +49,10 @@
 (require-package 'evil-numbers)
 (require 'evil-numbers)
 
+(require-package 'evil-matchit)
+(require 'evil-matchit)
+(global-evil-matchit-mode 1)
+
 (require-package 'evil-leader)
 (require 'evil-leader)
 (global-evil-leader-mode)
