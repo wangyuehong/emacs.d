@@ -28,9 +28,12 @@
  tooltip-delay 1.5
  truncate-lines nil
  truncate-partial-width-windows nil
+ scroll-conservatively 10000
 ;; debug-on-error t
 ;; visible-bell t
  )
+
+(modify-syntax-entry ?- "w")
 
 (when *is-a-mac*
   (setq-default locate-command "mdfind"))
