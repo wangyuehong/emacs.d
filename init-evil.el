@@ -33,8 +33,10 @@
 (define-key evil-normal-state-map (kbd "TAB") 'evil-indent-line)
 
 (key-chord-define evil-insert-state-map ";;" "\C-e;")
-;; (key-chord-define evil-insert-state-map ",," "\C-e,")
+(key-chord-define evil-insert-state-map ",," "\C-e,")
+
 ;; (key-chord-define evil-insert-state-map "44" (smartchr '("$" "%")))
+
 (key-chord-define evil-insert-state-map "--" (smartchr '("->" "=>")))
 
 (key-chord-define evil-normal-state-map "qq" 'goto-last-change)
