@@ -91,6 +91,7 @@
   "k"  'kill-buffer-and-window
   "K"  'kill-other-buffers
   "g"  'magit-status
+  "s"  'helm-show-kill-ring
   "t"  'git-gutter-map
   "v"  'revert-buffer
   "x"  'smex
