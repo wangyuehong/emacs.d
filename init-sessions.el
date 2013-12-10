@@ -29,6 +29,9 @@
 ;;----------------------------------------------------------------------------
 (require-package 'session)
 
+;; make it work with helm-show-kill-ring
+(setq session-save-print-spec '(t nil 40000))
+
 (setq session-save-file (expand-file-name ".session" user-emacs-directory))
 (add-hook 'after-init-hook 'session-initialize)
 
