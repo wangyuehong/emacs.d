@@ -53,6 +53,15 @@
 
 (require-package 'evil-matchit)
 (require 'evil-matchit)
+
+(defun evilmi-customize-keybinding ()
+  (evil-define-key 'normal evil-matchit-mode-map
+    "%" 'evilmi-jump-items
+    ",ms" 'evilmi-select-items
+    ",md" 'evilmi-delete-items
+    )
+  )
+
 (global-evil-matchit-mode 1)
 
 (require-package 'evil-leader)
