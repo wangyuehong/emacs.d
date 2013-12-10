@@ -18,6 +18,8 @@
 
 (require-package 'git-gutter-fringe)
 
+(setq git-gutter:update-threshold 2)
+(setq git-gutter:update-hooks '(after-save-hook after-revert-hook))
 ;; (setq git-gutter:diff-option "HEAD")
 
 (define-prefix-command 'git-gutter-map)
