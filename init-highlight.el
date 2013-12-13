@@ -14,4 +14,11 @@
 
 ;; (set-face-background 'hl-line "#3a3a3a")
 
+(require-package 'fic-mode)
+
+(require 'fic-mode)
+(add-hook 'prog-mode-hook 'fic-mode)
+(set-face-foreground 'font-lock-fic-face "brightblack")
+(set-face-background 'font-lock-fic-face "brightyellow")
+
 (provide 'init-highlight)
