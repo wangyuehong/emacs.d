@@ -74,6 +74,7 @@
 (setq evil-leader/no-prefix-mode-rx '("magit-.*-mode"))
 
 (evil-leader/set-key
+  "="  'align
   "a"  'ag-project
   "A"  'ag
   "b"  'ido-switch-buffer
