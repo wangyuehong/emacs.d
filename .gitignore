@@ -4,6 +4,8 @@
 /.session
 /.recentf
 /.smex-items
+/.emacs-bmk-bmenu-state.el
+/.emacs-bmk-bmenu-commands.el
 /custom.el
 *.elc
 CVS
@@ -30,4 +32,4 @@ site-lisp/package/
 /eshell
 /.sqli_history
 /frame-restore-parameters
-/init-local.el
+/lisp/init-local.el
