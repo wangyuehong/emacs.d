@@ -31,7 +31,8 @@
  scroll-conservatively 10000
 ;; debug-on-error t
 ;; visible-bell t
- )
+ ring-bell-function 'ignore
+)
 
 (modify-syntax-entry ?- "w")
 
