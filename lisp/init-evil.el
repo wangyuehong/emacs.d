@@ -88,6 +88,7 @@
   "l"  'helm-ls-git-ls
   "i"  'imenu
   "q"  'quickrun
+  "Q"  'quickrun-region
   "/"  'evilnc-comment-or-uncomment-lines
   "k"  'kill-buffer-and-window
   "K"  'kill-other-buffers
