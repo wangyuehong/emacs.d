@@ -2,9 +2,13 @@
 
 (require 'web-mode)
 
-(add-hook 'web-mode-hook (lambda () (whitespace-mode -1)))
-(add-hook 'web-mode-hook (lambda () (fic-mode -1)))
-(add-hook 'web-mode-hook (lambda () (rainbow-delimiters-mode -1)))
+(defun wangyh/web-mode-hook()
+  (whitespace-mode -1)
+  (fic-mode -1)
+  (rainbow-mode -1)
+  (rainbow-delimiters-mode -1))
+
+(add-hook 'web-mode-hook 'wangyh/web-mode-hook)
 
 (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
