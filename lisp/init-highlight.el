@@ -8,7 +8,7 @@
 (global-set-key (kbd "ESC <f3>") 'highlight-symbol-remove-all)
 (global-set-key (kbd "M-<f3>") 'highlight-symbol-remove-all)
 
-(setq highlight-symbol-colors (quote ("brightblue" "brightred" "brightgreen" "brightmagenta" "brightyellow" "brightcyan")))
+(setq highlight-symbol-colors (quote ("#5c5cff" "#ff0000" "#00ff00" "#ff00ff" "#ffff00" "#00ffff")))
 
 ;; (add-hook 'prog-mode-hook 'hl-line-mode)
 
@@ -18,7 +18,7 @@
 
 (require 'fic-mode)
 (add-hook 'prog-mode-hook 'fic-mode)
-(set-face-foreground 'font-lock-fic-face "brightblack")
-(set-face-background 'font-lock-fic-face "brightyellow")
+(set-face-foreground 'font-lock-fic-face "#7f7f7f")
+(set-face-background 'font-lock-fic-face "#ffff00")
 
 (provide 'init-highlight)
