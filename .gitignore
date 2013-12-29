@@ -29,6 +29,7 @@ site-lisp/package/
 .DS_Store
 /abbrev_defs
 .bookmarks.el
+/bookmarks
 /eshell
 /.sqli_history
 /frame-restore-parameters
