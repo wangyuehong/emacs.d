@@ -115,6 +115,7 @@
 (require 'init-ctags)
 (require 'init-quickrun)
 (require 'init-smartparens)
+(require 'init-tabbar)
 
 ;; make evil config at last
 (require 'init-evil)
