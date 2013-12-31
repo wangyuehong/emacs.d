@@ -21,5 +21,6 @@
 (require-package 'helm-ls-git)
 (require 'helm-ls-git)
 (setq helm-ls-git-show-abs-or-relative 'relative)
+(setq helm-ff-transformer-show-only-basename nil)
 
 (provide 'init-helm)
