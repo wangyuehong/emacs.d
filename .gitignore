@@ -34,3 +34,4 @@ site-lisp/package/
 /.sqli_history
 /frame-restore-parameters
 /lisp/init-local.el
+/projectile-bookmarks.eld

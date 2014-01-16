@@ -5,6 +5,9 @@
 (setq tabbar-ruler-global-tabbar t)
 (require 'tabbar-ruler)
 
+;; grouping by projectile
+(tabbar-ruler-group-by-projectile-project)
+
 ;; conflict with evil-mode
 ;;(global-set-key (kbd "C-c t") 'tabbar-ruler-move)
 
