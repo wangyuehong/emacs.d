@@ -16,7 +16,10 @@
         ))
 
 (global-set-key (kbd "C-x C-b") 'helm-mini)
-(global-set-key (kbd "C-x r h") 'helm-bookmarks)
+(global-set-key (kbd "C-x j j") 'helm-bookmarks)
+
+(define-key helm-map (kbd "C-j") 'helm-next-line)
+(define-key helm-map (kbd "C-k") 'helm-previous-line)
 
 (require-package 'helm-ls-git)
 (require 'helm-ls-git)
