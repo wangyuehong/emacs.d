@@ -42,8 +42,8 @@
   (diminish 'rinari-minor-mode "Rin"))
 (global-rinari-mode)
 
-;; (require-package 'haml-mode)
-;; (require 'haml-mode)
+(require-package 'haml-mode)
+(require 'haml-mode)
 
 (require-package 'slim-mode)
 (require 'slim-mode)
