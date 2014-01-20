@@ -17,8 +17,11 @@
 ;;get this work for terminal
 (define-key input-decode-map "\e\eOA" [(meta up)])
 (define-key input-decode-map "\e\eOB" [(meta down)])
-(global-set-key [(meta up)] 'move-text-up)
-(global-set-key [(meta down)] 'move-text-down)
+(define-key input-decode-map "\e\eOD" [(meta left)])
+(define-key input-decode-map "\e\eOC" [(meta right)])
+
+(global-set-key (kbd "M-k") 'move-text-up)
+(global-set-key (kbd "M-j") 'move-text-down)
 ;; (global-set-key (kbd "C-c i") 'imenu)
 
 (global-set-key (kbd "<f1>") 'delete-other-windows)

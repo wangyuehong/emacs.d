@@ -16,7 +16,10 @@
 
 (global-set-key (kbd "M-h") 'tabbar-ruler-backward)
 (global-set-key (kbd "M-l") 'tabbar-ruler-forward)
-(global-set-key (kbd "M-k") 'tabbar-ruler-up)
-(global-set-key (kbd "M-j") 'tabbar-ruler-up)
+
+(global-set-key (kbd "M-<left>")  'tabbar-ruler-backward)
+(global-set-key (kbd "M-<right>") 'tabbar-ruler-forward)
+(global-set-key (kbd "M-<up>")    'tabbar-ruler-up)
+(global-set-key (kbd "M-<down>")  'tabbar-ruler-up)
 
 (provide 'init-tabbar)
