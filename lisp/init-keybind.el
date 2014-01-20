@@ -24,4 +24,8 @@
 (global-set-key (kbd "<f1>") 'delete-other-windows)
 (global-set-key (kbd "<f2>") 'delete-window)
 
+(define-key minibuffer-local-map (kbd "C-h") 'left-char)
+(define-key minibuffer-local-map (kbd "C-l") 'right-char)
+;; (define-key minibuffer-local-map (kbd "C-k") 'previous-history-element)
+;; (define-key minibuffer-local-map (kbd "C-j") 'next-history-element)
 (provide 'init-keybind)
