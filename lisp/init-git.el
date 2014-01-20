@@ -8,6 +8,9 @@
 
 (require-package 'fullframe)
 (fullframe magit-status magit-mode-quit-window :magit-fullscreen nil)
+
+(define-key magit-status-mode-map (kbd "C-j") 'next-line)
+(define-key magit-status-mode-map (kbd "C-k") 'previous-line)
 
 ;;; When we start working on git-backed files, use git-wip if available
 
