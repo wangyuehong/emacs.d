@@ -3,10 +3,7 @@
 (require 'web-mode)
 
 (defun wangyh/web-mode-hook()
-  (whitespace-mode -1)
-  (fic-mode -1)
-  (rainbow-mode -1)
-  (rainbow-delimiters-mode -1))
+)
 
 (add-hook 'web-mode-hook 'wangyh/web-mode-hook)
 
