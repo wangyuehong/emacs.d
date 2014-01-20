@@ -20,8 +20,14 @@
 
 (eval-after-load 'helm
   '(progn
+     (define-key helm-map (kbd "C-h") 'helm-previous-source)
+     (define-key helm-map (kbd "C-l") 'helm-next-source)
      (define-key helm-map (kbd "C-j") 'helm-next-line)
      (define-key helm-map (kbd "C-k") 'helm-previous-line)))
+
+(eval-after-load 'helm-files
+  '(progn
+     (define-key helm-find-files-map (kbd "C-h") 'helm-find-files-down-one-level)))
 
 (require-package 'helm-ls-git)
 (require 'helm-ls-git)
