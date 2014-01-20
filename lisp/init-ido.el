@@ -33,4 +33,9 @@
 (when *is-a-mac*
   (add-to-list 'ido-ignore-files "\\.DS_Store"))
 
+(defun wangyh/ido-define-keys()
+  (define-key ido-completion-map (kbd "C-h") 'ido-next-match)
+  (define-key ido-completion-map (kbd "C-l") 'ido-prev-match))
+(add-hook 'ido-setup-hook 'wangyh/ido-define-keys)
+
 (provide 'init-ido)
