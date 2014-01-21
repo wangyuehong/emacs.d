@@ -95,6 +95,8 @@
   "g"  'magit-status
   "s"  'helm-show-kill-ring
   "t"  'git-gutter-map
+  "r" 'wangyh/rinari-minor-mode-find-map
+  "R" 'wangyh/rinari-minor-mode-map
   "v"  'revert-buffer
   "x"  'smex
   "nn" 'narrow-to-region
