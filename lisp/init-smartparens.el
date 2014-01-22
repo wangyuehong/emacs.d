@@ -5,6 +5,8 @@
 
 (show-smartparens-global-mode t)
 
+(set-face-background 'sp-show-pair-match-face "#4e4e4e")
+
 ;; markdown-mode
 (sp-with-modes '(markdown-mode gfm-mode rst-mode)
   (sp-local-pair "*" "*" :bind "C-*")

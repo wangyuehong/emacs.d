@@ -22,6 +22,6 @@
 (set-face-foreground 'web-mode-html-attr-name-face "#dc322f")
 (set-face-foreground 'web-mode-html-attr-equal-face "#268bd2")
 (set-face-foreground 'web-mode-html-attr-value-face "#859900")
-(set-face-background 'web-mode-current-element-highlight-face "#444444")
+(set-face-background 'web-mode-current-element-highlight-face "#4e4e4e")
 
 (provide 'init-web-mode)
