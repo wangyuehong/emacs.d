@@ -12,11 +12,11 @@
   (setq dired-recursive-deletes 'top)
   (define-key dired-mode-map [mouse-2] 'dired-find-file))
 
-;;hide .DS_Store
-(require 'dired-x)
-(setq-default dired-omit-files-p t) 
-(setq dired-omit-files
-      (concat dired-omit-files
-              "\\|.DS_Store"))
+;; hide .DS_Store on mac
+(when *is-a-mac*
+  (setq-default dired-omit-files-p t)
+  (require 'dired-x)
+  (setq dired-omit-files
+        (concat dired-omit-files "\\|.DS_Store")))
 
 (provide 'init-dired)
