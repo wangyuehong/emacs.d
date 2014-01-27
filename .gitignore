@@ -33,5 +33,9 @@ site-lisp/package/
 /eshell
 /.sqli_history
 /frame-restore-parameters
+<<<<<<< HEAD
 /lisp/init-local.el
 /projectile-bookmarks.eld
+/.achievements
+/.bookmarks.el
+/history
