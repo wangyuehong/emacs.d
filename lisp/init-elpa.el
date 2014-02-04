@@ -74,7 +74,7 @@ re-downloaded in order to locate PACKAGE."
 
 
 (require-package 'fullframe)
-(fullframe list-packages quit-window :package-fullscreen nil)
+(fullframe list-packages quit-window)
 
 
 (provide 'init-elpa)

@@ -7,7 +7,8 @@
  magit-completing-read-function 'magit-ido-completing-read)
 
 (require-package 'fullframe)
-(fullframe magit-status magit-mode-quit-window :magit-fullscreen nil)
+(after-load 'magit
+  (fullframe magit-status magit-mode-quit-window))
 
 (eval-after-load "magit"
   '(progn
