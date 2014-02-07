@@ -41,7 +41,7 @@
     (funcall (split-window-func-with-other-buffer 'split-window-vertically))))
 
 (global-set-key "\C-x|" 'split-window-horizontally-instead)
-(global-set-key "\C-x_" 'split-window-vertically-instead)
+(global-set-key "\C-x-" 'split-window-vertically-instead)
 
 
 ;; Borrowed from http://postmomentum.ch/blog/201304/blog-on-emacs
