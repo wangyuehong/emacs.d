@@ -1,5 +1,5 @@
 (require-package 'unfill)
-(require-package 'whole-line-or-region)
+;; (require-package 'whole-line-or-region)
 
 ;;----------------------------------------------------------------------------
 ;; Some basic preferences
@@ -79,8 +79,8 @@
 ;;----------------------------------------------------------------------------
 ;; Show matching parens
 ;;----------------------------------------------------------------------------
-(require-package 'mic-paren)
-(paren-activate)     ; activating mic-paren
+;; (require-package 'mic-paren)
+;; (paren-activate)     ; activating mic-paren
 
 ;;----------------------------------------------------------------------------
 ;; Expand region
@@ -115,23 +115,23 @@
 ;; (global-set-key (kbd "C-.") 'set-mark-command)
 ;; (global-set-key (kbd "C-x C-.") 'pop-global-mark)
 
-(defun duplicate-region (beg end)
-  "Insert a copy of the current region after the region."
-  (interactive "r")
-  (save-excursion
-    (goto-char end)
-    (insert (buffer-substring beg end))))
+;; (defun duplicate-region (beg end)
+;;   "Insert a copy of the current region after the region."
+;;   (interactive "r")
+;;   (save-excursion
+;;     (goto-char end)
+;;     (insert (buffer-substring beg end))))
 
-(defun duplicate-line-or-region (prefix)
-  "Duplicate either the current line or any current region."
-  (interactive "*p")
-  (whole-line-or-region-call-with-region 'duplicate-region prefix t))
+;; (defun duplicate-line-or-region (prefix)
+;;   "Duplicate either the current line or any current region."
+;;   (interactive "*p")
+;;   (whole-line-or-region-call-with-region 'duplicate-region prefix t))
 
 ;;(global-set-key (kbd "C-c p") 'duplicate-line-or-region)
 
 ;; Train myself to use M-f and M-b instead
-(global-unset-key [M-left])
-(global-unset-key [M-right])
+;; (global-unset-key [M-left])
+;; (global-unset-key [M-right])
 
 
 
@@ -197,8 +197,8 @@
 ;;----------------------------------------------------------------------------
 (require-package 'move-text)
 (move-text-default-bindings)
-(global-set-key [M-S-up] 'move-text-up)
-(global-set-key [M-S-down] 'move-text-down)
+;; (global-set-key [M-S-up] 'move-text-up)
+;; (global-set-key [M-S-down] 'move-text-down)
 
 ;;----------------------------------------------------------------------------
 ;; Fix backward-up-list to understand quotes, see http://bit.ly/h7mdIL
@@ -218,27 +218,27 @@
 ;;----------------------------------------------------------------------------
 ;; Cut/copy the current line if no region is active
 ;;----------------------------------------------------------------------------
-(whole-line-or-region-mode t)
-(diminish 'whole-line-or-region-mode)
-(make-variable-buffer-local 'whole-line-or-region-mode)
+;; (whole-line-or-region-mode t)
+;; (diminish 'whole-line-or-region-mode)
+;; (make-variable-buffer-local 'whole-line-or-region-mode)
 
-(defun suspend-mode-during-cua-rect-selection (mode-name)
-  "Add an advice to suspend `MODE-NAME' while selecting a CUA rectangle."
-  (let ((flagvar (intern (format "%s-was-active-before-cua-rectangle" mode-name)))
-        (advice-name (intern (format "suspend-%s" mode-name))))
-    (eval-after-load 'cua-rect
-      `(progn
-         (defvar ,flagvar nil)
-         (make-variable-buffer-local ',flagvar)
-         (defadvice cua--activate-rectangle (after ,advice-name activate)
-           (setq ,flagvar (and (boundp ',mode-name) ,mode-name))
-           (when ,flagvar
-             (,mode-name 0)))
-         (defadvice cua--deactivate-rectangle (after ,advice-name activate)
-           (when ,flagvar
-             (,mode-name 1)))))))
+;; (defun suspend-mode-during-cua-rect-selection (mode-name)
+;;   "Add an advice to suspend `MODE-NAME' while selecting a CUA rectangle."
+;;   (let ((flagvar (intern (format "%s-was-active-before-cua-rectangle" mode-name)))
+;;         (advice-name (intern (format "suspend-%s" mode-name))))
+;;     (eval-after-load 'cua-rect
+;;       `(progn
+;;          (defvar ,flagvar nil)
+;;          (make-variable-buffer-local ',flagvar)
+;;          (defadvice cua--activate-rectangle (after ,advice-name activate)
+;;            (setq ,flagvar (and (boundp ',mode-name) ,mode-name))
+;;            (when ,flagvar
+;;              (,mode-name 0)))
+;;          (defadvice cua--deactivate-rectangle (after ,advice-name activate)
+;;            (when ,flagvar
+;;              (,mode-name 1)))))))
 
-(suspend-mode-during-cua-rect-selection 'whole-line-or-region-mode)
+;; (suspend-mode-during-cua-rect-selection 'whole-line-or-region-mode)
 
 
 
