@@ -53,9 +53,9 @@ ignored: use `custom-enabled-themes' instead."
       (load-theme theme)))
   (custom-set-variables `(custom-enabled-themes (quote ,custom-enabled-themes))))
 
-;; (add-hook 'after-init-hook 'reapply-themes)
+(add-hook 'after-init-hook 'reapply-themes)
 
-(load-theme 'alect-dark t)
+;; (load-theme 'alect-dark t)
 
 ;;------------------------------------------------------------------------------
 ;; Toggle between light and dark
