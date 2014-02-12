@@ -1,6 +1,5 @@
 (require-package 'color-theme-sanityinc-solarized)
 (require-package 'color-theme-sanityinc-tomorrow)
-(require-package 'alect-themes)
 
 ;;------------------------------------------------------------------------------
 ;; Old-style color theming support (via color-theme.el)
@@ -54,8 +53,6 @@ ignored: use `custom-enabled-themes' instead."
   (custom-set-variables `(custom-enabled-themes (quote ,custom-enabled-themes))))
 
 (add-hook 'after-init-hook 'reapply-themes)
-
-;; (load-theme 'alect-dark t)
 
 ;;------------------------------------------------------------------------------
 ;; Toggle between light and dark
