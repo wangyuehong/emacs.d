@@ -116,7 +116,7 @@
 (require 'init-quickrun)
 (require 'init-smartparens)
 (require 'init-projectile)
-(require 'init-tabbar)
+;; (require 'init-tabbar)
 
 ;; make evil config at last
 (require 'init-evil)
