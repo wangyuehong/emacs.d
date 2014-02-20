@@ -92,6 +92,7 @@
   "/"  'evilnc-comment-or-uncomment-lines
   "k"  'kill-buffer-and-window
   "K"  'kill-other-buffers
+  "p"  'list-packages
   "g"  'magit-status
   "s"  'helm-show-kill-ring
   "t"  'git-gutter-map
