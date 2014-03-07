@@ -12,6 +12,8 @@
 ;;----------------------------------------------------------------------------
 (setq tab-always-indent 'complete)  ;; use 't when auto-complete is disabled
 (add-to-list 'completion-styles 'initials t)
+;; Stop completion-at-point from popping up completion buffers so eagerly
+(setq completion-cycle-threshold 5)
 
 (set-default 'ac-sources
              '(ac-source-imenu
