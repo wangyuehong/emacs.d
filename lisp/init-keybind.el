@@ -20,6 +20,7 @@
 (define-key input-decode-map "\e\eOD" [(meta left)])
 (define-key input-decode-map "\e\eOC" [(meta right)])
 
+(require-package 'move-text)
 (global-set-key (kbd "M-k") 'move-text-up)
 (global-set-key (kbd "M-j") 'move-text-down)
 ;; (global-set-key (kbd "C-c i") 'imenu)
