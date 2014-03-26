@@ -21,6 +21,9 @@
   (global-magit-wip-save-mode)
   (diminish 'magit-wip-save-mode))
 
+(after-load 'magit
+  (diminish 'magit-auto-revert-mode))
+
 
 (require-package 'git-gutter-fringe)
 
