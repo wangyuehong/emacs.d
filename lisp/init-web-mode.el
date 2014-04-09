@@ -16,12 +16,12 @@
         ("erb"  . "\\.erb")))
 
 (setq web-mode-enable-comment-keywords t)
-(setq web-mode-enable-current-element-highlight t)
+(setq web-mode-enable-current-element-highlight nil)
 
 (set-face-foreground 'web-mode-html-tag-face "#268bd2")
 (set-face-foreground 'web-mode-html-attr-name-face "#dc322f")
 (set-face-foreground 'web-mode-html-attr-equal-face "#268bd2")
 (set-face-foreground 'web-mode-html-attr-value-face "#859900")
-(set-face-background 'web-mode-current-element-highlight-face "#4e4e4e")
+;; (set-face-background 'web-mode-current-element-highlight-face "#4e4e4e")
 
 (provide 'init-web-mode)
