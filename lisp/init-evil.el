@@ -68,6 +68,10 @@
 (require 'evil-leader)
 (global-evil-leader-mode)
 
+(require-package 'evil-exchange)
+(require 'evil-exchange)
+(evil-exchange-install)
+
 (require-package 'evil-nerd-commenter)
 
 (setq evil-leader/leader "," evil-leader/in-all-states t)
