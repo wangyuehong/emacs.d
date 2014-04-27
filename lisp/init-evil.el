@@ -5,6 +5,10 @@
 (require 'surround)
 (global-surround-mode 1)
 
+(require-package 'evil-terminal-cursor-changer)
+(unless (display-graphic-p)
+  (require 'evil-terminal-cursor-changer))
+
 (add-to-list 'evil-emacs-state-modes 'org-mode)
 (add-to-list 'evil-emacs-state-modes 'quickrun/mode)
 (add-to-list 'evil-emacs-state-modes 'inf-ruby-mode)
@@ -44,12 +48,6 @@
 ;; (key-chord-define evil-normal-state-map "fa" 'ffap)
 
 (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
-
-(require-package 'evil-visualstar)
-(require 'evil-visualstar)
-
-(require-package 'evil-numbers)
-(require 'evil-numbers)
 
 (require-package 'evil-matchit)
 (require 'evil-matchit)
@@ -113,8 +111,6 @@
   ;; "ps" 'wgrep-save-all-buffers
   "d"  'delete-trailing-whitespace
   "D"  'ediff-revision
-  "+"  'evil-numbers/inc-at-pt
-  "-"  'evil-numbers/dec-at-pt
 )
 
 ;; change mode-line color by evil state
