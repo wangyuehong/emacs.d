@@ -43,7 +43,7 @@
 
 (key-chord-define evil-insert-state-map "--" (smartchr '("->" "=>")))
 
-(key-chord-define evil-normal-state-map "qq" 'goto-last-change)
+;;(key-chord-define evil-normal-state-map "qq" 'goto-last-change) use g ;
 (key-chord-define evil-normal-state-map "@@" 'er/expand-region)
 ;; (key-chord-define evil-normal-state-map "fa" 'ffap)
 
