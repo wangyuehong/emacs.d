@@ -71,6 +71,7 @@
 (evil-exchange-install)
 
 (require-package 'evil-nerd-commenter)
+(require 'evil-nerd-commenter)
 
 (setq evil-leader/leader "," evil-leader/in-all-states t)
 (setq evil-leader/no-prefix-mode-rx '("magit-.*-mode"))
