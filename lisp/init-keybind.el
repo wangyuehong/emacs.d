@@ -5,9 +5,6 @@
 
 (require 'smartchr)
 
-(require-package 'goto-last-change)
-(require 'goto-last-change)
-
 ;;(global-set-key (kbd "C-c C-c") 'whole-line-or-region-kill-ring-save)
 ;;(global-set-key (kbd "C-c c") 'thing-copy-word)
 ;;(global-set-key (kbd "C-x C-x") 'whole-line-or-region-kill-region)
