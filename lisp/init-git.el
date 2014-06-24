@@ -18,6 +18,14 @@
      (define-key magit-log-mode-map (kbd "k") 'previous-line)
      (define-key magit-log-mode-map (kbd "C-f") 'scroll-up)
      (define-key magit-log-mode-map (kbd "C-b") 'scroll-down)))
+
+;; change magit diff colors
+(eval-after-load 'magit
+  '(progn
+     (set-face-foreground 'magit-diff-add "black")
+     (set-face-background 'magit-diff-add "#cefece")
+     (set-face-foreground 'magit-diff-del "black")
+     (set-face-background 'magit-diff-del "#efc2c2")))
 
 ;;; When we start working on git-backed files, use git-wip if available
 
