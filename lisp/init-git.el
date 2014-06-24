@@ -13,7 +13,11 @@
 (eval-after-load "magit"
   '(progn
      (define-key magit-status-mode-map (kbd "C-j") 'next-line)
-     (define-key magit-status-mode-map (kbd "C-k") 'previous-line)))
+     (define-key magit-status-mode-map (kbd "C-k") 'previous-line)
+     (define-key magit-log-mode-map (kbd "j") 'next-line)
+     (define-key magit-log-mode-map (kbd "k") 'previous-line)
+     (define-key magit-log-mode-map (kbd "C-f") 'scroll-up)
+     (define-key magit-log-mode-map (kbd "C-b") 'scroll-down)))
 
 ;;; When we start working on git-backed files, use git-wip if available
 
