@@ -118,6 +118,8 @@
 ;; (require 'init-projectile)
 ;; (require 'init-tabbar)
 
+(require 'init-ediff)
+
 ;; make evil config at last
 (require 'init-evil)
 

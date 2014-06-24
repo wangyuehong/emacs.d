@@ -13,8 +13,6 @@
  column-number-mode t
  compilation-scroll-output t
  delete-selection-mode t
- ediff-split-window-function 'split-window-horizontally
- ediff-window-setup-function 'ediff-setup-windows-plain
  grep-highlight-matches t
  grep-scroll-output t
  indent-tabs-mode nil
