@@ -12,8 +12,23 @@
 
 (eval-after-load "magit"
   '(progn
-     (define-key magit-status-mode-map (kbd "C-j") 'next-line)
-     (define-key magit-status-mode-map (kbd "C-k") 'previous-line)
+     (define-key magit-status-mode-map (kbd "K") 'magit-discard-item)
+
+     (define-key magit-status-mode-map (kbd "j") 'next-line)
+     (define-key magit-status-mode-map (kbd "k") 'previous-line)
+     (define-key magit-status-mode-map (kbd "C-f") 'scroll-up)
+     (define-key magit-status-mode-map (kbd "C-b") 'scroll-down)
+
+     (define-key magit-diff-mode-map (kbd "j") 'next-line)
+     (define-key magit-diff-mode-map (kbd "k") 'previous-line)
+     (define-key magit-diff-mode-map (kbd "C-f") 'scroll-up)
+     (define-key magit-diff-mode-map (kbd "C-b") 'scroll-down)
+
+     (define-key magit-commit-mode-map (kbd "j") 'next-line)
+     (define-key magit-commit-mode-map (kbd "k") 'previous-line)
+     (define-key magit-commit-mode-map (kbd "C-f") 'scroll-up)
+     (define-key magit-commit-mode-map (kbd "C-b") 'scroll-down)
+
      (define-key magit-log-mode-map (kbd "j") 'next-line)
      (define-key magit-log-mode-map (kbd "k") 'previous-line)
      (define-key magit-log-mode-map (kbd "C-f") 'scroll-up)
@@ -22,10 +37,14 @@
 ;; change magit diff colors
 (eval-after-load 'magit
   '(progn
-     (set-face-foreground 'magit-diff-add "black")
-     (set-face-background 'magit-diff-add "#cefece")
-     (set-face-foreground 'magit-diff-del "black")
-     (set-face-background 'magit-diff-del "#efc2c2")))
+     (set-face-attribute 'magit-diff-add nil
+                         :background nil
+                         :foreground "#cefece")
+     (set-face-attribute 'magit-diff-del nil
+                         ;; :inherit 'default
+                         :background nil
+                         :foreground "#efc2c2")
+     ))
 
 ;;; When we start working on git-backed files, use git-wip if available
 
