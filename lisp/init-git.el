@@ -21,11 +21,15 @@
 
      (define-key magit-diff-mode-map (kbd "j") 'next-line)
      (define-key magit-diff-mode-map (kbd "k") 'previous-line)
+     (define-key magit-diff-mode-map (kbd "h") 'left-char)
+     (define-key magit-diff-mode-map (kbd "l") 'right-char)
      (define-key magit-diff-mode-map (kbd "C-f") 'scroll-up)
      (define-key magit-diff-mode-map (kbd "C-b") 'scroll-down)
 
      (define-key magit-commit-mode-map (kbd "j") 'next-line)
      (define-key magit-commit-mode-map (kbd "k") 'previous-line)
+     (define-key magit-commit-mode-map (kbd "h") 'left-char)
+     (define-key magit-commit-mode-map (kbd "l") 'right-char)
      (define-key magit-commit-mode-map (kbd "C-f") 'scroll-up)
      (define-key magit-commit-mode-map (kbd "C-b") 'scroll-down)
 
@@ -35,16 +39,27 @@
      (define-key magit-log-mode-map (kbd "C-b") 'scroll-down)))
 
 ;; change magit diff colors
-(eval-after-load 'magit
-  '(progn
-     (set-face-attribute 'magit-diff-add nil
-                         :background nil
-                         :foreground "#cefece")
-     (set-face-attribute 'magit-diff-del nil
-                         ;; :inherit 'default
-                         :background nil
-                         :foreground "#efc2c2")
-     ))
+;; (eval-after-load 'magit
+;;   '(progn
+;;      (set-face-attribute 'magit-diff-add nil
+;;                          :inherit 'default
+;;                          :background "#cefece"
+;;                          :foreground "black")
+;;      (set-face-attribute 'magit-diff-del nil
+;;                          :inherit 'default
+;;                          :background "#f4c6c6"
+;;                          :foreground "black")
+;;      (set-face-attribute 'diff-refine-added nil
+;;                          :inherit 'default
+;;                          :inverse-video 'nil
+;;                          :background "#cefece"
+;;                          :foreground "red")
+;;      (set-face-attribute 'diff-refine-removed nil
+;;                          :inherit 'default
+;;                          :inverse-video 'nil
+;;                          :background "#f4c6c6"
+;;                          :foreground "green")
+;;      ))
 
 ;;; When we start working on git-backed files, use git-wip if available
 
