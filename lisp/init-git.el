@@ -19,6 +19,13 @@
      (define-key magit-status-mode-map (kbd "C-f") 'scroll-up)
      (define-key magit-status-mode-map (kbd "C-b") 'scroll-down)
 
+     (define-key magit-branch-manager-mode-map (kbd "K") 'magit-discard-item)
+
+     (define-key magit-branch-manager-mode-map (kbd "j") 'next-line)
+     (define-key magit-branch-manager-mode-map (kbd "k") 'previous-line)
+     (define-key magit-branch-manager-mode-map (kbd "C-f") 'scroll-up)
+     (define-key magit-branch-manager-mode-map (kbd "C-b") 'scroll-down)
+
      (define-key magit-diff-mode-map (kbd "j") 'next-line)
      (define-key magit-diff-mode-map (kbd "k") 'previous-line)
      (define-key magit-diff-mode-map (kbd "h") 'left-char)
