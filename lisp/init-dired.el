@@ -1,7 +1,8 @@
 (require-package 'dired+)
 
-(setq diredp-hide-details-initially-flag nil)
 (toggle-diredp-find-file-reuse-dir 1)
+(setq-default diredp-hide-details-initially-flag nil
+              dired-dwim-target t)
 
 (after-load 'dired
   (require 'dired+)
