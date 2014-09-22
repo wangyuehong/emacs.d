@@ -53,6 +53,7 @@
 ;;(require 'init-growl)
 
 (require 'init-editing-utils)
+(require 'init-ag)
 
 ;;(require 'init-darcs)
 (require 'init-git)

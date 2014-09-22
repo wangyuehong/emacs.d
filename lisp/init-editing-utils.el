@@ -257,21 +257,8 @@ With arg N, insert N newlines."
         (sort-subr nil 'forward-line 'end-of-line nil nil
                    (lambda (s1 s2) (eq (random 2) 0)))))))
 
-
-
-
-(when (executable-find "ag")
-  (require-package 's)
-  (require-package 'ag)
-  (require-package 'wgrep-ag)
-  (setq-default ag-highlight-search t)
-  (setq-default ag-reuse-window t)
-  (setq-default ag-reuse-buffers t))
-
-
 
 (require-package 'highlight-escape-sequences)
 (hes-mode)
-
 
 (provide 'init-editing-utils)
