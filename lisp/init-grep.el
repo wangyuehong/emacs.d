@@ -5,6 +5,9 @@
 (setq-default grep-highlight-matches t
               grep-scroll-output t)
 
+(when *is-a-mac*
+  (setq-default locate-command "mdfind"))
+
 (setq-default ag-highlight-search t)
 (setq-default ag-reuse-window t)
 (setq-default ag-reuse-buffers t)

@@ -32,9 +32,6 @@
 
 (modify-syntax-entry ?- "w")
 
-(when *is-a-mac*
-  (setq-default locate-command "mdfind"))
-
 (global-auto-revert-mode)
 (setq global-auto-revert-non-file-buffers t
       auto-revert-verbose nil)
