@@ -13,8 +13,6 @@
  column-number-mode t
  compilation-scroll-output t
  delete-selection-mode t
- grep-highlight-matches t
- grep-scroll-output t
  indent-tabs-mode nil
  line-spacing 0.2
  make-backup-files nil

@@ -2,6 +2,9 @@
 (require-package 'ag)
 (require-package 'wgrep-ag)
 
+(setq-default grep-highlight-matches t
+              grep-scroll-output t)
+
 (setq-default ag-highlight-search t)
 (setq-default ag-reuse-window t)
 (setq-default ag-reuse-buffers t)
@@ -11,4 +14,4 @@
      (define-key ag-mode-map (kbd "k") 'previous-line)
      (define-key ag-mode-map (kbd "h") 'left-char)))
 
-(provide 'init-ag)
+(provide 'init-grep)
