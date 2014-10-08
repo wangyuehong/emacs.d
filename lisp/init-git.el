@@ -1,5 +1,8 @@
 (require-package 'magit)
 
+(after-load 'session
+  (add-to-list 'session-mode-disable-list 'git-commit-mode))
+
 (setq-default
  magit-save-some-buffers nil
  magit-process-popup-time 10
