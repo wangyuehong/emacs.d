@@ -1,9 +1,9 @@
 (require-package 'evil)
 (evil-mode 1)
 
-(require-package 'surround)
-(require 'surround)
-(global-surround-mode 1)
+(require-package 'evil-surround)
+(require 'evil-surround)
+(global-evil-surround-mode 1)
 
 (require-package 'evil-terminal-cursor-changer)
 (unless (display-graphic-p)
