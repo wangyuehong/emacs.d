@@ -1,9 +1,8 @@
 (require-package 'json-mode)
-(when (>= emacs-major-version 24)
-  (require-package 'js2-mode)
-  (require-package 'ac-js2))
+(maybe-require-package 'js2-mode)
+(maybe-require-package 'ac-js2)
+(maybe-require-package 'coffee-mode)
 (require-package 'js-comint)
-(require-package 'coffee-mode)
 
 (defcustom preferred-javascript-mode
   (first (remove-if-not #'fboundp '(js2-mode js-mode)))
