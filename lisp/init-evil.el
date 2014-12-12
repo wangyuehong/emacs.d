@@ -78,8 +78,8 @@
 
 (evil-leader/set-key
   "="  'align
-  "a"  'ag-project
-  "A"  'ag
+  "a"  'ag-regexp-project-at-point
+  "A"  'ag-regexp
   "b"  'ido-switch-buffer
   "B"  'helm-mini
   "e"  'iedit-mode-toggle-on-function
