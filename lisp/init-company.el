@@ -8,7 +8,6 @@
 
 (setq
  company-idle-delay 0.1
- company-show-numbers t
  company-selection-wrap-around t
  company-require-match nil)
 
