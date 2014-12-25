@@ -25,6 +25,9 @@
 
 ;;; Inferior ruby
 (require-package 'inf-ruby)
+(require-package 'company-inf-ruby)
+(eval-after-load 'company
+  '(add-to-list 'company-backends 'company-inf-ruby))
 
 ;;; Ruby compilation
 (require-package 'ruby-compilation)
