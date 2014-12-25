@@ -85,8 +85,7 @@
   "B"  'helm-mini
   "e"  'iedit-mode-toggle-on-function
   "E"  'iedit-mode
-  "f"  'ido-find-file
-  "F"  'helm-find-files
+  "f"  'flycheck-list-errors
   "w"  'save-buffer
   "W"  'save-some-buffers
   "l"  'helm-ls-git-ls
