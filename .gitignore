@@ -33,7 +33,7 @@ site-lisp/package/
 /eshell
 /.sqli_history
 /frame-restore-parameters
-<<<<<<< HEAD
+/ido.last
 /lisp/init-local.el
 /projectile-bookmarks.eld
 /.achievements
