@@ -128,4 +128,10 @@
         (set-face-background 'mode-line (car color))
         (set-face-foreground 'mode-line (cdr color))))))
 
+(require-package 'evil-search-highlight-persist)
+(require 'evil-search-highlight-persist)
+(global-evil-search-highlight-persist t)
+(set-face-foreground 'evil-search-highlight-persist-highlight-face "black")
+(set-face-background 'evil-search-highlight-persist-highlight-face "#66cccc")
+
 (provide 'init-evil)
