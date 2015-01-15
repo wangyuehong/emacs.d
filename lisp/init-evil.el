@@ -90,6 +90,7 @@
   "W"  'save-some-buffers
   "l"  'helm-ls-git-ls
   "i"  'helm-imenu
+  "o"  'occur
   "q"  'quickrun
   "Q"  'quickrun-region
   "/"  'evilnc-comment-or-uncomment-lines
