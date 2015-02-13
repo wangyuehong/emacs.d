@@ -115,7 +115,7 @@
 (require 'init-bookmark)
 (require 'init-ctags)
 (require 'init-quickrun)
-(require 'init-smartparens)
+(require 'init-pair)
 ;; (require 'init-projectile)
 ;; (require 'init-tabbar)
 
