@@ -20,6 +20,7 @@
  scroll-preserve-screen-position 'always
  set-mark-command-repeat-pop t
  show-trailing-whitespace t
+ fci-rule-column 100
  tooltip-delay 1.5
  truncate-lines nil
  truncate-partial-width-windows nil
@@ -181,6 +182,7 @@
         (when (sanityinc/fci-enabled-p)
           (turn-on-fci-mode))))))
 
+(add-hook 'prog-mode-hook 'turn-on-fci-mode)
 ;;----------------------------------------------------------------------------
 ;; Fix backward-up-list to understand quotes, see http://bit.ly/h7mdIL
 ;;----------------------------------------------------------------------------
