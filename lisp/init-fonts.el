@@ -37,12 +37,13 @@ by the :height face attribute."
 
 (when (window-system)
   ;; English Font
-  (set-face-attribute 'default nil :font "Menlo 12")
+  ;; (set-face-attribute 'default nil :font "Menlo 12")
 
   ;; CJK Font
-  (dolist (charset '(kana han symbol cjk-misc bopomofo))
-    (set-fontset-font (frame-parameter nil 'font)
-                      charset (font-spec :family "Microsoft Yahei"
-                                         :size 12))))
+  ;; (dolist (charset '(kana han symbol cjk-misc bopomofo))
+  ;;   (set-fontset-font (frame-parameter nil 'font)
+  ;;                     charset (font-spec :family "Microsoft Yahei"
+  ;;                                        :size 12)))
+  )
 
 (provide 'init-fonts)
