@@ -22,8 +22,9 @@
   (set-face-background 'cperl-array-face nil)
   (set-face-background 'cperl-hash-face nil)
 
-  ;;  (setenv "PERL5LIB" "/home/ou.g/dev/HEAD/ATL/lib:/home/ou.g/dev/HEAD/Catalyst-Shanon/lib:/home/ou.g/dev/HEAD/SS/lib:/home/ou.g/dev/HEAD/SS/t/lib")
+  ;; (setenv "PERL5LIB" "dir_path_1:dir_path_2")
 
+  (key-chord-define cperl-mode-map "--" (smartchr '("->" "=>")))
   (modify-syntax-entry ?_ "w"))
 
 (require-package 'tt-mode)
