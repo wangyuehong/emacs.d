@@ -3,6 +3,7 @@
 /auto-save-list
 /.session
 /.recentf
+/projectile.cache
 /.smex-items
 /.emacs-bmk-bmenu-state.el
 /.emacs-bmk-bmenu-commands.el
