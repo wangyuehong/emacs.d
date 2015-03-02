@@ -89,6 +89,7 @@
   "P"  'list-packages
   "pf" 'projectile-find-file
   "pd" 'projectile-find-dir
+  "pp" 'projectile-switch-project
   "g"  'magit-status
   "s"  'helm-show-kill-ring
   ","  'git-gutter-map
