@@ -86,7 +86,9 @@
   "/"  'evilnc-comment-or-uncomment-lines
   "k"  'kill-buffer-and-window
   "K"  'kill-other-buffers
-  "p"  'list-packages
+  "P"  'list-packages
+  "pf" 'projectile-find-file
+  "pd" 'projectile-find-dir
   "g"  'magit-status
   "s"  'helm-show-kill-ring
   ","  'git-gutter-map
