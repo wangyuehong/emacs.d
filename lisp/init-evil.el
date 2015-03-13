@@ -5,10 +5,6 @@
 (require 'evil-surround)
 (global-evil-surround-mode 1)
 
-(require-package 'evil-terminal-cursor-changer)
-(unless (display-graphic-p)
-  (require 'evil-terminal-cursor-changer))
-
 ;; (add-to-list 'evil-emacs-state-modes 'org-mode)
 (add-to-list 'evil-emacs-state-modes 'quickrun/mode)
 (add-to-list 'evil-emacs-state-modes 'inf-ruby-mode)
