@@ -100,4 +100,4 @@
   (let ((default-directory (or (rinari-root) default-directory)))
     (shell-command (concat ctags-command " -a -f " rinari-tags-file-name " --tag-relative -R app lib vendor test"))))
 
-(provide 'init-ruby-mode)
+(provide 'init-ruby)
