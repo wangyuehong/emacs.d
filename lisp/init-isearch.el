@@ -73,4 +73,4 @@ This is useful when followed by an immediate kill."
 
 (require-package 'swiper)
 
-(provide 'init-isearch)
+(provide 'init-search)

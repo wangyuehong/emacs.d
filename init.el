@@ -37,7 +37,7 @@
 ;;(require 'init-maxframe)
 ;;(require 'init-proxies)
 (require 'init-dired)
-(require 'init-isearch)
+(require 'init-search)
 (require 'init-uniquify)
 ;;(require 'init-ibuffer)
 (require 'init-flycheck)
