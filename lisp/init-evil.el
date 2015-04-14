@@ -87,10 +87,11 @@
   "pd" 'projectile-find-dir
   "pp" 'projectile-switch-project
   "g"  'magit-status
-  "s"  'helm-show-kill-ring
+  "r"  'helm-show-kill-ring
+  "s"  'swiper-helm
   ","  'git-gutter-map
-  "r" 'wangyh/rinari-minor-mode-find-map
-  "R" 'wangyh/rinari-minor-mode-map
+  ;; "r" 'wangyh/rinari-minor-mode-find-map
+  ;; "R" 'wangyh/rinari-minor-mode-map
   "v"  'revert-buffer
   "x"  'smex
   "nn" 'narrow-to-region
