@@ -1,5 +1,7 @@
 (require-package 'magit)
 
+(setq magit-last-seen-setup-instructions "1.4.0")
+
 (after-load 'session
   (add-to-list 'session-mode-disable-list 'git-commit-mode))
 
