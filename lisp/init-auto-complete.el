@@ -2,7 +2,7 @@
 (require 'auto-complete-config)
 (global-auto-complete-mode t)
 (setq ac-expand-on-auto-complete nil)
-(setq ac-auto-start 2)
+(setq ac-auto-start 4)
 (setq ac-dwim nil) ; To get pop-ups with docs even if a word is uniquely completed
 ;; (setq ac-use-fuzzy t)
 ;; (setq ac-fuzzy-enable t)
