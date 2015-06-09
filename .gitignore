@@ -41,3 +41,9 @@ site-lisp/package/
 /.bookmarks.el
 /history
 /helm-adaptive-history
+/thumbs/
+/emms/
+/image-dired/
+/.cask/
+/.sx/
+/org-clock-save.el
