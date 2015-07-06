@@ -2,8 +2,8 @@
 
 (setq magit-last-seen-setup-instructions "1.4.0")
 
-(after-load 'session
-  (add-to-list 'session-mode-disable-list 'git-commit-mode))
+;; (after-load 'session
+;;   (add-to-list 'session-mode-disable-list 'git-commit-mode))
 
 (setq-default
  magit-save-some-buffers nil
@@ -17,19 +17,19 @@
 
 (eval-after-load "magit"
   '(progn
-     (define-key magit-status-mode-map (kbd "K") 'magit-discard-item)
+     (define-key magit-mode-map (kbd "K") 'magit-discard-item)
 
      (define-key magit-status-mode-map (kbd "j") 'next-line)
      (define-key magit-status-mode-map (kbd "k") 'previous-line)
      (define-key magit-status-mode-map (kbd "C-f") 'scroll-up)
      (define-key magit-status-mode-map (kbd "C-b") 'scroll-down)
 
-     (define-key magit-branch-manager-mode-map (kbd "K") 'magit-discard-item)
+     ;; (define-key magit-branch-manager-mode-map (kbd "K") 'magit-discard-item)
 
-     (define-key magit-branch-manager-mode-map (kbd "j") 'next-line)
-     (define-key magit-branch-manager-mode-map (kbd "k") 'previous-line)
-     (define-key magit-branch-manager-mode-map (kbd "C-f") 'scroll-up)
-     (define-key magit-branch-manager-mode-map (kbd "C-b") 'scroll-down)
+     ;; (define-key magit-branch-manager-mode-map (kbd "j") 'next-line)
+     ;; (define-key magit-branch-manager-mode-map (kbd "k") 'previous-line)
+     ;; (define-key magit-branch-manager-mode-map (kbd "C-f") 'scroll-up)
+     ;; (define-key magit-branch-manager-mode-map (kbd "C-b") 'scroll-down)
 
      (define-key magit-diff-mode-map (kbd "j") 'next-line)
      (define-key magit-diff-mode-map (kbd "k") 'previous-line)
@@ -38,12 +38,12 @@
      (define-key magit-diff-mode-map (kbd "C-f") 'scroll-up)
      (define-key magit-diff-mode-map (kbd "C-b") 'scroll-down)
 
-     (define-key magit-commit-mode-map (kbd "j") 'next-line)
-     (define-key magit-commit-mode-map (kbd "k") 'previous-line)
-     (define-key magit-commit-mode-map (kbd "h") 'left-char)
-     (define-key magit-commit-mode-map (kbd "l") 'right-char)
-     (define-key magit-commit-mode-map (kbd "C-f") 'scroll-up)
-     (define-key magit-commit-mode-map (kbd "C-b") 'scroll-down)
+     (define-key git-commit-mode-map (kbd "j") 'next-line)
+     (define-key git-commit-mode-map (kbd "k") 'previous-line)
+     (define-key git-commit-mode-map (kbd "h") 'left-char)
+     (define-key git-commit-mode-map (kbd "l") 'right-char)
+     (define-key git-commit-mode-map (kbd "C-f") 'scroll-up)
+     (define-key git-commit-mode-map (kbd "C-b") 'scroll-down)
 
      (define-key magit-log-mode-map (kbd "j") 'next-line)
      (define-key magit-log-mode-map (kbd "k") 'previous-line)
@@ -75,12 +75,12 @@
 
 ;;; When we start working on git-backed files, use git-wip if available
 
-(after-load 'magit
-  (global-magit-wip-save-mode)
-  (diminish 'magit-wip-save-mode))
+;; (after-load 'magit
+;;   (global-magit-wip-save-mode)
+;;   (diminish 'magit-wip-save-mode))
 
-(after-load 'magit
-  (diminish 'magit-auto-revert-mode))
+;; (after-load 'magit
+;;   (diminish 'magit-auto-revert-mode))
 
 
 (require-package 'git-gutter-fringe)
