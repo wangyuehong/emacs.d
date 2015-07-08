@@ -83,9 +83,9 @@
   "k"  'kill-buffer-and-window
   "K"  'kill-other-buffers
   "P"  'list-packages
-  "pf" 'projectile-find-file
-  "pd" 'projectile-find-dir
-  "pp" 'projectile-switch-project
+  ;; "pf" 'projectile-find-file
+  ;; "pd" 'projectile-find-dir
+  ;; "pp" 'projectile-switch-project
   "g"  'magit-status
   "r"  'helm-show-kill-ring
   "s"  'swiper-helm

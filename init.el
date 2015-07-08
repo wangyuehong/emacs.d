@@ -117,7 +117,7 @@
 (require 'init-ctags)
 (require 'init-quickrun)
 (require 'init-pair)
-(require 'init-projectile)
+;; (require 'init-projectile)
 ;; (require 'init-tabbar)
 
 (require 'init-ediff)
