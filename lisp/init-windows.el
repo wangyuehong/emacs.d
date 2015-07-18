@@ -64,4 +64,8 @@ Call a second time to restore the original window configuration."
   (interactive)
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
+
+(windmove-default-keybindings 'control)
+
+
 (provide 'init-windows)
