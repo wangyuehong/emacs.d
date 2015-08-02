@@ -88,7 +88,7 @@
   "pp" 'projectile-switch-project
   "g"  'magit-status
   "r"  'helm-show-kill-ring
-  "s"  'swiper-helm
+  ;; "s"  'swiper-helm
   ","  'git-gutter-map
   ;; "r" 'wangyh/rinari-minor-mode-find-map
   ;; "R" 'wangyh/rinari-minor-mode-map

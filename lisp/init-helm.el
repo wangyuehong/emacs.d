@@ -34,5 +34,5 @@
 (setq helm-ls-git-show-abs-or-relative 'relative)
 (setq helm-ff-transformer-show-only-basename nil)
 
-(require-package 'swiper-helm)
+;; (require-package 'wiper-helm)
 (provide 'init-helm)
