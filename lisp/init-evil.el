@@ -21,8 +21,8 @@
 (setq evil-want-fine-undo t)
 
 ;;ace-jump
-(define-key evil-normal-state-map (kbd "SPC") 'ace-jump-word-mode)
-(define-key evil-visual-state-map (kbd "SPC") 'ace-jump-word-mode)
+(define-key evil-normal-state-map (kbd "SPC") 'avy-goto-word-1)
+(define-key evil-visual-state-map (kbd "SPC") 'avy-goto-word-1)
 
 (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
 (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
