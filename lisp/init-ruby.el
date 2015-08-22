@@ -31,6 +31,9 @@
 (add-hook 'ruby-mode-hook 'robe-mode)
 (add-hook 'robe-mode-hook 'ac-robe-setup)
 
+(require-package 'rubocop)
+(add-hook 'ruby-mode-hook 'rubocop-mode)
+
 ;;; ri support
 (require-package 'yari)
 (defalias 'ri 'yari)

@@ -51,7 +51,6 @@
 
 (global-set-key (kbd "RET") 'newline-and-indent)
 
-
 (require-package 'undo-tree)
 (global-undo-tree-mode)
 (diminish 'undo-tree-mode)
