@@ -122,6 +122,7 @@
 (require-package 'evil-search-highlight-persist)
 (require 'evil-search-highlight-persist)
 (global-evil-search-highlight-persist t)
+(setq evil-search-highlight-string-min-len 3)
 (set-face-foreground 'evil-search-highlight-persist-highlight-face "black")
 (set-face-background 'evil-search-highlight-persist-highlight-face "#66cccc")
 
