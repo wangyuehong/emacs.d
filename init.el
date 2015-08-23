@@ -109,7 +109,7 @@
 (require 'init-yasnippet)
 (require 'init-highlight)
 (require 'init-open-junk-file)
-(require 'init-ace-jump)
+;;(require 'init-ace-jump)
 (require 'init-avy)
 (require 'init-rainbow)
 (require 'init-iedit)
