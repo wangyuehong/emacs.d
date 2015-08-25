@@ -10,6 +10,8 @@
 
 (after-load 'ruby-mode
   (define-key ruby-mode-map (kbd "TAB") 'indent-for-tab-command)
+  (key-chord-define ruby-mode-map "--" (smartchr '("=>")))
+  ;; (modify-syntax-entry ?_ "w")
 
   ;; Stupidly the non-bundled ruby-mode isn't a derived mode of
   ;; prog-mode: we run the latter's hooks anyway in that case.
