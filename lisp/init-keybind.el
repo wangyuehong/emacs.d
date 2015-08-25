@@ -22,8 +22,8 @@
 (global-set-key (kbd "M-j") 'move-text-down)
 ;; (global-set-key (kbd "C-c i") 'imenu)
 
-(global-set-key (kbd "<f1>") 'delete-other-windows)
-(global-set-key (kbd "<f2>") 'delete-window)
+;; (global-set-key (kbd "<f1>") 'delete-other-windows)
+;; (global-set-key (kbd "<f2>") 'delete-window)
 
 (define-key minibuffer-local-map (kbd "C-h") 'left-char)
 (define-key minibuffer-local-map (kbd "C-l") 'right-char)
