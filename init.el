@@ -124,6 +124,7 @@
 (require 'init-neotree)
 
 (require 'init-ediff)
+(require 'init-paste)
 
 ;; make evil config at last
 (require 'init-evil)
