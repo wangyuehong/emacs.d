@@ -9,16 +9,18 @@
 (add-to-list 'evil-emacs-state-modes 'quickrun/mode)
 (add-to-list 'evil-emacs-state-modes 'inf-ruby-mode)
 
-(setq evil-default-cursor t)
-(setq evil-cross-lines t)
-(setq evil-search-module 'evil-search)
-(setq evil-ex-search-vim-style-regexp t)
-
-(setq-default evil-auto-indent t)
-(setq evil-shift-width 4)
-(setq evil-find-skip-newlines nil)
-(setq evil-move-cursor-back nil)
-(setq evil-want-fine-undo t)
+(setq-default
+ evil-auto-indent t
+ evil-default-cursor t
+ evil-cross-lines t
+ evil-search-module 'evil-search
+ evil-symbol-word-search t
+ evil-ex-search-vim-style-regexp t
+ evil-shift-width 4
+ evil-find-skip-newlines nil
+ evil-move-cursor-back nil
+ evil-want-fine-undo t
+ )
 
 ;;ace-jump
 (define-key evil-normal-state-map (kbd "SPC") 'avy-goto-word-1)
