@@ -19,7 +19,7 @@
  save-interprogram-paste-before-kill t
  scroll-preserve-screen-position 'always
  set-mark-command-repeat-pop t
- show-trailing-whitespace t
+ show-trailing-whitespace nil
  fci-rule-column 100
  tooltip-delay 1.5
  truncate-lines nil
@@ -37,15 +37,15 @@
       auto-revert-verbose nil)
 
 ;; But don't show trailing whitespace in SQLi, inf-ruby etc.
-(dolist (hook '(special-mode-hook
-                eww-mode-hook
-                term-mode-hook
-                comint-mode-hook
-                compilation-mode-hook
-                twittering-mode-hook
-                minibuffer-setup-hook))
-  (add-hook hook
-            (lambda () (setq show-trailing-whitespace nil))))
+;; (dolist (hook '(special-mode-hook
+;;                 eww-mode-hook
+;;                 term-mode-hook
+;;                 comint-mode-hook
+;;                 compilation-mode-hook
+;;                 twittering-mode-hook
+;;                 minibuffer-setup-hook))
+;;   (add-hook hook
+;;             (lambda () (setq show-trailing-whitespace nil))))
 
 (transient-mark-mode t)
 
@@ -214,10 +214,10 @@ on the new line if the line would have been blank.
 With arg N, insert N newlines."
   (interactive "*p")
   (let* ((do-fill-prefix (and fill-prefix (bolp)))
-	 (do-left-margin (and (bolp) (> (current-left-margin) 0)))
-	 (loc (point-marker))
-	 ;; Don't expand an abbrev before point.
-	 (abbrev-mode nil))
+         (do-left-margin (and (bolp) (> (current-left-margin) 0)))
+         (loc (point-marker))
+         ;; Don't expand an abbrev before point.
+         (abbrev-mode nil))
     (delete-horizontal-space t)
     (newline n)
     (indent-according-to-mode)
@@ -226,8 +226,8 @@ With arg N, insert N newlines."
     (goto-char loc)
     (while (> n 0)
       (cond ((bolp)
-	     (if do-left-margin (indent-to (current-left-margin)))
-	     (if do-fill-prefix (insert-and-inherit fill-prefix))))
+             (if do-left-margin (indent-to (current-left-margin)))
+             (if do-fill-prefix (insert-and-inherit fill-prefix))))
       (forward-line 1)
       (setq n (1- n)))
     (goto-char loc)
@@ -252,7 +252,6 @@ With arg N, insert N newlines."
         (sort-subr nil 'forward-line 'end-of-line nil nil
                    (lambda (s1 s2) (eq (random 2) 0)))))))
 
-
 (require-package 'highlight-escape-sequences)
 (hes-mode)
 

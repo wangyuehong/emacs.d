@@ -3,6 +3,8 @@
 ;; (global-whitespace-mode t)
 (add-hook 'prog-mode-hook (lambda ()
                             (whitespace-mode t)))
+(add-hook 'prog-mode-hook (lambda ()
+                            (setq show-trailing-whitespace t)))
 (setq whitespace-style
       '(face spaces tabs newline space-mark tab-mark newline-mark))
 (setq whitespace-space-regexp "\\(\x3000+\\)")
