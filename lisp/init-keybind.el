@@ -30,7 +30,7 @@
 ;; (define-key minibuffer-local-map (kbd "C-k") 'previous-history-element)
 ;; (define-key minibuffer-local-map (kbd "C-j") 'next-history-element)
 
-(require 'which-key)
+(require-package 'which-key)
 (which-key-mode)
 
 (provide 'init-keybind)
