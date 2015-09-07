@@ -104,4 +104,8 @@
   (let ((default-directory (or (rinari-root) default-directory)))
     (shell-command (concat ctags-command " -a -f " rinari-tags-file-name " --tag-relative -R app lib vendor test"))))
 
+(defun update-rails-ctags-by-ripper ()
+  (interactive)
+  (let ((default-directory (or (rinari-root) default-directory)))
+    (shell-command (concat "ripper-tags -R --tag-file " rinari-tags-file-name ))))
 (provide 'init-ruby)
