@@ -42,6 +42,7 @@
 (require 'init-uniquify)
 ;;(require 'init-ibuffer)
 (require 'init-flycheck)
+(require 'init-spelling)
 
 (require 'init-recentf)
 (require 'init-ido)
