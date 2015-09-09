@@ -1,6 +1,8 @@
 (require-package 'highlight-symbol)
 
 (require 'highlight-symbol)
+(setq highlight-symbol-idle-delay 0.5)
+(add-hook 'prog-mode-hook 'highlight-symbol-mode)
 
 (global-set-key (kbd "<f3>") 'highlight-symbol-next)
 (global-set-key (kbd "<f4>") 'highlight-symbol-prev)
@@ -8,11 +10,12 @@
 (global-set-key (kbd "ESC <f3>") 'highlight-symbol-remove-all)
 (global-set-key (kbd "M-<f3>") 'highlight-symbol-remove-all)
 
+(set-face-attribute 'highlight-symbol-face nil
+                    :inherit nil
+                    :background "#4e4e4e")
+
 (setq highlight-symbol-colors (quote ("#5c5cff" "#ff0000" "#00ff00" "#ff00ff" "#ffff00")))
 
-;; (add-hook 'prog-mode-hook 'hl-line-mode)
-
-;; (set-face-background 'hl-line "#3a3a3a")
 
 (require-package 'fic-mode)
 
