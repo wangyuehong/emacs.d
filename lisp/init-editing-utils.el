@@ -255,4 +255,9 @@ With arg N, insert N newlines."
 (require-package 'highlight-escape-sequences)
 (hes-mode)
 
+(require-package 'indent-guide)
+;; (setq indent-guide-delay 0.1)
+;; (setq indent-guide-char ":")
+(add-hook 'prog-mode-hook 'indent-guide-mode)
+
 (provide 'init-editing-utils)
