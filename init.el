@@ -42,6 +42,8 @@
 (require 'init-uniquify)
 ;;(require 'init-ibuffer)
 (require 'init-flycheck)
+
+(require 'init-yaml)
 (require 'init-spelling)
 
 (require 'init-recentf)

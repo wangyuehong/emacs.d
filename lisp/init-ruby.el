@@ -39,11 +39,6 @@
 (require-package 'yari)
 (defalias 'ri 'yari)
 
-
-;;; YAML
-
-(require-package 'yaml-mode)
-
 ;;; rails config
 (require-package 'rinari)
 (after-load 'rinari

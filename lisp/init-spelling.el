@@ -132,7 +132,7 @@
                     scheme-mode-hook
                     clojure-mode-hook
                     ruby-mode-hook
-                    yaml-mode
+                    yaml-mode-hook
                     python-mode-hook
                     shell-mode-hook
                     php-mode-hook
