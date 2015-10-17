@@ -66,6 +66,7 @@
 ;;(require 'init-growl)
 
 (require 'init-editing-utils)
+(require 'init-whitespace)
 (require 'init-grep)
 
 ;;(require 'init-darcs)
@@ -114,7 +115,6 @@
 
 (require 'init-keybind)
 (require 'init-helm)
-(require 'init-whitespace)
 (require 'init-linum)
 (require 'init-sr-speedbar)
 (require 'init-yasnippet)

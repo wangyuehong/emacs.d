@@ -19,7 +19,6 @@
  save-interprogram-paste-before-kill t
  scroll-preserve-screen-position 'always
  set-mark-command-repeat-pop t
- show-trailing-whitespace nil
  fci-rule-column 120
  tooltip-delay 1.5
  truncate-lines nil
@@ -33,17 +32,6 @@
 (global-auto-revert-mode)
 (setq global-auto-revert-non-file-buffers t
       auto-revert-verbose nil)
-
-;; But don't show trailing whitespace in SQLi, inf-ruby etc.
-;; (dolist (hook '(special-mode-hook
-;;                 eww-mode-hook
-;;                 term-mode-hook
-;;                 comint-mode-hook
-;;                 compilation-mode-hook
-;;                 twittering-mode-hook
-;;                 minibuffer-setup-hook))
-;;   (add-hook hook
-;;             (lambda () (setq show-trailing-whitespace nil))))
 
 (transient-mark-mode t)
 
