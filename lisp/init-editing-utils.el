@@ -23,12 +23,10 @@
  fci-rule-column 120
  tooltip-delay 1.5
  truncate-lines nil
- truncate-partial-width-windows nil
  scroll-conservatively 10000
 ;; debug-on-error t
-;; visible-bell t
  ring-bell-function 'ignore
-)
+ truncate-partial-width-windows nil)
 
 (modify-syntax-entry ?- "w")
 
