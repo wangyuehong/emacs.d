@@ -20,7 +20,7 @@
  scroll-preserve-screen-position 'always
  set-mark-command-repeat-pop t
  show-trailing-whitespace nil
- fci-rule-column 100
+ fci-rule-column 120
  tooltip-delay 1.5
  truncate-lines nil
  truncate-partial-width-windows nil

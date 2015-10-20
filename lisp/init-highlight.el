@@ -13,7 +13,7 @@
 
 (set-face-attribute 'highlight-symbol-face nil
                     :inherit nil
-                    :background "#767676")
+                    :background "#626262")
 
 (setq highlight-symbol-colors (quote ("#5c5cff" "#ff0000" "#00ff00" "#ff00ff" "#ffff00")))
 
