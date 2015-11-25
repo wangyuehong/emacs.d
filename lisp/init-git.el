@@ -98,7 +98,7 @@
 ;;                          :background "#f4c6c6"
 ;;                          :foreground "green")
 ;;      ))
-
+
 ;;; When we start working on git-backed files, use git-wip if available
 
 ;; (after-load 'magit
@@ -108,7 +108,6 @@
 ;; (after-load 'magit
 ;;   (diminish 'magit-auto-revert-mode))
 
-
 (require-package 'git-gutter-fringe)
 
 (setq git-gutter:update-threshold 2)
@@ -139,11 +138,11 @@
   (after-load 'magit
     (add-hook 'magit-mode-hook (lambda () (local-unset-key [(meta h)])))))
 
-
-
 ;; Convenient binding for vc-git-grep
 (global-set-key (kbd "C-x v f") 'vc-git-grep)
 
-
+(require-package 'magit-gitflow)
+(require 'magit-gitflow)
+(add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
 
 (provide 'init-git)
