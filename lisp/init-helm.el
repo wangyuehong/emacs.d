@@ -23,7 +23,9 @@
      (define-key helm-map (kbd "C-h") 'helm-previous-source)
      (define-key helm-map (kbd "C-l") 'helm-next-source)
      (define-key helm-map (kbd "C-j") 'helm-next-line)
-     (define-key helm-map (kbd "C-k") 'helm-previous-line)))
+     (define-key helm-map (kbd "C-k") 'helm-previous-line)
+     (define-key helm-map (kbd "C-f") 'helm-next-page)
+     (define-key helm-map (kbd "C-b") 'helm-previous-page)))
 
 (eval-after-load 'helm-files
   '(progn
