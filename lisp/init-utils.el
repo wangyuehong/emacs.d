@@ -106,7 +106,11 @@
 (defun browse-current-file ()
   "Open the current file as a URL using `browse-url'."
   (interactive)
-  (browse-url (concat "file://" (buffer-file-name))))
+  (let ((file-name (buffer-file-name)))
+    (if (and (fboundp 'tramp-tramp-file-p)
+             (tramp-tramp-file-p file-name))
+        (error "Cannot open tramp file")
+      (browse-url (concat "file://" file-name)))))
 
 
 (provide 'init-utils)
