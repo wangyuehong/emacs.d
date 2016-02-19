@@ -124,7 +124,7 @@
 (require 'init-pair)
 (require 'init-projectile)
 ;; (require 'init-tabbar)
-(require 'init-neotree)
+;; (require 'init-neotree)
 
 (require 'init-ediff)
 (require 'init-paste)
