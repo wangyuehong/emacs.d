@@ -27,6 +27,14 @@
   (key-chord-define cperl-mode-map "--" (smartchr '("->" "=>")))
   (modify-syntax-entry ?_ "w"))
 
+(defun update-perl-ctags ()
+  (interactive)
+  (shell-command "ctags --languages=perl -e -R `perl -e 'print join(q{ }, grep { -d } @INC);'`"))
+
+(defun update-smp-ctags ()
+  (interactive)
+  (shell-command "ctags --languages=perl -e -R `perl script/run_script.pl -e 'print join(q{ }, grep { -d } @INC);'`"))
+
 (require-package 'tt-mode)
 (autoload 'tt-mode "tt-mode")
 (add-to-list 'auto-mode-alist '("\\.tt$" . tt-mode))
