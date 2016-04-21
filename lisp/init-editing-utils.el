@@ -37,6 +37,19 @@
 
 (global-set-key (kbd "RET") 'newline-and-indent)
 
+(when (maybe-require-package 'indent-guide)
+  (add-hook 'prog-mode-hook 'indent-guide-mode)
+  (add-hook 'yaml-mode-hook 'indent-guide-mode)
+  (after-load 'indent-guide
+    (diminish 'indent-guide-mode)))
+
+
+
+(when (fboundp 'global-prettify-symbols-mode)
+  (global-prettify-symbols-mode))
+
+
+
 (require-package 'undo-tree)
 (global-undo-tree-mode)
 (diminish 'undo-tree-mode)
@@ -216,11 +229,5 @@ With arg N, insert N newlines."
 
 (require-package 'highlight-escape-sequences)
 (hes-mode)
-
-(require-package 'indent-guide)
-;; (setq indent-guide-delay 0.1)
-;; (setq indent-guide-char ":")
-(add-hook 'prog-mode-hook 'indent-guide-mode)
-(add-hook 'yaml-mode-hook 'indent-guide-mode)
 
 (provide 'init-editing-utils)
