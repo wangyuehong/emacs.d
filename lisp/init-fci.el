@@ -8,6 +8,7 @@
       (whitespace-mode 1)))
 
   (add-hook 'prog-mode-hook 'sanityinc/prog-mode-fci-settings)
+  (add-hook 'yaml-mode-hook 'sanityinc/prog-mode-fci-settings)
 
   (defun sanityinc/fci-enabled-p ()
     (bound-and-true-p fci-mode))
