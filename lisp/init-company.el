@@ -21,7 +21,8 @@
   (after-load 'company
     (diminish 'company-mode "CMP")
     (define-key company-mode-map (kbd "M-/") 'company-complete)
-    (define-key company-active-map (kbd "TAB") 'company-select-next)
+    (define-key company-active-map [tab] 'company-complete-common-or-cycle)
+    (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
     (define-key company-active-map (kbd "C-k") 'company-select-previous)
     (define-key company-active-map (kbd "C-j") 'company-select-next)
     (define-key company-active-map (kbd "C-b") 'company-previous-page)
