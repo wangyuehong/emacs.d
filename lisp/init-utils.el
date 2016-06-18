@@ -99,6 +99,18 @@
     (message "full path %s => yank ring" (file-truename buffer-file-name))
     ))
 
+(defun rename-this-file-and-buffer (new-name)
+  "Renames both current buffer and file it's visiting to NEW-NAME."
+  (interactive "sNew name: ")
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (unless filename
+      (error "Buffer '%s' is not visiting a file!" name))
+    (progn
+      (when (file-exists-p filename)
+        (rename-file filename new-name 1))
+      (set-visited-file-name new-name)
+      (rename-buffer new-name))))
 
 ;;----------------------------------------------------------------------------
 ;; Browse current HTML file
