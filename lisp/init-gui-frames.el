@@ -72,5 +72,8 @@
 
 (require-package 'disable-mouse)
 
+
+(require-package 'disable-mouse)
+
 
 (provide 'init-gui-frames)
