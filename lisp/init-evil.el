@@ -62,7 +62,7 @@
 (require 'general)
 (general-evil-setup t)
 
-(nvmap :prefix "SPC"
+(nvmap :prefix ","
   "="  'align
   "SPC" 'avy-goto-word-1
   "a"  'ag-regexp-project-at-point
