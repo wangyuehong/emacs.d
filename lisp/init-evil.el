@@ -23,8 +23,8 @@
  )
 
 ;;ace-jump
-(define-key evil-normal-state-map (kbd "SPC") 'avy-goto-word-1)
-(define-key evil-visual-state-map (kbd "SPC") 'avy-goto-word-1)
+;;(define-key evil-normal-state-map (kbd "SPC") 'avy-goto-word-1)
+;;(define-key evil-visual-state-map (kbd "SPC") 'avy-goto-word-1)
 
 (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
 (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
@@ -51,10 +51,6 @@
 
 (global-evil-matchit-mode 1)
 
-(require-package 'evil-leader)
-(require 'evil-leader)
-(global-evil-leader-mode)
-
 (require-package 'evil-exchange)
 (require 'evil-exchange)
 (evil-exchange-install)
@@ -62,11 +58,13 @@
 (require-package 'evil-nerd-commenter)
 (require 'evil-nerd-commenter)
 
-(setq evil-leader/leader "," evil-leader/in-all-states t)
-(setq evil-leader/no-prefix-mode-rx '("magit-.*-mode"))
+(require-package 'general)
+(require 'general)
+(general-evil-setup t)
 
-(evil-leader/set-key
+(nvmap :prefix "SPC"
   "="  'align
+  "SPC" 'avy-goto-word-1
   "a"  'ag-regexp-project-at-point
   "A"  'ag-regexp
   "b"  'ido-switch-buffer
