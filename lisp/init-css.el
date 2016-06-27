@@ -46,13 +46,6 @@
 (when (featurep 'js2-mode)
   (require-package 'skewer-less))
 
-
-
-;;; Auto-complete CSS keywords
-(after-load 'auto-complete
-  (dolist (hook '(css-mode-hook sass-mode-hook scss-mode-hook))
-    (add-hook hook 'ac-css-mode-setup)))
-
 
 ;;; Use eldoc for syntax hints
 (require-package 'css-eldoc)

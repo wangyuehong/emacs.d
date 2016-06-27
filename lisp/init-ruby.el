@@ -30,7 +30,6 @@
 ;;; Robe
 (require-package 'robe)
 (add-hook 'ruby-mode-hook 'robe-mode)
-(add-hook 'robe-mode-hook 'ac-robe-setup)
 
 (require-package 'rubocop)
 (add-hook 'ruby-mode-hook 'rubocop-mode)
