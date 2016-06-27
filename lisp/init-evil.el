@@ -23,8 +23,8 @@
  )
 
 ;;ace-jump
-;;(define-key evil-normal-state-map (kbd "SPC") 'avy-goto-word-1)
-;;(define-key evil-visual-state-map (kbd "SPC") 'avy-goto-word-1)
+(define-key evil-normal-state-map (kbd "SPC") 'avy-goto-word-1)
+(define-key evil-visual-state-map (kbd "SPC") 'avy-goto-word-1)
 
 (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
 (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
@@ -64,7 +64,7 @@
 
 (nvmap :prefix ","
   "="  'align
-  "SPC" 'avy-goto-word-1
+  ;; "SPC" 'avy-goto-word-1
   "a"  'ag-regexp-project-at-point
   "A"  'ag-regexp
   "b"  'ido-switch-buffer
