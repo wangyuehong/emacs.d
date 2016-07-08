@@ -19,7 +19,7 @@
  save-interprogram-paste-before-kill t
  scroll-preserve-screen-position 'always
  set-mark-command-repeat-pop t
- fci-rule-column 120
+ fci-rule-column 100
  tooltip-delay 1.5
  truncate-lines nil
  scroll-conservatively 10000
