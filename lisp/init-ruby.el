@@ -38,19 +38,8 @@
 (require-package 'yari)
 (defalias 'ri 'yari)
 
-;;; rails config
-(require-package 'rinari)
-(after-load 'rinari
-  (diminish 'rinari-minor-mode "Rin"))
-(global-rinari-mode)
-
 ;; (require-package 'goto-gem)
 
 (require-package 'bundler)
-
-(defun update-rails-ctags ()
-  (interactive)
-  (let ((default-directory (or (rinari-root) default-directory)))
-    (shell-command "rails runner 'system(%q(ctags --languages=ruby -e -R ) + $:.map(&:to_s).select {|d|Dir.exists? d}.uniq.join(%q( )))'")))
 
 (provide 'init-ruby)
