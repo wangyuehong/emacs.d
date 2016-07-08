@@ -44,7 +44,7 @@
   (setq company-dabbrev-downcase nil)
   (setq company-dabbrev-ignore-case nil)
   ;; (setq company-show-numbers t)
-  (setq company-idle-delay 0.5)
+  (setq company-idle-delay 0.1)
   (setq company-clang-insert-arguments nil)
   (setq company-require-match nil)
   (setq company-etags-ignore-case t)
