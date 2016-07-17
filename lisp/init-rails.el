@@ -16,8 +16,7 @@
 ;;                            " --tag-relative -R app lib vendor test"))))
 
 (when (maybe-require-package 'projectile-rails)
-  (add-hook 'projectile-mode-hook 'projectile-rails-on)
-  )
-
+  (after-load 'projectile
+    (add-hook 'projectile-mode-hook 'projectile-rails-on)))
 
 (provide 'init-rails)
