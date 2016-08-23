@@ -27,9 +27,18 @@
         (unless arg
           (select-window target-window))))))
 
-(global-set-key "\C-x2" (split-window-func-with-other-buffer 'split-window-vertically))
-(global-set-key "\C-x3" (split-window-func-with-other-buffer 'split-window-horizontally))
+(global-set-key (kbd "C-x 2") (split-window-func-with-other-buffer 'split-window-vertically))
+(global-set-key (kbd "C-x 3") (split-window-func-with-other-buffer 'split-window-horizontally))
 
+(defun sanityinc/toggle-delete-other-windows ()
+  "Delete other windows in frame if any, or restore previous window config."
+  (interactive)
+  (if (and winner-mode
+           (equal (selected-window) (next-window)))
+      (winner-undo)
+    (delete-other-windows)))
+
+(global-set-key (kbd "C-x 1") 'sanityinc/toggle-delete-other-windows)
 
 ;;----------------------------------------------------------------------------
 ;; Rearrange split windows
@@ -46,8 +55,8 @@
     (delete-other-windows)
     (funcall (split-window-func-with-other-buffer 'split-window-vertically))))
 
-(global-set-key "\C-x|" 'split-window-horizontally-instead)
-(global-set-key "\C-x-" 'split-window-vertically-instead)
+(global-set-key (kbd "C-x |") 'split-window-horizontally-instead)
+(global-set-key (kbd "C-x _") 'split-window-vertically-instead)
 
 
 ;; Borrowed from http://postmomentum.ch/blog/201304/blog-on-emacs
