@@ -9,11 +9,6 @@
 (when (maybe-require-package 'ido-ubiquitous)
  (ido-ubiquitous-mode t))
 
-;; Use smex to handle M-x
-(require-package 'smex)
-(global-set-key [remap execute-extended-command] 'smex)
-(setq smex-save-file (expand-file-name ".smex-items" user-emacs-directory))
-
 (setq ido-save-directory-list-file (expand-file-name ".ido.last" user-emacs-directory))
 
 (require-package 'idomenu)
