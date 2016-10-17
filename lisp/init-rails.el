@@ -1,8 +1,7 @@
-;;; rails config
-(require-package 'rinari)
-(after-load 'rinari
-  (diminish 'rinari-minor-mode "Rin"))
-(global-rinari-mode)
+(when (maybe-require-package 'rinari)
+  (after-load 'rinari
+    (diminish 'rinari-minor-mode "Rin"))
+  (global-rinari-mode))
 
 (defun update-rails-ctags ()
   (interactive)
