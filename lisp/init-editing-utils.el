@@ -35,6 +35,13 @@
 
 (transient-mark-mode t)
 
+(defun sanityinc/flash-mode-line ()
+  (invert-face 'mode-line)
+  (run-with-timer 0.05 nil 'invert-face 'mode-line))
+
+(setq-default
+ ring-bell-function 'sanityinc/flash-mode-line)
+
 (global-set-key (kbd "RET") 'newline-and-indent)
 
 (when (maybe-require-package 'indent-guide)
