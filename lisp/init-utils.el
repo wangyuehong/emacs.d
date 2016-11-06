@@ -29,20 +29,6 @@
       (setq pos (match-end group)))
     result))
 
-(defun string-rtrim (str)
-  "Remove trailing whitespace from `STR'."
-  (replace-regexp-in-string "[ \t\n]*$" "" str))
-
-
-;;----------------------------------------------------------------------------
-;; Find the directory containing a given library
-;;----------------------------------------------------------------------------
-(autoload 'find-library-name "find-func")
-(defun directory-of-library (library-name)
-  "Return the directory in which the `LIBRARY-NAME' load file is found."
-  (file-name-as-directory (file-name-directory (find-library-name library-name))))
-
-
 ;;----------------------------------------------------------------------------
 ;; Delete the current file
 ;;----------------------------------------------------------------------------
