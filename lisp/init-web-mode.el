@@ -2,8 +2,9 @@
 
 (require 'web-mode)
 
+;; disable fci-mode
 (defun wangyh/web-mode-hook()
-)
+  (turn-off-fci-mode))
 
 (add-hook 'web-mode-hook 'wangyh/web-mode-hook)
 
@@ -27,11 +28,5 @@
 (set-face-foreground 'web-mode-html-attr-equal-face "#268bd2")
 (set-face-foreground 'web-mode-html-attr-value-face "#859900")
 ;; (set-face-background 'web-mode-current-element-highlight-face "#4e4e4e")
-
-;; disable fci-mode
-; https://github.com/alpaker/Fill-Column-Indicator/issues/46
-(add-hook 'after-change-major-mode-hook
-          (lambda () (if (string= major-mode "web-mode")
-                    (turn-off-fci-mode) (turn-on-fci-mode))))
 
 (provide 'init-web-mode)
