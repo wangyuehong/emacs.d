@@ -22,7 +22,7 @@
  evil-want-fine-undo t
  )
 
-;;ace-jump
+;; avy
 (define-key evil-normal-state-map (kbd "SPC") 'avy-goto-word-1)
 (define-key evil-visual-state-map (kbd "SPC") 'avy-goto-word-1)
 
@@ -40,6 +40,11 @@
 
 (require-package 'evil-matchit)
 (require 'evil-matchit)
+
+;; (require-package 'evil-escape)
+;; (require 'evil-escape)
+;; (setq-default evil-escape-key-sequence "^^")
+;; (setq-default evil-escape-delay 0.2)
 
 (defun evilmi-customize-keybinding ()
   (evil-define-key 'normal evil-matchit-mode-map
