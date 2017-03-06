@@ -31,12 +31,13 @@
 (add-hook 'prog-mode-hook (lambda ()
                             (setq show-trailing-whitespace t)))
 (setq whitespace-style
-      '(face spaces tabs newline space-mark tab-mark newline-mark))
+      '(face spaces tabs newline space-mark tab-mark newline-mark lines))
+(setq whitespace-line-column 100)
 (setq whitespace-space-regexp "\\(\x3000+\\)")
 (setq whitespace-display-mappings
       '(
         (space-mark ?\x3000 [9633])
-        ;;(space-mark 32 [183] [46]) ; normal space, 
+        ;;(space-mark 32 [183] [46]) ; normal space,
         (space-mark 160 [164] [95])
         (space-mark 2208 [2212] [95])
         (space-mark 2336 [2340] [95])

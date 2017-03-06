@@ -3,8 +3,8 @@
 (require 'web-mode)
 
 ;; disable fci-mode
-(defun wangyh/web-mode-hook()
-  (turn-off-fci-mode))
+;; (defun wangyh/web-mode-hook()
+;;   (turn-off-fci-mode))
 
 (add-hook 'web-mode-hook 'wangyh/web-mode-hook)
 
