@@ -32,7 +32,7 @@
                             (setq show-trailing-whitespace t)))
 (setq whitespace-style
       '(face spaces tabs newline space-mark tab-mark newline-mark lines))
-(setq whitespace-line-column 100)
+(setq whitespace-line-column 120)
 (setq whitespace-space-regexp "\\(\x3000+\\)")
 (setq whitespace-display-mappings
       '(
