@@ -64,16 +64,14 @@
 
 (require 'init-recentf)
 (require 'init-smex)
-;; If you really prefer ido to ivy, change the comments below. I will
-;; likely remove the ido config in due course, though.
-;; (require 'init-ido)
-(require 'init-ivy)
+(require 'init-ido)
 ;;(require 'init-hippie-expand)
 (require 'init-company)
 (require 'init-windows)
 (require 'init-sessions)
 (require 'init-fonts)
 ;; (require 'init-mmm)
+;;(require 'init-growl)
 
 (require 'init-editing-utils)
 (require 'init-whitespace)
