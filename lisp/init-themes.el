@@ -21,12 +21,13 @@
 (defun light ()
   "Activate a light color theme."
   (interactive)
-  (color-theme-sanityinc-solarized-light))
+  (setq custom-enabled-themes '(sanityinc-tomorrow-eighties))
+  (reapply-themes))
 
 (defun dark ()
   "Activate a dark color theme."
   (interactive)
-  (color-theme-sanityinc-tomorrow-eighties))
-
+  (setq custom-enabled-themes '(sanityinc-tomorrow-night))
+  (reapply-themes))
 
 (provide 'init-themes)
