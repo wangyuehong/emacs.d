@@ -28,6 +28,7 @@
  truncate-partial-width-windows nil)
 
 (modify-syntax-entry ?- "w")
+(modify-syntax-entry ?_ "w")
 
 (global-auto-revert-mode)
 (setq global-auto-revert-non-file-buffers t
