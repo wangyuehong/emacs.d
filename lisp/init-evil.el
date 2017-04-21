@@ -24,7 +24,7 @@
 
 ;; avy
 (define-key evil-normal-state-map (kbd "SPC") 'avy-goto-word-1)
-(define-key evil-visual-state-map (kbd "SPC") 'avy-goto-word-1)
+(define-key evil-visual-state-map (kbd "SPC") 'avy-goto-char)
 
 (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
 (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
