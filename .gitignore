@@ -47,3 +47,4 @@ site-lisp/package/
 /.cask/
 /.sx/
 /org-clock-save.el
+/network-security.data
