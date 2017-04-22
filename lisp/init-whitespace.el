@@ -26,10 +26,9 @@
 (require 'whitespace)
 
 ;; (global-whitespace-mode t)
-(add-hook 'prog-mode-hook (lambda ()
-                            (whitespace-mode t)))
-(add-hook 'prog-mode-hook (lambda ()
-                            (setq show-trailing-whitespace t)))
+(dolist (hook '(prog-mode-hook html-mode-hook css-mode-hook))
+  (add-hook hook 'whitespace-mode))
+
 (setq whitespace-style
       '(face spaces tabs newline space-mark tab-mark newline-mark lines))
 (setq whitespace-line-column 120)
