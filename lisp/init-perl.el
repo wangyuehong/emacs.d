@@ -29,11 +29,13 @@
 
 (defun update-perl-ctags ()
   (interactive)
-  (shell-command "ctags --languages=perl -e -R `perl -e 'print join(q{ }, grep { -d } @INC);'`"))
+  ;; use universal-ctags
+  (shell-command "ctags --language-force=perl -e -R `perl -e 'print join(q{ }, grep { -d } @INC);'`"))
 
 (defun update-smp-ctags ()
   (interactive)
-  (shell-command "ctags --languages=perl -e -R `perl script/run_script.pl -e 'print join(q{ }, grep { -d } @INC);'`"))
+  ;; use universal-ctags
+  (shell-command "ctags --language-force=perl -e -R `perl script/run_script.pl -e 'print join(q{ }, grep { -d } @INC);'`"))
 
 (require-package 'tt-mode)
 (autoload 'tt-mode "tt-mode")

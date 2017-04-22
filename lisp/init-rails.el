@@ -6,7 +6,8 @@
 (defun update-rails-ctags ()
   (interactive)
   (let ((default-directory (or (rinari-root) default-directory)))
-    (shell-command "rails runner 'system(%q(ctags --languages=ruby -e -R ) + $:.map(&:to_s).select {|d|Dir.exists? d}.uniq.join(%q( )))'")))
+    ;; use universal-ctags
+    (shell-command "rails runner 'system(%q(ctags --language-force=ruby -e -R ) + $:.map(&:to_s).select {|d|Dir.exists? d}.uniq.join(%q( )))'")))
 
 ;; (defun update-rails-ctags ()
 ;;   (interactive)
