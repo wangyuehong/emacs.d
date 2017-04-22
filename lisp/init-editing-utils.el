@@ -30,6 +30,9 @@
 (modify-syntax-entry ?- "w")
 (modify-syntax-entry ?_ "w")
 
+(setq tags-revert-without-query t)
+(setq large-file-warning-threshold 100000000) ;; 100M
+
 (global-auto-revert-mode)
 (setq global-auto-revert-non-file-buffers t
       auto-revert-verbose nil)

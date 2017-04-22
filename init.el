@@ -134,7 +134,6 @@
 (require 'init-rainbow)
 (require 'init-iedit)
 ;; (require 'init-golden-ratio)
-(require 'init-ctags)
 (require 'init-perl)
 (require 'init-ruby)
 (require 'init-rails)
