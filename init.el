@@ -1,12 +1,11 @@
 ;;; This file bootstraps the configuration, which is divided into
 ;;; a number of other files.
 
-
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-(package-initialize)
+(let ((minver "24.1"))
+  (when (version<= emacs-version minver)
+    (error "Your Emacs is too old -- this config requires v%s or higher" minver)))
+(when (version<= emacs-version "24.4")
+  (message "Your Emacs is old, and some functionality in this config will be disabled. Please upgrade if possible."))
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (require 'init-benchmarking) ;; Measure startup time
@@ -14,8 +13,25 @@
 ;;----------------------------------------------------------------------------
 ;; Which functionality to enable (use t or nil for true and false)
 ;;----------------------------------------------------------------------------
-(defconst *spell-check-support-enabled* nil) ;; Enable with t if you prefer
-(defconst *is-a-mac* (eq system-type 'darwin))
+(setq *is-a-mac* (eq system-type 'darwin))
+(setq *win64* (eq system-type 'windows-nt) )
+(setq *cygwin* (eq system-type 'cygwin) )
+(setq *linux* (or (eq system-type 'gnu/linux) (eq system-type 'linux)) )
+(setq *unix* (or *linux* (eq system-type 'usg-unix-v) (eq system-type 'berkeley-unix)) )
+(setq *emacs24* (and (not (featurep 'xemacs)) (or (>= emacs-major-version 24))) )
+(setq *no-memory* (cond
+                   (*is-a-mac*
+                    (< (string-to-number (nth 1 (split-string (shell-command-to-string "sysctl hw.physmem")))) 4000000000))
+                   (*linux* nil)
+                   (t nil)))
+
+(setq *emacs24old*  (or (and (= emacs-major-version 24) (= emacs-minor-version 3))
+                        (not *emacs24*)))
+
+;; *Message* buffer should be writable in 24.4+
+(defadvice switch-to-buffer (after switch-to-buffer-after-hack activate)
+  (if (string= "*Messages*" (buffer-name))
+      (read-only-mode -1)))
 
 ;;----------------------------------------------------------------------------
 ;; Temporarily reduce garbage collection during startup
@@ -33,38 +49,42 @@
 (require 'init-compat)
 (require 'init-utils)
 (require 'init-site-lisp) ;; Must come before elpa, as it may provide package.el
+;; Calls (package-initialize)
 (require 'init-elpa)      ;; Machinery for installing required packages
 (require 'init-exec-path) ;; Set up $PATH
+
+(require 'init-spelling)
+
+;;----------------------------------------------------------------------------
+;; Allow users to provide an optional "init-preload-local.el"
+;;----------------------------------------------------------------------------
+(require 'init-preload-local nil t)
 
 ;;----------------------------------------------------------------------------
 ;; Load configs for specific features and modes
 ;;----------------------------------------------------------------------------
 
 (require-package 'wgrep)
-;;(require-package 'project-local-variables)
+(require-package 'project-local-variables)
 (require-package 'diminish)
-;;(require-package 'scratch)
-(require-package 'mwe-log-commands)
+(require-package 'scratch)
+(require-package 'command-log-mode)
 
 (require 'init-frame-hooks)
 (require 'init-xterm)
 (require 'init-themes)
 (require 'init-osx-keys)
 (require 'init-gui-frames)
-;;(require 'init-maxframe)
-;;(require 'init-proxies)
 (require 'init-dired)
-(require 'init-search)
+(require 'init-isearch)
 (require 'init-uniquify)
-;;(require 'init-ibuffer)
+(require 'init-ibuffer)
 (require 'init-flycheck)
-
-(require 'init-yaml)
-(require 'init-spelling)
 
 (require 'init-recentf)
 (require 'init-smex)
 (require 'init-ido)
+;; (require 'init-ivy)
 ;;(require 'init-hippie-expand)
 (require 'init-company)
 (require 'init-windows)
@@ -82,6 +102,7 @@
 ;;(require 'init-darcs)
 (require 'init-git)
 
+(require 'init-yaml)
 ;;(require 'init-crontab)
 ;;(require 'init-textile)
 (require 'init-markdown)
@@ -139,12 +160,12 @@
 (require 'init-rails)
 (require 'init-bookmark)
 (require 'init-quickrun)
-(require 'init-pair)
 (require 'init-projectile)
 ;; (require 'init-tabbar)
 
 (require 'init-ediff)
 (require 'init-paste)
+(require 'init-ctags)
 
 ;; make evil config at last
 (require 'init-evil)

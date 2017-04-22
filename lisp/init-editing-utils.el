@@ -1,5 +1,9 @@
 (require-package 'unfill)
-;; (require-package 'whole-line-or-region)
+
+(when (fboundp 'electric-pair-mode)
+  (electric-pair-mode))
+(when (eval-when-compile (version< "24.4" emacs-version))
+  (electric-indent-mode 1))
 
 ;;----------------------------------------------------------------------------
 ;; Some basic preferences
@@ -12,6 +16,8 @@
  column-number-mode t
  compilation-scroll-output t
  delete-selection-mode t
+ ediff-split-window-function 'split-window-horizontally
+ ediff-window-setup-function 'ediff-setup-windows-plain
  indent-tabs-mode nil
  line-spacing 0.2
  make-backup-files nil
@@ -23,21 +29,17 @@
  tooltip-delay 1.5
  truncate-lines nil
  scroll-conservatively 10000
-;; debug-on-error t
  ring-bell-function 'ignore
  truncate-partial-width-windows nil)
-
-(modify-syntax-entry ?- "w")
-(modify-syntax-entry ?_ "w")
-
-(setq tags-revert-without-query t)
-(setq large-file-warning-threshold 100000000) ;; 100M
 
 (global-auto-revert-mode)
 (setq global-auto-revert-non-file-buffers t
       auto-revert-verbose nil)
 
 (transient-mark-mode t)
+
+
+ ;;; A simple visible bell which works in all terminal types
 
 (defun sanityinc/flash-mode-line ()
   (invert-face 'mode-line)
@@ -46,25 +48,19 @@
 (setq-default
  ring-bell-function 'sanityinc/flash-mode-line)
 
-(global-set-key (kbd "RET") 'newline-and-indent)
-
 (when (maybe-require-package 'indent-guide)
   (add-hook 'prog-mode-hook 'indent-guide-mode)
   (add-hook 'yaml-mode-hook 'indent-guide-mode)
   (after-load 'indent-guide
     (diminish 'indent-guide-mode)))
 
-
+;; (require-package 'nlinum)
 
 (when (require-package 'rainbow-delimiters)
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
-
-
 (when (fboundp 'global-prettify-symbols-mode)
   (global-prettify-symbols-mode))
-
-
 
 (require-package 'undo-tree)
 (global-undo-tree-mode)
@@ -86,15 +82,13 @@
 ;;----------------------------------------------------------------------------
 ;; Show matching parens
 ;;----------------------------------------------------------------------------
-;; (require-package 'mic-paren)
-;; (paren-activate)     ; activating mic-paren
+(show-paren-mode 1)
 
 ;;----------------------------------------------------------------------------
 ;; Expand region
 ;;----------------------------------------------------------------------------
-;; (require-package 'expand-region)
+(require-package 'expand-region)
 ;; (global-set-key (kbd "C-=") 'er/expand-region)
-
 
 ;;----------------------------------------------------------------------------
 ;; Don't disable case-change functions
@@ -108,33 +102,6 @@
 ;;----------------------------------------------------------------------------
 (cua-selection-mode t)                  ; for rectangles, CUA is nice
 
-
-;;----------------------------------------------------------------------------
-;; Handy key bindings
-;;----------------------------------------------------------------------------
-(global-set-key (kbd "C-.") 'set-mark-command)
-(global-set-key (kbd "C-x C-.") 'pop-global-mark)
-
-;; (defun duplicate-region (beg end)
-;;   "Insert a copy of the current region after the region."
-;;   (interactive "r")
-;;   (save-excursion
-;;     (goto-char end)
-;;     (insert (buffer-substring beg end))))
-
-;; (defun duplicate-line-or-region (prefix)
-;;   "Duplicate either the current line or any current region."
-;;   (interactive "*p")
-;;   (whole-line-or-region-call-with-region 'duplicate-region prefix t))
-
-;;(global-set-key (kbd "C-c p") 'duplicate-line-or-region)
-
-;; Train myself to use M-f and M-b instead
-;; (global-unset-key [M-left])
-;; (global-unset-key [M-right])
-
-
-
 (defun kill-back-to-indentation ()
   "Kill from point back to the first non-whitespace character on the line."
   (interactive)
@@ -142,99 +109,7 @@
     (back-to-indentation)
     (kill-region (point) prev-pos)))
 
-(global-set-key (kbd "C-M-<backspace>") 'kill-back-to-indentation)
-
-
-;;----------------------------------------------------------------------------
-;; Page break lines
-;;----------------------------------------------------------------------------
-(require-package 'page-break-lines)
-(global-page-break-lines-mode)
-(diminish 'page-break-lines-mode)
-
-;;----------------------------------------------------------------------------
-;; Shift lines up and down with M-up and M-down. When paredit is enabled,
-;; it will use those keybindings. For this reason, you might prefer to
-;; use M-S-up and M-S-down, which will work even in lisp modes.
-;;----------------------------------------------------------------------------
-(require-package 'move-dup)
-(global-set-key [M-up] 'md/move-lines-up)
-(global-set-key [M-down] 'md/move-lines-down)
-(global-set-key [M-S-up] 'md/move-lines-up)
-(global-set-key [M-S-down] 'md/move-lines-down)
-
-(global-set-key (kbd "C-c d") 'md/duplicate-down)
-(global-set-key (kbd "C-c D") 'md/duplicate-up)
-
-;;----------------------------------------------------------------------------
-;; Fix backward-up-list to understand quotes, see http://bit.ly/h7mdIL
-;;----------------------------------------------------------------------------
-(defun backward-up-sexp (arg)
-  "Jump up to the start of the ARG'th enclosing sexp."
-  (interactive "p")
-  (let ((ppss (syntax-ppss)))
-    (cond ((elt ppss 3)
-           (goto-char (elt ppss 8))
-           (backward-up-sexp (1- arg)))
-          ((backward-up-list arg)))))
-
-(global-set-key [remap backward-up-list] 'backward-up-sexp) ; C-M-u, C-M-up
-
-
-;;----------------------------------------------------------------------------
-;; show current face name
-;;----------------------------------------------------------------------------
-(defun current-face (pos)
-  (interactive "d")
-  (let ((face (or (get-char-property (point) 'read-face-name)
-                  (get-char-property (point) 'face))))
-    (if face (message "Face: %s" face) (message "No face at %d" pos))))
-
-
-(defun sanityinc/open-line-with-reindent (n)
-  "A version of `open-line' which reindents the start and end positions.
-If there is a fill prefix and/or a `left-margin', insert them
-on the new line if the line would have been blank.
-With arg N, insert N newlines."
-  (interactive "*p")
-  (let* ((do-fill-prefix (and fill-prefix (bolp)))
-         (do-left-margin (and (bolp) (> (current-left-margin) 0)))
-         (loc (point-marker))
-         ;; Don't expand an abbrev before point.
-         (abbrev-mode nil))
-    (delete-horizontal-space t)
-    (newline n)
-    (indent-according-to-mode)
-    (when (eolp)
-      (delete-horizontal-space t))
-    (goto-char loc)
-    (while (> n 0)
-      (cond ((bolp)
-             (if do-left-margin (indent-to (current-left-margin)))
-             (if do-fill-prefix (insert-and-inherit fill-prefix))))
-      (forward-line 1)
-      (setq n (1- n)))
-    (goto-char loc)
-    (end-of-line)
-    (indent-according-to-mode)))
-
-(global-set-key [remap open-line] 'sanityinc/open-line-with-reindent)
-
-
-;;----------------------------------------------------------------------------
-;; Random line sorting
-;;----------------------------------------------------------------------------
-(defun sort-lines-random (beg end)
-  "Sort lines in region randomly."
-  (interactive "r")
-  (save-excursion
-    (save-restriction
-      (narrow-to-region beg end)
-      (goto-char (point-min))
-      (let ;; To make `end-of-line' and etc. to ignore fields.
-          ((inhibit-field-text-motion t))
-        (sort-subr nil 'forward-line 'end-of-line nil nil
-                   (lambda (s1 s2) (eq (random 2) 0)))))))
+;; (global-set-key (kbd "C-M-<backspace>") 'kill-back-to-indentation)
 
 (require-package 'highlight-escape-sequences)
 (hes-mode)

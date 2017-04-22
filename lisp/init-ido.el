@@ -1,19 +1,13 @@
 ;; Use C-f during file selection to switch to regular find-file
 (ido-mode t)
 (ido-everywhere t)
-;; disable ido faces to see flx highlights.
+
 (setq ido-enable-flex-matching t)
-(setq ido-use-faces nil)
 (setq ido-use-filename-at-point nil)
 (setq ido-auto-merge-work-directories-length 0)
 (setq ido-use-virtual-buffers t)
 ;; Allow the same buffer to be open in different frames
 (setq ido-default-buffer-method 'selected-window)
-
-(when (maybe-require-package 'flx-ido)
-  (flx-ido-mode t)
-  ;; @see https://github.com/lewang/flx
-  (setq flx-ido-threshold 10000))
 
 ;; disable ido for certain commands,
 ;; @see http://stackoverflow.com/questions/6771664/disable-ido-mode-for-specific-commands

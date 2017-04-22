@@ -2,7 +2,6 @@
 
 (require 'highlight-symbol)
 (setq highlight-symbol-idle-delay 0.5)
-(add-hook 'prog-mode-hook 'highlight-symbol-mode)
 (add-hook 'yaml-mode-hook 'highlight-symbol-mode)
 
 (global-set-key (kbd "<f3>") 'highlight-symbol-next)
@@ -17,6 +16,17 @@
 
 (setq highlight-symbol-colors (quote ("#5c5cff" "#ff0000" "#00ff00" "#ff00ff" "#ffff00")))
 
+(dolist (hook '(prog-mode-hook html-mode-hook css-mode-hook))
+  (add-hook hook 'highlight-symbol-mode)
+  (add-hook hook 'highlight-symbol-nav-mode))
+(add-hook 'org-mode-hook 'highlight-symbol-nav-mode)
+(after-load 'highlight-symbol
+  (diminish 'highlight-symbol-mode)
+  (defadvice highlight-symbol-temp-highlight (around sanityinc/maybe-suppress activate)
+    "Suppress symbol highlighting while isearching."
+    (unless (or isearch-mode
+                (and (boundp 'multiple-cursors-mode) multiple-cursors-mode))
+      ad-do-it)))
 
 (require-package 'fic-mode)
 
