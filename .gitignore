@@ -46,3 +46,4 @@ site-lisp/package/
 /.sx/
 /org-clock-save.el
 /network-security.data
+/.uptimes.el

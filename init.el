@@ -53,8 +53,6 @@
 (require 'init-elpa)      ;; Machinery for installing required packages
 (require 'init-exec-path) ;; Set up $PATH
 
-(require 'init-spelling)
-
 ;;----------------------------------------------------------------------------
 ;; Allow users to provide an optional "init-preload-local.el"
 ;;----------------------------------------------------------------------------
@@ -69,6 +67,7 @@
 (require-package 'diminish)
 (require-package 'scratch)
 (require-package 'command-log-mode)
+
 
 (require 'init-frame-hooks)
 (require 'init-xterm)
@@ -93,11 +92,15 @@
 (require 'init-fonts)
 ;; (require 'init-mmm)
 
+(require 'init-spelling)
+
 (require 'init-keybind)
 (require 'init-editing-utils)
 (require 'init-whitespace)
 
 (require 'init-git)
+
+(require 'init-linum-mode)
 
 (require 'init-crontab)
 (require 'init-markdown)
@@ -105,49 +108,18 @@
 (require 'init-css)
 (require 'init-web-mode)
 (require 'init-sh)
-;;(require 'init-php)
-;;(require 'init-org)
-;;(require 'init-haml)
 (require 'init-python-mode)
-;;(require 'init-haskell)
 (require 'init-ruby-mode)
 (require 'init-rails)
 
-(require 'init-misc)
-
 (require 'init-yaml)
-;;(require 'init-paredit)
-;;(require 'init-lisp)
-;;(require 'init-slime)
-;;(require 'init-clojure)
-;;(require 'init-common-lisp)
-
-;;(when *spell-check-support-enabled*
-;;  (require 'init-spelling))
-
-;;(require 'init-marmalade)
-
-;; Extra packages which don't require any configuration
-
-;;(require-package 'gnuplot)
-;;(require-package 'lua-mode)
-;;(require-package 'htmlize)
-;;(require-package 'dsvn)
-;;(when *is-a-mac*
-;;  (require-package 'osx-location))
-(require-package 'regex-tool)
-
-
 (require 'init-helm)
-(require 'init-linum)
-(require 'init-sr-speedbar)
 (require 'init-yasnippet)
 (require 'init-highlight)
 (require 'init-open-junk-file)
 (require 'init-avy)
 (require 'init-rainbow)
 (require 'init-iedit)
-;; (require 'init-golden-ratio)
 (require 'init-perl)
 (require 'init-bookmark)
 (require 'init-quickrun)
@@ -156,8 +128,20 @@
 (require 'init-paste)
 (require 'init-ctags)
 
+(require 'init-misc)
+
 ;; make evil config at last
 (require 'init-evil)
+
+;; Extra packages which don't require any configuration
+
+;;(require-package 'gnuplot)
+(require-package 'lua-mode)
+(require-package 'htmlize)
+;;(require-package 'dsvn)
+;;(when *is-a-mac*
+;;  (require-package 'osx-location))
+(maybe-require-package 'regex-tool)
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
@@ -184,6 +168,10 @@
 ;; Locales (setting them earlier in this file doesn't work in X)
 ;;----------------------------------------------------------------------------
 (require 'init-locales)
+
+
+(when (maybe-require-package 'uptimes)
+  (add-hook 'after-init-hook (lambda () (require 'uptimes))))
 
 
 (provide 'init)
