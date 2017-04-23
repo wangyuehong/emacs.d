@@ -27,7 +27,6 @@
 ;;----------------------------------------------------------------------------
 (setq-default history-length 1000)
 (savehist-mode t)
-(setq savehist-file "~/.emacs.d/tmp/savehist")
 (setq savehist-file (expand-file-name ".savehist" user-emacs-directory))
 
 (require-package 'session)
