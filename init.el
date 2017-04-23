@@ -101,6 +101,8 @@
 
 (require 'init-git)
 
+(require 'init-evil)
+
 (require 'init-avy)
 (require 'init-bookmark)
 (require 'init-ctags)
@@ -126,9 +128,6 @@
 (require 'init-yaml)
 
 (require 'init-misc)
-
-;; make evil config at last
-(require 'init-evil)
 
 ;; Extra packages which don't require any configuration
 
