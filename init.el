@@ -112,9 +112,9 @@
 ;;(require 'init-haskell)
 (require 'init-ruby-mode)
 (require 'init-rails)
-(require 'init-golang)
-;;(require 'init-sql)
-;;
+
+(require 'init-misc)
+
 (require 'init-yaml)
 ;;(require 'init-paredit)
 ;;(require 'init-lisp)
@@ -126,7 +126,6 @@
 ;;  (require 'init-spelling))
 
 ;;(require 'init-marmalade)
-(require 'init-misc)
 
 ;; Extra packages which don't require any configuration
 
