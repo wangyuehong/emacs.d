@@ -140,6 +140,8 @@
 ;;  (require-package 'osx-location))
 (maybe-require-package 'regex-tool)
 
+(require 'init-hydra)
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
