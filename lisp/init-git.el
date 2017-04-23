@@ -1,24 +1,29 @@
+(require-package 'gitignore-mode)
+(require-package 'gitconfig-mode)
+(require-package 'git-timemachine)
+(require-package 'git-link)
+
 (require-package 'magit)
-
 (setq magit-last-seen-setup-instructions "1.4.0")
-
-;; (after-load 'session
-;;   (add-to-list 'session-mode-disable-list 'git-commit-mode))
 
 (setq-default
  magit-process-popup-time 10
  magit-diff-refine-hunk t
  magit-completing-read-function 'magit-ido-completing-read)
 
+(require-package 'evil-magit)
+
+(after-load 'magit
+  (add-hook 'magit-popup-mode-hook 'sanityinc/no-trailing-whitespace))
+
 (require-package 'fullframe)
 (after-load 'magit
   (fullframe magit-status magit-mode-quit-window))
 
-(require-package 'evil-magit)
-(require 'evil-magit)
+(when (maybe-require-package 'git-commit)
+  (add-hook 'git-commit-mode-hook 'goto-address-mode))
 
 (require-package 'git-gutter)
-
 (global-git-gutter-mode t)
 (git-gutter:linum-setup)
 
@@ -33,15 +38,22 @@
 (define-key git-gutter-map "p" 'git-gutter:popup-hunk)
 (define-key git-gutter-map "v" 'git-gutter:revert-hunk)
 
-(when *is-a-mac*
-  (after-load 'magit
-    (add-hook 'magit-mode-hook (lambda () (local-unset-key [(meta h)])))))
-
-;; Convenient binding for vc-git-grep
-(global-set-key (kbd "C-x v f") 'vc-git-grep)
-
 (require-package 'magit-gitflow)
-(require 'magit-gitflow)
 (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
+
+(require-package 'git-messenger)
+;; {{ git-messenger
+;; show details to play `git blame' game
+(setq git-messenger:show-detail t)
+(add-hook 'git-messenger:after-popup-hook
+          (lambda (msg)
+            ;; extract commit id and put into the kill ring
+            (when (string-match "\\(commit *: *\\)\\([0-9a-z]+\\)" msg)
+              ;; get the first 7 characters as hash because that's `git log' use
+              (let ((hash (substring-no-properties (match-string 2 msg) 0 7)))
+                (copy-yank-str hash)
+                (message "commit hash %s => clipboard & kill-ring" hash)))))
+(global-set-key (kbd "C-x v p") 'git-messenger:popup-message)
+;; }}
 
 (provide 'init-git)
