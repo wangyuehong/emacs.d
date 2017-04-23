@@ -1,5 +1,6 @@
 ;;; Basic ruby setup
 (require-package 'ruby-mode)
+(require-package 'ruby-hash-syntax)
 
 (add-auto-mode 'ruby-mode
                "Rakefile\\'" "\\.rake\\'" "\\.rxml\\'"
@@ -23,7 +24,7 @@
               (unless (derived-mode-p 'prog-mode)
                 (run-hooks 'prog-mode-hook)))))
 
-(add-hook 'ruby-mode-hook 'subword-mode)
+;; (add-hook 'ruby-mode-hook 'subword-mode)
 
 ;;; Inferior ruby
 (require-package 'inf-ruby)
@@ -32,10 +33,22 @@
 
 ;;; Robe
 (require-package 'robe)
-(add-hook 'ruby-mode-hook 'robe-mode)
+(after-load 'ruby-mode
+  (add-hook 'ruby-mode-hook 'robe-mode))
+(after-load 'company
+  (dolist (hook '(ruby-mode-hook inf-ruby-mode-hook html-erb-mode-hook haml-mode))
+    (add-hook hook
+              (lambda () (sanityinc/local-push-company-backend 'company-robe)))))
 
 (require-package 'rubocop)
 (add-hook 'ruby-mode-hook 'rubocop-mode)
+
+;; Customise highlight-symbol to not highlight do/end/class/def etc.
+(defun sanityinc/suppress-ruby-mode-keyword-highlights ()
+  "Suppress highlight-symbol for do/end etc."
+  (set (make-local-variable 'highlight-symbol-ignore-list)
+       (list (concat "\\_<" (regexp-opt '("do" "end")) "\\_>"))))
+(add-hook 'ruby-mode-hook 'sanityinc/suppress-ruby-mode-keyword-highlights)
 
 ;;; ri support
 (require-package 'yari)
@@ -45,4 +58,4 @@
 
 (require-package 'bundler)
 
-(provide 'init-ruby)
+(provide 'init-ruby-mode)

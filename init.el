@@ -93,10 +93,12 @@
 (require 'init-fonts)
 ;; (require 'init-mmm)
 
+(require 'init-keybind)
 (require 'init-editing-utils)
 (require 'init-whitespace)
 
 (require 'init-git)
+
 (require 'init-crontab)
 (require 'init-markdown)
 (require 'init-javascript)
@@ -108,8 +110,9 @@
 ;;(require 'init-haml)
 (require 'init-python-mode)
 ;;(require 'init-haskell)
+(require 'init-ruby-mode)
+(require 'init-rails)
 (require 'init-golang)
-;;(require 'init-rails)
 ;;(require 'init-sql)
 ;;
 (require 'init-yaml)
@@ -136,7 +139,6 @@
 (require-package 'regex-tool)
 
 
-(require 'init-keybind)
 (require 'init-helm)
 (require 'init-linum)
 (require 'init-sr-speedbar)
@@ -148,8 +150,6 @@
 (require 'init-iedit)
 ;; (require 'init-golden-ratio)
 (require 'init-perl)
-(require 'init-ruby)
-(require 'init-rails)
 (require 'init-bookmark)
 (require 'init-quickrun)
 
