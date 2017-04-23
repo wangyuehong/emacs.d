@@ -100,33 +100,29 @@
 
 (require 'init-git)
 
+(require 'init-avy)
+(require 'init-bookmark)
+(require 'init-ctags)
+(require 'init-helm)
+(require 'init-highlight)
 (require 'init-linum-mode)
+(require 'init-quickrun)
+(require 'init-rainbow)
+(require 'init-yasnippet)
 
 (require 'init-crontab)
 (require 'init-markdown)
 (require 'init-javascript)
 (require 'init-css)
 (require 'init-web-mode)
-(require 'init-sh)
+(require 'init-perl-mode)
 (require 'init-python-mode)
 (require 'init-ruby-mode)
 (require 'init-rails)
-
+(require 'init-sh)
 (require 'init-yaml)
-(require 'init-helm)
-(require 'init-yasnippet)
-(require 'init-highlight)
-(require 'init-open-junk-file)
-(require 'init-avy)
-(require 'init-rainbow)
-(require 'init-iedit)
-(require 'init-perl)
-(require 'init-bookmark)
-(require 'init-quickrun)
 
 (require 'init-ediff)
-(require 'init-paste)
-(require 'init-ctags)
 
 (require 'init-misc)
 

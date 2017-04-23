@@ -113,4 +113,6 @@
 (require-package 'highlight-escape-sequences)
 (hes-mode)
 
+(require-package 'iedit)
+
 (provide 'init-editing-utils)

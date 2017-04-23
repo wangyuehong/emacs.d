@@ -41,4 +41,4 @@
 (autoload 'tt-mode "tt-mode")
 (add-to-list 'auto-mode-alist '("\\.tt$" . tt-mode))
 
-(provide 'init-perl)
+(provide 'init-perl-mode)
