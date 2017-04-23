@@ -36,7 +36,7 @@ site-lisp/package/
 /lisp/init-local.el
 /.achievements
 /.bookmarks.el
-/history
+/.savehist
 /helm-adaptive-history
 /thumbs/
 /emms/
