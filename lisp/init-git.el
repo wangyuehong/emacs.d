@@ -12,6 +12,7 @@
  magit-completing-read-function 'magit-ido-completing-read)
 
 (require-package 'evil-magit)
+(require 'evil-magit)
 
 (after-load 'magit
   (add-hook 'magit-popup-mode-hook 'sanityinc/no-trailing-whitespace))
