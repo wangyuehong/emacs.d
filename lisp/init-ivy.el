@@ -2,7 +2,6 @@
   (after-load 'ivy
     (setq-default ivy-use-virtual-buffers t
                   ivy-count-format ""
-                  projectile-completion-system 'ivy
                   ivy-initial-inputs-alist
                   '((counsel-M-x . "^")
                     (man . "^")

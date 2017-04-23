@@ -158,8 +158,6 @@
 (require 'init-rails)
 (require 'init-bookmark)
 (require 'init-quickrun)
-(require 'init-projectile)
-;; (require 'init-tabbar)
 
 (require 'init-ediff)
 (require 'init-paste)

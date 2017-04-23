@@ -15,8 +15,4 @@
 ;;     (shell-command (concat "ctags -a -e -f " rinari-tags-file-name
 ;;                            " --tag-relative -R app lib vendor test"))))
 
-(when (maybe-require-package 'projectile-rails)
-  (after-load 'projectile
-    (add-hook 'projectile-mode-hook 'projectile-rails-on)))
-
 (provide 'init-rails)
