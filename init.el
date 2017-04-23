@@ -77,6 +77,7 @@
 (require 'init-gui-frames)
 (require 'init-dired)
 (require 'init-isearch)
+(require 'init-grep)
 (require 'init-uniquify)
 (require 'init-ibuffer)
 (require 'init-flycheck)
@@ -95,10 +96,8 @@
 (require 'init-editing-utils)
 (require 'init-whitespace)
 
-(require 'init-grep)
-
-;;(require 'init-darcs)
 (require 'init-git)
+(require 'init-crontab)
 
 (require 'init-yaml)
 ;;(require 'init-crontab)
