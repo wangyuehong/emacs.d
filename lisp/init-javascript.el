@@ -14,7 +14,7 @@
 ;; Need to first remove from list if present, since elpa adds entries too, which
 ;; may be in an arbitrary order
 (eval-when-compile (require 'cl))
-(setq auto-mode-alist (cons `("\\.js\\(\\.erb\\)?\\'" . ,preferred-javascript-mode)
+(setq auto-mode-alist (cons `("\\.\\(js\\|es6\\)\\(\\.erb\\)?\\'" . ,preferred-javascript-mode)
                             (loop for entry in auto-mode-alist
                                   unless (eq preferred-javascript-mode (cdr entry))
                                   collect entry)))
@@ -66,7 +66,8 @@
   (setq coffee-js-mode preferred-javascript-mode
         coffee-tab-width preferred-javascript-indent-level))
 
-(add-to-list 'auto-mode-alist '("\\.coffee\\.erb\\'" . coffee-mode))
+(when (fboundp 'coffee-mode)
+  (add-to-list 'auto-mode-alist '("\\.coffee\\.erb\\'" . coffee-mode)))
 
 ;; ---------------------------------------------------------------------------
 ;; Run and interact with an inferior JS via js-comint.el
@@ -93,8 +94,7 @@
 ;; Alternatively, use skewer-mode
 ;; ---------------------------------------------------------------------------
 
-(when (featurep 'js2-mode)
-  (require-package 'skewer-mode)
+(when (maybe-require-package 'skewer-mode)
   (after-load 'skewer-mode
     (add-hook 'skewer-mode-hook
               (lambda () (inferior-js-keys-mode -1)))))
