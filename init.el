@@ -106,7 +106,7 @@
 ;;(require 'init-php)
 ;;(require 'init-org)
 ;;(require 'init-haml)
-;;(require 'init-python-mode)
+(require 'init-python-mode)
 ;;(require 'init-haskell)
 (require 'init-golang)
 ;;(require 'init-rails)
