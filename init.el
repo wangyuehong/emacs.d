@@ -93,6 +93,7 @@
 ;; (require 'init-mmm)
 
 (require 'init-spelling)
+(require 'init-term-mode)
 
 (require 'init-keybind)
 (require 'init-editing-utils)
@@ -103,8 +104,10 @@
 (require 'init-avy)
 (require 'init-bookmark)
 (require 'init-ctags)
+(require 'init-ediff)
 (require 'init-helm)
 (require 'init-highlight)
+(require 'init-httpd)
 (require 'init-linum-mode)
 (require 'init-quickrun)
 (require 'init-rainbow)
@@ -121,8 +124,6 @@
 (require 'init-rails)
 (require 'init-sh)
 (require 'init-yaml)
-
-(require 'init-ediff)
 
 (require 'init-misc)
 
