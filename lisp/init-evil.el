@@ -120,16 +120,12 @@
         (quickrun/mode . normal)
         (yari-mode . emacs)
         (erc-mode . emacs)
-        (neotree-mode . emacs)
         (w3m-mode . emacs)
         (gud-mode . emacs)
         (help-mode . emacs)
         (eshell-mode . emacs)
         (shell-mode . emacs)
-        ;;(message-mode . emacs)
         (fundamental-mode . emacs)
-        (weibo-timeline-mode . emacs)
-        (weibo-post-mode . emacs)
         (woman-mode . emacs)
         (sr-mode . emacs)
         (profiler-report-mode . emacs)
@@ -187,7 +183,6 @@
 ;; {{ use `,` as leader key
 (nvmap :prefix ","
        "="  'align
-       ;; "SPC" 'avy-goto-word-1
        "a"  'ag-regexp-project-at-point
        "A"  'ag-regexp
        "b"  'ido-switch-buffer

@@ -68,6 +68,8 @@
 (require-package 'scratch)
 (require-package 'command-log-mode)
 
+(require 'init-keybind)
+(require 'init-evil)
 
 (require 'init-frame-hooks)
 (require 'init-xterm)
@@ -85,23 +87,18 @@
 (require 'init-smex)
 (require 'init-ido)
 ;; (require 'init-ivy)
-;;(require 'init-hippie-expand)
 (require 'init-company)
 (require 'init-windows)
 (require 'init-sessions)
 (require 'init-fonts)
-;; (require 'init-mmm)
 
 (require 'init-spelling)
 (require 'init-term-mode)
 
-(require 'init-keybind)
 (require 'init-editing-utils)
 (require 'init-whitespace)
 
 (require 'init-git)
-
-(require 'init-evil)
 
 (require 'init-avy)
 (require 'init-bookmark)
