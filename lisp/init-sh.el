@@ -5,5 +5,6 @@
 (add-to-list 'auto-mode-alist '("\\.bashrc.local\\'" . sh-mode))
 (add-to-list 'auto-mode-alist '("\\.zsh\\'" . sh-mode))
 (add-to-list 'auto-mode-alist '("\\.bashrc\\'" . sh-mode))
+(add-to-list 'auto-mode-alist '("\\.env\\'" . sh-mode))
 
 (provide 'init-sh)
