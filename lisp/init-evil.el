@@ -96,15 +96,6 @@
 (define-and-bind-text-object "r" "\{\{" "\}\}")
 ;; }}
 
-;; {{ https://github.com/syl20bnr/evil-escape
-(require-package 'evil-escape)
-(require 'evil-escape)
-(setq-default evil-escape-delay 0.5)
-(setq evil-escape-excluded-major-modes '(dired-mode))
-(setq-default evil-escape-key-sequence "kj")
-(evil-escape-mode 1)
-;; }}
-
 (loop for (mode . state) in
       '((minibuffer-inactive-mode . emacs)
         (ggtags-global-mode . emacs)
@@ -216,6 +207,8 @@
 ;; all keywords arguments are still supported
 (nvmap :prefix "SPC"
        "SPC" 'avy-goto-word-1
+       "j" 'avy-goto-char
+       "l" 'avy-goto-line
        )
 
 ;; {{ Use `;` as leader key, for searching something
