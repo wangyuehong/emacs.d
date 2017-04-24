@@ -277,4 +277,7 @@
 
 (require-package 'evil-ediff)
 
+(require-package 'evil-anzu)
+(require 'evil-anzu)
+
 (provide 'init-evil)
