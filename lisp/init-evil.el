@@ -275,4 +275,6 @@
 (set-face-foreground 'evil-search-highlight-persist-highlight-face "black")
 (set-face-background 'evil-search-highlight-persist-highlight-face "#66cccc")
 
+(require-package 'evil-ediff)
+
 (provide 'init-evil)

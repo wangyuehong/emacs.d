@@ -103,7 +103,6 @@
 (require 'init-avy)
 (require 'init-bookmark)
 (require 'init-ctags)
-(require 'init-ediff)
 (require 'init-helm)
 (require 'init-highlight)
 (require 'init-httpd)
