@@ -37,8 +37,7 @@
 
 (transient-mark-mode t)
 
-
- ;;; A simple visible bell which works in all terminal types
+;; A simple visible bell which works in all terminal types
 
 (defun sanityinc/flash-mode-line ()
   (invert-face 'mode-line)
@@ -66,12 +65,6 @@
 (diminish 'undo-tree-mode)
 
 ;;----------------------------------------------------------------------------
-;; Zap *up* to char is a handy pair for zap-to-char
-;;----------------------------------------------------------------------------
-(autoload 'zap-up-to-char "misc" "Kill up to, but not including ARGth occurrence of CHAR.")
-(global-set-key (kbd "M-Z") 'zap-up-to-char)
-
-;;----------------------------------------------------------------------------
 ;; Don't disable narrowing commands
 ;;----------------------------------------------------------------------------
 (put 'narrow-to-region 'disabled nil)
@@ -94,21 +87,6 @@
 ;;----------------------------------------------------------------------------
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
-
-
-;;----------------------------------------------------------------------------
-;; Rectangle selections, and overwrite text when the selection is active
-;;----------------------------------------------------------------------------
-(cua-selection-mode t)                  ; for rectangles, CUA is nice
-
-(defun kill-back-to-indentation ()
-  "Kill from point back to the first non-whitespace character on the line."
-  (interactive)
-  (let ((prev-pos (point)))
-    (back-to-indentation)
-    (kill-region (point) prev-pos)))
-
-;; (global-set-key (kbd "C-M-<backspace>") 'kill-back-to-indentation)
 
 (require-package 'highlight-escape-sequences)
 (hes-mode)
