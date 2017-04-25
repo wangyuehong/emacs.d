@@ -25,7 +25,10 @@
   ;; (setenv "PERL5LIB" "dir_path_1:dir_path_2")
 
   (key-chord-define cperl-mode-map "--" (smartchr '("->" "=>")))
-  (modify-syntax-entry ?_ "w"))
+  ;; (modify-syntax-entry ?_ "w")
+  )
+
+(add-hook 'cperl-mode-hook 'subword-mode)
 
 (defun update-perl-ctags ()
   (interactive)

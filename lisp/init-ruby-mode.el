@@ -24,7 +24,7 @@
               (unless (derived-mode-p 'prog-mode)
                 (run-hooks 'prog-mode-hook)))))
 
-;; (add-hook 'ruby-mode-hook 'subword-mode)
+(add-hook 'ruby-mode-hook 'subword-mode)
 
 ;;; Inferior ruby
 (require-package 'inf-ruby)
