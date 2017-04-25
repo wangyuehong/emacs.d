@@ -30,8 +30,8 @@
   (add-hook hook 'whitespace-mode))
 
 (setq whitespace-style
-      '(face spaces tabs newline space-mark tab-mark newline-mark lines))
-(setq whitespace-line-column 120)
+      '(face spaces tabs newline space-mark tab-mark newline-mark lines-tail))
+(setq whitespace-line-column 100) ;; config for lines-tail style
 (setq whitespace-space-regexp "\\(\x3000+\\)")
 (setq whitespace-display-mappings
       '(
