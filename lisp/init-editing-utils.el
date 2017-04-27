@@ -49,6 +49,7 @@
 (when (maybe-require-package 'indent-guide)
   (add-hook 'prog-mode-hook 'indent-guide-mode)
   (add-hook 'yaml-mode-hook 'indent-guide-mode)
+  (setq indent-guide-delay 0.5)
   (after-load 'indent-guide
     (diminish 'indent-guide-mode)))
 
