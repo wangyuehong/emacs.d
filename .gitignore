@@ -8,9 +8,7 @@
 /.emacs-bmk-bmenu-commands.el
 /custom.el
 *.elc
-CVS
 *~
-.cvsignore
 .*.lock
 /tramp
 /TODO
