@@ -212,6 +212,7 @@
        "SPC" 'avy-goto-word-1
        "j" 'avy-goto-char
        "l" 'avy-goto-line
+       "e" 'er/expand-region
        "y" 'youdao-dictionary-search-at-point+
        )
 
