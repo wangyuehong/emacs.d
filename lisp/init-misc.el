@@ -14,4 +14,6 @@
 (add-auto-mode 'conf-mode "Procfile")
 
 
+(require-package 'youdao-dictionary)
+
 (provide 'init-misc)

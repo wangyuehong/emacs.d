@@ -15,6 +15,9 @@
  evil-want-fine-undo t
  )
 
+(with-eval-after-load 'evil
+  (defalias #'forward-evil-word #'forward-evil-symbol))
+
 ;; @see https://bitbucket.org/lyro/evil/issue/511/let-certain-minor-modes-key-bindings
 (defmacro adjust-major-mode-keymap-with-evil (m &optional r)
   `(eval-after-load (quote ,(if r r m))
@@ -209,6 +212,7 @@
        "SPC" 'avy-goto-word-1
        "j" 'avy-goto-char
        "l" 'avy-goto-line
+       "y" 'youdao-dictionary-search-at-point+
        )
 
 ;; {{ Use `;` as leader key, for searching something
