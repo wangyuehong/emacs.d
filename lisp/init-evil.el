@@ -214,6 +214,7 @@
        "l" 'avy-goto-line
        "e" 'er/expand-region
        "y" 'youdao-dictionary-search-at-point+
+       "t" 'multi-term
        )
 
 ;; {{ Use `;` as leader key, for searching something

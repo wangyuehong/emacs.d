@@ -67,7 +67,7 @@
   (interactive)
   (term-send-raw-string "\C-k"))
 
-(setq multi-term-program "/bin/bash")
+(setq multi-term-program "zsh")
 (setq term-unbind-key-list '("C-x" "<ESC>"))
 (setq term-bind-key-alist
       '(("C-c" . term-interrupt-subjob)
