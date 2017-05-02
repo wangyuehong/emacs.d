@@ -67,6 +67,8 @@
   (interactive)
   (term-send-raw-string "\C-k"))
 
+(global-set-key (kbd "C-x t") 'multi-term)
+
 (setq multi-term-program "zsh")
 (setq term-unbind-key-list '("C-x" "<ESC>"))
 (setq term-bind-key-alist
