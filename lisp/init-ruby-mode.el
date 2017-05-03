@@ -1,6 +1,5 @@
 ;;; Basic ruby setup
 (require-package 'ruby-mode)
-(require-package 'ruby-hash-syntax)
 
 (add-auto-mode 'ruby-mode
                "Rakefile\\'" "\\.rake\\'" "\\.rxml\\'"
@@ -53,9 +52,5 @@
 ;;; ri support
 (require-package 'yari)
 (defalias 'ri 'yari)
-
-;; (require-package 'goto-gem)
-
-(require-package 'bundler)
 
 (provide 'init-ruby-mode)
