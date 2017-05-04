@@ -11,7 +11,7 @@
 
 (set-face-attribute 'highlight-symbol-face nil
                     :inherit nil
-                    :background "#767676")
+                    :background "#626262")
 
 (setq highlight-symbol-colors (quote ("#5c5cff" "#ff0000" "#00ff00" "#ff00ff" "#ffff00")))
 
@@ -31,7 +31,7 @@
 
 (require 'fic-mode)
 (add-hook 'prog-mode-hook 'fic-mode)
-(set-face-foreground 'fic-face "#7f7f7f")
-(set-face-background 'fic-face "#ffff00")
+;; (set-face-foreground 'fic-face "#7f7f7f")
+;; (set-face-background 'fic-face "#ffff00")
 
 (provide 'init-highlight)
