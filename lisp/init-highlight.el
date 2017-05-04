@@ -1,7 +1,7 @@
 (require-package 'highlight-symbol)
 
 (require 'highlight-symbol)
-(setq highlight-symbol-idle-delay 0.5)
+(setq highlight-symbol-idle-delay 0.3)
 
 (global-set-key (kbd "<f3>") 'highlight-symbol-next)
 (global-set-key (kbd "<f4>") 'highlight-symbol-prev)
@@ -11,7 +11,7 @@
 
 (set-face-attribute 'highlight-symbol-face nil
                     :inherit nil
-                    :background "#626262")
+                    :background "#767676")
 
 (setq highlight-symbol-colors (quote ("#5c5cff" "#ff0000" "#00ff00" "#ff00ff" "#ffff00")))
 
