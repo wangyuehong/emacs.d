@@ -31,13 +31,13 @@
 
 
 ;;; Robe
-(require-package 'robe)
-(after-load 'ruby-mode
-  (add-hook 'ruby-mode-hook 'robe-mode))
-(after-load 'company
-  (dolist (hook '(ruby-mode-hook inf-ruby-mode-hook html-erb-mode-hook haml-mode))
-    (add-hook hook
-              (lambda () (sanityinc/local-push-company-backend 'company-robe)))))
+(when (maybe-require-package 'robe)
+  (after-load 'ruby-mode
+    (add-hook 'ruby-mode-hook 'robe-mode))
+  (after-load 'company
+    (dolist (hook '(ruby-mode-hook inf-ruby-mode-hook html-erb-mode-hook haml-mode))
+      (add-hook hook
+                (lambda () (sanityinc/local-push-company-backend 'company-robe))))))
 
 (require-package 'rubocop)
 (add-hook 'ruby-mode-hook 'rubocop-mode)
