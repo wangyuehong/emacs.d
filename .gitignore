@@ -45,3 +45,4 @@ site-lisp/package/
 /org-clock-save.el
 /network-security.data
 /.uptimes.el
+/rake.cache
