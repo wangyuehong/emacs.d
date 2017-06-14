@@ -109,7 +109,7 @@
         (log-edit-mode . emacs)
         (vc-log-edit-mode . emacs)
         (inf-ruby-mode . normal)
-        (quickrun/mode . normal)
+        (quickrun--mode . emacs)
         (yari-mode . emacs)
         (erc-mode . emacs)
         (gud-mode . emacs)
