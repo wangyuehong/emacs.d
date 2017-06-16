@@ -122,6 +122,7 @@
 (require 'init-rails)
 (require 'init-sh)
 (require 'init-yaml)
+(require 'init-docker)
 
 (require 'init-misc)
 
