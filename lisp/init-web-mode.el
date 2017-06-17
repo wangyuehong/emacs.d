@@ -32,6 +32,17 @@
   (flycheck-add-mode 'html-tidy 'web-mode)
   (flycheck-add-mode 'css-csslint 'web-mode))
 
+(defun web-mode-hook-setup ()
+  (unless (is-buffer-file-temp)
+    (enable-flyspell-mode-conditionally)
+    (setq flyspell-check-doublon nil)
+    (remove-hook 'yas-after-exit-snippet-hook
+                 'web-mode-yasnippet-exit-hook t)
+    (remove-hook 'yas/after-exit-snippet-hook
+                 'web-mode-yasnippet-exit-hook t)))
+
+(add-hook 'web-mode-hook 'web-mode-hook-setup)
+
 (eval-after-load 'web-mode
   '(progn
      ;; make org-mode export fail, I use evil and evil-matchit
