@@ -12,7 +12,6 @@
   (setq-default ag-reuse-buffers t))
 
 (after-load 'ag
-  (define-key ag-mode-map (kbd "k") 'previous-line)
-  (define-key ag-mode-map (kbd "h") 'left-char))
+  (define-key ag-mode-map (kbd "k") nil))
 
 (provide 'init-grep)

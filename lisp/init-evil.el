@@ -101,6 +101,7 @@
 
 (loop for (mode . state) in
       '((minibuffer-inactive-mode . emacs)
+        (ag-mode . normal)
         (ggtags-global-mode . emacs)
         (Info-mode . emacs)
         (term-mode . emacs)
