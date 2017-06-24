@@ -46,3 +46,4 @@ site-lisp/package/
 /network-security.data
 /.uptimes.el
 /rake.cache
+.yas-compiled-snippets.el
