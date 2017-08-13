@@ -38,7 +38,9 @@
 (put 'rgrep 'ido 'ignore)
 (put 'dired-create-directory 'ido 'ignore)
 
-(when (maybe-require-package 'ido-ubiquitous)
+
+(require-package 'memoize) ;; delete after bug fix
+(when (maybe-require-package 'ido-completing-read+)
   (ido-ubiquitous-mode t))
 
 (setq ido-save-directory-list-file
