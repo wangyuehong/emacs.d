@@ -38,8 +38,6 @@
 (put 'rgrep 'ido 'ignore)
 (put 'dired-create-directory 'ido 'ignore)
 
-
-(require-package 'memoize) ;; delete after bug fix
 (when (maybe-require-package 'ido-completing-read+)
   (ido-ubiquitous-mode t))
 
