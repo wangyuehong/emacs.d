@@ -110,7 +110,6 @@
 (require 'init-rainbow)
 (require 'init-yasnippet)
 
-(require 'init-crontab)
 (require 'init-markdown)
 (require 'init-javascript)
 (require 'init-css)
