@@ -29,6 +29,7 @@
 (require-package 'inf-ruby)
 (setq inf-ruby-default-implementation "pry")
 
+(require-package 'goto-gem)
 
 ;;; Robe
 (when (maybe-require-package 'robe)
