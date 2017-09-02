@@ -38,6 +38,7 @@
 (define-key git-gutter-map "k" 'git-gutter:previous-hunk)
 (define-key git-gutter-map "p" 'git-gutter:popup-hunk)
 (define-key git-gutter-map "v" 'git-gutter:revert-hunk)
+(define-key git-gutter-map "s" 'git-gutter:stage-hunk)
 
 (require-package 'magit-gitflow)
 (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
