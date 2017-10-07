@@ -55,6 +55,10 @@
   (after-load 'indent-guide
     (diminish 'indent-guide-mode)))
 
+(when (maybe-require-package 'beacon)
+  (setq-default beacon-lighter "")
+  (beacon-mode))
+
 ;; (require-package 'nlinum)
 
 (when (require-package 'rainbow-delimiters)
