@@ -56,7 +56,9 @@
     (diminish 'indent-guide-mode)))
 
 (when (maybe-require-package 'beacon)
-  (setq-default beacon-lighter "")
+  (setq-default
+   beacon-lighter ""
+   beacon-color "red")
   (add-hook 'after-init-hook 'beacon-mode))
 
 ;; (require-package 'nlinum)
