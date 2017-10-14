@@ -5,12 +5,12 @@
 (setq-default diredp-hide-details-initially-flag nil
               dired-dwim-target t)
 
-(when (maybe-require-package 'diredfl)
-  (diredfl-global-mode))
+(require-package 'diredfl)
 
 (after-load 'dired
   (require 'dired+)
   (require 'dired-sort)
+  (diredfl-global-mode)
   (when (fboundp 'global-dired-hide-details-mode)
     (global-dired-hide-details-mode -1))
   (setq dired-recursive-deletes 'top)

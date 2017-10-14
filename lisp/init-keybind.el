@@ -1,7 +1,7 @@
 (require-package 'key-chord)
 
 (require 'key-chord)
-(key-chord-mode 1)
+(key-chord-mode t)
 
 (require 'smartchr)
 
@@ -19,6 +19,6 @@
 (define-key minibuffer-local-map (kbd "C-l") 'right-char)
 
 (require-package 'which-key)
-(which-key-mode)
+(add-hook 'after-init-hook 'which-key-mode)
 
 (provide 'init-keybind)

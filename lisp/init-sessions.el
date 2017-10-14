@@ -26,7 +26,7 @@
 ;; Restore histories and registers after saving
 ;;----------------------------------------------------------------------------
 (setq-default history-length 1000)
-(savehist-mode t)
+(add-hook 'after-init-hook 'savehist-mode)
 (setq savehist-file (expand-file-name ".savehist" user-emacs-directory))
 
 (require-package 'session)

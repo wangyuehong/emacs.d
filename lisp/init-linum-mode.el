@@ -1,4 +1,4 @@
-(global-linum-mode t)
+(add-hook 'after-init-hook 'global-linum-mode)
 
 ;; (setq linum-format 'dynamic)
 

@@ -1,9 +1,9 @@
 (require-package 'unfill)
 
 (when (fboundp 'electric-pair-mode)
-  (electric-pair-mode))
+  (add-hook 'after-init-hook 'electric-pair-mode))
 (when (eval-when-compile (version< "24.4" emacs-version))
-  (electric-indent-mode 1))
+  (add-hook 'after-init-hook 'electric-indent-mode))
 
 (maybe-require-package 'list-unicode-display)
 
@@ -33,11 +33,11 @@
  ring-bell-function 'ignore
  truncate-partial-width-windows nil)
 
-(global-auto-revert-mode)
+(add-hook 'after-init-hook 'global-auto-revert-mode)
 (setq global-auto-revert-non-file-buffers t
       auto-revert-verbose nil)
 
-(transient-mark-mode t)
+(add-hook 'after-init-hook 'transient-mark-mode)
 
 ;; A simple visible bell which works in all terminal types
 
@@ -57,7 +57,7 @@
 
 (when (maybe-require-package 'beacon)
   (setq-default beacon-lighter "")
-  (beacon-mode))
+  (add-hook 'after-init-hook 'beacon-mode))
 
 ;; (require-package 'nlinum)
 
@@ -65,11 +65,12 @@
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
 (when (fboundp 'global-prettify-symbols-mode)
-  (global-prettify-symbols-mode))
+  (add-hook 'after-init-hook 'global-prettify-symbols-mode))
 
 (require-package 'undo-tree)
-(global-undo-tree-mode)
-(diminish 'undo-tree-mode)
+(add-hook 'after-init-hook 'global-undo-tree-mode)
+(after-load 'undo-tree
+  (diminish 'undo-tree-mode))
 
 ;;----------------------------------------------------------------------------
 ;; Don't disable narrowing commands
@@ -81,7 +82,7 @@
 ;;----------------------------------------------------------------------------
 ;; Show matching parens
 ;;----------------------------------------------------------------------------
-(show-paren-mode 1)
+(add-hook 'after-init-hook 'show-paren-mode)
 
 ;;----------------------------------------------------------------------------
 ;; Expand region
@@ -96,7 +97,7 @@
 (put 'downcase-region 'disabled nil)
 
 (require-package 'highlight-escape-sequences)
-(hes-mode)
+(add-hook 'after-init-hook 'hes-mode)
 
 (require-package 'iedit)
 
