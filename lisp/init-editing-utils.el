@@ -58,7 +58,7 @@
 (when (maybe-require-package 'beacon)
   (setq-default
    beacon-lighter ""
-   beacon-color "red")
+   beacon-color "magenta")
   (add-hook 'after-init-hook 'beacon-mode))
 
 ;; (require-package 'nlinum)
