@@ -58,6 +58,7 @@
 (when (maybe-require-package 'beacon)
   (setq-default
    beacon-lighter ""
+   beacon-size 5
    beacon-color "magenta")
   (add-hook 'after-init-hook 'beacon-mode))
 
