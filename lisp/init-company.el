@@ -33,38 +33,8 @@
 
   (defun sanityinc/local-push-company-backend (backend)
     "Add BACKEND to a buffer-local version of `company-backends'."
-    (set (make-local-variable 'company-backends)
-         (append (list backend) company-backends))))
-
-;; from https://github.com/redguardtoo/emacs.d
-(after-load 'company
-  (setq company-dabbrev-downcase nil)
-  (setq company-dabbrev-ignore-case nil)
-  ;; (setq company-show-numbers t)
-  (setq company-idle-delay 0.1)
-  (setq company-clang-insert-arguments nil)
-  (setq company-require-match nil)
-  (setq company-etags-ignore-case t)
-
-  (setq company-auto-complete nil)
-  (setq company-transformers '(company-sort-by-occurrence))
-
-  (setq company-global-modes
-        '(not
-          eshell-mode comint-mode erc-mode gud-mode rcirc-mode
-          minibuffer-inactive-mode))
-
-  (defvar company-mode/enable-yas t
-    "Enable yasnippet for all backends.")
-
-  (defun company-mode/backend-with-yas (backend)
-    (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-        backend
-      (append (if (consp backend) backend (list backend))
-              '(:with company-yasnippet))))
-
-  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
-  )
+    (make-local-variable 'company-backends)
+    (push backend company-backends)))
 
 ;; Suspend page-break-lines-mode while company menu is active
 ;; (see https://github.com/company-mode/company-mode/issues/416)
