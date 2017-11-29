@@ -174,16 +174,14 @@
        "="  'align
        "a"  'ag-regexp-project-at-point
        "A"  'ag-regexp
-       "b"  'ido-switch-buffer
-       "B"  'helm-mini
        "e"  'iedit-mode-toggle-on-function
        "E"  'iedit-mode
        "f"  'flycheck-list-errors
        "w"  'save-buffer
        "W"  'save-some-buffers
        "l"  'helm-ls-git-ls
-       "i"  'helm-imenu
-       "o"  'helm-occur
+       "i"  'counsel-imenu
+       "o"  'swiper
        "q"  'quickrun
        "Q"  'quickrun-region
        "/"  'evilnc-comment-or-uncomment-lines
@@ -191,10 +189,10 @@
        "K"  'kill-other-buffers
        "P"  'list-packages
        "g"  'magit-status
-       "r"  'helm-show-kill-ring
+       "r"  'counsel-yank-pop
        ","  'git-gutter-map
        "v"  'revert-buffer
-       "x"  'smex
+       "x"  'counsel-M-x
        "nn" 'narrow-to-region
        "nd" 'narrow-to-defun
        "nw" 'widen

@@ -1,14 +1,29 @@
+;;; -*- lexical-binding: t -*-
 (when (maybe-require-package 'ivy)
+  (add-hook 'after-init-hook 'ivy-mode)
   (after-load 'ivy
     (setq-default ivy-use-virtual-buffers t
+                  ivy-virtual-abbreviate 'fullpath
+                  ivy-fixed-height-minibuffer t
+                  ivy-height 15
                   ivy-count-format ""
+                  projectile-completion-system 'ivy
+                  ivy-magic-tilde nil
                   ivy-initial-inputs-alist
-                  '((counsel-M-x . "^")
-                    (man . "^")
+                  '((man . "^")
                     (woman . "^")))
+
     ;; IDO-style directory navigation
-    (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-immediate-done)
     (define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
+    (define-key ivy-minibuffer-map (kbd "C-k") #'ivy-previous-line)
+    (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-next-line)
+    (define-key ivy-minibuffer-map (kbd "C-b") #'ivy-scroll-down-command)
+    (define-key ivy-minibuffer-map (kbd "C-f") #'ivy-scroll-up-command)
+    (dolist (k '("C-RET"))
+      (define-key ivy-minibuffer-map (kbd k) #'ivy-immediate-done))
+
+    (define-key ivy-minibuffer-map (kbd "<up>") #'ivy-previous-line-or-history)
+
     (when (maybe-require-package 'diminish)
       (diminish 'ivy-mode)))
 
@@ -17,32 +32,53 @@
     (interactive)
     (require-package 'flx)
     (setq-default ivy-re-builders-alist
-                  '((t . ivy--regex-fuzzy))))
-
-  (add-hook 'after-init-hook
-            (lambda ()
-              (when (bound-and-true-p ido-ubiquitous-mode)
-                (ido-ubiquitous-mode -1))
-              (when (bound-and-true-p ido-mode)
-                (ido-mode -1))
-              (ivy-mode 1))))
-
+                  '((t . ivy--regex-fuzzy)))))
 
 (when (maybe-require-package 'ivy-historian)
   (add-hook 'after-init-hook (lambda () (ivy-historian-mode t))))
-
 
 (when (maybe-require-package 'counsel)
   (setq-default counsel-mode-override-describe-bindings t)
   (when (maybe-require-package 'diminish)
     (after-load 'counsel
       (diminish 'counsel-mode)))
-  (add-hook 'after-init-hook 'counsel-mode))
+  (add-hook 'after-init-hook 'counsel-mode)
+
+  (global-set-key (kbd "C-x j j") 'counsel-bookmark)
+
+  (when (maybe-require-package 'projectile)
+    (let ((search-function
+           (cond
+            ((executable-find "rg") 'counsel-rg)
+            ((executable-find "ag") 'counsel-ag)
+            ((executable-find "pt") 'counsel-pt)
+            ((executable-find "ack") 'counsel-ack))))
+      (when search-function
+        (defun sanityinc/counsel-search-project (initial-input &optional use-current-dir)
+          "Search using `counsel-ag' from the project root for INITIAL-INPUT.
+If there is no project root, or if the prefix argument
+USE-CURRENT-DIR is set, then search from the current directory
+instead."
+          (interactive (list (thing-at-point 'symbol)
+                             current-prefix-arg))
+          (let ((current-prefix-arg)
+                (dir (if use-current-dir
+                         default-directory
+                       (condition-case err
+                           (projectile-project-root)
+                         (error default-directory)))))
+            (funcall search-function initial-input dir)))))
+    (global-set-key (kbd "M-?") 'sanityinc/counsel-search-project)))
 
 
-;;(when (maybe-require-package 'swiper)
-;;  (after-load 'ivy
-;;    (define-key ivy-mode-map (kbd "C-s") 'swiper)))
+(when (maybe-require-package 'swiper)
+  (after-load 'ivy
+    (defun sanityinc/swiper-at-point (sym)
+      "Use `swiper' to search for the symbol at point."
+      (interactive (list (thing-at-point 'symbol)))
+      (swiper sym))
+
+    (define-key ivy-mode-map (kbd "M-s /") 'sanityinc/swiper-at-point)))
 
 
 

@@ -47,3 +47,4 @@ site-lisp/package/
 /.uptimes.el
 /rake.cache
 .yas-compiled-snippets.el
+.historian

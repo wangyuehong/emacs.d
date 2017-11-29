@@ -110,7 +110,6 @@
      ;; give yas-dropdown-prompt in yas/prompt-functions a chance
      (require 'dropdown-list)
      (setq yas-prompt-functions '(yas-dropdown-prompt
-                                  yas-ido-prompt
                                   yas-completing-prompt))
 
      ;; use yas-completing-prompt when ONLY when `M-x yas-insert-snippet'

@@ -9,7 +9,7 @@
 (setq-default
  magit-process-popup-time 10
  magit-diff-refine-hunk t
- magit-completing-read-function 'magit-ido-completing-read)
+ magit-completing-read-function 'ivy-completing-read)
 
 (require-package 'evil-magit)
 (require 'evil-magit)
