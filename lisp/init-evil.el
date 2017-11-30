@@ -181,7 +181,7 @@
        "W"  'save-some-buffers
        "l"  'helm-ls-git-ls
        "i"  'counsel-imenu
-       "o"  'swiper
+       "s"  'swiper
        "q"  'quickrun
        "Q"  'quickrun-region
        "/"  'evilnc-comment-or-uncomment-lines
