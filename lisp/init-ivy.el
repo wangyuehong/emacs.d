@@ -4,8 +4,7 @@
   (after-load 'ivy
     (setq-default ivy-use-virtual-buffers t
                   ivy-virtual-abbreviate 'fullpath
-                  ivy-fixed-height-minibuffer t
-                  ivy-height 15
+                  ivy-height 18
                   ivy-count-format ""
                   projectile-completion-system 'ivy
                   ivy-magic-tilde nil
