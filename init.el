@@ -116,7 +116,6 @@
 (require 'init-sh)
 (require 'init-yaml)
 (require 'init-docker)
-
 (require 'init-misc)
 
 ;; Extra packages which don't require any configuration
@@ -129,6 +128,8 @@
 ;;  (require-package 'osx-location))
 (maybe-require-package 'regex-tool)
 (maybe-require-package 'dotenv-mode)
+(maybe-require-package 'nginx-mode)
+
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
