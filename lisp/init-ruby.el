@@ -47,4 +47,4 @@
 (require-package 'yari)
 (defalias 'ri 'yari)
 
-(provide 'init-ruby-mode)
+(provide 'init-ruby)
