@@ -1,10 +1,10 @@
-(require-package 'yasnippet)
-(require-package 'auto-yasnippet)
-(require 'dropdown-list)
-
 ;; loading yasnippet will slow the startup
 ;; but it's necessary cost
+(require-package 'yasnippet)
+(require-package 'yasnippet-snippets)
+
 (require 'yasnippet)
+(require 'dropdown-list)
 
 (yas-reload-all)
 (defun yasnippet-generic-setup-for-mode-hook ()
@@ -19,6 +19,7 @@
 (add-hook 'scss-mode-hook 'yasnippet-generic-setup-for-mode-hook)
 
 (defun my-yas-reload-all ()
+  "Compile and reload yasnippets.  Run the command after adding new snippets."
   (interactive)
   (yas-compile-directory (file-truename "~/.emacs.d/snippets"))
   (yas-reload-all)
@@ -78,9 +79,17 @@
     (setq rlt (replace-regexp-in-string "\"" "\\\\\"" rlt))
     rlt))
 
+(defun my-read-n-from-kill-ring ()
+  (let* ((cands (subseq kill-ring 0 (min (read-number "fetch N `kill-ring'?" 1)
+                                         (length kill-ring)))))
+    (mapc (lambda (txt)
+            (set-text-properties 0 (length txt) nil txt)
+            txt)
+          cands)))
+
 (defun my-yas-get-var-list-from-kill-ring ()
   "Variable name is among the `kill-ring'.  Multiple major modes supported."
-  (let* ((top-kill-ring (subseq kill-ring 0 (min (read-number "fetch N `kill-ring'?" 1) (length kill-ring))) )
+  (let* ((top-kill-ring (my-read-n-from-kill-ring))
          rlt)
     (cond
      ((memq major-mode '(js-mode javascript-mode js2-mode js3-mode))
@@ -108,15 +117,15 @@
 
      ;; default hotkey `C-c C-s` is still valid
      ;; give yas-dropdown-prompt in yas/prompt-functions a chance
-     (require 'dropdown-list)
      (setq yas-prompt-functions '(yas-dropdown-prompt
+                                  yas-ido-prompt
                                   yas-completing-prompt))
 
      ;; use yas-completing-prompt when ONLY when `M-x yas-insert-snippet'
      ;; thanks to capitaomorte for providing the trick.
      (defadvice yas-insert-snippet (around use-completing-prompt activate)
        "Use `yas-completing-prompt' for `yas-prompt-functions' but only here..."
-       (let ((yas-prompt-functions '(yas-completing-prompt)))
+       (let* ((yas-prompt-functions '(yas-completing-prompt)))
          ad-do-it))))
 
 (provide 'init-yasnippet)
