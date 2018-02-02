@@ -1,4 +1,5 @@
 ;; -*- lexical-binding: t -*-
+(setq debug-on-error t)
 
 ;;; This file bootstraps the configuration, which is divided into
 ;;; a number of other files.
@@ -58,7 +59,6 @@
 ;;----------------------------------------------------------------------------
 
 (require-package 'wgrep)
-(require-package 'project-local-variables)
 (require-package 'diminish)
 (require-package 'scratch)
 (require-package 'command-log-mode)
@@ -95,7 +95,7 @@
 (require 'init-git)
 
 (require 'init-avy)
-(require 'init-bookmark)
+;;(require 'init-bookmark)
 (require 'init-ctags)
 (require 'init-helm)
 (require 'init-highlight)
