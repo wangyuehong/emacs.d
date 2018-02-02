@@ -1,6 +1,6 @@
 (require-package 'yasnippet)
-(require-package 'dropdown-list)
 (require-package 'auto-yasnippet)
+(require 'dropdown-list)
 
 ;; loading yasnippet will slow the startup
 ;; but it's necessary cost
