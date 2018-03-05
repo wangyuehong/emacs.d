@@ -39,13 +39,6 @@
 
 (add-hook 'after-init-hook 'transient-mark-mode)
 
-(when (maybe-require-package 'dynamic-spaces)
-  (dynamic-spaces-global-mode))
-
-;; A simple visible bell which works in all terminal types
-
-
-
 (require-package 'mode-line-bell)
 (add-hook 'after-init-hook 'mode-line-bell-mode)
 
@@ -55,15 +48,6 @@
   (setq indent-guide-delay 0.5)
   (after-load 'indent-guide
     (diminish 'indent-guide-mode)))
-
-(when (maybe-require-package 'beacon)
-  (setq-default
-   beacon-lighter ""
-   beacon-size 5
-   beacon-color "magenta")
-  (add-hook 'after-init-hook 'beacon-mode))
-
-;; (require-package 'nlinum)
 
 (when (require-package 'rainbow-delimiters)
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
