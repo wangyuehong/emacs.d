@@ -109,6 +109,7 @@
 (require 'init-javascript)
 (require 'init-css)
 (require 'init-web-mode)
+(require 'init-go)
 (require 'init-perl)
 (require 'init-python)
 (require 'init-ruby)
