@@ -20,8 +20,9 @@
      (string= "#!" (buffer-substring (point-min) (+ 2 (point-min)))))
    (normal-mode)))
 
+(when (maybe-require-package 'regex-tool)
+  (setq-default regex-tool-backend 'perl))
 
-(setq-default regex-tool-backend 'perl)
 (after-load 're-builder
   ;; Support a slightly more idiomatic quit binding in re-builder
   (define-key reb-mode-map (kbd "C-c C-k") 'reb-quit))
