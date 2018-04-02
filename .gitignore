@@ -48,4 +48,3 @@ site-lisp/package/
 /rake.cache
 .yas-compiled-snippets.el
 .historian
-.last-package-update-day

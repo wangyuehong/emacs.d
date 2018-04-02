@@ -92,10 +92,4 @@ locate PACKAGE."
 (add-hook 'package-menu-mode-hook 'sanityinc/maybe-widen-package-menu-columns)
 
 
-(when (maybe-require-package 'auto-package-update)
-  (auto-package-update-maybe)
-  (setq auto-package-update-delete-old-versions t)
-  (add-hook 'auto-package-update-before-hook
-            (lambda () (message "update packages now"))))
-
 (provide 'init-elpa)
