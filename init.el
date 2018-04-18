@@ -130,12 +130,6 @@
 (maybe-require-package 'dotenv-mode)
 (maybe-require-package 'nginx-mode)
 
-
-(when (maybe-require-package 'uptimes)
-  (setq-default uptimes-keep-count 200)
-  (add-hook 'after-init-hook (lambda () (require 'uptimes))))
-
-
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
