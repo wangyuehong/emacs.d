@@ -20,6 +20,10 @@
      (string= "#!" (buffer-substring (point-min) (+ 2 (point-min)))))
    (normal-mode)))
 
+(when (maybe-require-package 'info-colors)
+  (after-load 'info
+    (add-hook 'Info-selection-hook 'info-colors-fontify-node)))
+
 (when (maybe-require-package 'regex-tool)
   (setq-default regex-tool-backend 'perl))
 
