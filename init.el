@@ -84,7 +84,6 @@
 (require 'init-company)
 (require 'init-windows)
 (require 'init-sessions)
-(require 'init-fonts)
 
 (require 'init-spelling)
 (require 'init-term-mode)
