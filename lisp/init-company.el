@@ -16,7 +16,7 @@
               company-complete-number
               )))
   (after-load 'company
-    (diminish 'company-mode "CMP")
+    (diminish 'company-mode)
     (define-key company-mode-map (kbd "M-/") 'company-complete)
     (define-key company-active-map [tab] 'company-complete-common-or-cycle)
     (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
