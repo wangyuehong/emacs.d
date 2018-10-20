@@ -16,6 +16,8 @@
               company-complete-number
               )))
   (after-load 'company
+    (dolist (backend '(company-eclim company-semantic))
+      (delq backend company-backends))
     (diminish 'company-mode)
     (define-key company-mode-map (kbd "M-/") 'company-complete)
     (define-key company-active-map [tab] 'company-complete-common-or-cycle)
