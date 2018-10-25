@@ -10,7 +10,7 @@
                   ivy-magic-tilde nil
                   ivy-dynamic-exhibit-delay-ms 150
                   ivy-initial-inputs-alist
-                  '((man . "^")
+                  '((Man-completion-table . "^")
                     (woman . "^")))
 
     ;; IDO-style directory navigation
