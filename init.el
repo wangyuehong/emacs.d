@@ -94,7 +94,6 @@
 (require 'init-git)
 
 (require 'init-avy)
-(require 'init-bookmark)
 (require 'init-ctags)
 (require 'init-helm)
 (require 'init-highlight)
