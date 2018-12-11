@@ -143,6 +143,7 @@
 
 (key-chord-define evil-insert-state-map ";;" "\C-e;")
 (key-chord-define evil-insert-state-map ",," "\C-e,")
+(key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 
 (require-package 'evil-matchit)
 (require 'evil-matchit)
