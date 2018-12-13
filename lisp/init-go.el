@@ -3,6 +3,7 @@
 (require-package 'toml-mode)
 (require-package 'golint)
 
-(add-hook 'before-save-hook #'gofmt-before-save)
+(after-load 'go-mode
+  (add-hook 'before-save-hook #'gofmt-before-save))
 
 (provide 'init-go)

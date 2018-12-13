@@ -21,6 +21,7 @@
  ediff-split-window-function 'split-window-horizontally
  ediff-window-setup-function 'ediff-setup-windows-plain
  indent-tabs-mode nil
+ tab-width 4
  line-spacing 0.2
  make-backup-files nil
  mouse-yank-at-point t
