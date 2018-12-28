@@ -170,8 +170,8 @@
        "="  'align
        "a"  'ag-regexp-project-at-point
        "A"  'ag-regexp
-       "e"  'iedit-mode-toggle-on-function
-       "E"  'iedit-mode
+       "E"  'iedit-mode-toggle-on-function
+       "e"  'iedit-mode
        "f"  'flycheck-list-errors
        "w"  'save-buffer
        "W"  'save-some-buffers
