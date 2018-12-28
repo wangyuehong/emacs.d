@@ -102,6 +102,7 @@
 (require 'init-quickrun)
 (require 'init-rainbow)
 (require 'init-yasnippet)
+(require 'init-lsp)
 
 (require 'init-markdown)
 (require 'init-javascript)
