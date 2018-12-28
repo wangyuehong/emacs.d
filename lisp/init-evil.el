@@ -145,17 +145,12 @@
 (key-chord-define evil-insert-state-map ",," "\C-e,")
 (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 
-(require-package 'evil-matchit)
-(require 'evil-matchit)
-(global-evil-matchit-mode 1)
-
 ;; press ",xx" to expand region
 ;; then press "z" to contract, "x" to expand
 (eval-after-load "evil"
   '(progn
      (setq expand-region-contract-fast-key "z")))
 
-;; @see https://github.com/redguardtoo/evil-matchit/issues/38
 (define-key evil-visual-state-map (kbd "v") 'er/expand-region)
 (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
 (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
