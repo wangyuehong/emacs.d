@@ -31,7 +31,6 @@
 (setq git-gutter:update-hooks '(after-save-hook after-revert-hook))
 
 (define-prefix-command 'git-gutter-map)
-(global-set-key (kbd "C-x g") 'git-gutter-map)
 
 (define-key git-gutter-map "j" 'git-gutter:next-hunk)
 (define-key git-gutter-map "k" 'git-gutter:previous-hunk)
