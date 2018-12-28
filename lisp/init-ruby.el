@@ -19,26 +19,7 @@
 
 (add-hook 'ruby-mode-hook 'subword-mode)
 
-;;; Inferior ruby
-(require-package 'inf-ruby)
-(setq inf-ruby-default-implementation "pry")
-
-(require-package 'goto-gem)
-
-;;; Robe
-(when (maybe-require-package 'robe)
-  (after-load 'ruby-mode
-    (add-hook 'ruby-mode-hook 'robe-mode))
-  (after-load 'company
-    (dolist (hook (mapcar 'derived-mode-hook-name '(ruby-mode inf-ruby-mode html-erb-mode haml-mode)))
-      (add-hook hook
-                (lambda () (sanityinc/local-push-company-backend 'company-robe))))))
-
 (require-package 'rubocop)
 (add-hook 'ruby-mode-hook 'rubocop-mode)
-
-;;; ri support
-(require-package 'yari)
-(defalias 'ri 'yari)
 
 (provide 'init-ruby)
