@@ -112,7 +112,6 @@
 (require 'init-perl)
 (require 'init-python)
 (require 'init-ruby)
-(require 'init-rails)
 (require 'init-sh)
 (require 'init-yaml)
 (require 'init-docker)
