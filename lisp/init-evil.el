@@ -183,6 +183,7 @@
        "/"  'evilnc-comment-or-uncomment-lines
        "k"  'kill-buffer-and-window
        "K"  'kill-other-buffers
+       "p"  'projectile-command-map
        "P"  'list-packages
        "g"  'magit-status
        "r"  'counsel-yank-pop

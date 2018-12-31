@@ -48,4 +48,5 @@ site-lisp/package/
 /rake.cache
 .yas-compiled-snippets.el
 .historian
-.lsp-session-v1
+/.lsp-session-v1
+/projectile-bookmarks.eld
