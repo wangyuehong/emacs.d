@@ -170,8 +170,8 @@
        "="  'align
        "a"  'ag-regexp-project-at-point
        "A"  'ag-regexp
-       "E"  'iedit-mode-toggle-on-function
        "e"  'iedit-mode
+       "E"  'iedit-mode-toggle-on-function
        "f"  'flycheck-list-errors
        "w"  'save-buffer
        "W"  'save-some-buffers
@@ -179,7 +179,6 @@
        "i"  'counsel-imenu
        "s"  'swiper
        "q"  'quickrun
-       "Q"  'quickrun-region
        "/"  'evilnc-comment-or-uncomment-lines
        "k"  'kill-buffer-and-window
        "K"  'kill-other-buffers
