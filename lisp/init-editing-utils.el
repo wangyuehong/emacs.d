@@ -43,12 +43,12 @@
 (require-package 'mode-line-bell)
 (add-hook 'after-init-hook 'mode-line-bell-mode)
 
-(when (maybe-require-package 'indent-guide)
-  (add-hook 'prog-mode-hook 'indent-guide-mode)
-  (add-hook 'yaml-mode-hook 'indent-guide-mode)
-  (setq indent-guide-delay 0.5)
-  (after-load 'indent-guide
-    (diminish 'indent-guide-mode)))
+;; (when (maybe-require-package 'indent-guide)
+;;   (add-hook 'prog-mode-hook 'indent-guide-mode)
+;;   (add-hook 'yaml-mode-hook 'indent-guide-mode)
+;;   (setq indent-guide-delay 1.5)
+;;   (after-load 'indent-guide
+;;     (diminish 'indent-guide-mode)))
 
 (when (require-package 'rainbow-delimiters)
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
