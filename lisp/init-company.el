@@ -26,7 +26,14 @@
     (define-key company-active-map (kbd "C-j") 'company-select-next)
     (define-key company-active-map (kbd "C-b") 'company-previous-page)
     (define-key company-active-map (kbd "C-f") 'company-next-page)
+
     (setq-default company-dabbrev-other-buffers 'all
+                  company-dabbrev-downcase nil
+                  company-selection-wrap-around t
+                  company-dabbrev-ignore-case nil
+                  company-idle-delay 0.1
+                  company-minimum-prefix-length 2
+                  company-require-match nil
                   company-tooltip-align-annotations t))
   (global-set-key (kbd "M-C-/") 'company-complete)
   ;; (when (maybe-require-package 'company-quickhelp)
