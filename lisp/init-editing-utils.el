@@ -89,6 +89,5 @@
 (add-hook 'after-init-hook 'hes-mode)
 
 (require-package 'iedit)
-(setq iedit-auto-narrow t)
 
 (provide 'init-editing-utils)
