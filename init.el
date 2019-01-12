@@ -61,6 +61,7 @@
 
 (require 'init-keybind)
 (require 'init-evil)
+(require 'init-general)
 
 (require 'init-frame-hooks)
 (require 'init-xterm)
@@ -156,8 +157,4 @@
 
 
 (provide 'init)
-
-;; Local Variables:
-;; coding: utf-8
-;; no-byte-compile: t
-;; End:
+;;; init.el ends here

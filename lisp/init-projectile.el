@@ -2,17 +2,18 @@
 ;;; Commentary:
 ;;; Code:
 
-(when (maybe-require-package 'projectile)
-  (add-hook 'after-init-hook 'projectile-mode)
-
-  ;; Shorter modeline
-  (setq-default projectile-mode-line-prefix " Proj")
-
-  (after-load 'projectile
-    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
-
-  (maybe-require-package 'ibuffer-projectile))
-
+(use-package projectile
+  :diminish
+  :bind (:map projectile-mode-map
+              ("C-c p" . projectile-command-map))
+  :hook (after-init . projectile-mode)
+  :init
+  (setq projectile-mode-line-prefix "")
+  (setq projectile-sort-order 'recentf)
+  (setq projectile-use-git-grep t)
+  :config
+  (projectile-update-mode-line) ; Update mode-line at the first time
+  )
 
 (provide 'init-projectile)
 ;;; init-projectile.el ends here

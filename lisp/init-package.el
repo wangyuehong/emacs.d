@@ -35,6 +35,4 @@
   (defalias 'upgrade-packages 'paradox-upgrade-packages))
 
 (provide 'init-package)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; init-package.el ends here

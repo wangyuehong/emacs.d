@@ -60,6 +60,7 @@
 (add-hook 'after-init-hook 'global-undo-tree-mode)
 (after-load 'undo-tree
   (diminish 'undo-tree-mode))
+(global-set-key (kbd "C-r") 'undo-tree-redo)
 
 ;;----------------------------------------------------------------------------
 ;; Don't disable narrowing commands
@@ -77,6 +78,7 @@
 ;; Expand region
 ;;----------------------------------------------------------------------------
 (require-package 'expand-region)
+(setq expand-region-contract-fast-key "z")
 ;; (global-set-key (kbd "C-=") 'er/expand-region)
 
 ;;----------------------------------------------------------------------------
