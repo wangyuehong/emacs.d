@@ -3,7 +3,6 @@
 ;;; Code:
 
 (use-package evil
-  :ensure t
   :init ;; tweak evil's configuration before loading it
   (evil-mode t)
   (setq-default
@@ -85,12 +84,10 @@
   ) ;; M-x pp-macroexpand-last-sexp here to test use-package
 
 (use-package evil-surround
-  :ensure t
   :init
   (global-evil-surround-mode 1))
 
 (use-package evil-anzu
-  :ensure t
   :init
   (global-anzu-mode t))
 
@@ -100,9 +97,7 @@
   (global-evil-visualstar-mode t)
   )
 
-(use-package evil-nerd-commenter
-  :ensure t
-  )
+(use-package evil-nerd-commenter)
 
 (provide 'init-evil)
 ;;; init-evil.el ends here

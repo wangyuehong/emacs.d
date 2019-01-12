@@ -3,7 +3,6 @@
 ;;; Code:
 
 (use-package general
-  :ensure t
   :after evil
   :init
   (general-evil-setup t)
