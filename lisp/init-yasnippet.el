@@ -10,4 +10,4 @@
 (add-to-list 'auto-mode-alist '("\\.yasnippet\\'" . snippet-mode))
 
 (provide 'init-yasnippet)
-;;; init-yasnippet ends here
+;;; init-yasnippet.el ends here
