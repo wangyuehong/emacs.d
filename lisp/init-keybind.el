@@ -1,15 +1,12 @@
+;;; init-keybind.el --- Load the full configuration -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
 (require-package 'key-chord)
 
 (require 'key-chord)
 (key-chord-mode t)
 
 (require 'smartchr)
-
-;;get this work for terminal
-(define-key input-decode-map "\e\eOA" [(meta up)])
-(define-key input-decode-map "\e\eOB" [(meta down)])
-(define-key input-decode-map "\e\eOD" [(meta left)])
-(define-key input-decode-map "\e\eOC" [(meta right)])
 
 (require-package 'move-text)
 (global-set-key (kbd "M-k") 'move-text-up)
@@ -22,3 +19,5 @@
 (add-hook 'after-init-hook 'which-key-mode)
 
 (provide 'init-keybind)
+
+;;; init-keybind.el ends here

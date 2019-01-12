@@ -149,8 +149,7 @@ Please note RUN-TOGETHER will make aspell less capable. So it should only be use
 ;; if and only if there is enough memory
 ;; You can use prog-mode-hook instead.
 (defun can-enable-flyspell-mode ()
-  (and (not *no-memory*)
-           ispell-program-name
+  (and ispell-program-name
            (executable-find ispell-program-name)))
 
 (defun enable-flyspell-mode-conditionally ()

@@ -3,6 +3,9 @@
       desktop-auto-save-timeout 600)
 (desktop-save-mode 1)
 
+(defun sanityinc/time-subtract-millis (b a)
+  (* 1000.0 (float-time (time-subtract b a))))
+
 (defun sanityinc/desktop-time-restore (orig &rest args)
   (let ((start-time (current-time)))
     (prog1
