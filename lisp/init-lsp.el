@@ -8,7 +8,7 @@
   (setq lsp-prefer-flymake nil)
   )
 
-(use-package company-lsp)
+(use-package company-lsp :commands company-lsp)
 
 (provide 'init-lsp)
 ;;; init-lsp.el ends here

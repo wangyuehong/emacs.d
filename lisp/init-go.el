@@ -52,26 +52,20 @@
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook #'gofmt-before-save)
 
-  (use-package lsp-go)
   (add-hook 'go-mode-hook #'lsp)
-
-  ;; Go add-ons for Projectile
-  ;; Run: M-x `go-projectile-install-tools'
-  (with-eval-after-load 'projectile
-    (use-package go-projectile
-      :commands (go-projectile-mode go-projectile-switch-project)
-      :hook ((go-mode . go-projectile-mode)
-             (projectile-after-switch-project . go-projectile-switch-project))))
 
   (use-package go-guru
     :bind (:map go-mode-map
                 ;; ([remap xref-find-definitions] . go-guru-definition)
                 ([remap xref-find-references] . go-guru-referrers)))
+  )
 
-  (with-eval-after-load 'company
-    (use-package company-go
-      :defines company-backends
-      :init (cl-pushnew 'company-go company-backends)))
+;; Run: M-x `go-projectile-install-tools'
+(use-package go-projectile
+  :commands (go-projectile-mode go-projectile-switch-project)
+  :after (projectile-mode go-mode)
+  :hook ((go-mode . go-projectile-mode)
+         (projectile-after-switch-project . go-projectile-switch-project))
   )
 
 ;; (require-package 'flycheck-gometalinter)
