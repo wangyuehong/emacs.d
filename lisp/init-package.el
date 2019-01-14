@@ -15,7 +15,7 @@
 ;; Should set before loading `use-package'
 (eval-and-compile
   (setq use-package-always-ensure t)
-  (setq use-package-always-defer t)
+  ;; (setq use-package-always-defer t)
   (setq use-package-expand-minimally t)
   (setq use-package-enable-imenu-support t))
 
@@ -32,7 +32,7 @@
   :init
   (setq paradox-execute-asynchronously t)
   (setq paradox-github-token t)
-  (defalias 'upgrade-packages 'paradox-upgrade-packages))
+  )
 
 (provide 'init-package)
 ;;; init-package.el ends here

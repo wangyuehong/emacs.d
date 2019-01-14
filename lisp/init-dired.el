@@ -11,8 +11,8 @@
  )
 
 (use-package diredfl
-  :init (diredfl-global-mode 1))
-
+  :config
+  (diredfl-global-mode))
 
 (defun +dired|sort-directories-first ()
   "List directories first in dired buffers."

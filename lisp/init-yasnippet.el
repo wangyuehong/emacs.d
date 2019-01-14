@@ -4,10 +4,12 @@
 
 (use-package yasnippet
   :diminish yas-minor-mode
-  :hook (after-init . yas-global-mode)
-  :config (use-package yasnippet-snippets))
+  :hook (after-init . yas-global-mode))
 
 (add-to-list 'auto-mode-alist '("\\.yasnippet\\'" . snippet-mode))
+
+(use-package yasnippet
+  :after yasnippet)
 
 (provide 'init-yasnippet)
 ;;; init-yasnippet.el ends here

@@ -4,9 +4,8 @@
 
 (use-package general
   :after evil
-  :init
-  (general-evil-setup t)
   :config
+  (general-evil-setup t)
   (general-define-key
    :states '(normal visual)
    :prefix ","

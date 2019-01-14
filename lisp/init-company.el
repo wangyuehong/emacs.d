@@ -11,18 +11,18 @@
   :commands company-abort
   :hook (after-init . global-company-mode)
   :init
-  (setq-default company-dabbrev-other-buffers 'all
-                company-tooltip-align-annotations t ; aligns annotation to the right
-                company-tooltip-limit 12            ; bigger popup window
-                company-idle-delay .2               ; decrease delay before autocompletion popup shows
-                company-echo-delay 0                ; remove annoying blinking
-                company-dabbrev-downcase nil
-                company-selection-wrap-around t
-                company-dabbrev-ignore-case nil
-                company-idle-delay 0.2
-                company-minimum-prefix-length 2
-                company-require-match nil
-                )
+  (setq company-dabbrev-other-buffers 'all
+        company-tooltip-align-annotations t ; aligns annotation to the right
+        company-tooltip-limit 12            ; bigger popup window
+        company-idle-delay .2               ; decrease delay before autocompletion popup shows
+        company-echo-delay 0                ; remove annoying blinking
+        company-dabbrev-downcase nil
+        company-selection-wrap-around t
+        company-dabbrev-ignore-case nil
+        company-idle-delay 0.2
+        company-minimum-prefix-length 2
+        company-require-match nil
+        )
   :config
 
   (defun my-company-yasnippet ()

@@ -4,9 +4,9 @@
 
 (use-package evil
   :init ;; tweak evil's configuration before loading it
-  (evil-mode t)
   (setq-default
    evil-auto-indent t
+   evil-want-keybinding nil
    evil-default-cursor t
    evil-cross-lines t
    evil-search-module 'evil-search
@@ -17,6 +17,7 @@
    evil-move-cursor-back nil
    evil-want-fine-undo t
    )
+  (evil-mode t)
   :config ;; tweak evil after loading it
   (defalias #'forward-evil-word #'forward-evil-symbol)
 
@@ -36,37 +37,14 @@
   ;; (key-chord-define evil-insert-state-map ";;" "\C-e;")
   ;; (key-chord-define evil-insert-state-map ",," "\C-e,")
   ;; (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
-  (loop for (mode . state) in
-        '((minibuffer-inactive-mode . emacs)
-          (ag-mode . normal)
-          (ggtags-global-mode . emacs)
-          (Info-mode . emacs)
-          (term-mode . emacs)
-          (sdcv-mode . emacs)
-          (anaconda-nav-mode . emacs)
-          (log-edit-mode . emacs)
-          (vc-log-edit-mode . emacs)
-          (inf-ruby-mode . normal)
-          (quickrun--mode . emacs)
-          (yari-mode . emacs)
-          (erc-mode . emacs)
-          (gud-mode . emacs)
-          (help-mode . emacs)
-          (eshell-mode . emacs)
-          (shell-mode . emacs)
-          (fundamental-mode . normal)
-          (woman-mode . emacs)
-          (sr-mode . emacs)
-          (profiler-report-mode . emacs)
-          (dired-mode . normal)
-          (compilation-mode . emacs)
-          (speedbar-mode . emacs)
-          (ivy-occur-mode . emacs)
-          (messages-buffer-mode . normal)
-          (browse-kill-ring-mode . normal)
-          (etags-select-mode . normal)
-          )
-        do (evil-set-initial-state mode state))
+   ;; modes to map to different default states
+
+  (dolist (mode-map '((comint-mode . emacs)
+                      (term-mode . emacs)
+                      (eshell-mode . emacs)
+                      (help-mode . emacs)
+                      (fundamental-mode . emacs)))
+    (evil-set-initial-state `,(car mode-map) `,(cdr mode-map)))
 
   ;; change mode-line color by evil state
   (lexical-let ((default-color (cons (face-background 'mode-line)
@@ -83,21 +61,34 @@
                   (set-face-foreground 'mode-line (cdr color))))))
   ) ;; M-x pp-macroexpand-last-sexp here to test use-package
 
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init)
+  )
+
 (use-package evil-surround
-  :init
-  (global-evil-surround-mode 1))
+  :after evil
+  :config
+  (global-evil-surround-mode)
+  )
 
 (use-package evil-anzu
-  :init
+  :after evil
+  :config
   (global-anzu-mode t))
 
 (use-package evil-visualstar
+  :after evil
   :init
   (setq evil-visualstar/persistent t)
-  (global-evil-visualstar-mode t)
+  :config
+  (global-evil-visualstar-mode)
   )
 
-(use-package evil-nerd-commenter)
+(use-package evil-nerd-commenter
+  :after evil
+  )
 
 (provide 'init-evil)
 ;;; init-evil.el ends here
