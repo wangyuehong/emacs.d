@@ -75,7 +75,6 @@
 (require 'init-flycheck)
 
 (require 'init-recentf)
-(require 'init-smex)
 (require 'init-ivy)
 (require 'init-company)
 (require 'init-windows)
