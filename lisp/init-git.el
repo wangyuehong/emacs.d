@@ -1,44 +1,52 @@
-(require-package 'gitignore-mode)
-(require-package 'gitconfig-mode)
-(require-package 'git-timemachine)
-(require-package 'git-link)
+;; init-git.el --- git configurations.  -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
 
-(require-package 'magit)
-(setq magit-last-seen-setup-instructions "1.4.0")
+(use-package magit
+  :commands (magit-status)
+  :init
+  (setq magit-last-seen-setup-instructions "1.4.0")
+  (setq-default
+   magit-process-popup-time 10
+   magit-diff-refine-hunk t
+   magit-completing-read-function 'ivy-completing-read)
+  :hook
+  (magit-popup-mode . sanityinc/no-trailing-whitespace)
+  :config
+  (fullframe magit-status magit-mode-quit-window)
+  )
 
-(setq-default
- magit-process-popup-time 10
- magit-diff-refine-hunk t
- magit-completing-read-function 'ivy-completing-read)
+(use-package evil-magit
+  :after (evil magit))
 
-(require-package 'evil-magit)
-(require 'evil-magit)
+(use-package git-commit
+  :hook
+  (git-commit-mode . goto-address-mode)
+  )
 
-(after-load 'magit
-  (add-hook 'magit-popup-mode-hook 'sanityinc/no-trailing-whitespace))
+(use-package git-gutter
+  :init
+  (setq git-gutter:update-threshold 2)
+  (setq git-gutter:update-hooks '(after-save-hook after-revert-hook))
+  :config
+  (global-git-gutter-mode t)
+  (define-prefix-command 'git-gutter-map)
 
-(require-package 'fullframe)
-(after-load 'magit
-  (fullframe magit-status magit-mode-quit-window))
+  (define-key git-gutter-map "j" 'git-gutter:next-hunk)
+  (define-key git-gutter-map "k" 'git-gutter:previous-hunk)
+  (define-key git-gutter-map "p" 'git-gutter:popup-hunk)
+  (define-key git-gutter-map "v" 'git-gutter:revert-hunk)
+  (define-key git-gutter-map "s" 'git-gutter:stage-hunk)
+  )
 
-(when (maybe-require-package 'git-commit)
-  (add-hook 'git-commit-mode-hook 'goto-address-mode))
+(use-package gitignore-mode)
+(use-package gitconfig-mode)
+(use-package git-timemachine)
 
-(require-package 'git-gutter)
-(global-git-gutter-mode t)
-
-(setq git-gutter:update-threshold 2)
-(setq git-gutter:update-hooks '(after-save-hook after-revert-hook))
-
-(define-prefix-command 'git-gutter-map)
-
-(define-key git-gutter-map "j" 'git-gutter:next-hunk)
-(define-key git-gutter-map "k" 'git-gutter:previous-hunk)
-(define-key git-gutter-map "p" 'git-gutter:popup-hunk)
-(define-key git-gutter-map "v" 'git-gutter:revert-hunk)
-(define-key git-gutter-map "s" 'git-gutter:stage-hunk)
-
-(require-package 'magit-gitflow)
-(add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
+(use-package magit-gitflow
+  :hook
+  (magit-mode .  turn-on-magit-gitflow)
+  )
 
 (provide 'init-git)
+;;; init-git.el ends here
