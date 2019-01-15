@@ -1,3 +1,7 @@
+;;; init-uniquify.el --- Configure uniquification of buffer names -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
 ;;----------------------------------------------------------------------------
 ;; Nicer naming of buffers for files with identical names
 ;;----------------------------------------------------------------------------
@@ -10,3 +14,4 @@
 
 
 (provide 'init-uniquify)
+;; init-uniquify.el ends here
