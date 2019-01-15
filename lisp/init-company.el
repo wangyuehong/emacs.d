@@ -14,7 +14,6 @@
   (setq company-dabbrev-other-buffers 'all
         company-tooltip-align-annotations t ; aligns annotation to the right
         company-tooltip-limit 12            ; bigger popup window
-        company-idle-delay .2               ; decrease delay before autocompletion popup shows
         company-echo-delay 0                ; remove annoying blinking
         company-dabbrev-downcase nil
         company-selection-wrap-around t
@@ -46,6 +45,8 @@
     (define-key company-active-map (kbd "C-j") 'company-select-next)
     (define-key company-active-map (kbd "C-b") 'company-previous-page)
     (define-key company-active-map (kbd "C-f") 'company-next-page)
+    (define-key company-active-map (kbd "<return>") 'company-complete-selection)
+    (define-key company-active-map (kbd "RET") 'company-complete-selection)
   )
 
 (after-load 'company
