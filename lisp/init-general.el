@@ -25,7 +25,7 @@
    "k"  'kill-buffer-and-window
    "K"  'kill-other-buffers
    "p"  'projectile-command-map
-   "P"  'list-packages
+   "P"  'paradox-upgrade-packages
    "g"  'magit-status
    "r"  'counsel-yank-pop
    ","  'git-gutter-map
