@@ -1,3 +1,7 @@
+;;; init-sessions.el --- Save and restore editor sessions between restarts -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
 ;; save a list of open files in ~/.emacs.d/.emacs.desktop
 (setq desktop-path (list user-emacs-directory)
       desktop-auto-save-timeout 600)
@@ -33,16 +37,13 @@
 (add-hook 'after-init-hook 'savehist-mode)
 (setq savehist-file (expand-file-name ".savehist" user-emacs-directory))
 
-(require-package 'session)
-
-(setq session-save-file (expand-file-name ".session" user-emacs-directory))
-(setq session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)")
-(setq session-save-file-coding-system 'utf-8)
-
-(add-hook 'after-init-hook 'session-initialize)
-
-;; make it work with helm-show-kill-ring
-(setq session-save-print-spec '(t nil 40000))
+(use-package session
+  :hook (after-init . session-initialize)
+  :init
+  (setq session-save-file (expand-file-name ".session" user-emacs-directory))
+  (setq session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)")
+  (setq session-save-file-coding-system 'utf-8)
+  )
 
 ;; save a bunch of variables to the desktop file
 ;; for lists specify the len of the maximal saved data also
@@ -56,12 +57,8 @@
         (file-name-history        . 100)
         (grep-find-history        . 30)
         (grep-history             . 30)
-        (ido-buffer-history       . 100)
-        (ido-last-directory-list  . 100)
-        (ido-work-directory-list  . 100)
-        (ido-work-file-list       . 100)
         (ivy-history              . 100)
-        (magit-read-rev-history   . 50)
+        (magit-revision-history   . 50)
         (minibuffer-history       . 50)
         (org-clock-history        . 50)
         (org-refile-history       . 50)
@@ -77,3 +74,4 @@
         tags-table-list))
 
 (provide 'init-sessions)
+;;; init-sessions.el ends here
