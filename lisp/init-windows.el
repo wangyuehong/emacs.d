@@ -1,17 +1,24 @@
-;;; -*- lexical-binding: t -*-
+;;; init-windows.el --- Working with windows within frames -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This is not about the "Windows" OS, but rather Emacs's "windows"
+;; concept: these are the panels within an Emacs frame which contain
+;; buffers.
+
+;;; Code:
+
 ;;----------------------------------------------------------------------------
 ;; Navigate window layouts with "C-c <left>" and "C-c <right>"
 ;;----------------------------------------------------------------------------
 (add-hook 'after-init-hook 'winner-mode)
 
-
-
 ;; Make "C-x o" prompt for a target window when there are more than 2
-(require-package 'switch-window)
-(setq-default switch-window-shortcut-style 'alphabet)
-(setq-default switch-window-timeout nil)
-(global-set-key (kbd "C-x o") 'switch-window)
-
+(use-package switch-window
+  :init
+  (setq-default switch-window-shortcut-style 'alphabet)
+  (setq-default switch-window-timeout nil)
+  :bind (("C-x o" . switch-window))
+  )
 
 ;;----------------------------------------------------------------------------
 ;; When splitting window, show (other-buffer) in the new window
@@ -61,9 +68,8 @@
       (set-window-buffer (next-window) other-buffer))))
 
 (global-set-key (kbd "C-x |") 'split-window-horizontally-instead)
-(global-set-key (kbd "C-x -") 'split-window-vertically-instead)
+(global-set-key (kbd "C-x _") 'split-window-vertically-instead)
 
-
 ;; Borrowed from http://postmomentum.ch/blog/201304/blog-on-emacs
 (defun sanityinc/split-window()
   "Split the window to see the most recent buffer in the other window.
@@ -78,12 +84,6 @@ Call a second time to restore the original window configuration."
 
 (global-set-key (kbd "<f7>") 'sanityinc/split-window)
 
-(defun kill-other-buffers ()
-  "Kill all other buffers."
-  (interactive)
-  (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
-
-
 (defun sanityinc/toggle-current-window-dedication ()
   "Toggle whether the current window is dedicated to its current buffer."
   (interactive)
@@ -94,12 +94,7 @@ Call a second time to restore the original window configuration."
              (if was-dedicated "no longer " "")
              (buffer-name))))
 
-(global-set-key (kbd "C-c <down>") 'sanityinc/toggle-current-window-dedication)
-
-
-
-(unless (memq window-system '(nt w32))
-  (windmove-default-keybindings 'control))
-
+(global-set-key (kbd "C-x f") 'sanityinc/toggle-current-window-dedication)
 
 (provide 'init-windows)
+;;; init-windows.el ends here
