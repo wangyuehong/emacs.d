@@ -27,7 +27,14 @@
   ;; (define-key ivy-occur-mode-map (kbd "C-c C-q") #'ivy-wgrep-change-to-wgrep-mode)
   )
 
+;; use smex to remember history
+(use-package smex
+  :init
+  (setq-default smex-save-file (expand-file-name ".smex-items" user-emacs-directory))
+  )
+
 (use-package counsel
+  :after ivy
   :diminish counsel-mode
   :hook (after-init . counsel-mode)
   :init
