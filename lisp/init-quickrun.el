@@ -1,5 +1,12 @@
-(require-package 'quickrun)
+;;; init-quickrun.el --- quickrun configurations. -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
 
-(require 'quickrun)
+(use-package quickrun
+  :commands quickrun
+  :init
+  (setq quickrun-timeout-seconds 15)
+  )
 
 (provide 'init-quickrun)
+;;; init-quickrun.el ends here
