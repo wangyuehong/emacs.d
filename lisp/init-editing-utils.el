@@ -92,4 +92,11 @@
 
 (require-package 'iedit)
 
+(use-package super-save
+  :init
+  (setq super-save-auto-save-when-idle t)
+  :config
+  (super-save-mode +1)
+  )
+
 (provide 'init-editing-utils)
