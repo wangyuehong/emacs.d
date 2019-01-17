@@ -6,7 +6,7 @@
 (add-to-list 'completion-styles 'initials t)
 
 (use-package company
-  :diminish company-mode
+  :diminish
   :defines (company-dabbrev-ignore-case company-dabbrev-downcase)
   :commands company-abort
   :hook (after-init . global-company-mode)

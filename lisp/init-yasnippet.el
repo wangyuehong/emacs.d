@@ -3,7 +3,7 @@
 ;;; Code:
 
 (use-package yasnippet
-  :diminish yas-minor-mode
+  :diminish
   :hook (after-init . yas-global-mode)
   :init
   ;; http://stackoverflow.com/questions/7619640/emacs-latex-yasnippet-why-are-newlines-inserted-after-a-snippet

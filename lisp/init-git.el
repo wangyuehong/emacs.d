@@ -25,6 +25,7 @@
   )
 
 (use-package git-gutter
+  :diminish
   :init
   (setq git-gutter:update-threshold 2)
   (setq git-gutter:update-hooks '(after-save-hook after-revert-hook))

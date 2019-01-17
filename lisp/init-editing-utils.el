@@ -40,8 +40,9 @@
 
 (add-hook 'after-init-hook 'transient-mark-mode)
 
-(require-package 'mode-line-bell)
-(add-hook 'after-init-hook 'mode-line-bell-mode)
+(use-package mode-line-bell
+  :hook (after-init . mode-line-bell-mode)
+  )
 
 ;; (when (maybe-require-package 'indent-guide)
 ;;   (add-hook 'prog-mode-hook 'indent-guide-mode)
@@ -50,18 +51,15 @@
 ;;   (after-load 'indent-guide
 ;;     (diminish 'indent-guide-mode)))
 
-(when (require-package 'rainbow-delimiters)
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode)
+  )
 
-(when (fboundp 'global-prettify-symbols-mode)
-  (add-hook 'after-init-hook 'global-prettify-symbols-mode))
-
-(require-package 'undo-tree)
-(add-hook 'after-init-hook 'global-undo-tree-mode)
-(after-load 'undo-tree
-  (diminish 'undo-tree-mode))
-(global-set-key (kbd "C-r") 'undo-tree-redo)
-
+(use-package undo-tree
+  :diminish
+  :hook (after-init . global-undo-tree-mode)
+  :bind (("C-r" . undo-tree-undo))
+  )
 ;;----------------------------------------------------------------------------
 ;; Don't disable narrowing commands
 ;;----------------------------------------------------------------------------
@@ -74,12 +72,10 @@
 ;;----------------------------------------------------------------------------
 (add-hook 'after-init-hook 'show-paren-mode)
 
-;;----------------------------------------------------------------------------
-;; Expand region
-;;----------------------------------------------------------------------------
-(require-package 'expand-region)
-(setq expand-region-contract-fast-key "z")
-;; (global-set-key (kbd "C-=") 'er/expand-region)
+(use-package expand-region
+  :init
+  (setq expand-region-contract-fast-key "z")
+  )
 
 ;;----------------------------------------------------------------------------
 ;; Don't disable case-change functions
@@ -87,16 +83,19 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
-(require-package 'highlight-escape-sequences)
-(add-hook 'after-init-hook 'hes-mode)
+(use-package highlight-escape-sequences
+  :hook (after-init . hes-mode)
+  )
 
-(require-package 'iedit)
+(use-package iedit)
 
 (use-package super-save
+  :diminish
   :init
   (setq super-save-auto-save-when-idle t)
+  (setq super-save-idle-duration 2)
   :config
-  (super-save-mode +1)
+  (super-save-mode)
   )
 
 (provide 'init-editing-utils)

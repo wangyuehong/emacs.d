@@ -3,7 +3,7 @@
 ;;; Code:
 
 (use-package ivy
-  :diminish ivy-mode
+  :diminish
   :hook
   (after-init . ivy-mode)
   :init
@@ -35,7 +35,7 @@
 
 (use-package counsel
   :after ivy
-  :diminish counsel-mode
+  :diminish
   :hook (after-init . counsel-mode)
   :init
   (setq-default counsel-mode-override-describe-bindings t)

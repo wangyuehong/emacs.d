@@ -3,7 +3,7 @@
 ;;; Code:
 
 (use-package flycheck
-  :diminish flycheck-mode
+  :diminish
   :hook (after-init . global-flycheck-mode)
   :init
   (setq flycheck-emacs-lisp-load-path 'inherit)
