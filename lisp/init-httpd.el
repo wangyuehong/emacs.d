@@ -3,7 +3,7 @@
 ;;; Code:
 
 (use-package simple-httpd
-  :defer t
+  :defer
   :commands(httpd-start httpd-stop)
   :init
   (setq httpd-port 5678)

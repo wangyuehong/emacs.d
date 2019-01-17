@@ -27,8 +27,8 @@
 
 ;; Extensions
 (use-package paradox
-  :commands paradox-enable
-  :hook (after-init . paradox-enable)
+  :defer
+  :commands paradox-upgrade-packages
   :init
   (setq paradox-execute-asynchronously t)
   (setq paradox-github-token t)

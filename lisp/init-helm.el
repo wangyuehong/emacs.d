@@ -3,6 +3,7 @@
 ;;; Code:
 
 (use-package helm
+  :defer
   :config
   (define-key helm-map (kbd "C-h") 'helm-previous-source)
   (define-key helm-map (kbd "C-l") 'helm-next-source)
@@ -15,7 +16,7 @@
 (use-package helm-ls-git
   :after helm
   :commands helm-ls-git-ls
-  :defer t
+  :defer
   :init
   (setq helm-ls-git-show-abs-or-relative 'relative)
   (setq helm-ff-transformer-show-only-basename nil)

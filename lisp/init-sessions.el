@@ -33,7 +33,7 @@
 ;;----------------------------------------------------------------------------
 ;; Restore histories and registers after saving
 ;;----------------------------------------------------------------------------
-(setq-default history-length 1000)
+(setq-default history-length 100)
 (add-hook 'after-init-hook 'savehist-mode)
 (setq savehist-file (expand-file-name ".savehist" user-emacs-directory))
 
@@ -48,28 +48,28 @@
 ;; save a bunch of variables to the desktop file
 ;; for lists specify the len of the maximal saved data also
 (setq desktop-globals-to-save
-      '((comint-input-ring        . 50)
-        (compile-history          . 30)
+      '((comint-input-ring        . 20)
+        (compile-history          . 20)
         desktop-missing-file-warning
         (dired-regexp-history     . 20)
-        (extended-command-history . 30)
+        (extended-command-history . 20)
         (face-name-history        . 20)
-        (file-name-history        . 100)
-        (grep-find-history        . 30)
-        (grep-history             . 30)
-        (ivy-history              . 100)
-        (magit-revision-history   . 50)
-        (minibuffer-history       . 50)
-        (org-clock-history        . 50)
-        (org-refile-history       . 50)
-        (org-tags-history         . 50)
-        (query-replace-history    . 60)
-        (read-expression-history  . 60)
-        (regexp-history           . 60)
+        (file-name-history        . 20)
+        (grep-find-history        . 20)
+        (grep-history             . 20)
+        (ivy-history              . 20)
+        (magit-revision-history   . 20)
+        (minibuffer-history       . 20)
+        (org-clock-history        . 10)
+        (org-refile-history       . 10)
+        (org-tags-history         . 10)
+        (query-replace-history    . 20)
+        (read-expression-history  . 10)
+        (regexp-history           . 10)
         (regexp-search-ring       . 20)
         register-alist
         (search-ring              . 20)
-        (shell-command-history    . 50)
+        (shell-command-history    . 10)
         tags-file-name
         tags-table-list))
 
