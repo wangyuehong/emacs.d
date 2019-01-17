@@ -44,10 +44,5 @@
 (use-package gitconfig-mode)
 (use-package git-timemachine)
 
-(use-package magit-gitflow
-  :hook
-  (magit-mode .  turn-on-magit-gitflow)
-  )
-
 (provide 'init-git)
 ;;; init-git.el ends here
