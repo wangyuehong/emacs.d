@@ -1,11 +1,15 @@
-(require-package 'unfill)
+;;; init-editing-utils.el --- edit configurations. -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
+(use-package unfill)
 
 (when (fboundp 'electric-pair-mode)
   (add-hook 'after-init-hook 'electric-pair-mode))
 (when (eval-when-compile (version< "24.4" emacs-version))
   (add-hook 'after-init-hook 'electric-indent-mode))
 
-(maybe-require-package 'list-unicode-display)
+(use-package list-unicode-display)
 
 ;;----------------------------------------------------------------------------
 ;; Some basic preferences
@@ -99,3 +103,4 @@
   )
 
 (provide 'init-editing-utils)
+;;; init-editing-utils.el ends here
