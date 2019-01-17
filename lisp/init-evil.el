@@ -17,6 +17,15 @@
    evil-move-cursor-back nil
    evil-want-fine-undo t
    )
+
+  ;; Color the evil tag - colors taken from spaceline
+  (setq evil-normal-state-tag   (propertize " <N> " 'face '((:foreground "black")))
+        evil-emacs-state-tag    (propertize " <E> " 'face '((:background "SkyBlue2"    :foreground "black")))
+        evil-insert-state-tag   (propertize " <I> " 'face '((:background "red"         :foreground "black")))
+        evil-replace-state-tag  (propertize " <R> " 'face '((:background "chocolate"   :foreground "black")))
+        evil-motion-state-tag   (propertize " <M> " 'face '((:background "plum3"       :foreground "black")))
+        evil-visual-state-tag   (propertize " <V> " 'face '((:background "cyan"        :foreground "black")))
+        evil-operator-state-tag (propertize " <O> " 'face '((:background "sandy brown" :foreground "black"))))
   (evil-mode t)
   :config ;; tweak evil after loading it
   (defalias #'forward-evil-word #'forward-evil-symbol)
@@ -48,16 +57,20 @@
   ;; change mode-line color by evil state
   (lexical-let ((default-color (cons (face-background 'mode-line)
                                      (face-foreground 'mode-line))))
-    (add-hook 'post-command-hook
-              (lambda ()
-                (let ((color (cond ((minibufferp) default-color)
-                                   ((evil-insert-state-p) '("red" . "white"))
-                                   ((evil-emacs-state-p)  '("#444488" . "white"))
-                                   ((buffer-modified-p)   '("blue" . "white"))
-                                   (t default-color))))
-                  (set-face-foreground 'mode-line-buffer-id (cdr color))
-                  (set-face-background 'mode-line (car color))
-                  (set-face-foreground 'mode-line (cdr color))))))
+    (defun change-mode-line-color ()
+      (let ((color (cond ((minibufferp) default-color)
+                         ;; ((evil-insert-state-p) '("red" . "white"))
+                         ;; ((evil-emacs-state-p)  '("#444488" . "white"))
+                         ((buffer-modified-p)   '("blue" . "white"))
+                         (t default-color))))
+        ;; (set-face-foreground 'mode-line-buffer-id (cdr color))
+        (set-face-foreground 'mode-line (cdr color))
+        (set-face-background 'mode-line (car color))
+        )
+      )
+    (add-hook 'post-command-hook 'change-mode-line-color)
+    (add-hook 'after-save-hook 'change-mode-line-color) ;; for super-save
+    )
   ) ;; M-x pp-macroexpand-last-sexp here to test use-package
 
 (use-package evil-collection
