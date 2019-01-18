@@ -1,6 +1,7 @@
-;;----------------------------------------------------------------------------
-;; Suppress GUI features
-;;----------------------------------------------------------------------------
+;; init-gui-frames.el --- gui configurations.  -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
 (setq use-file-dialog nil)
 (setq use-dialog-box nil)
 (setq inhibit-startup-screen t)
@@ -32,3 +33,4 @@
 ;; (require-package 'disable-mouse)
 
 (provide 'init-gui-frames)
+;;; init-gui-frames.el ends here
