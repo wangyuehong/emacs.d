@@ -69,7 +69,6 @@
         )
       )
     (add-hook 'post-command-hook 'change-mode-line-color)
-    (add-hook 'after-save-hook 'change-mode-line-color) ;; for super-save
     )
   ) ;; M-x pp-macroexpand-last-sexp here to test use-package
 

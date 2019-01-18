@@ -93,14 +93,5 @@
 
 (use-package iedit)
 
-(use-package super-save
-  :diminish
-  :init
-  (setq super-save-auto-save-when-idle t)
-  (setq super-save-idle-duration 2)
-  :config
-  (super-save-mode)
-  )
-
 (provide 'init-editing-utils)
 ;;; init-editing-utils.el ends here
