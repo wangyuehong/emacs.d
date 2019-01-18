@@ -96,5 +96,10 @@ Call a second time to restore the original window configuration."
 
 (global-set-key (kbd "C-x f") 'sanityinc/toggle-current-window-dedication)
 
+(defun kill-other-buffers ()
+  "Kill all other buffers."
+  (interactive)
+  (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+
 (provide 'init-windows)
 ;;; init-windows.el ends here
