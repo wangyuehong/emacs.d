@@ -97,7 +97,7 @@
 (require 'init-quickrun)
 (require 'init-rainbow)
 (require 'init-yasnippet)
-(require 'init-lsp)
+;; (require 'init-lsp)
 (require 'init-projectile)
 
 (require 'init-markdown)
@@ -115,14 +115,7 @@
 
 ;; Extra packages which don't require any configuration
 
-;;(require-package 'gnuplot)
-(require-package 'lua-mode)
-(require-package 'htmlize)
-;;(require-package 'dsvn)
-;;(when *is-a-mac*
-;;  (require-package 'osx-location))
 (maybe-require-package 'dotenv-mode)
-(maybe-require-package 'nginx-mode)
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
@@ -133,26 +126,21 @@
             (unless (server-running-p)
               (server-start))))
 
-
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface
 ;;----------------------------------------------------------------------------
 (when (file-exists-p custom-file)
   (load custom-file))
 
-
 ;;----------------------------------------------------------------------------
 ;; Locales (setting them earlier in this file doesn't work in X)
 ;;----------------------------------------------------------------------------
 (require 'init-locales)
 
-
 ;;----------------------------------------------------------------------------
 ;; Allow users to provide an optional "init-local" containing personal settings
 ;;----------------------------------------------------------------------------
 (require 'init-local nil t)
-
-
 
 (provide 'init)
 ;;; init.el ends here
