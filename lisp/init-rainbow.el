@@ -1,7 +1,13 @@
-(require-package 'rainbow-mode)
+;; init-rainbow.el --- rainbow configurations.  -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
 
-(require-package 'rainbow-delimiters)
-(require 'rainbow-delimiters)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(use-package rainbow-mode)
+
+(use-package rainbow-delimiters
+  :after rainbow-mode
+  :hook (prog-mode . rainbow-delimiters-mode)
+  )
 
 (provide 'init-rainbow)
+;;; init-rainbow.el ends here

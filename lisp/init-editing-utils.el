@@ -55,10 +55,6 @@
 ;;   (after-load 'indent-guide
 ;;     (diminish 'indent-guide-mode)))
 
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode)
-  )
-
 (use-package undo-tree
   :diminish
   :hook (after-init . global-undo-tree-mode)
