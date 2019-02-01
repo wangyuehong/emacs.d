@@ -68,7 +68,7 @@
       (set-window-buffer (next-window) other-buffer))))
 
 (global-set-key (kbd "C-x |") 'split-window-horizontally-instead)
-(global-set-key (kbd "C-x _") 'split-window-vertically-instead)
+(global-set-key (kbd "C-x -") 'split-window-vertically-instead)
 
 ;; Borrowed from http://postmomentum.ch/blog/201304/blog-on-emacs
 (defun sanityinc/split-window()
