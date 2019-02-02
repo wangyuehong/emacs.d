@@ -9,19 +9,17 @@
   (general-define-key
    :states '(normal visual)
    :prefix ","
-   "="  'align
    "a"  'ag-regexp-project-at-point
    "A"  'ag-regexp
-   "e"  'iedit-mode
-   "E"  'iedit-mode-toggle-on-function
+   "c"  'evilnc-comment-or-uncomment-lines
+   "d"  'delete-trailing-whitespace
+   "e"  'evil-iedit-state/iedit-mode
    "f"  'flycheck-list-errors
    "w"  'save-buffer
-   "W"  'save-some-buffers
    "l"  'helm-ls-git-ls
    "i"  'counsel-imenu
    "s"  'swiper
    "q"  'quickrun
-   "/"  'evilnc-comment-or-uncomment-lines
    "k"  'kill-buffer-and-window
    "K"  'kill-other-buffers
    "p"  'projectile-command-map
@@ -34,24 +32,20 @@
    "nn" 'narrow-to-region
    "nd" 'narrow-to-defun
    "nw" 'widen
-   ;; "pp" 'wgrep-toggle-readonly-area
-   ;; "pe" 'wgrep-finish-edit
-   ;; "pk" 'wgrep-abort-changes
-   ;; "ps" 'wgrep-save-all-buffers
-   "d"  'delete-trailing-whitespace
    )
 
   (general-define-key
    ;; :states '(normal motion insert emacs)
    :states '(normal visual)
+   :keymaps 'override
    ;; :non-normal-prefix "C-SPC"
    :prefix "SPC"
    "SPC" 'avy-goto-word-1
-   "j" 'avy-goto-char
-   "l" 'avy-goto-line
    "e" 'er/expand-region
-   "y" 'youdao-dictionary-search-at-point+
+   "hc" 'highlight-symbol-remove-all
+   "hh" 'highlight-symbol
    "t" 'multi-term
+   "y" 'youdao-dictionary-search-at-point+
    )
 )
 (provide 'init-general)

@@ -3,6 +3,7 @@
 ;;; Code:
 
 (use-package lsp-mode
+  :diminish
   :init
   (setq lsp-auto-guess-root t)
   (setq lsp-prefer-flymake nil)

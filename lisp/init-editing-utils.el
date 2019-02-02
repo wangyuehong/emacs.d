@@ -87,7 +87,10 @@
   :hook (after-init . hes-mode)
   )
 
-(use-package iedit)
+(use-package iedit
+  :init
+  (setq iedit-toggle-key-default nil)
+  )
 
 (provide 'init-editing-utils)
 ;;; init-editing-utils.el ends here

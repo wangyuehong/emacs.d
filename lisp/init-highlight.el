@@ -10,20 +10,13 @@
   :hook
   ((prog-mode yaml-mode) . highlight-symbol-mode)
   ((prog-mode yaml-mode) . highlight-symbol-nav-mode)
-  :config
-  (set-face-attribute 'highlight-symbol-face nil
-                      :inherit nil
-                      :background "#626262")
-  ;; (global-set-key (kbd "<f3>") 'highlight-symbol-next)
-  ;; (global-set-key (kbd "<f4>") 'highlight-symbol-prev)
-  ;; (global-set-key (kbd "<f5>") 'highlight-symbol)
-  ;; (global-set-key (kbd "ESC <f3>") 'highlight-symbol-remove-all)
-  ;; (global-set-key (kbd "M-<f3>") 'highlight-symbol-remove-all)
+  ;; :config
+  ;; (set-face-attribute 'highlight-symbol-face nil
+  ;;                     :inherit nil
+  ;;                     :background "#626262")
   )
 
 (use-package fic-mode :hook prog-mode)
-;; (set-face-foreground 'fic-face "#7f7f7f")
-;; (set-face-background 'fic-face "#ffff00")
 
 (provide 'init-highlight)
 

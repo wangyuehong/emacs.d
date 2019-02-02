@@ -19,20 +19,18 @@
    )
 
   ;; Color the evil tag - colors taken from spaceline
-  (setq evil-normal-state-tag   (propertize " <N> " 'face '((:foreground "black")))
-        evil-emacs-state-tag    (propertize " <E> " 'face '((:background "SkyBlue2"    :foreground "black")))
-        evil-insert-state-tag   (propertize " <I> " 'face '((:background "red"         :foreground "black")))
-        evil-replace-state-tag  (propertize " <R> " 'face '((:background "chocolate"   :foreground "black")))
-        evil-motion-state-tag   (propertize " <M> " 'face '((:background "plum3"       :foreground "black")))
-        evil-visual-state-tag   (propertize " <V> " 'face '((:background "cyan"        :foreground "black")))
-        evil-operator-state-tag (propertize " <O> " 'face '((:background "sandy brown" :foreground "black"))))
+  (setq evil-normal-state-tag       (propertize " <N> " 'face '((:foreground "black")))
+        evil-emacs-state-tag        (propertize " <M> " 'face '((:background "SkyBlue2"   :foreground "black")))
+        evil-iedit-state-tag        (propertize " <E> " 'face '((:background "green"       :foreground "black")))
+        evil-iedit-insert-state-tag (propertize " <EI> " 'face '((:background "brightred"  :foreground "black")))
+        evil-insert-state-tag       (propertize " <I> " 'face '((:background "red"         :foreground "black")))
+        evil-replace-state-tag      (propertize " <R> " 'face '((:background "chocolate"   :foreground "black")))
+        evil-motion-state-tag       (propertize " <M> " 'face '((:background "plum3"       :foreground "black")))
+        evil-visual-state-tag       (propertize " <V> " 'face '((:background "cyan"        :foreground "black")))
+        evil-operator-state-tag     (propertize " <O> " 'face '((:background "sandy brown" :foreground "black"))))
   (evil-mode t)
   :config ;; tweak evil after loading it
   (defalias #'forward-evil-word #'forward-evil-symbol)
-
-  ;; (define-key evil-visual-state-map (kbd "v") 'er/expand-region)
-  (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
-  (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
 
   (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
   (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
@@ -98,7 +96,26 @@
   )
 
 (use-package evil-nerd-commenter
+  :after evil)
+
+(use-package evil-snipe
+  :diminish
   :after evil
+  :init
+  (setq evil-snipe-scope 'line
+        evil-snipe-repeat-scope 'whole-line
+        ;; evil-snipe-spillover-scope 'visible
+        evil-snipe-smart-case t)
+  :config
+  (evil-snipe-override-mode 1)
+  (evil-snipe-mode +1)
+  (push '(?\[ "[[{(]") evil-snipe-aliases)
+  )
+
+
+(use-package evil-iedit-state
+  :after (evil iedit)
+  :commands (evil-iedit-state evil-iedit-state/iedit-mode)
   )
 
 (provide 'init-evil)

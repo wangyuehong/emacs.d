@@ -97,7 +97,7 @@
 (require 'init-quickrun)
 (require 'init-rainbow)
 (require 'init-yasnippet)
-;; (require 'init-lsp)
+(require 'init-lsp)
 (require 'init-projectile)
 
 (require 'init-markdown)
