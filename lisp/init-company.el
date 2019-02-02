@@ -18,7 +18,7 @@
         company-dabbrev-downcase nil
         company-selection-wrap-around t
         company-dabbrev-ignore-case nil
-        company-idle-delay 0.2
+        company-idle-delay 0.3
         company-minimum-prefix-length 2
         company-require-match nil
         )
