@@ -1,10 +1,14 @@
-(require-package 'avy)
+;;; init-avy.el --- avy configurations. -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
 
-(setq
- avy-keys (string-to-list "asdfghjklqweruiopzxcv"))
-
-(setq avy-all-windows t)
-(setq avy-background t)
-(setq avy-highlight-first t)
-
+(use-package avy
+  :init
+  (setq
+   avy-keys (string-to-list "asdfghjklqweruiopzxcv"))
+  (setq avy-all-windows t)
+  (setq avy-background t)
+  (setq avy-highlight-first t)
+  )
 (provide 'init-avy)
+;;; init-avy.el ends here
