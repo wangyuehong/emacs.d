@@ -39,7 +39,8 @@
   :hook (after-init . counsel-mode)
   :init
   (setq-default counsel-mode-override-describe-bindings t)
-  :bind (("C-x j j" . counsel-bookmark))
+  :bind (("C-x j j" . counsel-bookmark)
+         ("M-x" . counsel-M-x))
   )
 
 (use-package swiper :after ivy)
