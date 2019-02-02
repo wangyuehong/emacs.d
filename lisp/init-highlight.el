@@ -5,7 +5,7 @@
 (use-package highlight-symbol
   :diminish
   :init
-  (setq highlight-symbol-idle-delay 0.3)
+  (setq highlight-symbol-idle-delay 0.5)
   (setq highlight-symbol-colors (quote ("#5c5cff" "#ff0000" "#00ff00" "#ff00ff" "#ffff00")))
   :hook
   ((prog-mode yaml-mode) . highlight-symbol-mode)
@@ -14,11 +14,11 @@
   (set-face-attribute 'highlight-symbol-face nil
                       :inherit nil
                       :background "#626262")
-  (global-set-key (kbd "<f3>") 'highlight-symbol-next)
-  (global-set-key (kbd "<f4>") 'highlight-symbol-prev)
-  (global-set-key (kbd "<f5>") 'highlight-symbol)
-  (global-set-key (kbd "ESC <f3>") 'highlight-symbol-remove-all)
-  (global-set-key (kbd "M-<f3>") 'highlight-symbol-remove-all)
+  ;; (global-set-key (kbd "<f3>") 'highlight-symbol-next)
+  ;; (global-set-key (kbd "<f4>") 'highlight-symbol-prev)
+  ;; (global-set-key (kbd "<f5>") 'highlight-symbol)
+  ;; (global-set-key (kbd "ESC <f3>") 'highlight-symbol-remove-all)
+  ;; (global-set-key (kbd "M-<f3>") 'highlight-symbol-remove-all)
   )
 
 (use-package fic-mode :hook prog-mode)
