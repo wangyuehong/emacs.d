@@ -12,6 +12,10 @@
 (use-package company-lsp
   :after lsp-mode
   :commands company-lsp
+  :init
+  (setq company-lsp-cache-candidates t)
+  :config
+  (push 'company-lsp company-backends)
   )
 
 (provide 'init-lsp)
