@@ -22,7 +22,7 @@
   (setq evil-normal-state-tag       (propertize " <N> ")
         evil-emacs-state-tag        (propertize " <M> " 'face '((:background "SkyBlue2"   )))
         evil-iedit-state-tag        (propertize " <E> " 'face '((:background "green"      )))
-        evil-iedit-insert-state-tag (propertize " <EI> " 'face '((:background "brightred" )))
+        evil-iedit-insert-state-tag (propertize " <Ei> " 'face '((:background "brightred" )))
         evil-insert-state-tag       (propertize " <I> " 'face '((:background "red"        )))
         evil-replace-state-tag      (propertize " <R> " 'face '((:background "chocolate"  )))
         evil-motion-state-tag       (propertize " <M> " 'face '((:background "plum3"      )))
