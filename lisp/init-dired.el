@@ -4,10 +4,11 @@
 
 (require 'dired+)
 (toggle-diredp-find-file-reuse-dir 1)
-(setq ;; Always copy/delete recursively
+(setq-default ;; Always copy/delete recursively
  dired-recursive-copies  'always
  dired-recursive-deletes 'top
  dired-dwim-target t
+ diredp-hide-details-initially-flag nil
  )
 
 (use-package diredfl
