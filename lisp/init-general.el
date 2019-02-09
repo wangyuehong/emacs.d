@@ -40,8 +40,6 @@
    :keymaps 'override
    ;; :non-normal-prefix "C-SPC"
    :prefix "SPC"
-   "SPC" 'avy-goto-word-1
-   "e" 'er/expand-region
    "hc" 'highlight-symbol-remove-all
    "hh" 'highlight-symbol
    "t" 'multi-term

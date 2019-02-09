@@ -11,15 +11,14 @@
   :commands company-abort
   :hook (after-init . global-company-mode)
   :init
-  (setq company-dabbrev-other-buffers 'all
-        company-tooltip-align-annotations t ; aligns annotation to the right
+  (setq company-tooltip-align-annotations t ; aligns annotation to the right
         company-tooltip-limit 12            ; bigger popup window
         company-echo-delay 0                ; remove annoying blinking
         company-dabbrev-downcase nil
         company-selection-wrap-around t
         company-dabbrev-ignore-case nil
-        company-idle-delay 0.3
-        company-minimum-prefix-length 2
+        company-idle-delay 0.2
+        company-minimum-prefix-length 1
         company-require-match nil
         )
   :config
@@ -37,7 +36,6 @@
   (dolist (backend '(company-eclim company-semantic))
     (delq backend company-backends))
 
-    (define-key company-mode-map (kbd "M-/") 'company-complete)
     (define-key company-active-map [tab] 'company-complete-common-or-cycle)
     (define-key company-active-map [backtab] 'my-company-yasnippet)
     (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
