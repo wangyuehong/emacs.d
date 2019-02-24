@@ -132,5 +132,13 @@
   :commands (evil-iedit-state evil-iedit-state/iedit-mode)
   )
 
+(use-package evil-string-inflection
+  :after evil
+  :bind (:map evil-normal-state-map
+              ("gs" . string-inflection-underscore)
+              ("gc" . string-inflection-camelcase)
+              )
+  )
+
 (provide 'init-evil)
 ;;; init-evil.el ends here
