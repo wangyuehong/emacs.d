@@ -47,7 +47,7 @@
   (define-key evil-visual-state-map (kbd "TAB") 'evil-indent)
 
   ;; (key-chord-define evil-insert-state-map ";;" "\C-e;")
-  ;; (key-chord-define evil-insert-state-map ",," "\C-e,")
+  (key-chord-define evil-insert-state-map ",," "\C-e,")
   ;; (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
 
   ;; modes to map to different default states
