@@ -12,8 +12,10 @@
   (setq projectile-sort-order 'recentf)
   (setq projectile-git-submodule-command nil)
   (setq projectile-indexing-method 'hybrid)
-  ;; (setq projectile-enable-caching t)
-  ;; (setq projectile-files-cache-expire 3600)
+  (setq projectile-completion-system 'ivy)
+  (setq projectile-enable-caching t)
+  (setq projectile-file-exists-remote-cache-expire nil)
+  (setq projectile-file-exists-local-cache-expire (* 5 60))
   :config
   (projectile-update-mode-line) ; Update mode-line at the first time
   (after-load 'ag
