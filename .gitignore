@@ -50,3 +50,4 @@ site-lisp/package/
 .historian
 /.lsp-session-v1
 /projectile-bookmarks.eld
+/projectile.cache
