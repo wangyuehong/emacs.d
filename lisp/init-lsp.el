@@ -9,6 +9,10 @@
   (setq lsp-prefer-flymake nil)
   )
 
+(use-package lsp-clients
+  :ensure nil
+  )
+
 (use-package company-lsp
   :after lsp-mode company
   :bind (("<backtab>" . company-lsp))
