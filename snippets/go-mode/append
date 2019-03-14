@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: append
-# key: app
+# key: append
 # description: append slice snippet
 # --
 ${1:s} = append($1, ${0})
