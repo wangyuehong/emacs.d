@@ -44,6 +44,8 @@
    "hh" 'highlight-symbol
    "t" 'multi-term
    "y" 'youdao-dictionary-search-at-point+
+   "f" 'projectile-find-file
+   "p" 'projectile-switch-project
    )
 )
 (provide 'init-general)
