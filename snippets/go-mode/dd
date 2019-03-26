@@ -2,4 +2,4 @@
 # name: debug fmt.Printf
 # key: dd
 # --
-fmt.Printf("${1:dd}: %#v\n", $0)
+fmt.Printf("${1:dd}: %+v\n", $0)
