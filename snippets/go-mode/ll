@@ -2,4 +2,4 @@
 # name: debug log.Debug().Msgf
 # key: ll
 # --
-log.Debug().Msgf("${1:ll}: %+v\n", $0)
+log.Debug().Msgf("${1:ll}: %+v", $0)
