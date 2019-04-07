@@ -16,19 +16,19 @@
    )
   )
 
-;; (use-package lsp-ui
-;;   :commands lsp-ui-mode
-;;   :init
-;;   (setq lsp-ui-flycheck-enable t
-;;         lsp-ui-doc-enable nil
-;;         )
-;;   )
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :init
+  (setq lsp-ui-flycheck-enable t
+        lsp-ui-doc-enable nil
+        )
+  )
 
 (use-package company-lsp
   :commands company-lsp
   :bind (("<backtab>" . company-lsp))
-  :init
-  (setq company-lsp-cache-candidates t)
+  ;; :init
+  ;; (setq company-lsp-cache-candidates t)
   :config
   (push '(company-lsp company-dabbrev :separate) company-backends)
   )
