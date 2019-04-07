@@ -13,11 +13,11 @@
               ([remap evil-jump-to-tag] . godef-jump)
               )
   :init
-  ;; (setq gofmt-command "goimports")
-  (setq gofmt-command "gofmt")
+  (setq gofmt-command "goimports")
+  ;; (setq gofmt-command "gofmt")
   :config
   (add-hook 'before-save-hook #'gofmt-before-save)
-  ;; (add-hook 'go-mode-hook #'lsp)
+  (add-hook 'go-mode-hook #'lsp)
   )
 
 (use-package go-dlv
