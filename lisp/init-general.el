@@ -16,19 +16,13 @@
    "e"  'evil-iedit-state/iedit-mode
    "f"  'flycheck-list-errors
    "w"  'save-buffer
-   "l"  'helm-ls-git-ls
-   "i"  'counsel-imenu
-   "s"  'swiper
    "q"  'quickrun
    "k"  'kill-buffer-and-window
    "K"  'kill-other-buffers
-   "p"  'projectile-command-map
    "P"  'paradox-upgrade-packages
-   "g"  'magit-status
    "r"  'counsel-yank-pop
    ","  'git-gutter-map
    "v"  'revert-buffer
-   "x"  'counsel-M-x
    "nn" 'narrow-to-region
    "nd" 'narrow-to-defun
    "nw" 'widen
@@ -40,12 +34,17 @@
    :keymaps 'override
    ;; :non-normal-prefix "C-SPC"
    :prefix "SPC"
+   "f" 'projectile-find-file
    "hc" 'highlight-symbol-remove-all
    "hh" 'highlight-symbol
-   "t" 'multi-term
-   "y" 'youdao-dictionary-search-at-point+
-   "f" 'projectile-find-file
+   "i"  'counsel-imenu
+   "g"  'magit-status
+   "l"  'helm-ls-git-ls
    "p" 'projectile-switch-project
+   "s"  'swiper
+   "t" 'multi-term
+   "x"  'counsel-M-x
+   "y" 'youdao-dictionary-search-at-point+
    )
 )
 (provide 'init-general)
