@@ -142,5 +142,7 @@
 ;;----------------------------------------------------------------------------
 (require 'init-local nil t)
 
+(setq debug-on-error nil)
+
 (provide 'init)
 ;;; init.el ends here
