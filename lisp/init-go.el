@@ -43,18 +43,11 @@
 (use-package go-snippets)
 (use-package toml-mode)
 
-(use-package flycheck-gometalinter
+(use-package flycheck-golangci-lint
   :init
-  (setq flycheck-gometalinter-fast t)
-  ;; (setq flycheck-gometalinter-deadline "5s")
-  ;; (setq flycheck-gometalinter-errors-only t)
-  ;; (setq flycheck-gometalinter-tests t)
-  ;; (setq flycheck-gometalinter-disable-linters '("gotype" "gocyclo"))
-  ;; (setq flycheck-gometalinter-enable-linters '("golint"))
-  ;; (setq flycheck-gometalinter-disable-all t)
-  ;; (setq flycheck-gometalinter-config "/path/to/gometalinter-config.json")
-  :config
-  (flycheck-gometalinter-setup)
+  (setq flycheck-golangci-lint-fast t)
+  (setq flycheck-golangci-lint-tests t)
+  :hook (go-mode . flycheck-golangci-lint-setup)
   )
 
 (provide 'init-go)
