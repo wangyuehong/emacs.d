@@ -16,20 +16,20 @@
    )
   )
 
-;; (use-package lsp-ui
-;;   :commands lsp-ui-mode
-;;   :custom-face
-;;   (lsp-ui-doc-background ((t (:background "brightblack"))))
-;;   :init
-;;   (setq lsp-ui-flycheck-enable t
-;;         lsp-ui-doc-enable nil
-;;         lsp-ui-doc-header t
-;;         lsp-ui-doc-include-signature t
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :custom-face
+  (lsp-ui-doc-background ((t (:background "brightblack"))))
+  :init
+  (setq lsp-ui-flycheck-enable t
+        lsp-ui-doc-enable nil
+        lsp-ui-doc-header t
+        lsp-ui-doc-include-signature t
 
-;;         lsp-ui-sideline-enable t
-;;         lsp-ui-sideline-ignore-duplicate t
-;;         )
-;;   )
+        lsp-ui-sideline-enable nil
+        lsp-ui-sideline-ignore-duplicate t
+        )
+  )
 
 (use-package company-lsp
   :commands company-lsp
