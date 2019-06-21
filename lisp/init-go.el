@@ -20,6 +20,9 @@
   (add-hook 'go-mode-hook #'lsp)
   )
 
+(use-package godoctor
+  :after go-mode
+  )
 (use-package go-dlv
   :after go-mode
   )
