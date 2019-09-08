@@ -9,7 +9,6 @@
   (setq
    lsp-auto-guess-root t
    lsp-prefer-flymake nil
-   lsp-trace t
    lsp-keep-workspace-alive nil
    lsp-restart 'auto-restart
    lsp-prefer-flymake nil
@@ -25,7 +24,6 @@
         lsp-ui-doc-enable nil
         lsp-ui-doc-header t
         lsp-ui-doc-include-signature t
-
         lsp-ui-sideline-enable nil
         lsp-ui-sideline-ignore-duplicate t
         )
@@ -33,11 +31,10 @@
 
 (use-package company-lsp
   :commands company-lsp
-  :bind (("<backtab>" . company-lsp))
   :init
   (setq company-lsp-cache-candidates 'auto)
   :config
-  (push '(company-lsp company-dabbrev :separate) company-backends)
+  (push '(company-yasnippet company-dabbrev company-lsp :separate) company-backends)
   )
 
 (provide 'init-lsp)
