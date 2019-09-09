@@ -16,10 +16,6 @@
 ;;              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
-;; Work-around for https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341
-(when (version= "26.2" emacs-version)
-  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
-
 (require 'cl-lib)
 
 (defun require-package (package &optional min-version no-refresh)
