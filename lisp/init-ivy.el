@@ -20,6 +20,7 @@
   ;; IDO-style directory navigation
   (define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
   (define-key ivy-minibuffer-map (kbd "C-k") #'ivy-previous-line)
+  (define-key ivy-switch-buffer-map (kbd "C-k") #'ivy-previous-line)
   (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-next-line)
   (define-key ivy-minibuffer-map (kbd "C-b") #'ivy-scroll-down-command)
   (define-key ivy-minibuffer-map (kbd "C-f") #'ivy-scroll-up-command)
