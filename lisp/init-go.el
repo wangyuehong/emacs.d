@@ -43,6 +43,10 @@
   :after go-mode
   )
 
+(use-package go-fill-struct
+  :after go-mode
+  )
+
 (use-package go-snippets)
 (use-package toml-mode)
 
