@@ -8,7 +8,6 @@
   :init
   (setq
    lsp-auto-guess-root t
-   lsp-prefer-flymake nil
    lsp-keep-workspace-alive nil
    lsp-restart 'auto-restart
    lsp-prefer-flymake nil
@@ -21,10 +20,10 @@
   (lsp-ui-doc-background ((t (:background "brightblack"))))
   :init
   (setq lsp-ui-flycheck-enable t
-        lsp-ui-doc-enable nil
+        lsp-ui-doc-enable t
         lsp-ui-doc-header t
         lsp-ui-doc-include-signature t
-        lsp-ui-sideline-enable nil
+        lsp-ui-sideline-enable t
         lsp-ui-sideline-ignore-duplicate t
         )
   )
@@ -35,6 +34,7 @@
   (setq company-lsp-cache-candidates 'auto)
   :config
   (push '(company-yasnippet company-dabbrev company-lsp :separate) company-backends)
+  ;; (push '(company-lsp :with company-yasnippet) company-backends)
   )
 
 (provide 'init-lsp)

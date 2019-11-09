@@ -12,10 +12,9 @@
   :bind (:map go-mode-map
               ([remap evil-jump-to-tag] . godef-jump)
               )
-  :init
-  (setq gofmt-command "goimports")
-  ;; (setq gofmt-command "gofmt")
   :config
+  (when (executable-find "goimports")
+    (setq gofmt-command "goimports"))
   (add-hook 'before-save-hook #'gofmt-before-save)
   (add-hook 'go-mode-hook #'lsp)
   )
@@ -40,6 +39,10 @@
               ("C-c C-t" . go-gen-test-dwim)))
 
 (use-package go-guru
+  :after go-mode
+  )
+
+(use-package go-impl
   :after go-mode
   )
 

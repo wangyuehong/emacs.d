@@ -18,10 +18,12 @@
         company-selection-wrap-around t
         company-dabbrev-ignore-case nil
         company-idle-delay 0.2
-        company-minimum-prefix-length 1
-        company-require-match nil
+        company-minimum-prefix-length 2
+        company-require-match t
         )
   :config
+  (use-package company-prescient
+    :init (company-prescient-mode 1))
 
   (defun my-company-yasnippet ()
     (interactive)
