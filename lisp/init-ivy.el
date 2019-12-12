@@ -13,9 +13,8 @@
                 projectile-completion-system 'ivy
                 ivy-magic-tilde nil
                 ivy-dynamic-exhibit-delay-ms 150
-                ivy-initial-inputs-alist
-                '((Man-completion-table . "^")
-                  (woman . "^")))
+                ivy-initial-inputs-alist)
+  (setq ivy-initial-inputs-alist nil)
   :config
   ;; IDO-style directory navigation
   (define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
