@@ -10,7 +10,7 @@
 
 (use-package go-mode
   :bind (:map go-mode-map
-              ([remap evil-jump-to-tag] . godef-jump)
+              ([remap evil-jump-to-tag] . lsp-find-definition)
               )
   :config
   (when (executable-find "goimports")
@@ -37,10 +37,6 @@
   :after go-mode
   :bind (:map go-mode-map
               ("C-c C-t" . go-gen-test-dwim)))
-
-(use-package go-guru
-  :after go-mode
-  )
 
 (use-package go-impl
   :after go-mode
