@@ -10,7 +10,7 @@
    lsp-auto-guess-root t
    lsp-keep-workspace-alive nil
    lsp-restart 'auto-restart
-   lsp-prefer-flymake nil
+   lsp-enable-file-watchers nil
    )
   )
 
@@ -19,9 +19,8 @@
   :custom-face
   (lsp-ui-doc-background ((t (:background "brightblack"))))
   :init
-  (setq lsp-ui-flycheck-enable t
-        lsp-ui-doc-enable t
-        lsp-ui-doc-header t
+  (setq lsp-ui-doc-enable t
+        lsp-ui-doc-header nil
         lsp-ui-doc-include-signature t
         lsp-ui-sideline-enable t
         lsp-ui-sideline-ignore-duplicate t
