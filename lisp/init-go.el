@@ -36,7 +36,10 @@
 (use-package go-gen-test
   :after go-mode
   :bind (:map go-mode-map
-              ("C-c C-t" . go-gen-test-dwim)))
+              ("C-c C-t" . go-gen-test-dwim))
+  :init
+  (setq go-gen-test-executable "gotests -template testify")
+  )
 
 (use-package go-impl
   :after go-mode
