@@ -1,7 +1,8 @@
 (require-package 'color-theme-sanityinc-tomorrow)
+(require-package 'srcery-theme)
 
 ;; If you don't customize it, this is the theme you get.
-(setq-default custom-enabled-themes '(sanityinc-tomorrow-eighties))
+(setq-default custom-enabled-themes '(srcery))
 
 ;; Ensure that themes will be applied even if they have not been customized
 (defun reapply-themes ()
@@ -26,7 +27,7 @@
 (defun dark ()
   "Activate a dark color theme."
   (interactive)
-  (setq custom-enabled-themes '(sanityinc-tomorrow-night))
+  (setq custom-enabled-themes '(srcery))
   (reapply-themes))
 
 (provide 'init-themes)
