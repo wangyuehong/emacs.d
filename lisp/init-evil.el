@@ -16,6 +16,7 @@
    evil-find-skip-newlines nil
    evil-move-cursor-back nil
    evil-want-fine-undo t
+   evil-kill-on-visual-paste nil
    )
 
   ;; Color the evil tag - colors taken from spaceline
