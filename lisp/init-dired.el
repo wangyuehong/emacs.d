@@ -2,16 +2,14 @@
 ;;; Commentary:
 ;;; Code:
 
-(use-package dired+
-  :ensure nil
-  :config
-  (toggle-diredp-find-file-reuse-dir 1)
-  (setq-default ;; Always copy/delete recursively
-   dired-recursive-copies  'always
-   dired-recursive-deletes 'top
-   dired-dwim-target t
-   diredp-hide-details-initially-flag nil
-   ))
+(require 'dired+)
+(toggle-diredp-find-file-reuse-dir 1)
+(setq-default ;; Always copy/delete recursively
+ dired-recursive-copies  'always
+ dired-recursive-deletes 'top
+ dired-dwim-target t
+ diredp-hide-details-initially-flag nil
+ )
 
 (use-package diredfl
   :config
