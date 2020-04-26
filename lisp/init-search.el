@@ -21,10 +21,7 @@
   (setq-default ag-reuse-buffers t)
   )
 
-(use-package wgrep-ag
-  :after (wgrep ag)
-  :hook (ag-mode . wgrep-ag-setup)
-  )
+(use-package wgrep-ag :hook (ag-mode . wgrep-ag-setup))
 
 (use-package anzu
   :diminish

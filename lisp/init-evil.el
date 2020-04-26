@@ -3,6 +3,7 @@
 ;;; Code:
 
 (use-package evil
+  :demand t
   :init ;; tweak evil's configuration before loading it
   (setq-default
    evil-auto-indent t
@@ -19,7 +20,6 @@
    evil-kill-on-visual-paste nil
    )
 
-  ;; Color the evil tag - colors taken from spaceline
   (setq evil-normal-state-tag       (propertize " <N> ")
         evil-emacs-state-tag        (propertize " <M> " 'face '((:background "SkyBlue2"   )))
         evil-insert-state-tag       (propertize " <I> " 'face '((:background "red"        )))
@@ -27,8 +27,8 @@
         evil-motion-state-tag       (propertize " <M> " 'face '((:background "plum3"      )))
         evil-visual-state-tag       (propertize " <V> " 'face '((:background "cyan"       )))
         evil-operator-state-tag     (propertize " <O> " 'face '((:background "sandy brown"))))
+  :config
   (evil-mode t)
-  :config ;; tweak evil after loading it
   (defalias #'forward-evil-word #'forward-evil-symbol)
 
   (define-key evil-visual-state-map (kbd "v") 'er/expand-region)
@@ -55,37 +55,16 @@
                       (eshell-mode . emacs)
                       (help-mode . emacs)))
     (evil-set-initial-state `,(car mode-map) `,(cdr mode-map)))
+  )
 
-  ;; change mode-line color by evil state
-  ;; (lexical-let ((default-color (cons (face-background 'mode-line)
-  ;;                                    (face-foreground 'mode-line))))
-  ;;   (defun change-mode-line-color ()
-  ;;     (let ((color (cond ((minibufferp) default-color)
-  ;;                        ;; ((evil-insert-state-p) '("red" . "white"))
-  ;;                        ;; ((evil-emacs-state-p)  '("#444488" . "white"))
-  ;;                        ((buffer-modified-p)   '("brightblue" . "white"))
-  ;;                        (t default-color))))
-  ;;       (set-face-foreground 'mode-line-buffer-id (cdr color))
-  ;;       (set-face-foreground 'mode-line (cdr color))
-  ;;       (set-face-background 'mode-line (car color))
-  ;;       )
-  ;;     )
-  ;;   (add-hook 'post-command-hook 'change-mode-line-color)
-  ;;   )
-  ) ;; M-x pp-macroexpand-last-sexp here to test use-package
 
-(use-package evil-collection :after evil :config (evil-collection-init))
-
-(use-package evil-surround :after evil :config (global-evil-surround-mode))
-
-(use-package evil-anzu :after evil :config (global-anzu-mode t))
-
-(use-package evil-visualstar :after evil :init (setq evil-visualstar/persistent t) :config (global-evil-visualstar-mode))
-
-(use-package evil-nerd-commenter :after evil)
+(use-package evil-collection :demand t :config (evil-collection-init))
+(use-package evil-surround :demand t :config (global-evil-surround-mode 1))
+(use-package evil-anzu :demand t :config (global-anzu-mode t))
+(use-package evil-visualstar :demand t :init (setq evil-visualstar/persistent t) :config (global-evil-visualstar-mode))
+(use-package evil-nerd-commenter :demand t)
 
 (use-package evil-iedit-state
-  :after (evil iedit)
   :commands (evil-iedit-state evil-iedit-state/iedit-mode)
   :init (setq evil-iedit-state-tag        (propertize " <E> " 'face '((:background "green"      )))
               evil-iedit-insert-state-tag (propertize " <Ei> " 'face '((:background "brightred" )))))

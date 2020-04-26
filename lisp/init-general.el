@@ -3,7 +3,6 @@
 ;;; Code:
 
 (use-package general
-  :after evil
   :demand t
   :config
   (general-evil-setup t)

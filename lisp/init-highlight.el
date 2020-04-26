@@ -21,7 +21,6 @@
 (use-package rainbow-mode)
 
 (use-package rainbow-delimiters
-  :after rainbow-mode
   :hook (prog-mode . rainbow-delimiters-mode))
 
 (provide 'init-highlight)

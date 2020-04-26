@@ -20,7 +20,7 @@
     (fullframe ibuffer ibuffer-quit))
   )
 
-(use-package ibuffer-vc :after ibuffer)
+(use-package ibuffer-vc)
 
 (provide 'init-ibuffer)
 ;;; init-ibuffer.el ends here

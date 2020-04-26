@@ -11,9 +11,12 @@
     (setq gofmt-command "goimports"))
   (add-hook 'before-save-hook #'gofmt-before-save)
   (add-hook 'go-mode-hook #'lsp)
+  (use-package go-dlv)
+  (use-package go-impl)
+  (use-package go-fill-struct)
+  (use-package go-snippets)
   )
 
-(use-package go-dlv :after go-mode)
 (use-package gotest :after go-mode
   :bind (:map go-mode-map
               ("C-c t p" . go-test-current-project)
@@ -28,15 +31,11 @@
   (setq go-gen-test-executable "gotests -template testify")
   )
 
-(use-package go-impl :after go-mode)
-(use-package go-fill-struct :after go-mode)
-(use-package go-snippets)
 (use-package toml-mode)
 
 ;; Install: See https://github.com/golangci/golangci-lint#install
 (use-package flycheck-golangci-lint
   :if (executable-find "golangci-lint")
-  :after flycheck
   :defines flycheck-disabled-checkers
   :hook (go-mode . (lambda ()
                      "Enable golangci-lint."

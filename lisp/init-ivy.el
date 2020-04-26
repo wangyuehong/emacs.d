@@ -37,12 +37,11 @@
   (setq amx-history-length 20)
   :bind (("M-x" . amx)))
 
-(use-package swiper :after ivy)
-
 (use-package ivy-rich
-  :after ivy
+  :demand t
   :init
   (setq ivy-rich-path-style 'abbrev)
+  (setq ivy-rich-parse-remote-buffer nil)
   :config (ivy-rich-mode 1))
 
 (provide 'init-ivy)

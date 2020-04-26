@@ -78,9 +78,7 @@
     (advice-add #'company-yasnippet :around #'my-company-yasnippet-disable-inline))
   )
 
-(use-package company-prescient
-  :after company
-  :init (company-prescient-mode 1))
+(use-package company-prescient :init (company-prescient-mode 1))
 
 (provide 'init-company)
 ;;; init-company.el ends here
