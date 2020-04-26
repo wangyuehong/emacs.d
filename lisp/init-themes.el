@@ -2,8 +2,9 @@
 ;;; Commentary:
 ;;; Code:
 
-(use-package srcery-theme)
-(use-package gruvbox-theme)
+(use-package srcery-theme
+  :init
+  (setq-default custom-enabled-themes '(srcery)))
 
 (provide 'init-themes)
 ;;; init-themes.el ends here
