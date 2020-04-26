@@ -4,6 +4,7 @@
 
 (use-package general
   :after evil
+  :demand t
   :config
   (general-evil-setup t)
   (general-define-key
@@ -16,6 +17,7 @@
    "e"  'evil-iedit-state/iedit-mode
    "f"  'flycheck-list-errors
    "w"  'save-buffer
+   "W"  'save-some-buffers
    "q"  'quickrun
    "k"  'kill-buffer-and-window
    "K"  'kill-other-buffers
@@ -34,16 +36,14 @@
    :keymaps 'override
    ;; :non-normal-prefix "C-SPC"
    :prefix "SPC"
-   "f" 'projectile-find-file
    "hc" 'highlight-symbol-remove-all
    "hh" 'highlight-symbol
    "i"  'counsel-imenu
    "g"  'magit-status
-   "l"  'helm-ls-git-ls
-   "p" 'projectile-switch-project
+   "f"  'helm-ls-git-ls
    "s"  'swiper
    "t" 'multi-term
-   "x"  'counsel-M-x
+   "x"  'amx
    "y" 'youdao-dictionary-search-at-point+
    )
 )

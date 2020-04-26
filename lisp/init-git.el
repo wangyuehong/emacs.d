@@ -3,26 +3,19 @@
 ;;; Code:
 
 (use-package magit
-  :commands (magit-status)
+  :mode (("\\COMMIT_EDITMSG\\'" . text-mode)
+         ("\\MERGE_MSG\\'" . text-mode))
+  :bind (("C-x g" . magit-status))
   :init
-  (setq magit-last-seen-setup-instructions "1.4.0")
   (setq-default
    magit-process-popup-time 10
    magit-diff-refine-hunk t
    magit-completing-read-function 'ivy-completing-read)
-  :hook
-  (magit-popup-mode . sanityinc/no-trailing-whitespace)
-  :config
-  (fullframe magit-status magit-mode-quit-window)
+  (setq magit-last-seen-setup-instructions "1.4.0")
   )
 
 (use-package evil-magit
   :after (evil magit))
-
-(use-package git-commit
-  :hook
-  (git-commit-mode . goto-address-mode)
-  )
 
 (use-package git-gutter
   :diminish
@@ -42,7 +35,6 @@
 
 (use-package gitignore-mode)
 (use-package gitconfig-mode)
-(use-package git-timemachine)
 
 (provide 'init-git)
 ;;; init-git.el ends here

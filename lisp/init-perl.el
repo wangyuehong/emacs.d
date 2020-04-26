@@ -1,9 +1,8 @@
 ;; use cperl-mode instead of perl-mode
 (defalias 'perl-mode 'cperl-mode)
-
-(require-package 'cperl-mode)
-
-(after-load 'cperl-mode
+(use-package cperl-mode
+  :ensure nil
+  :init
   (setq cperl-close-paren-offset -4)
   (setq cperl-continued-statement-offset 4)
   (setq cperl-indent-level 4)
@@ -19,24 +18,19 @@
   (setq cperl-lazy-help-time 3)
   (setq cperl-invalid-face nil)
 
+  :config
   (set-face-background 'cperl-array-face nil)
   (set-face-background 'cperl-hash-face nil)
-
   ;; (setenv "PERL5LIB" "dir_path_1:dir_path_2")
-
   (key-chord-define cperl-mode-map "--" (smartchr '("->" "=>")))
   ;; (modify-syntax-entry ?_ "w")
+
+  (defun update-perl-ctags ()
+    (interactive)
+    ;; use universal-ctags
+    (shell-command "ctags --language-force=perl -e -R `perl -e 'print join(q{ }, grep { -d } @INC);'`"))
   )
 
-(add-hook 'cperl-mode-hook 'subword-mode)
-
-(defun update-perl-ctags ()
-  (interactive)
-  ;; use universal-ctags
-  (shell-command "ctags --language-force=perl -e -R `perl -e 'print join(q{ }, grep { -d } @INC);'`"))
-
-(require-package 'tt-mode)
-(autoload 'tt-mode "tt-mode")
-(add-to-list 'auto-mode-alist '("\\.tt$" . tt-mode))
+(use-package tt-mode :mode (("\\.tt$" . tt-mode)))
 
 (provide 'init-perl)

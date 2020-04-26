@@ -22,8 +22,6 @@
   ;; Color the evil tag - colors taken from spaceline
   (setq evil-normal-state-tag       (propertize " <N> ")
         evil-emacs-state-tag        (propertize " <M> " 'face '((:background "SkyBlue2"   )))
-        evil-iedit-state-tag        (propertize " <E> " 'face '((:background "green"      )))
-        evil-iedit-insert-state-tag (propertize " <Ei> " 'face '((:background "brightred" )))
         evil-insert-state-tag       (propertize " <I> " 'face '((:background "red"        )))
         evil-replace-state-tag      (propertize " <R> " 'face '((:background "chocolate"  )))
         evil-motion-state-tag       (propertize " <M> " 'face '((:background "plum3"      )))
@@ -59,87 +57,38 @@
     (evil-set-initial-state `,(car mode-map) `,(cdr mode-map)))
 
   ;; change mode-line color by evil state
-  (lexical-let ((default-color (cons (face-background 'mode-line)
-                                     (face-foreground 'mode-line))))
-    (defun change-mode-line-color ()
-      (let ((color (cond ((minibufferp) default-color)
-                         ;; ((evil-insert-state-p) '("red" . "white"))
-                         ;; ((evil-emacs-state-p)  '("#444488" . "white"))
-                         ((buffer-modified-p)   '("brightblue" . "white"))
-                         (t default-color))))
-        (set-face-foreground 'mode-line-buffer-id (cdr color))
-        (set-face-foreground 'mode-line (cdr color))
-        (set-face-background 'mode-line (car color))
-        )
-      )
-    (add-hook 'post-command-hook 'change-mode-line-color)
-    )
+  ;; (lexical-let ((default-color (cons (face-background 'mode-line)
+  ;;                                    (face-foreground 'mode-line))))
+  ;;   (defun change-mode-line-color ()
+  ;;     (let ((color (cond ((minibufferp) default-color)
+  ;;                        ;; ((evil-insert-state-p) '("red" . "white"))
+  ;;                        ;; ((evil-emacs-state-p)  '("#444488" . "white"))
+  ;;                        ((buffer-modified-p)   '("brightblue" . "white"))
+  ;;                        (t default-color))))
+  ;;       (set-face-foreground 'mode-line-buffer-id (cdr color))
+  ;;       (set-face-foreground 'mode-line (cdr color))
+  ;;       (set-face-background 'mode-line (car color))
+  ;;       )
+  ;;     )
+  ;;   (add-hook 'post-command-hook 'change-mode-line-color)
+  ;;   )
   ) ;; M-x pp-macroexpand-last-sexp here to test use-package
 
-(use-package evil-collection
-  :after evil
-  :config
-  (evil-collection-init)
-  )
+(use-package evil-collection :after evil :config (evil-collection-init))
 
-(use-package evil-surround
-  :after evil
-  :config
-  (global-evil-surround-mode)
-  )
+(use-package evil-surround :after evil :config (global-evil-surround-mode))
 
-(use-package evil-escape
-  :after evil
-  :init
-  (setq-default evil-escape-key-sequence "fd")
-  (setq-default evil-escape-delay 0.2)
-  :config
-  (evil-escape-mode 1)
-  )
+(use-package evil-anzu :after evil :config (global-anzu-mode t))
 
-(use-package evil-anzu
-  :after evil
-  :config
-  (global-anzu-mode t))
+(use-package evil-visualstar :after evil :init (setq evil-visualstar/persistent t) :config (global-evil-visualstar-mode))
 
-(use-package evil-visualstar
-  :after evil
-  :init
-  (setq evil-visualstar/persistent t)
-  :config
-  (global-evil-visualstar-mode)
-  )
-
-(use-package evil-nerd-commenter
-  :after evil)
-
-(use-package evil-snipe
-  :diminish
-  :after evil
-  :init
-  (setq evil-snipe-scope 'line
-        evil-snipe-repeat-scope 'whole-line
-        evil-snipe-spillover-scope 'visible
-        evil-snipe-smart-case t)
-  :config
-  (evil-snipe-override-mode +1)
-  (evil-snipe-mode -1)
-  (push '(?\[ "[[{(]") evil-snipe-aliases)
-  )
-
+(use-package evil-nerd-commenter :after evil)
 
 (use-package evil-iedit-state
   :after (evil iedit)
   :commands (evil-iedit-state evil-iedit-state/iedit-mode)
-  )
-
-(use-package evil-string-inflection
-  :after evil
-  :bind (:map evil-normal-state-map
-              ("gs" . string-inflection-underscore)
-              ("gc" . string-inflection-camelcase)
-              )
-  )
+  :init (setq evil-iedit-state-tag        (propertize " <E> " 'face '((:background "green"      )))
+              evil-iedit-insert-state-tag (propertize " <Ei> " 'face '((:background "brightred" )))))
 
 (provide 'init-evil)
 ;;; init-evil.el ends here

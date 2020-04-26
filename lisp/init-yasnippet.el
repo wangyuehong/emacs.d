@@ -3,29 +3,10 @@
 ;;; Code:
 
 (use-package yasnippet
-  :diminish
-  :hook (after-init . yas-global-mode)
-  :init
-  ;; http://stackoverflow.com/questions/7619640/emacs-latex-yasnippet-why-are-newlines-inserted-after-a-snippet
-  (setq-default mode-require-final-newline nil)
+  :diminish yas-minor-mode
+  :hook (after-init . yas-global-mode))
 
-  ;; give yas-dropdown-prompt in yas/prompt-functions a chance
-  (setq yas-prompt-functions '(yas-dropdown-prompt
-                               yas-ido-prompt
-                               yas-completing-prompt))
-
-  :config
-  (add-to-list 'auto-mode-alist '("\\.yasnippet\\'" . snippet-mode))
-  ;; use yas-completing-prompt when ONLY when `M-x yas-insert-snippet'
-  ;; thanks to capitaomorte for providing the trick.
-  (defadvice yas-insert-snippet (around use-completing-prompt activate)
-    "Use `yas-completing-prompt' for `yas-prompt-functions' but only here..."
-    (let* ((yas-prompt-functions '(yas-completing-prompt)))
-      ad-do-it))
-  )
-
-(use-package yasnippet-snippets
-  :after yasnippet)
+(use-package yasnippet-snippets :after yasnippet)
 
 (provide 'init-yasnippet)
 ;;; init-yasnippet.el ends here

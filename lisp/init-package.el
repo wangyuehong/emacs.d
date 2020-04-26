@@ -15,7 +15,7 @@
 ;; Should set before loading `use-package'
 (eval-and-compile
   (setq use-package-always-ensure t)
-  ;; (setq use-package-always-defer t)
+  (setq use-package-always-defer t)
   (setq use-package-expand-minimally t)
   (setq use-package-enable-imenu-support t))
 
@@ -23,16 +23,25 @@
   (require 'use-package))
 
 ;; Required by `use-package'
+(use-package diminish)
 (use-package bind-key)
 
-;; Extensions
+;; Update GPG keyring for GNU ELPA
+(use-package gnu-elpa-keyring-update)
+
+;; A modern Packages Menu
 (use-package paradox
-  :defer
-  :commands paradox-upgrade-packages
   :init
-  (setq paradox-execute-asynchronously t)
-  (setq paradox-github-token t)
-  )
+  (setq paradox-execute-asynchronously t
+        paradox-github-token t
+        paradox-display-star-count nil))
+
+;; Auto update packages
+(use-package auto-package-update
+  :init
+  (setq auto-package-update-delete-old-versions t
+        auto-package-update-hide-results t)
+  (defalias 'upgrade-packages #'auto-package-update-now))
 
 (provide 'init-package)
 ;;; init-package.el ends here
