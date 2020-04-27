@@ -16,9 +16,13 @@
   ;;                     :background "#626262")
   )
 
+(use-package paren
+  :ensure nil
+  :hook (after-init . show-paren-mode))
+
 (use-package fic-mode :hook prog-mode)
 
-(use-package rainbow-mode)
+(use-package rainbow-mode :diminish)
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
