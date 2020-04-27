@@ -66,7 +66,7 @@
 
 (use-package evil-iedit-state
   :commands (evil-iedit-state evil-iedit-state/iedit-mode)
-  :init (setq evil-iedit-state-tag        (propertize " <E> " 'face '((:background "green"      )))
+  :init (setq evil-iedit-state-tag        (propertize " <E> "  'face '((:background "green"     )))
               evil-iedit-insert-state-tag (propertize " <Ei> " 'face '((:background "brightred" )))))
 
 (provide 'init-evil)

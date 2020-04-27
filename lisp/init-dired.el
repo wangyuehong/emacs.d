@@ -11,9 +11,7 @@
  diredp-hide-details-initially-flag nil
  )
 
-(use-package diredfl
-  :config
-  (diredfl-global-mode))
+(use-package diredfl :init (diredfl-global-mode 1))
 
 (provide 'init-dired)
 ;;; init-dired.el ends here
