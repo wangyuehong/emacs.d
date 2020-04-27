@@ -3,8 +3,7 @@
 ;;; Code:
 
 (use-package srcery-theme
-  :init
-  (setq-default custom-enabled-themes '(srcery)))
+  :hook (after-init .(lambda () (load-theme 'srcery))))
 
 (provide 'init-themes)
 ;;; init-themes.el ends here
