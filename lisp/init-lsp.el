@@ -27,13 +27,12 @@
   :bind (("C-c u" . lsp-ui-imenu))
   :init
   (setq lsp-ui-doc-enable t
-        lsp-ui-doc-header nil
         lsp-ui-doc-delay 0.2
         lsp-ui-doc-include-signature t
-        lsp-ui-sideline-enable t
+        lsp-ui-sideline-enable nil
         lsp-ui-sideline-ignore-duplicate t
         lsp-ui-doc-border (face-foreground 'default)
-        lsp-eldoc-enable-hover nil ; Disable eldoc displays in minibuffer
+        lsp-eldoc-enable-hover nil ; disable eldoc displays in minibuffer
         ))
 
 (use-package company-lsp
