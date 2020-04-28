@@ -41,9 +41,9 @@
          ("\\.bashrc.local\\'" . sh-mode)
          ("\\.zsh\\'"          . sh-mode)
          ("\\.bashrc\\'"       . sh-mode)
+         ("\\.env\\'"          . sh-mode)
+         ("\\.env\\.example\\'" . sh-mode)
          ))
-
-(use-package dotenv-mode)
 
 (provide 'init-prog)
 ;;; init-prog ends here
