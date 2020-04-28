@@ -18,7 +18,8 @@
          ("C-f" . company-next-page)
          ("<tab>" . company-complete-common-or-cycle)
          ("<backtab>" . my-company-yasnippet)
-         ("<return" . company-complete-selection)
+         ("<return>" . company-complete-selection)
+         ("RET" . company-complete-selection)
          :map company-search-map
          ("C-k" . company-select-previous)
          ("C-j" . company-select-next))
@@ -29,8 +30,8 @@
         company-dabbrev-downcase nil
         company-selection-wrap-around t
         company-dabbrev-ignore-case nil
-        company-idle-delay 0
-        company-minimum-prefix-length 1
+        company-idle-delay 0.3
+        company-minimum-prefix-length 0
         company-require-match t
         company-global-modes '(not erc-mode message-mode help-mode
                                    gud-mode eshell-mode shell-mode)
