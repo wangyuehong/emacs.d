@@ -16,7 +16,14 @@
 
 (use-package dired-aux :ensure nil :init (setq-default dired-dwim-target t))
 
-(use-package dired-x :ensure nil :demand)
+(use-package dired-x
+  :ensure nil
+  :demand
+  :config
+  (setq dired-omit-files
+        (concat dired-omit-files
+                "\\|^.DS_Store$\\|^.projectile$\\|^.git*\\|^.svn$\\|^.vscode$\\|\\.js\\.meta$\\|\\.meta$\\|\\.elc$\\|^.emacs.*"))
+  )
 
 (use-package diredfl :init (diredfl-global-mode 1))
 
