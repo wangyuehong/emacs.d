@@ -1,6 +1,4 @@
-;; init-go.el --- Golang configurations.  -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package go-mode
   :bind (:map go-mode-map
@@ -48,4 +46,3 @@
                      (flycheck-golangci-lint-setup))))
 
 (provide 'init-go)
-;;; init-go.el ends here

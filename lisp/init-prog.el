@@ -1,6 +1,4 @@
-;;; init-prog.el --- quickrun configurations. -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package quickrun
   :commands quickrun
@@ -46,4 +44,3 @@
          ))
 
 (provide 'init-prog)
-;;; init-prog ends here

@@ -1,6 +1,4 @@
-;; init-dired.el --- dired configurations.  -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (require 'dired+)
 (toggle-diredp-find-file-reuse-dir 1)
@@ -14,4 +12,3 @@
 (use-package diredfl :init (diredfl-global-mode 1))
 
 (provide 'init-dired)
-;;; init-dired.el ends here

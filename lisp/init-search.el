@@ -1,6 +1,4 @@
-;;; init-search.el --- Settings for grep and grep-like tools -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (setq-default grep-highlight-matches t
               grep-scroll-output t)
@@ -41,4 +39,3 @@
   )
 
 (provide 'init-search)
-;;; init-search.el ends here

@@ -1,6 +1,4 @@
-;; init-git.el --- git configurations.  -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package magit
   :mode (("\\COMMIT_EDITMSG\\'" . text-mode)
@@ -37,4 +35,3 @@
 (use-package gitconfig-mode)
 
 (provide 'init-git)
-;;; init-git.el ends here

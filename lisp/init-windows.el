@@ -1,5 +1,4 @@
-;;; init-windows.el --- Working with windows within frames -*- lexical-binding: t -*-
-;;; Commentary:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 ;; Make "C-x o" prompt for a target window when there are more than 2
 (use-package switch-window
@@ -65,4 +64,3 @@
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
 (provide 'init-windows)
-;;; init-windows.el ends here

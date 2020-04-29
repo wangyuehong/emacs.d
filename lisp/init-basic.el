@@ -1,6 +1,4 @@
-;;; init-basic.el --- edit configurations. -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 ;;----------------------------------------------------------------------------
 ;; Some basic preferences
@@ -67,9 +65,28 @@
                    (abbreviate-file-name (buffer-file-name))
                  "%b"))))
 
+;; Encoding
+;; UTF-8 as the default coding system
+(when (fboundp 'set-charset-priority)
+  (set-charset-priority 'unicode))
+
+;; Explicitly set the prefered coding systems to avoid annoying prompt
+;; from emacs (especially on Microsoft Windows)
+(prefer-coding-system 'utf-8)
+(setq locale-coding-system 'utf-8)
+
+(set-language-environment 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-buffer-file-coding-system 'utf-8)
+(set-clipboard-coding-system 'utf-8)
+(set-file-name-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(modify-coding-system-alist 'process "*" 'utf-8)
+
 (use-package display-line-numbers
   :ensure nil
   :hook (prog-mode . display-line-numbers-mode))
 
 (provide 'init-basic)
-;;; init-basic.el ends here

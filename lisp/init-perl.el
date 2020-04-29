@@ -1,3 +1,5 @@
+;; -*- coding: utf-8; lexical-binding: t; -*-
+
 ;; use cperl-mode instead of perl-mode
 (defalias 'perl-mode 'cperl-mode)
 (use-package cperl-mode

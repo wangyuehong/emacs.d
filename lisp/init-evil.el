@@ -1,6 +1,4 @@
-;;; init-evil.el --- evil configurations. -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package evil
   :demand t
@@ -70,4 +68,3 @@
               evil-iedit-insert-state-tag (propertize " <Ei> " 'face '((:background "brightred" )))))
 
 (provide 'init-evil)
-;;; init-evil.el ends here

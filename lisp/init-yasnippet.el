@@ -1,6 +1,4 @@
-;;; init-yasnippet.el --- yasnippet configurations. -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package yasnippet
   :diminish yas-minor-mode
@@ -9,4 +7,3 @@
 (use-package yasnippet-snippets)
 
 (provide 'init-yasnippet)
-;;; init-yasnippet.el ends here

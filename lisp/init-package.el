@@ -1,6 +1,4 @@
-;;; init-package.el --- Initialize package configurations.	-*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 ;; Initialize packages
 (unless (bound-and-true-p package--initialized) ; To avoid warnings in 27
@@ -44,4 +42,3 @@
   (defalias 'upgrade-packages #'auto-package-update-now))
 
 (provide 'init-package)
-;;; init-package.el ends here

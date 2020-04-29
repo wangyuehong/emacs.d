@@ -1,10 +1,4 @@
-;;; init.el --- Load the full configuration -*- lexical-binding: t -*-
-;;; Commentary:
-
-;; This file bootstraps the configuration, which is divided into
-;; a number of other files.
-
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 ;; Produce backtraces when errors occur
 (setq debug-on-error t)
@@ -35,8 +29,9 @@
 (require 'init-keybind)
 (require 'init-edit)
 (require 'init-themes)
-(require 'init-search)
 (require 'init-evil)
+(require 'init-general)
+(require 'init-search)
 (require 'init-dired)
 (require 'init-ibuffer)
 (require 'init-windows)
@@ -47,7 +42,6 @@
 (require 'init-helm)
 (require 'init-yasnippet)
 (require 'init-git)
-(require 'init-general)
 (require 'init-prog)
 (require 'init-flycheck)
 (require 'init-lsp)
@@ -69,4 +63,3 @@
 (setq debug-on-error nil)
 
 (provide 'init)
-;;; init.el ends here

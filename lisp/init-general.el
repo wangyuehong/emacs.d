@@ -1,6 +1,4 @@
-;;; init-general.el --- general configurations. -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package general
   :demand t
@@ -14,14 +12,13 @@
    "c"  'evilnc-comment-or-uncomment-lines
    "d"  'delete-trailing-whitespace
    "e"  'evil-iedit-state/iedit-mode
-   "f"  'flycheck-list-errors
    "w"  'save-buffer
    "W"  'save-some-buffers
    "q"  'quickrun
    "k"  'kill-buffer-and-window
    "K"  'kill-other-buffers
    "P"  'paradox-upgrade-packages
-   "r"  'counsel-yank-pop
+   "r"  'helm-show-kill-ring
    ","  'git-gutter-map
    "v"  'revert-buffer
    "nn" 'narrow-to-region
@@ -39,12 +36,11 @@
    "hh" 'highlight-symbol
    "i"  'counsel-imenu
    "g"  'magit-status
-   "f"  'helm-ls-git-ls
+   "f"  'flycheck-list-errors
+   "l"  'helm-ls-git-ls
    "s"  'swiper
-   "t" 'multi-term
    "x"  'amx
    "y" 'youdao-dictionary-search-at-point+
    )
 )
 (provide 'init-general)
-;;; init-general.el ends here

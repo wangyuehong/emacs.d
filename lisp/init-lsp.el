@@ -1,6 +1,4 @@
-;;; init-lsp.el --- lsp configurations. -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package lsp-mode
   :diminish
@@ -48,4 +46,3 @@
 (use-package lsp-ivy :after lsp-mode)
 
 (provide 'init-lsp)
-;;; init-lsp.el ends here

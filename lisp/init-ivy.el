@@ -1,6 +1,4 @@
-;;; init-ivy.el --- Use ivy for minibuffer completion and more -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package counsel
   :diminish ivy-mode counsel-mode
@@ -45,4 +43,3 @@
   :config (ivy-rich-mode 1))
 
 (provide 'init-ivy)
-;;; init-ivy.el ends here

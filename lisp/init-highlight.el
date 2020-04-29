@@ -1,6 +1,4 @@
-;;; init-highlight.el --- highlight configurations. -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package highlight-symbol
   :diminish
@@ -28,5 +26,3 @@
   :hook (prog-mode . rainbow-delimiters-mode))
 
 (provide 'init-highlight)
-
-;;; init-highlight.el ends here

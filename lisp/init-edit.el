@@ -1,6 +1,4 @@
-;;; init-editing-utils.el --- edit configurations. -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package elec-pair
   :ensure nil
@@ -160,4 +158,3 @@
 ;;   :config (flyspell-lazy-mode 1)
 ;;   )
 (provide 'init-edit)
-;;; init-edit.el ends here

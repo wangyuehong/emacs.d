@@ -1,6 +1,4 @@
-;; init-company.el --- company configurations. -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package company
   :diminish
@@ -82,4 +80,3 @@
 (use-package company-prescient :init (company-prescient-mode 1))
 
 (provide 'init-company)
-;;; init-company.el ends here

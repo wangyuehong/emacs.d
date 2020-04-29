@@ -1,6 +1,4 @@
-;;; init-elpa.el --- Settings and helpers for package.el -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (require 'package)
 
@@ -19,4 +17,3 @@
         ))
 
 (provide 'init-elpa)
-;;; init-elpa.el ends here
