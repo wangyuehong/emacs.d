@@ -1,26 +1,19 @@
-;;; init-helm.el --- helm configurations. -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package helm
-  :defer
-  :config
-  (define-key helm-map (kbd "C-h") 'helm-previous-source)
-  (define-key helm-map (kbd "C-l") 'helm-next-source)
-  (define-key helm-map (kbd "C-j") 'helm-next-line)
-  (define-key helm-map (kbd "C-k") 'helm-previous-line)
-  (define-key helm-map (kbd "C-f") 'helm-next-page)
-  (define-key helm-map (kbd "C-b") 'helm-previous-page)
-  )
+  :bind (:map helm-map
+              ("C-h" . helm-previous-source)
+              ("C-l" . helm-next-source)
+              ("C-j" . helm-next-line)
+              ("C-k" . helm-previous-line)
+              ("C-f" . helm-next-page)
+              ("C-b" . helm-previous-page)))
 
 (use-package helm-ls-git
-  :after helm
   :commands helm-ls-git-ls
-  :defer
   :init
   (setq helm-ls-git-show-abs-or-relative 'relative)
   (setq helm-ff-transformer-show-only-basename nil)
   )
 
 (provide 'init-helm)
-;;; init-helm.el ends here
