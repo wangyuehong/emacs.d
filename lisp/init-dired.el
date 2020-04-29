@@ -1,9 +1,12 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package dired :ensure nil
+  :hook (dired-mode . dired-hide-details-mode)
   :config
   (setq dired-recursive-deletes 'always
-        dired-recursive-copies 'always))
+        dired-recursive-copies 'always
+        dired-listing-switches "-alh"
+        ))
 
 (use-package dired-single
   :bind
