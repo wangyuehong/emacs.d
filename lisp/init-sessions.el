@@ -3,8 +3,8 @@
 (use-package session
   :hook (after-init . session-initialize)
   :init
-  (setq session-globals-max-size 2048)
-  (setq session-globals-max-string (* 8 1024 1024)) ;; 8M
+  (setq session-globals-max-size 128)
+  (setq session-globals-max-string (* 1 1024 1024)) ;; 1M
   (setq session-save-file (expand-file-name ".session" user-emacs-directory))
   (setq session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)")
   (setq session-save-file-coding-system 'utf-8)
@@ -13,7 +13,7 @@
 (use-package recentf
   :ensure nil
   :hook (after-init . recentf-mode)
-  :init (setq recentf-max-saved-items 300
+  :init (setq recentf-max-saved-items 64
               recentf-save-file (expand-file-name ".recentf" user-emacs-directory)
               recentf-exclude
              '("\\.?cache" ".cask" "url" "COMMIT_EDITMSG\\'" "bookmarks"
