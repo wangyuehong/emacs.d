@@ -43,4 +43,5 @@
          ("\\.env\\.example\\'" . sh-mode)
          ))
 
+(use-package dockerfile-mode)
 (provide 'init-prog)

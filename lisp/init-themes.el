@@ -1,6 +1,5 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
-(use-package srcery-theme
-  :hook (after-init .(lambda () (load-theme 'srcery))))
+(use-package srcery-theme :init (load-theme 'srcery t))
 
 (provide 'init-themes)

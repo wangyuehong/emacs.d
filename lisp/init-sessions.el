@@ -1,5 +1,13 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
+;; save a list of open files in ~/.emacs.d/.emacs.desktop
+(use-package desktop
+  :ensure nil
+  :init
+  (desktop-save-mode 1)
+  (setq desktop-path (list user-emacs-directory)
+        desktop-auto-save-timeout 5))
+
 (use-package session
   :hook (after-init . session-initialize)
   :init
@@ -22,16 +30,5 @@
                 "^/tmp/" "^/var/folders/.+$" ; "^/ssh:"
                 (lambda (file) (file-in-directory-p file package-user-dir))))
   :config (push (expand-file-name recentf-save-file) recentf-exclude))
-
-(use-package workgroups2
-  :diminish workgroups-mode
-  :init
-  (setq wg-prefix-key (kbd "C-c w")
-        wg-session-file (expand-file-name ".workgroup2" user-emacs-directory)
-        ;; wg-mode-line-display-on nil
-        ;; What to do on Emacs exit / workgroups-mode exit?
-        wg-emacs-exit-save-behavior           'save      ; Options: 'save 'ask nil
-        wg-workgroups-mode-exit-save-behavior 'save)
-  (workgroups-mode 1))
 
 (provide 'init-sessions)

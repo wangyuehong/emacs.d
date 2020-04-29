@@ -19,7 +19,7 @@
    )
 
   (setq evil-normal-state-tag       (propertize " <N> ")
-        evil-emacs-state-tag        (propertize " <M> " 'face '((:background "SkyBlue2"   )))
+        evil-emacs-state-tag        (propertize " <M> " 'face '((:background "#444488"   )))
         evil-insert-state-tag       (propertize " <I> " 'face '((:background "red"        )))
         evil-replace-state-tag      (propertize " <R> " 'face '((:background "chocolate"  )))
         evil-motion-state-tag       (propertize " <M> " 'face '((:background "plum3"      )))
@@ -53,6 +53,18 @@
                       (eshell-mode . emacs)
                       (help-mode . emacs)))
     (evil-set-initial-state `,(car mode-map) `,(cdr mode-map)))
+
+  (let* ((default-color (cons (face-background 'mode-line)
+                              (face-foreground 'mode-line))))
+    (add-hook 'post-command-hook
+              (lambda ()
+                (let* ((color (cond ((minibufferp) default-color)
+                                    ((evil-insert-state-p) '("red" . "white"))
+                                    ((evil-emacs-state-p)  '("#444488" . "white"))
+                                    ((buffer-modified-p)   '("blue" . "white"))
+                                    (t default-color))))
+                  (set-face-background 'mode-line (car color))
+                  (set-face-foreground 'mode-line (cdr color))))))
   )
 
 

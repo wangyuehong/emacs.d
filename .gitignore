@@ -26,3 +26,4 @@ site-lisp/package/
 .yas-compiled-snippets.el
 /.lsp-session-v1
 /transient
+/.emacs.desktop

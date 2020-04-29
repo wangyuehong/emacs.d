@@ -8,7 +8,8 @@
 ;; C-c C-k wgrep-abort-changes
 (use-package wgrep
   :init
-  (setq wgrep-auto-save-buffer t
+  (setq wgrep-enable-key "e"
+        wgrep-auto-save-buffer t
         wgrep-change-readonly-file t))
 
 (use-package ag
