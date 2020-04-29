@@ -1,13 +1,19 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
-(require 'dired+)
-(toggle-diredp-find-file-reuse-dir 1)
-(setq-default ;; Always copy/delete recursively
- dired-recursive-copies  'always
- dired-recursive-deletes 'top
- dired-dwim-target t
- diredp-hide-details-initially-flag nil
- )
+(use-package dired :ensure nil
+  :config
+  (setq dired-recursive-deletes 'always
+        dired-recursive-copies 'always))
+
+(use-package dired-single
+  :bind
+  (:map dired-mode-map
+        ([remap dired-find-file] . dired-single-buffer)
+        ([remap dired-up-directory] . dired-single-up-directory)))
+
+(use-package dired-aux :ensure nil :init (setq-default dired-dwim-target t))
+
+(use-package dired-x :ensure nil :demand)
 
 (use-package diredfl :init (diredfl-global-mode 1))
 
