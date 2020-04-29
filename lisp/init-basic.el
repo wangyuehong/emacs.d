@@ -87,6 +87,6 @@
 
 (use-package display-line-numbers
   :ensure nil
-  :hook (prog-mode . display-line-numbers-mode))
+  :hook ((prog-mode yaml-mode) . display-line-numbers-mode))
 
 (provide 'init-basic)
