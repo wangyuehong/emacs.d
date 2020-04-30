@@ -34,7 +34,7 @@
 (require 'init-search)
 (require 'init-dired)
 (require 'init-ibuffer)
-(require 'init-windows)
+(require 'init-window)
 (require 'init-sessions)
 (require 'init-highlight)
 (require 'init-company)

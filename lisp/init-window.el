@@ -8,6 +8,20 @@
   :bind (("C-x o" . switch-window))
   )
 
+(use-package winner
+  :ensure nil
+  :commands (winner-undo winner-redo)
+  :hook (after-init . winner-mode)
+  :init (setq winner-boring-buffers '("*Completions*"
+                                      "*Compile-Log*"
+                                      "*inferior-lisp*"
+                                      "*Fuzzy Completions*"
+                                      "*Apropos*"
+                                      "*Help*"
+                                      "*cvs*"
+                                      "*Buffer List*"
+                                      "*Ibuffer*"
+                                      "*esh command on file*")))
 ;;----------------------------------------------------------------------------
 ;; When splitting window, show (other-buffer) in the new window
 ;;----------------------------------------------------------------------------
@@ -63,4 +77,13 @@
   (interactive)
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
-(provide 'init-windows)
+(use-package shackle
+    :hook (after-init . shackle-mode)
+    :config
+    (setq shackle-default-rule nil
+          shackle-rules '(
+                          (flycheck-error-list-mode :select t :align 'below :size 0.3)
+                          (help-mode :select t :align 'below :size 0.3)
+                          (ag-mode :select t :align 'below :size 0.4)))
+    )
+(provide 'init-window)
