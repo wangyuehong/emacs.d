@@ -9,7 +9,6 @@
    magit-process-popup-time 10
    magit-diff-refine-hunk t
    magit-completing-read-function 'ivy-completing-read)
-  (setq magit-last-seen-setup-instructions "1.4.0")
   )
 
 (use-package evil-magit :demand t)
@@ -18,7 +17,6 @@
   :diminish
   :demand t
   :init
-  (setq git-gutter:update-threshold 2)
   (setq git-gutter:update-hooks '(after-save-hook after-revert-hook))
   :config
   (global-git-gutter-mode t)
