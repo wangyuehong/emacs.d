@@ -20,7 +20,9 @@
               ("C-c t p" . go-test-current-project)
               ("C-c t f" . go-test-current-file)
               ("C-c t ." . go-test-current-test)
-              ("C-c t x" . go-run)))
+              ("C-c t x" . go-run))
+
+  :init (setq go-test-verbose t))
 
 (use-package go-gen-test :after go-mode
   :bind (:map go-mode-map
