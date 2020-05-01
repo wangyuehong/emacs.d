@@ -36,6 +36,7 @@
 ;; Load configs for specific features and modes
 ;;----------------------------------------------------------------------------
 (require 'init-basic)
+(require 'init-theme)
 (require 'init-window)
 (require 'init-keybind)
 (require 'init-edit)
@@ -46,8 +47,7 @@
 (require 'init-hydra)
 (require 'init-search)
 (require 'init-dired)
-(require 'init-themes)
-(require 'init-sessions)
+(require 'init-session)
 (require 'init-company)
 (require 'init-helm)
 (require 'init-yasnippet)
