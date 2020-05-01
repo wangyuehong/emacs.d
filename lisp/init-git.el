@@ -19,15 +19,7 @@
   :init
   (setq git-gutter:update-hooks '(after-save-hook after-revert-hook))
   :config
-  (global-git-gutter-mode t)
-  (define-prefix-command 'git-gutter-map)
-
-  (define-key git-gutter-map "j" 'git-gutter:next-hunk)
-  (define-key git-gutter-map "k" 'git-gutter:previous-hunk)
-  (define-key git-gutter-map "p" 'git-gutter:popup-hunk)
-  (define-key git-gutter-map "v" 'git-gutter:revert-hunk)
-  (define-key git-gutter-map "s" 'git-gutter:stage-hunk)
-  )
+  (global-git-gutter-mode t))
 
 (use-package gitignore-mode)
 (use-package gitconfig-mode)

@@ -6,8 +6,6 @@
 ;;; This file bootstraps the configuration, which is divided into
 ;;; a number of other files.
 
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-
 ;; Adjust garbage collection thresholds during startup, and thereafter
 (let ((normal-gc-cons-threshold (* 20 1024 1024))
       (init-gc-cons-threshold (* 128 1024 1024)))
@@ -15,29 +13,42 @@
   (add-hook 'emacs-startup-hook
             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
 
-;; Bootstrap config
-(require 'init-site-lisp)
+;; load path
+(defun update-load-path (&rest _)
+  "Update `load-path'."
+  (dolist (dir '("site-lisp" "lisp"))
+    (push (expand-file-name dir user-emacs-directory) load-path)))
+
+(defun add-subdirs-to-load-path (&rest _)
+  "Add subdirectories to `load-path'."
+  (let ((default-directory (expand-file-name "site-lisp" user-emacs-directory)))
+    (normal-top-level-add-subdirs-to-load-path)))
+
+(advice-add #'package-initialize :after #'update-load-path)
+(advice-add #'package-initialize :after #'add-subdirs-to-load-path)
+
+(update-load-path)
+
 (require 'init-elpa)
 (require 'init-package)
-
-;; (require 'init-exec-path) ;; Set up $PATH
 
 ;;----------------------------------------------------------------------------
 ;; Load configs for specific features and modes
 ;;----------------------------------------------------------------------------
 (require 'init-basic)
+(require 'init-window)
 (require 'init-keybind)
 (require 'init-edit)
-(require 'init-themes)
 (require 'init-evil)
 (require 'init-general)
+(require 'init-highlight)
+(require 'init-ivy)
+(require 'init-hydra)
 (require 'init-search)
 (require 'init-dired)
-(require 'init-window)
+(require 'init-themes)
 (require 'init-sessions)
-(require 'init-highlight)
 (require 'init-company)
-(require 'init-ivy)
 (require 'init-helm)
 (require 'init-yasnippet)
 (require 'init-git)
