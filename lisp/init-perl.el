@@ -24,7 +24,8 @@
   (set-face-background 'cperl-array-face nil)
   (set-face-background 'cperl-hash-face nil)
   ;; (setenv "PERL5LIB" "dir_path_1:dir_path_2")
-  (key-chord-define cperl-mode-map "--" (smartchr '("->" "=>")))
+  (key-chord-define cperl-mode-map "--" "->")
+  (key-chord-define cperl-mode-map "==" "=>")
   ;; (modify-syntax-entry ?_ "w")
 
   (defun update-perl-ctags ()

@@ -7,7 +7,8 @@
    ruby-use-encoding-map nil
    ruby-insert-encoding-magic-comment nil)
   :config
-  (key-chord-define ruby-mode-map "--" (smartchr '("->" "=>")))
+  (key-chord-define ruby-mode-map "--" "->")
+  (key-chord-define ruby-mode-map "==" "=>")
   )
 
 (provide 'init-ruby)
