@@ -25,19 +25,18 @@
   (setq company-tooltip-align-annotations t ; aligns annotation to the right
         company-tooltip-limit 12            ; bigger popup window
         company-echo-delay 0                ; remove annoying blinking
+        company-dabbrev-ignore-invisible t
         company-dabbrev-other-buffers t
+        company-dabbrev-ignore-case nil
         company-dabbrev-downcase nil
         company-selection-wrap-around t
-        company-dabbrev-ignore-case nil
-        company-dabbrev-ignore-invisible t
-        company-idle-delay 0.1
+        company-idle-delay 0
         company-minimum-prefix-length 0
         company-transformers '(company-sort-by-backend-importance)
         company-require-match t
         company-global-modes '(not erc-mode message-mode help-mode
                                    gud-mode eshell-mode shell-mode)
-        company-frontends '(company-pseudo-tooltip-frontend
-                            company-echo-metadata-frontend))
+        )
 
   (defun my-company-yasnippet ()
     "Hide the current completeions and show snippets."
