@@ -2,7 +2,10 @@
 
 (use-package evil
   :demand t
-  :init ;; tweak evil's configuration before loading it
+  :bind (("C-x o" . evil-window-next)
+         ("C-x -" . evil-window-split)
+         ("C-x |" . evil-window-vsplit))
+  :init
   (setq-default
    evil-auto-indent t
    evil-want-keybinding nil

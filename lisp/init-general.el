@@ -32,15 +32,15 @@
    :keymaps 'override
    ;; :non-normal-prefix "C-SPC"
    :prefix "SPC"
-   "hc" 'highlight-symbol-remove-all
-   "hh" 'highlight-symbol
+   "wu" 'winner-undo
+   "wr" 'winner-redo
    "i"  'counsel-imenu
    "g"  'magit-status
    "f"  'flycheck-list-errors
    "l"  'helm-ls-git-ls
    "s"  'swiper
    "x"  'amx
-   "y" 'youdao-dictionary-search-at-point+
+   "y"  'youdao-dictionary-search-at-point+
    )
 )
 (provide 'init-general)
