@@ -39,8 +39,7 @@
   :init
   (setq company-lsp-cache-candidates 'auto)
   :config
-  (push '(company-yasnippet company-dabbrev company-lsp :separate) company-backends)
-  ;; (push '(company-lsp :with company-yasnippet) company-backends)
+  (push '(company-lsp company-yasnippet :with company-dabbrev) company-backends)
   )
 
 (use-package lsp-ivy :after lsp-mode)
