@@ -16,11 +16,10 @@
  ediff-split-window-function 'split-window-horizontally
  ediff-window-setup-function 'ediff-setup-windows-plain
  line-spacing 0.2
- mouse-yank-at-point t
  save-interprogram-paste-before-kill t
  scroll-preserve-screen-position 'always
  set-mark-command-repeat-pop t
- tooltip-delay 1.5
+ tooltip-delay 0.5
  truncate-lines nil
  scroll-conservatively 10000
  ring-bell-function 'ignore
