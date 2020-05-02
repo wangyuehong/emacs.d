@@ -21,6 +21,7 @@
   (setq enable-recursive-minibuffers t) ; Allow commands in minibuffers
   (setq ivy-use-selectable-prompt t
         ivy-virtual-abbreviate 'full
+        ivy-re-builders-alist '((t . ivy--regex-ignore-order))
         ivy-use-virtual-buffers t    ; Enable bookmarks and recentf
         ivy-height 10
         ivy-fixed-height-minibuffer t
