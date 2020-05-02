@@ -7,12 +7,7 @@
   (setq highlight-symbol-colors (quote ("#5c5cff" "#ff0000" "#00ff00" "#ff00ff" "#ffff00")))
   :hook
   ((prog-mode yaml-mode) . highlight-symbol-mode)
-  ((prog-mode yaml-mode) . highlight-symbol-nav-mode)
-  ;; :config
-  ;; (set-face-attribute 'highlight-symbol-face nil
-  ;;                     :inherit nil
-  ;;                     :background "#626262")
-  )
+  ((prog-mode yaml-mode) . highlight-symbol-nav-mode))
 
 (use-package paren
   :ensure nil
@@ -20,7 +15,8 @@
 
 (use-package fic-mode :hook prog-mode)
 
-(use-package rainbow-mode :diminish)
+(use-package rainbow-mode :diminish
+  :hook (emacs-lisp-mode . rainbow-mode))
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
