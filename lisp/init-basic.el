@@ -21,6 +21,7 @@
  set-mark-command-repeat-pop t
  tooltip-delay 0.5
  truncate-lines nil
+ xref-prompt-for-identifier nil
  scroll-conservatively 10000
  ring-bell-function 'ignore
  truncate-partial-width-windows nil)

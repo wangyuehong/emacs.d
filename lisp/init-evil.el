@@ -4,7 +4,11 @@
   :demand t
   :bind (("C-x o" . evil-window-next)
          ("C-x -" . evil-window-split)
-         ("C-x |" . evil-window-vsplit))
+         ("C-x |" . evil-window-vsplit)
+         ("M-]" . xref-find-references)
+         :map evil-normal-state-map
+         ([remap evil-jump-to-tag] . xref-find-definitions)
+         )
   :init
   (setq-default
    evil-auto-indent t

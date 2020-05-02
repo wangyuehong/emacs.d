@@ -1,14 +1,11 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package go-mode
-  :bind (:map go-mode-map
-              ([remap evil-jump-to-tag] . lsp-find-definition)
-              )
   :config
   (when (executable-find "goimports")
     (setq gofmt-command "goimports"))
   (add-hook 'before-save-hook #'gofmt-before-save)
-  (add-hook 'go-mode-hook #'lsp)
+  (add-hook 'go-mode-hook #'lsp-deferred)
   (use-package go-dlv)
   (use-package go-impl)
   (use-package go-fill-struct)

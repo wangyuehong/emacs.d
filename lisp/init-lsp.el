@@ -5,8 +5,7 @@
   :commands lsp
   :hook ((lsp-mode . lsp-enable-which-key-integration))
   :bind (:map lsp-mode-map
-              ([remap xref-find-definitions] . lsp-find-definition)
-              ([remap xref-find-references] . lsp-find-references))
+              ([remap xref-find-definitions] . lsp-find-definition))
   :init
   (setq read-process-output-max (* 1024 1024)) ;; 1MB
   (setq
@@ -14,6 +13,10 @@
    lsp-auto-guess-root t
    lsp-keep-workspace-alive nil
    lsp-enable-indentation nil
+   lsp-diagnostic-package :none
+   lsp-enable-snippet nil
+   lsp-enable-folding nil
+   lsp-enable-symbol-highlighting nil
    lsp-enable-on-type-formatting nil
    lsp-flycheck-live-reporting nil
    lsp-restart 'auto-restart
@@ -22,14 +25,20 @@
 
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
-  :bind (("C-c u" . lsp-ui-imenu))
+  :bind (:map lsp-mode-map
+        ([remap xref-find-references] . lsp-ui-peek-find-references)
+        :map lsp-ui-peek-mode-map
+        ("j" . lsp-ui-peek--select-next)
+        ("k" . lsp-ui-peek--select-prev)
+        ("C-j" . lsp-ui-peek--select-next-file)
+        ("C-k" . lsp-ui-peek--select-prev-file)
+        )
   :init
   (setq lsp-ui-doc-enable t
         lsp-ui-doc-delay 0.2
         lsp-ui-doc-include-signature t
         lsp-ui-sideline-enable nil
         lsp-ui-sideline-ignore-duplicate t
-        lsp-ui-doc-border (face-foreground 'default)
         lsp-eldoc-enable-hover nil ; disable eldoc displays in minibuffer
         ))
 
