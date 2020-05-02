@@ -28,8 +28,8 @@
       ("l" (progn (goto-char (point-min))
                   (git-gutter:previous-hunk 1))))
      "Action"
-     (("s" git-gutter:stage-hunk)
-      ("r" git-gutter:revert-hunk)
+     (("g" git-gutter)
+      ("v" git-gutter:revert-hunk)
       ("p" git-gutter:popup-hunk))
      ))
   )
