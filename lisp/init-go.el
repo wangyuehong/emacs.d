@@ -13,23 +13,22 @@
   (use-package go-impl)
   (use-package go-fill-struct)
   (use-package go-snippets)
+  :mode-hydra
+  ((:title "go-hydra" :color red :quit-key "q")
+   ("Test"
+    (("t" go-test-current-file)
+     ("g" go-gen-test-dwim))
+    "Code"
+    (("f" go-fill-struct)
+     ("i" go-impl))
+   ))
   )
 
 (use-package gotest :after go-mode
-  :bind (:map go-mode-map
-              ("C-c t p" . go-test-current-project)
-              ("C-c t f" . go-test-current-file)
-              ("C-c t ." . go-test-current-test)
-              ("C-c t x" . go-run))
-
   :init (setq go-test-verbose t))
 
 (use-package go-gen-test :after go-mode
-  :bind (:map go-mode-map
-              ("C-c C-t" . go-gen-test-dwim))
-  :init
-  (setq go-gen-test-executable "gotests -template testify")
-  )
+  :init (setq go-gen-test-executable "gotests -template testify"))
 
 (use-package toml-mode)
 

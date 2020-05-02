@@ -1,9 +1,6 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package magit
-  :mode (("\\COMMIT_EDITMSG\\'" . text-mode)
-         ("\\MERGE_MSG\\'" . text-mode))
-  :bind (("C-x g" . magit-status))
   :init
   (setq-default
    magit-process-popup-time 10
@@ -19,7 +16,23 @@
   :init
   (setq git-gutter:update-hooks '(after-save-hook after-revert-hook))
   :config
-  (global-git-gutter-mode t))
+  (global-git-gutter-mode t)
+  :pretty-hydra
+  ;; git-gutter-hydra
+  ((:title "git-gutter" :color amaranth :quit-key "q")
+    ("Hunk"
+     (("j" git-gutter:next-hunk)
+      ("k" git-gutter:previous-hunk)
+      ("h" (progn (goto-char (point-min))
+                  (git-gutter:next-hunk 1)))
+      ("l" (progn (goto-char (point-min))
+                  (git-gutter:previous-hunk 1))))
+     "Action"
+     (("s" git-gutter:stage-hunk)
+      ("r" git-gutter:revert-hunk)
+      ("p" git-gutter:popup-hunk))
+     ))
+  )
 
 (use-package gitignore-mode)
 (use-package gitconfig-mode)
