@@ -19,7 +19,7 @@
   (global-git-gutter-mode t)
   :pretty-hydra
   ;; git-gutter-hydra
-  ((:title "git-gutter" :color amaranth :quit-key "q")
+  ((:title "git-gutter" :foreign-keys warn :color amaranth :quit-key "q")
     ("Hunk"
      (("j" git-gutter:next-hunk)
       ("k" git-gutter:previous-hunk)

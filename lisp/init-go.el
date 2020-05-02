@@ -14,7 +14,7 @@
   (use-package go-fill-struct)
   (use-package go-snippets)
   :mode-hydra
-  ((:title "go-hydra" :color red :quit-key "q")
+  ((:title "go-hydra" :foreign-keys warn :color red :quit-key "q")
    ("Test"
     (("t" go-test-current-file)
      ("g" go-gen-test-dwim))
