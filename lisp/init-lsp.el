@@ -14,17 +14,26 @@
         lsp-diagnostic-package :none
         lsp-keep-workspace-alive nil
         lsp-enable-indentation nil
-        lsp-enable-snippet nil
         lsp-enable-folding nil
         lsp-enable-links nil
-        lsp-enable-completion-at-point nil
+        lsp-enable-snippet t
+        lsp-signature-auto-activate nil
         lsp-enable-symbol-highlighting nil
         lsp-enable-on-type-formatting nil
         lsp-flycheck-live-reporting nil
         lsp-restart 'auto-restart
         lsp-enable-file-watchers nil
+        lsp-prefer-capf nil
         lsp-gopls-hover-kind "NoDocumentation"
-        ))
+        )
+  :config
+  (with-eval-after-load 'company
+    (defun my-lsp-company-hook ()
+      (progn
+        (push '(company-capf company-yasnippet :with company-dabbrev) company-backends)))
+    )
+  (add-hook 'lsp-after-open-hook 'my-lsp-company-hook)
+  )
 
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
@@ -44,15 +53,6 @@
         lsp-ui-sideline-ignore-duplicate t
         lsp-eldoc-enable-hover nil ; disable eldoc displays in minibuffer
         ))
-
-(use-package company-lsp
-  :commands company-lsp
-  :after lsp-mode
-  :init
-  (setq company-lsp-cache-candidates 'auto)
-  :config
-  (push '(company-lsp company-yasnippet :with company-dabbrev) company-backends)
-  )
 
 (use-package lsp-ivy :after lsp-mode)
 
