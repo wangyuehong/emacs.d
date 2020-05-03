@@ -58,6 +58,7 @@
 (require 'init-go)
 (require 'init-perl)
 (require 'init-ruby)
+(require 'init-misc)
 
 ;; Allow access from emacsclient
 (add-hook 'after-init-hook
