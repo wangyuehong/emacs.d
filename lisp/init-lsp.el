@@ -9,22 +9,22 @@
   :init
   (setq read-process-output-max (* 1024 1024)) ;; 1MB
   (setq lsp-auto-guess-root t
-   lsp-log-io nil
-   lsp-client-packages '(lsp-clients lsp-go)
-   lsp-diagnostic-package :none
-   lsp-keep-workspace-alive nil
-   lsp-enable-indentation nil
-   lsp-enable-snippet nil
-   lsp-enable-folding nil
-   lsp-enable-links nil
-   lsp-enable-completion-at-point nil
-   lsp-enable-symbol-highlighting nil
-   lsp-enable-on-type-formatting nil
-   lsp-flycheck-live-reporting nil
-   lsp-restart 'auto-restart
-   lsp-enable-file-watchers nil
-   lsp-gopls-hover-kind "NoDocumentation"
-   ))
+        lsp-log-io nil
+        lsp-client-packages '(lsp-go)
+        lsp-diagnostic-package :none
+        lsp-keep-workspace-alive nil
+        lsp-enable-indentation nil
+        lsp-enable-snippet nil
+        lsp-enable-folding nil
+        lsp-enable-links nil
+        lsp-enable-completion-at-point nil
+        lsp-enable-symbol-highlighting nil
+        lsp-enable-on-type-formatting nil
+        lsp-flycheck-live-reporting nil
+        lsp-restart 'auto-restart
+        lsp-enable-file-watchers nil
+        lsp-gopls-hover-kind "NoDocumentation"
+        ))
 
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
