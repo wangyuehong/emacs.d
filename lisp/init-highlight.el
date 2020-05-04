@@ -13,14 +13,14 @@
   (setq symbol-overlay-idle-time 0.1)
   :custom-face
   (symbol-overlay-default-face ((t (:inherit highlight bold))))
-  (symbol-overlay-face-1 ((t (:background "brightblue" :inverse-video t))))
-  (symbol-overlay-face-2 ((t (:background "brightgreen" :inverse-video t))))
-  (symbol-overlay-face-3 ((t (:background "brightred" :inverse-video t))))
-  (symbol-overlay-face-4 ((t (:background "brightmagenta" :inverse-video t))))
-  (symbol-overlay-face-5 ((t (:background "cyan" :inverse-video t))))
-  (symbol-overlay-face-6 ((t (:background "brightyellow" :inverse-video t))))
-  (symbol-overlay-face-7 ((t (:background "whiteblack" :inverse-video t))))
-  (symbol-overlay-face-8 ((t (:background "magenta" :inverse-video t))))
+  (symbol-overlay-face-1 ((t (:background "brightblue" :foreground "black"))))
+  (symbol-overlay-face-2 ((t (:background "brightgreen" :foreground "black"))))
+  (symbol-overlay-face-3 ((t (:background "brightred" :foreground "black"))))
+  (symbol-overlay-face-4 ((t (:background "brightmagenta" :foreground "black"))))
+  (symbol-overlay-face-5 ((t (:background "cyan" :foreground "black"))))
+  (symbol-overlay-face-6 ((t (:background "brightyellow" :foreground "black"))))
+  (symbol-overlay-face-7 ((t (:background "brightblack" :foreground "white"))))
+  (symbol-overlay-face-8 ((t (:background "magenta" :foreground "black"))))
   )
 
 (use-package paren
