@@ -55,6 +55,7 @@
         line-number-mode t
         line-move-visual nil
         track-eol t
+        save-interprogram-paste-before-kill t
         set-mark-command-repeat-pop t)
 
   (setq-default show-trailing-whitespace nil) ; Don't show trailing whitespace by default
@@ -63,34 +64,19 @@
     (setq show-trailing-whitespace t)
     (add-hook 'before-save-hook #'delete-trailing-whitespace nil t)))
 
-(use-package whitespace
+(use-package ediff
   :ensure nil
-  :diminish
-  :hook (((prog-mode yaml-mode markdown-mode conf-mode) . whitespace-mode))
+  :hook(;; show org ediffs unfolded
+        (ediff-prepare-buffer . outline-show-all)
+        ;; restore window layout when done
+        (ediff-quit . winner-undo))
   :config
-  (setq whitespace-line-column 120) ;; config for lines-tail style
-  (setq whitespace-style
-        '(face spaces tabs space-before-tab newline
-               space-mark tab-mark newline-mark lines-tail))
-  (setq whitespace-space-regexp "\\(\x3000+\\)") ;; -> "　"
-  (setq whitespace-display-mappings
-        '(
-          (space-mark ?\x3000 [9633])
-          ;; (space-mark 32 [183] [46]) ; normal space
-          (space-mark 160 [164] [95])
-          (space-mark 2208 [2212] [95])
-          (space-mark 2336 [2340] [95])
-          (space-mark 3616 [3620] [95])
-          (space-mark 3872 [3876] [95])
-          ;; (newline-mark 10 [8629 10]) ;; newlne
-          (tab-mark 9 [187 9] [92 9]) ;; tab
-          ))
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  (setq ediff-split-window-function 'split-window-horizontally)
+  (setq ediff-merge-split-window-function 'split-window-horizontally))
 
-  ;; color
-  ;; (set-face-foreground 'whitespace-newline "brightblack")
-  (set-face-foreground 'whitespace-space "blue") ;; -> "　"
-  (set-face-foreground 'whitespace-tab "brightblack")
-  (set-face-foreground 'whitespace-space-before-tab "brightmagenta")
-  )
+(use-package delsel
+  :ensure nil
+  :hook (after-init . delete-selection-mode))
 
 (provide 'init-edit)

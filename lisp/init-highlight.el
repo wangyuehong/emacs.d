@@ -35,4 +35,38 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
+(use-package display-line-numbers
+  :ensure nil
+  :hook ((prog-mode yaml-mode) . display-line-numbers-mode))
+
+(use-package whitespace
+  :ensure nil
+  :diminish
+  :hook (((prog-mode yaml-mode markdown-mode conf-mode) . whitespace-mode))
+  :config
+  (setq whitespace-line-column 120) ;; config for lines-tail style
+  (setq whitespace-style
+        '(face spaces tabs space-before-tab newline
+               space-mark tab-mark newline-mark lines-tail))
+  (setq whitespace-space-regexp "\\(\x3000+\\)") ;; -> "　"
+  (setq whitespace-display-mappings
+        '(
+          (space-mark ?\x3000 [9633])
+          ;; (space-mark 32 [183] [46]) ; normal space
+          (space-mark 160 [164] [95])
+          (space-mark 2208 [2212] [95])
+          (space-mark 2336 [2340] [95])
+          (space-mark 3616 [3620] [95])
+          (space-mark 3872 [3876] [95])
+          ;; (newline-mark 10 [8629 10]) ;; newlne
+          (tab-mark 9 [187 9] [92 9]) ;; tab
+          ))
+
+  ;; color
+  ;; (set-face-foreground 'whitespace-newline "brightblack")
+  (set-face-foreground 'whitespace-space "blue") ;; -> "　"
+  (set-face-foreground 'whitespace-tab "brightblack")
+  (set-face-foreground 'whitespace-space-before-tab "brightmagenta")
+  )
+
 (provide 'init-highlight)

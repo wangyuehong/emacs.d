@@ -24,11 +24,26 @@
   :init (setq recentf-max-saved-items 64
               recentf-save-file (expand-file-name ".recentf" user-emacs-directory)
               recentf-exclude
-             '("\\.?cache" ".cask" "url" "COMMIT_EDITMSG\\'" "bookmarks"
+              '("\\.?cache" ".cask" "url" "COMMIT_EDITMSG\\'" "bookmarks"
                 "\\.\\(?:gz\\|gif\\|svg\\|png\\|jpe?g\\|bmp\\|xpm\\)$"
                 "\\.?ido\\.last$" "\\.revive$" "/G?TAGS$" "/.elfeed/"
                 "^/tmp/" "^/var/folders/.+$" ; "^/ssh:"
                 (lambda (file) (file-in-directory-p file package-user-dir))))
   :config (push (expand-file-name recentf-save-file) recentf-exclude))
 
+(use-package saveplace
+  :ensure nil
+  :hook (after-init . save-place-mode))
+
+(use-package savehist
+  :ensure nil
+  :hook (after-init . savehist-mode)
+  :init (setq enable-recursive-minibuffers t ; Allow commands in minibuffers
+              savehist-file (expand-file-name ".savehist" user-emacs-directory)
+              savehist-additional-variables '(mark-ring
+                                              global-mark-ring
+                                              search-ring
+                                              regexp-search-ring
+                                              extended-command-history)
+              savehist-autosave-interval 300))
 (provide 'init-session)

@@ -60,14 +60,8 @@
 (require 'init-ruby)
 (require 'init-misc)
 
-;; Allow access from emacsclient
-(add-hook 'after-init-hook
-          (lambda ()
-            (require 'server)
-            (unless (server-running-p)
-              (server-start))))
-
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(setq custom-safe-themes t)
 (when (file-exists-p custom-file)
   (load custom-file))
 

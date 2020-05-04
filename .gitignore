@@ -27,3 +27,4 @@ site-lisp/package/
 /.lsp-session-v1
 /transient
 /.emacs.desktop
+/.savehist
