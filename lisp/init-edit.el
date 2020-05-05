@@ -41,11 +41,7 @@
 (use-package highlight-escape-sequences
   :hook (after-init . hes-mode))
 
-(use-package iedit
-  :bind (("C-;" . iedit-mode)
-         :map isearch-mode-map ("C-;" . iedit-mode-from-isearch)
-         :map esc-map ("C-;" . iedit-execute-last-modification)
-         :map help-map ("C-;" . iedit-mode-toggle-on-function)))
+(use-package iedit)
 
 (use-package simple
   :ensure nil
