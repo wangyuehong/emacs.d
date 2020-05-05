@@ -32,8 +32,7 @@
    :keymaps 'override
    ;; :non-normal-prefix "C-SPC"
    :prefix "SPC"
-   "wu" 'winner-undo
-   "wr" 'winner-redo
+   "h"  'symbol-overlay-put
    "i"  'counsel-imenu
    "g"  'magit-status
    "f"  'flycheck-list-errors
