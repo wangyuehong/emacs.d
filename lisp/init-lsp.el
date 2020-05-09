@@ -8,24 +8,31 @@
               ([remap xref-find-definitions] . lsp-find-definition))
   :init
   (setq read-process-output-max (* 1024 1024)) ;; 1MB
-  (setq lsp-auto-guess-root t
-        lsp-log-io nil
-        lsp-client-packages '(lsp-go)
-        lsp-diagnostic-package :none
-        lsp-keep-workspace-alive nil
-        lsp-enable-indentation nil
-        lsp-enable-folding nil
-        lsp-enable-links nil
-        lsp-enable-snippet t
-        lsp-signature-auto-activate nil
-        lsp-enable-symbol-highlighting nil
-        lsp-enable-on-type-formatting nil
-        lsp-flycheck-live-reporting nil
-        lsp-restart 'auto-restart
-        lsp-enable-file-watchers nil
-        lsp-prefer-capf nil
-        lsp-gopls-hover-kind "NoDocumentation"
-        )
+  :custom
+  (lsp-keymap-prefix "C-c l")
+  (lsp-client-packages '(lsp-go))
+  (lsp-auto-guess-root t)
+  (lsp-restart 'auto-restart)
+  (lsp-idle-delay 0.5)
+  (lsp-log-io nil)
+  (lsp-enable-folding nil)
+  (lsp-enable-links nil)
+  (lsp-diagnostic-package :flycheck)
+  (lsp-lens-auto-enable t)
+  (lsp-flycheck-live-reporting nil)
+  (lsp-prefer-capf t)
+  (lsp-enable-snippet t)
+  (lsp-enable-file-watchers nil)
+  (lsp-enable-text-document-color nil)
+  (lsp-enable-symbol-highlighting nil)
+  (lsp-enable-indentation nil)
+  (lsp-enable-on-type-formatting nil)
+  (lsp-keep-workspace-alive nil)
+  (lsp-eldoc-enable-hover nil)
+  (lsp-signature-auto-activate t)
+  (lsp-signature-doc-lines 2)
+  (lsp-gopls-hover-kind "NoDocumentation")
+
   :config
   (with-eval-after-load 'company
     (defun my-lsp-company-hook ()
@@ -51,7 +58,6 @@
         lsp-ui-doc-include-signature t
         lsp-ui-sideline-enable nil
         lsp-ui-sideline-ignore-duplicate t
-        lsp-eldoc-enable-hover nil ; disable eldoc displays in minibuffer
         ))
 
 (use-package lsp-ivy :after lsp-mode)
