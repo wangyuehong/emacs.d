@@ -1,9 +1,15 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
-;;----------------------------------------------------------------------------
-;; Some basic preferences
-;;----------------------------------------------------------------------------
+(when (fboundp 'menu-bar-mode)
+  (menu-bar-mode -1))
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+(when (fboundp 'set-scroll-bar-mode)
+  (set-scroll-bar-mode nil))
+
 (fset 'yes-or-no-p 'y-or-n-p)
+
+(setq load-prefer-newer t)
 
 (setq-default
  case-fold-search t
@@ -20,6 +26,10 @@
  truncate-partial-width-windows nil)
 
 (add-hook 'after-init-hook 'transient-mark-mode)
+
+(add-hook 'after-change-major-mode-hook
+          (lambda ()
+            (modify-syntax-entry ?_ "w")))
 
 (setq-default major-mode 'text-mode
               fill-column 80
@@ -73,8 +83,15 @@
   (setq bookmark-default-file (expand-file-name ".bookmarks.el" user-emacs-directory))
   )
 
+(use-package so-long
+  :ensure nil
+  :when (>= emacs-major-version 27)
+  :hook (after-init . global-so-long-mode))
+
 (use-package server
   :ensure nil
-  :hook (after-init . server-mode))
+  :config
+  (unless (server-running-p)
+    (server-start)))
 
 (provide 'init-basic)

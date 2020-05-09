@@ -7,20 +7,18 @@
 ;; C-c C-c wgrep-finish-edit
 ;; C-c C-k wgrep-abort-changes
 (use-package wgrep
-  :init
-  (setq wgrep-enable-key "e"
-        wgrep-auto-save-buffer t
-        wgrep-change-readonly-file t))
+  :custom
+  (wgrep-enable-key "e")
+  (wgrep-auto-save-buffer t)
+  (wgrep-change-readonly-file t))
 
-(use-package ag
-  :if (executable-find "ag")
-  :init
-  (setq-default ag-highlight-search t)
-  (setq-default ag-reuse-window t)
-  (setq-default ag-reuse-buffers t)
+(use-package rg
+  :if (executable-find "rg")
+  :hook (after-init . rg-enable-default-bindings)
+  :custom
+  (rg-group-result t)
+  (rg-show-columns t)
   )
-
-(use-package wgrep-ag :hook (ag-mode . wgrep-ag-setup))
 
 (use-package anzu
   :diminish
@@ -32,11 +30,11 @@
   :hook (after-init . global-anzu-mode))
 
 (use-package avy
-  :init
-  (setq avy-keys (string-to-list "asdfghjklqweruiopzxcv"))
-  (setq avy-all-windows t)
-  (setq avy-background t)
-  (setq avy-highlight-first t)
+  :custom
+  (avy-keys (string-to-list "asdfghjklqweruiopzxcv"))
+  (avy-all-windows t)
+  (avy-background t)
+  (avy-highlight-first t)
   )
 
 (provide 'init-search)

@@ -9,8 +9,8 @@
          ("c" . symbol-overlay-remove-all)
          )
   :hook ((prog-mode yaml-mode) . symbol-overlay-mode)
-  :init
-  (setq symbol-overlay-idle-time 0.1)
+  :custom
+  (symbol-overlay-idle-time 0.1)
   :custom-face
   (symbol-overlay-default-face ((t (:inherit highlight bold))))
   (symbol-overlay-face-1 ((t (:background "brightblue" :foreground "black"))))
@@ -25,7 +25,10 @@
 
 (use-package paren
   :ensure nil
-  :hook (after-init . show-paren-mode))
+  :hook (after-init . show-paren-mode)
+  :custom
+  (show-paren-when-point-inside-paren t)
+  (show-paren-when-point-in-periphery t))
 
 (use-package fic-mode :hook prog-mode)
 
@@ -43,26 +46,26 @@
   :ensure nil
   :diminish
   :hook (((prog-mode yaml-mode markdown-mode conf-mode) . whitespace-mode))
-  :config
-  (setq whitespace-line-column 120) ;; config for lines-tail style
-  (setq whitespace-style
-        '(face spaces tabs space-before-tab newline
-               space-mark tab-mark newline-mark lines-tail))
-  (setq whitespace-space-regexp "\\(\x3000+\\)") ;; -> "　"
-  (setq whitespace-display-mappings
-        '(
-          (space-mark ?\x3000 [9633])
-          ;; (space-mark 32 [183] [46]) ; normal space
-          (space-mark 160 [164] [95])
-          (space-mark 2208 [2212] [95])
-          (space-mark 2336 [2340] [95])
-          (space-mark 3616 [3620] [95])
-          (space-mark 3872 [3876] [95])
-          ;; (newline-mark 10 [8629 10]) ;; newlne
-          (tab-mark 9 [187 9] [92 9]) ;; tab
-          ))
+  :custom
+  (whitespace-line-column 120) ;; config for lines-tail style
+  (whitespace-style
+   '(face spaces tabs space-before-tab newline
+          space-mark tab-mark newline-mark lines-tail))
+  (whitespace-space-regexp "\\(\x3000+\\)") ;; -> "　"
+  (whitespace-display-mappings
+   '(
+     (space-mark ?\x3000 [9633])
+     ;; (space-mark 32 [183] [46]) ; normal space
+     (space-mark 160 [164] [95])
+     (space-mark 2208 [2212] [95])
+     (space-mark 2336 [2340] [95])
+     (space-mark 3616 [3620] [95])
+     (space-mark 3872 [3876] [95])
+     ;; (newline-mark 10 [8629 10]) ;; newlne
+     (tab-mark 9 [187 9] [92 9]) ;; tab
+     ))
 
-  ;; color
+  :config
   ;; (set-face-foreground 'whitespace-newline "brightblack")
   (set-face-foreground 'whitespace-space "blue") ;; -> "　"
   (set-face-foreground 'whitespace-tab "brightblack")

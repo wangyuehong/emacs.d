@@ -5,7 +5,8 @@
   :commands lsp
   :hook ((lsp-mode . lsp-enable-which-key-integration))
   :bind (:map lsp-mode-map
-              ([remap xref-find-definitions] . lsp-find-definition))
+              ([remap xref-find-definitions] . lsp-find-definition)
+              ([remap xref-find-references] . lsp-find-references))
   :init
   (setq read-process-output-max (* 1024 1024)) ;; 1MB
   :custom
@@ -28,7 +29,7 @@
   (lsp-enable-indentation nil)
   (lsp-enable-on-type-formatting nil)
   (lsp-keep-workspace-alive nil)
-  (lsp-eldoc-enable-hover nil)
+  (lsp-eldoc-enable-hover t)
   (lsp-signature-auto-activate t)
   (lsp-signature-doc-lines 2)
   (lsp-gopls-hover-kind "NoDocumentation")
@@ -42,23 +43,23 @@
   (add-hook 'lsp-after-open-hook 'my-lsp-company-hook)
   )
 
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode)
-  :bind (:map lsp-mode-map
-        ([remap xref-find-references] . lsp-ui-peek-find-references)
-        :map lsp-ui-peek-mode-map
-        ("j" . lsp-ui-peek--select-next)
-        ("k" . lsp-ui-peek--select-prev)
-        ("C-j" . lsp-ui-peek--select-next-file)
-        ("C-k" . lsp-ui-peek--select-prev-file)
-        )
-  :init
-  (setq lsp-ui-doc-enable t
-        lsp-ui-doc-delay 0.2
-        lsp-ui-doc-include-signature t
-        lsp-ui-sideline-enable nil
-        lsp-ui-sideline-ignore-duplicate t
-        ))
+;; (use-package lsp-ui
+;;   :hook (lsp-mode . lsp-ui-mode)
+;;   :bind (:map lsp-mode-map
+;;         ([remap xref-find-references] . lsp-ui-peek-find-references)
+;;         :map lsp-ui-peek-mode-map
+;;         ("j" . lsp-ui-peek--select-next)
+;;         ("k" . lsp-ui-peek--select-prev)
+;;         ("C-j" . lsp-ui-peek--select-next-file)
+;;         ("C-k" . lsp-ui-peek--select-prev-file)
+;;         )
+;;   :init
+;;   (setq lsp-ui-doc-enable t
+;;         lsp-ui-doc-delay 0.2
+;;         lsp-ui-doc-include-signature t
+;;         lsp-ui-sideline-enable nil
+;;         lsp-ui-sideline-ignore-duplicate t
+;;         ))
 
 (use-package lsp-ivy :after lsp-mode)
 

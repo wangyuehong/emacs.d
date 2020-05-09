@@ -11,9 +11,9 @@
 
 (use-package helm-ls-git
   :commands helm-ls-git-ls
-  :init
-  (setq helm-ls-git-show-abs-or-relative 'relative)
-  (setq helm-ff-transformer-show-only-basename nil)
+  :custom
+  (helm-ls-git-show-abs-or-relative 'relative)
+  (helm-ff-transformer-show-only-basename nil)
   )
 
 (provide 'init-helm)

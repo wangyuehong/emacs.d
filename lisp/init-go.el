@@ -21,11 +21,10 @@
    ))
   )
 
-(use-package gotest :after go-mode
-  :init (setq go-test-verbose t))
+(use-package gotest :after go-mode :custom (go-test-verbose t))
 
 (use-package go-gen-test :after go-mode
-  :init (setq go-gen-test-executable "gotests -template testify"))
+  :custom (go-gen-test-executable "gotests -template testify"))
 
 (use-package toml-mode)
 

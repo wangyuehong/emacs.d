@@ -29,16 +29,17 @@
 
 ;; A modern Packages Menu
 (use-package paradox
-  :init
-  (setq paradox-execute-asynchronously t
-        paradox-github-token t
-        paradox-display-star-count nil))
+  :custom
+  (paradox-execute-asynchronously t)
+  (paradox-github-token t)
+  (paradox-display-star-count nil))
 
 ;; Auto update packages
 (use-package auto-package-update
   :init
-  (setq auto-package-update-delete-old-versions t
-        auto-package-update-hide-results t)
-  (defalias 'upgrade-packages #'auto-package-update-now))
+  (defalias 'upgrade-packages #'auto-package-update-now)
+  :custom
+  (auto-package-update-delete-old-versions t)
+  (auto-package-update-hide-results t))
 
 (provide 'init-package)

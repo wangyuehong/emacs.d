@@ -2,8 +2,8 @@
 
 (use-package quickrun
   :commands quickrun
-  :init
-  (setq quickrun-timeout-seconds 15))
+  :custom
+  (quickrun-timeout-seconds 15))
 
 (use-package yaml-mode)
 
@@ -13,10 +13,13 @@
 (use-package json-mode)
 (use-package js2-mode)
 (use-package typescript-mode
+  :config (setq typescript-indent-level 2)
   :mode ("\\.ts[x]\\'" . typescript-mode))
+
 (use-package css-mode
   :ensure nil
-  :init (setq css-indent-offset 2))
+  :config (setq css-indent-offset 2))
+
 (use-package web-mode
   :mode "\\.\\(phtml\\|php|[gj]sp\\|as[cp]x\\|erb\\|djhtml\\|html?\\|hbs\\|ejs\\|jade\\|swig\\|tm?pl\\|vue\\)$"
   :config

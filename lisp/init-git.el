@@ -13,8 +13,8 @@
 (use-package git-gutter
   :diminish
   :demand t
-  :init
-  (setq git-gutter:update-hooks '(after-save-hook after-revert-hook))
+  :custom
+  (git-gutter:update-hooks '(after-save-hook after-revert-hook))
   :config
   (global-git-gutter-mode t)
   :pretty-hydra

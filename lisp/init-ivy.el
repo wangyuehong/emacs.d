@@ -18,29 +18,32 @@
          (ivy-mode . counsel-mode))
   :init
   (setq-default counsel-mode-override-describe-bindings t)
-  (setq enable-recursive-minibuffers t) ; Allow commands in minibuffers
-  (setq ivy-use-selectable-prompt t
-        ivy-virtual-abbreviate 'full
-        ivy-re-builders-alist '((t . ivy--regex-ignore-order))
-        ivy-use-virtual-buffers t    ; Enable bookmarks and recentf
-        ivy-height 10
-        ivy-fixed-height-minibuffer t
-        ivy-count-format "(%d/%d) "
-        ivy-on-del-error-function nil
-        ivy-initial-inputs-alist nil)
+  :custom
+  (enable-recursive-minibuffers t) ; Allow commands in minibuffers
+  (ivy-use-selectable-prompt t)
+  (ivy-virtual-abbreviate 'full)
+  (ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
+  (ivy-use-virtual-buffers t)
+  (ivy-height 10)
+  (ivy-fixed-height-minibuffer t)
+  (ivy-count-format "(%d/%d) ")
+  (ivy-on-del-error-function nil)
+  (ivy-initial-inputs-alist nil)
   )
 
 (use-package amx
-  :init
-  (setq amx-save-file (expand-file-name ".amx-items" user-emacs-directory))
-  (setq amx-history-length 20)
-  :bind (("M-x" . amx)))
+  :bind (("M-x" . amx))
+  :custom
+  (amx-save-file (expand-file-name ".amx-items" user-emacs-directory))
+  (amx-history-length 20)
+  )
 
 (use-package ivy-rich
   :demand t
-  :init
-  (setq ivy-rich-path-style 'abbrev)
-  (setq ivy-rich-parse-remote-buffer nil)
-  :config (ivy-rich-mode 1))
+  :custom
+  (ivy-rich-path-style 'abbrev)
+  (ivy-rich-parse-remote-buffer nil)
+  :config
+  (ivy-rich-mode 1))
 
 (provide 'init-ivy)

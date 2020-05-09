@@ -7,8 +7,8 @@
   (general-define-key
    :states '(normal visual)
    :prefix ","
-   "a"  'ag-regexp-project-at-point
-   "A"  'ag-regexp
+   "a"  'rg-project
+   "A"  'rg
    "c"  'evilnc-comment-or-uncomment-lines
    "d"  'delete-trailing-whitespace
    "e"  'evil-iedit-state/iedit-mode

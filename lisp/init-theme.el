@@ -1,6 +1,7 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
+
 (use-package srcery-theme
-  :init
-  (setq srcery-invert-region nil)
-  (load-theme 'srcery t))
+  :init (load-theme 'srcery t)
+  :custom (srcery-invert-region nil))
+
 (provide 'init-theme)
