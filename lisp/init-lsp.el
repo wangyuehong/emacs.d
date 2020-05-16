@@ -38,28 +38,17 @@
   (with-eval-after-load 'company
     (defun my-lsp-company-hook ()
       (progn
-        (push '(company-capf company-yasnippet :with company-dabbrev) company-backends)))
-    )
-  (add-hook 'lsp-after-open-hook 'my-lsp-company-hook)
-  )
+        (push '(company-capf :with company-yasnippet :with company-dabbrev) company-backends)))
+    (add-hook 'lsp-after-open-hook 'my-lsp-company-hook)))
 
-;; (use-package lsp-ui
-;;   :hook (lsp-mode . lsp-ui-mode)
-;;   :bind (:map lsp-mode-map
-;;         ([remap xref-find-references] . lsp-ui-peek-find-references)
-;;         :map lsp-ui-peek-mode-map
-;;         ("j" . lsp-ui-peek--select-next)
-;;         ("k" . lsp-ui-peek--select-prev)
-;;         ("C-j" . lsp-ui-peek--select-next-file)
-;;         ("C-k" . lsp-ui-peek--select-prev-file)
-;;         )
-;;   :init
-;;   (setq lsp-ui-doc-enable t
-;;         lsp-ui-doc-delay 0.2
-;;         lsp-ui-doc-include-signature t
-;;         lsp-ui-sideline-enable nil
-;;         lsp-ui-sideline-ignore-duplicate t
-;;         ))
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-enable t)
+  (lsp-ui-doc-delay 0.2)
+  (lsp-ui-doc-include-signature t)
+  (lsp-ui-sideline-enable nil)
+  )
 
 (use-package lsp-ivy :after lsp-mode)
 
