@@ -1,11 +1,10 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 (use-package projectile
-  :diminish
   :bind (:map projectile-mode-map
               ("C-c p" . projectile-command-map))
   :hook (prog-mode . projectile-mode)
   :custom
-  (projectile-mode-line-prefix "")
+  ;; (projectile-mode-line-prefix "")
   (projectile-switch-project-action #'projectile-dired)
   (projectile-sort-order 'recentf)
   (projectile-git-submodule-command nil)

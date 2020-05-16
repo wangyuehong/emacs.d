@@ -34,13 +34,13 @@
   (evil-want-Y-yank-to-eol t)
   (evil-want-abbrev-expand-on-insert-exit nil)
 
-  (evil-normal-state-tag   (propertize " <N> "))
-  (evil-emacs-state-tag    (propertize " <M> " 'face '((:background "#444488"    ))))
-  (evil-insert-state-tag   (propertize " <I> " 'face '((:background "brightred"  ))))
-  (evil-replace-state-tag  (propertize " <R> " 'face '((:background "chocolate"  ))))
-  (evil-motion-state-tag   (propertize " <M> " 'face '((:background "plum3"      ))))
-  (evil-visual-state-tag   (propertize " <V> " 'face '((:background "cyan"       ))))
-  (evil-operator-state-tag (propertize " <O> " 'face '((:background "sandy brown"))))
+  (evil-normal-state-tag   (propertize "<N>"))
+  (evil-emacs-state-tag    (propertize "<M>" 'face '((:background "#444488"    ))))
+  (evil-insert-state-tag   (propertize "<I>" 'face '((:background "brightred"  ))))
+  (evil-replace-state-tag  (propertize "<R>" 'face '((:background "chocolate"  ))))
+  (evil-motion-state-tag   (propertize "<M>" 'face '((:background "plum3"      ))))
+  (evil-visual-state-tag   (propertize "<V>" 'face '((:background "cyan"       ))))
+  (evil-operator-state-tag (propertize "<O>" 'face '((:background "sandy brown"))))
 
   :config
   (evil-mode t)
@@ -92,8 +92,8 @@
 (use-package evil-iedit-state
   :commands (evil-iedit-state evil-iedit-state/iedit-mode)
   :custom
-  (evil-iedit-state-tag        (propertize " <E> "  'face '((:background "green"     ))))
-  (evil-iedit-insert-state-tag (propertize " <Ei> " 'face '((:background "brightred" ))))
+  (evil-iedit-state-tag        (propertize "<E>"  'face '((:background "green"     ))))
+  (evil-iedit-insert-state-tag (propertize "<Ei>" 'face '((:background "brightred" ))))
   )
 
 (provide 'init-evil)
