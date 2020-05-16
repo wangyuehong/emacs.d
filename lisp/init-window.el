@@ -23,6 +23,7 @@
     (shackle-rules '((flycheck-error-list-mode :select t :align t :size 0.4)
                      (magit-status-mode :select t :inhibit-window-quit t :same t)
                      (help-mode :select t :align t :size 0.4)
+                     (compilation-mode :select t :align t :size 0.4)
                      (go-test-mode :select t :align t :size 0.4)
                      (rg-mode :select t :align right :size 0.4)
                      ))
