@@ -16,6 +16,7 @@
 /.org-id-locations
 cookies
 \#*
+/elpa
 /elpa-*
 site-lisp/package/
 /swank
