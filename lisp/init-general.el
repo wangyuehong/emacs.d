@@ -35,6 +35,7 @@
    "h"  'symbol-overlay-put
    "i"  'counsel-imenu
    "g"  'magit-status
+   "t"  'git-timemachine
    "f"  'flycheck-list-errors
    "l"  'helm-ls-git-ls
    "s"  'swiper

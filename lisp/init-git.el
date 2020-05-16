@@ -34,6 +34,8 @@
      ))
   )
 
+(use-package git-timemachine :command git-timemachine)
+
 (use-package gitignore-mode)
 (use-package gitconfig-mode)
 
