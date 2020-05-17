@@ -35,12 +35,12 @@
   (evil-want-abbrev-expand-on-insert-exit nil)
 
   (evil-normal-state-tag   (propertize "<N>"))
-  (evil-emacs-state-tag    (propertize "<M>" 'face '((:background "#444488"    ))))
-  (evil-insert-state-tag   (propertize "<I>" 'face '((:background "brightred"  ))))
-  (evil-replace-state-tag  (propertize "<R>" 'face '((:background "chocolate"  ))))
-  (evil-motion-state-tag   (propertize "<M>" 'face '((:background "plum3"      ))))
-  (evil-visual-state-tag   (propertize "<V>" 'face '((:background "cyan"       ))))
-  (evil-operator-state-tag (propertize "<O>" 'face '((:background "sandy brown"))))
+  (evil-emacs-state-tag    (propertize "<M>" 'face '((:background "#444488"))))
+  (evil-insert-state-tag   (propertize "<I>" 'face '((:background "#ff6347"))))
+  (evil-replace-state-tag  (propertize "<R>" 'face '((:background "#b22222"))))
+  (evil-motion-state-tag   (propertize "<M>" 'face '((:background "#ffa54f"))))
+  (evil-visual-state-tag   (propertize "<V>" 'face '((:background "#1e90ff"))))
+  (evil-operator-state-tag (propertize "<O>" 'face '((:background "#9370db"))))
 
   :config
   (evil-mode t)
@@ -67,17 +67,21 @@
   (dolist (mode-map '((comint-mode . emacs)
                       (term-mode . emacs)
                       (eshell-mode . emacs)
-                      (help-mode . emacs)))
+                      (calculator-mode . emacs)
+                      (help-mode . motion)))
     (evil-set-initial-state `,(car mode-map) `,(cdr mode-map)))
 
   (let* ((default-color (cons (face-background 'mode-line)
                               (face-foreground 'mode-line))))
     (add-hook 'post-command-hook
               (lambda ()
+
                 (let* ((color (cond ((minibufferp) default-color)
-                                    ((evil-insert-state-p) '("brightred"  . "white"))
-                                    ((evil-emacs-state-p)  '("#444488"    . "white"))
-                                    ((buffer-modified-p)   '("brightblue" . "white"))
+                                    (buffer-read-only default-color)
+                                    ((evil-insert-state-p)  '("#ff6347" . "white"))
+                                    ((evil-replace-state-p) '("#b22222" . "white"))
+                                    ((evil-emacs-state-p)   '("#444488" . "white"))
+                                    ((buffer-modified-p)    '("#4f94cd" . "white"))
                                     (t default-color))))
                   (set-face-background 'mode-line (car color))
                   (set-face-foreground 'mode-line (cdr color))))))
@@ -92,8 +96,8 @@
 (use-package evil-iedit-state
   :commands (evil-iedit-state evil-iedit-state/iedit-mode)
   :custom
-  (evil-iedit-state-tag        (propertize "<E>"  'face '((:background "green"     ))))
-  (evil-iedit-insert-state-tag (propertize "<Ei>" 'face '((:background "brightred" ))))
+  (evil-iedit-state-tag        (propertize "<E>"  'face '((:background "#228b22" ))))
+  (evil-iedit-insert-state-tag (propertize "<Ei>" 'face '((:background "#ff6347" ))))
   )
 
 (provide 'init-evil)
