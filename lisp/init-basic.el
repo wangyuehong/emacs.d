@@ -94,4 +94,6 @@
   (unless (server-running-p)
     (server-start)))
 
+(use-package eldoc :ensure nil :diminish)
+
 (provide 'init-basic)

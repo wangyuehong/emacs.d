@@ -1,6 +1,7 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package company
+  :diminish
   :hook ((prog-mode yaml-mode) . company-mode)
   :commands company-cancel
   :bind (("M-/" . company-complete)

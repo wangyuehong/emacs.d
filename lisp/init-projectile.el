@@ -4,7 +4,7 @@
               ("C-c p" . projectile-command-map))
   :hook (prog-mode . projectile-mode)
   :custom
-  ;; (projectile-mode-line-prefix "")
+  (projectile-mode-line-prefix " Proj")
   (projectile-switch-project-action #'projectile-dired)
   (projectile-sort-order 'recentf)
   (projectile-git-submodule-command nil)
