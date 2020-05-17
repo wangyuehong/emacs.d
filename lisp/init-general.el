@@ -32,6 +32,7 @@
    :keymaps 'override
    ;; :non-normal-prefix "C-SPC"
    :prefix "SPC"
+   "C"  'calendar
    "c"  'calculator
    "h"  'symbol-overlay-put
    "i"  'counsel-imenu

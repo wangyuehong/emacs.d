@@ -22,4 +22,19 @@
 
 (use-package youdao-dictionary)
 
+(use-package calendar
+  :ensure nil
+  :hook ((calendar-today-visible . calendar-mark-today))
+  :custom
+  (calendar-mark-holidays-flag t)
+  (calendar-week-start-day 1)
+  )
+
+(use-package cal-china-x
+  :after calendar
+  :demand t
+  :config
+  (use-package japanese-holidays :demand t)
+  (setq calendar-holidays (append cal-china-x-chinese-holidays japanese-holidays)))
+
 (provide 'init-misc)
