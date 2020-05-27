@@ -1,11 +1,18 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
-(use-package dired :ensure nil
+(use-package dired
+  :ensure nil
   :hook (dired-mode . dired-hide-details-mode)
   :custom
   (dired-recursive-deletes 'always)
   (dired-recursive-copies 'always)
-  (dired-listing-switches "-alh"))
+  (dired-auto-revert-buffer t)
+  (dired-hide-details-hide-symlink-targets nil)
+  (dired-listing-switches "-alh")
+  :config
+  (when (string= system-type "darwin")
+    (setq dired-use-ls-dired nil))
+  )
 
 (use-package dired-single
   :bind
