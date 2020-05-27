@@ -8,7 +8,6 @@
   :custom
   (dired-recursive-deletes 'always)
   (dired-recursive-copies 'always)
-  (dired-auto-revert-buffer t)
   (dired-hide-details-hide-symlink-targets nil)
   (dired-listing-switches "-alh")
   :config
@@ -19,6 +18,7 @@
 (use-package dired-single
   :bind
   (:map dired-mode-map
+        ("C-x C-j" . dired-single-up-directory)
         ([remap dired-find-file] . dired-single-buffer)
         ([remap dired-up-directory] . dired-single-up-directory)))
 
