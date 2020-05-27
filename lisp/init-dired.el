@@ -2,7 +2,9 @@
 
 (use-package dired
   :ensure nil
-  :hook (dired-mode . dired-hide-details-mode)
+  :hook
+  (dired-mode . dired-hide-details-mode)
+  (dired-mode . auto-revert-mode)
   :custom
   (dired-recursive-deletes 'always)
   (dired-recursive-copies 'always)
