@@ -29,11 +29,6 @@
   (ivy-on-del-error-function nil)
   (ivy-initial-inputs-alist nil)
   :config
-  (defun d/ignore-dired-buffers (str)
-    "Return non-nil if STR names a Dired buffer. This function is intended for use with `ivy-ignore-buffers'."
-    (let ((buf (get-buffer str)))
-      (and buf (eq (buffer-local-value 'major-mode buf) 'dired-mode))))
-  (add-to-list 'ivy-ignore-buffers #'d/ignore-dired-buffers)
   (add-to-list 'ivy-ignore-buffers "\\*Messages\\*")
   (add-to-list 'ivy-ignore-buffers "\\*Help\\*")
   (add-to-list 'ivy-ignore-buffers "\\*Ibuffer\\*")
