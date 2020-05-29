@@ -52,6 +52,10 @@
   (define-key evil-insert-state-map (kbd "C-d") 'delete-char)
   (define-key evil-normal-state-map (kbd "C-d") 'delete-char)
 
+  ;; delete without sending to killring
+  (define-key evil-normal-state-map "x" 'delete-forward-char)
+  (define-key evil-normal-state-map "X" 'delete-backward-char)
+
   (define-key evil-normal-state-map (kbd "q") 'quit-window)
   (define-key evil-normal-state-map (kbd "s") 'avy-goto-word-or-subword-1)
   (define-key evil-visual-state-map (kbd "s") 'avy-goto-word-or-subword-1)
