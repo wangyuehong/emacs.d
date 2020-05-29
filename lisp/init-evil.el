@@ -30,7 +30,7 @@
   (evil-disable-insert-state-bindings t)
   (evil-insert-skip-empty-lines t)
   (evil-want-fine-undo t)
-  (evil-want-C-u-scroll t)
+  (evil-want-C-i-jump nil)
   (evil-want-Y-yank-to-eol t)
   (evil-want-abbrev-expand-on-insert-exit nil)
 
@@ -92,6 +92,13 @@
 (use-package evil-anzu :demand t :config (global-anzu-mode t))
 (use-package evil-visualstar :demand t :custom (evil-visualstar/persistent t) :config (global-evil-visualstar-mode))
 (use-package evil-nerd-commenter :demand t)
+
+(use-package evil-org
+  :after org
+  :hook (org-mode . evil-org-mode)
+  :config
+  (add-hook 'evil-org-mode-hook
+            (lambda () (evil-org-set-key-theme))))
 
 (use-package evil-iedit-state
   :commands (evil-iedit-state evil-iedit-state/iedit-mode)
