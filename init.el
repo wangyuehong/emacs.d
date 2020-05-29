@@ -60,6 +60,7 @@
 (require 'init-ruby)
 (require 'init-misc)
 (require 'init-projectile)
+(require 'init-org)
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (setq custom-safe-themes t)

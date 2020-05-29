@@ -101,7 +101,10 @@
   :hook (org-mode . evil-org-mode)
   :config
   (add-hook 'evil-org-mode-hook
-            (lambda () (evil-org-set-key-theme))))
+            (lambda () (evil-org-set-key-theme)))
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys)
+  )
 
 (use-package evil-iedit-state
   :commands (evil-iedit-state evil-iedit-state/iedit-mode)
