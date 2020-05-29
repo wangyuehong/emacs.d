@@ -60,12 +60,11 @@
   (define-key evil-normal-state-map (kbd "s") 'avy-goto-word-or-subword-1)
   (define-key evil-visual-state-map (kbd "s") 'avy-goto-word-or-subword-1)
 
-  (define-key evil-normal-state-map (kbd "TAB") 'evil-indent-line)
-  (define-key evil-visual-state-map (kbd "TAB") 'evil-indent)
+  ;; (define-key evil-normal-state-map (kbd "TAB") 'evil-indent-line)
+  ;; (define-key evil-visual-state-map (kbd "TAB") 'evil-indent)
 
   ;; (key-chord-define evil-insert-state-map ";;" "\C-e;")
-  (key-chord-define evil-insert-state-map ",," "\C-e,")
-  ;; (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+  ;; (key-chord-define evil-insert-state-map ",," "\C-e,")
 
   ;; modes to map to different default states
   (dolist (mode-map '((comint-mode . emacs)
