@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package org
-  :ensure nil
+  :ensure org-plus-contrib
   :bind (("C-c a" . org-agenda)
          ("C-c b" . org-switchb))
   :custom
@@ -18,6 +18,8 @@
   :custom
   (org-export-with-toc nil)
   (org-export-backends '(ascii html md)))
+
+(use-package ox-confluence :ensure nil :demand t)
 
 (use-package ox-gfm :demand t)
 
