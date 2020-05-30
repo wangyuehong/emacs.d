@@ -62,6 +62,8 @@
 (require 'init-projectile)
 (require 'init-org)
 
+(require 'init-local nil t)
+
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (setq custom-safe-themes t)
 (when (file-exists-p custom-file)

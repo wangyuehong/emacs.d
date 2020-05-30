@@ -30,3 +30,4 @@ site-lisp/package/
 /.emacs.desktop
 /.savehist
 /projectile-bookmarks.eld
+/lisp/init-local.el
