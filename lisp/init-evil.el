@@ -53,8 +53,9 @@
   (define-key evil-normal-state-map (kbd "C-d") 'delete-char)
 
   ;; delete without sending to killring
-  (define-key evil-normal-state-map "x" 'delete-forward-char)
-  (define-key evil-normal-state-map "X" 'delete-backward-char)
+  (defun my/evil-delete (orig-fn beg end &optional type _ &rest args)
+    (apply orig-fn beg end type ?_ args))
+  (advice-add 'evil-delete :around 'my/evil-delete)
 
   (define-key evil-normal-state-map (kbd "q") 'quit-window)
   (define-key evil-normal-state-map (kbd "s") 'avy-goto-word-or-subword-1)
