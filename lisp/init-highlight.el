@@ -45,7 +45,7 @@
 (use-package whitespace
   :ensure nil
   :diminish
-  :hook (((prog-mode yaml-mode markdown-mode conf-mode) . whitespace-mode))
+  :hook ((prog-mode yaml-mode markdown-mode conf-mode) . whitespace-mode)
   :custom
   (whitespace-line-column 120) ;; config for lines-tail style
   (whitespace-style

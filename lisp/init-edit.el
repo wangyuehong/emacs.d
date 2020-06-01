@@ -44,7 +44,7 @@
 
 (use-package simple
   :ensure nil
-  :hook (((prog-mode markdown-mode conf-mode) . enable-trailing-whitespace))
+  :hook ((prog-mode markdown-mode conf-mode) . enable-trailing-whitespace)
   :custom
   (column-number-mode t)
   (line-number-mode t)
@@ -76,6 +76,7 @@
   :ensure nil
   :hook (after-init . delete-selection-mode))
 
-(use-package xclip :demand xclip-mode)
+(use-package xclip
+  :hook (after-init . xclip-mode))
 
 (provide 'init-edit)

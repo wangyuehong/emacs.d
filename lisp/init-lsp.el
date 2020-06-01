@@ -3,7 +3,7 @@
 (use-package lsp-mode
   :diminish
   :commands lsp
-  :hook ((lsp-mode . lsp-enable-which-key-integration))
+  :hook (lsp-mode . lsp-enable-which-key-integration)
   :bind (:map lsp-mode-map
               ([remap xref-find-definitions] . lsp-find-definition)
               ([remap xref-find-references] . lsp-find-references))

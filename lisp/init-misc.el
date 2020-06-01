@@ -4,11 +4,12 @@
   :ensure nil
   :diminish
   :if (executable-find "aspell")
-  :hook (((text-mode outline-mode) . flyspell-mode)
-         (prog-mode . flyspell-prog-mode)
-         (flyspell-mode . (lambda ()
-                            (dolist (key '("C-;" "C-," "C-."))
-                              (unbind-key key flyspell-mode-map)))))
+  :hook
+  ((text-mode outline-mode) . flyspell-mode)
+  (prog-mode . flyspell-prog-mode)
+  (flyspell-mode . (lambda ()
+                     (dolist (key '("C-;" "C-," "C-."))
+                       (unbind-key key flyspell-mode-map))))
   :custom
   (flyspell-issue-message-flag nil)
   (ispell-program-name "aspell")
@@ -24,7 +25,7 @@
 
 (use-package calendar
   :ensure nil
-  :hook ((calendar-today-visible . calendar-mark-today))
+  :hook (calendar-today-visible . calendar-mark-today)
   :custom
   (calendar-mark-holidays-flag t)
   (calendar-week-start-day 1)
