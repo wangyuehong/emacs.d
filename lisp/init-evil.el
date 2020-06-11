@@ -53,16 +53,16 @@
   (define-key evil-normal-state-map (kbd "C-d") 'delete-char)
 
   ;; delete without sending to killring
-  (defun my/evil-delete (orig-fn beg end &optional type _ &rest args)
-    (apply orig-fn beg end type ?_ args))
-  (advice-add 'evil-delete :around 'my/evil-delete)
+  ;; (defun my/evil-delete (orig-fn beg end &optional type _ &rest args)
+  ;;   (apply orig-fn beg end type ?_ args))
+  ;; (advice-add 'evil-delete :around 'my/evil-delete)
 
   (define-key evil-normal-state-map (kbd "q") 'quit-window)
   (define-key evil-normal-state-map (kbd "s") 'avy-goto-word-or-subword-1)
   (define-key evil-visual-state-map (kbd "s") 'avy-goto-word-or-subword-1)
 
-  ;; (define-key evil-normal-state-map (kbd "TAB") 'evil-indent-line)
-  ;; (define-key evil-visual-state-map (kbd "TAB") 'evil-indent)
+  (define-key evil-normal-state-map (kbd "TAB") 'evil-indent-line)
+  (define-key evil-visual-state-map (kbd "TAB") 'evil-indent)
 
   ;; (key-chord-define evil-insert-state-map ";;" "\C-e;")
   ;; (key-chord-define evil-insert-state-map ",," "\C-e,")
@@ -100,6 +100,9 @@
 (use-package evil-org
   :after org
   :hook (org-mode . evil-org-mode)
+  :bind
+  (:map evil-normal-state-map
+   ([remap evil-indent-line] . org-cycle))
   :config
   (add-hook 'evil-org-mode-hook
             (lambda () (evil-org-set-key-theme)))
