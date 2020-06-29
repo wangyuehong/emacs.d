@@ -33,6 +33,7 @@
   (lsp-signature-auto-activate t)
   (lsp-signature-doc-lines 2)
   (lsp-gopls-hover-kind "NoDocumentation")
+  (lsp-gopls-codelens nil)
 
   :config
   (with-eval-after-load 'company
