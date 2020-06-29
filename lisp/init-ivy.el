@@ -29,7 +29,6 @@
   (ivy-on-del-error-function nil)
   (ivy-initial-inputs-alist nil)
   :config
-  (add-to-list 'ivy-ignore-buffers "\\*Messages\\*")
   (add-to-list 'ivy-ignore-buffers "\\*Help\\*")
   (add-to-list 'ivy-ignore-buffers "\\*Ibuffer\\*")
   (add-to-list 'ivy-ignore-buffers "\\*helm lsgit\\*")
