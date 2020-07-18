@@ -26,12 +26,14 @@
   (lsp-enable-file-watchers nil)
   (lsp-enable-text-document-color nil)
   (lsp-enable-symbol-highlighting nil)
+  (lsp-enable-semantic-highlighting nil)
   (lsp-enable-indentation nil)
   (lsp-enable-on-type-formatting nil)
   (lsp-keep-workspace-alive nil)
   (lsp-eldoc-enable-hover t)
   (lsp-signature-auto-activate t)
   (lsp-signature-doc-lines 2)
+  (lsp-modeline-code-actions-enable nil)
   (lsp-gopls-hover-kind "NoDocumentation")
 
   :config
