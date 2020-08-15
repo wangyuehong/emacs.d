@@ -97,18 +97,6 @@
 (use-package evil-visualstar :demand t :custom (evil-visualstar/persistent t) :config (global-evil-visualstar-mode))
 (use-package evil-nerd-commenter :demand t)
 
-(use-package evil-org
-  :after org
-  :hook (org-mode . evil-org-mode)
-  :bind
-  (:map evil-normal-state-map
-   ([remap evil-indent-line] . org-cycle))
-  :config
-  (add-hook 'evil-org-mode-hook
-            (lambda () (evil-org-set-key-theme)))
-  (require 'evil-org-agenda)
-  (evil-org-agenda-set-keys)
-  )
 
 (use-package evil-iedit-state
   :commands (evil-iedit-state evil-iedit-state/iedit-mode)
