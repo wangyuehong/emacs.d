@@ -19,8 +19,6 @@
   (org-export-with-toc nil)
   (org-export-backends '(ascii html md)))
 
-(use-package ox-confluence :ensure nil :demand t)
-
 (use-package ox-gfm :demand t)
 
 (provide 'init-org)
