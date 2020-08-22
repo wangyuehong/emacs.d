@@ -4,38 +4,27 @@
   :diminish
   :commands lsp
   :hook (lsp-mode . lsp-enable-which-key-integration)
-  :bind (:map lsp-mode-map
-              ([remap xref-find-definitions] . lsp-find-definition)
-              ([remap xref-find-references] . lsp-find-references))
   :init
   (setq read-process-output-max (* 1024 1024)) ;; 1MB
   :custom
   (lsp-keymap-prefix "C-c l")
-  (lsp-client-packages '(lsp-go))
   (lsp-auto-guess-root t)
-  (lsp-restart 'auto-restart)
-  (lsp-idle-delay 0.5)
-  (lsp-log-io nil)
-  (lsp-enable-folding nil)
-  (lsp-enable-links nil)
-  (lsp-diagnostic-package :flycheck)
-  (lsp-lens-auto-enable t)
-  (lsp-flycheck-live-reporting nil)
-  (lsp-prefer-capf t)
-  (lsp-enable-snippet t)
+  (lsp-client-packages '(lsp-go))
   (lsp-enable-file-watchers nil)
-  (lsp-enable-text-document-color nil)
-  (lsp-enable-symbol-highlighting nil)
-  (lsp-enable-semantic-highlighting nil)
+  (lsp-enable-folding nil)
   (lsp-enable-indentation nil)
+  (lsp-enable-links nil)
   (lsp-enable-on-type-formatting nil)
+  (lsp-enable-semantic-highlighting nil)
+  (lsp-enable-symbol-highlighting nil)
+  (lsp-enable-text-document-color nil)
+  (lsp-flycheck-live-reporting nil)
   (lsp-keep-workspace-alive nil)
-  (lsp-eldoc-enable-hover t)
-  (lsp-signature-auto-activate t)
-  (lsp-signature-doc-lines 2)
   (lsp-modeline-code-actions-enable nil)
-  (lsp-gopls-hover-kind "NoDocumentation")
-  (lsp-gopls-codelens nil)
+  (lsp-modeline-diagnostics-enable nil)
+  (lsp-restart 'auto-restart)
+  (lsp-signature-auto-activate nil)
+  (lsp-signature-doc-lines 2)
 
   :config
   (with-eval-after-load 'company
