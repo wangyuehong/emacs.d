@@ -91,7 +91,11 @@
                   (set-face-foreground 'mode-line (cdr color))))))
  )
 
-(use-package evil-collection :demand t :config (evil-collection-init))
+(use-package evil-collection
+  :demand t
+  :custom (evil-collection-company-use-tng  nil)
+  :init (evil-collection-init))
+
 (use-package evil-surround :demand t :config (global-evil-surround-mode 1))
 (use-package evil-anzu :demand t :config (global-anzu-mode t))
 (use-package evil-visualstar :demand t :custom (evil-visualstar/persistent t) :config (global-evil-visualstar-mode))
