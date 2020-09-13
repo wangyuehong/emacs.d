@@ -16,15 +16,18 @@
   (lsp-enable-links nil)
   (lsp-enable-on-type-formatting nil)
   (lsp-enable-semantic-highlighting nil)
+  (lsp-enable-snippet nil)
   (lsp-enable-symbol-highlighting nil)
   (lsp-enable-text-document-color nil)
   (lsp-flycheck-live-reporting nil)
+  (lsp-diagnostics-provider :flycheck)
   (lsp-keep-workspace-alive nil)
   (lsp-modeline-code-actions-enable nil)
   (lsp-modeline-diagnostics-enable nil)
   (lsp-restart 'auto-restart)
-  (lsp-signature-auto-activate nil)
+  (lsp-signature-auto-activate t)
   (lsp-signature-doc-lines 2)
+  (lsp-eldoc-enable-hover nil)
 
   :config
   (with-eval-after-load 'company
