@@ -8,8 +8,6 @@
    magit-completing-read-function 'ivy-completing-read)
   )
 
-(use-package evil-magit :demand t)
-
 (use-package git-gutter
   :diminish
   :demand t
