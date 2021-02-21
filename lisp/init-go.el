@@ -5,7 +5,6 @@
   (when (executable-find "goimports")
     (setq gofmt-command "goimports"))
   (add-hook 'before-save-hook #'gofmt-before-save)
-  (add-hook 'go-mode-hook #'lsp-deferred)
   (use-package go-dlv)
   (use-package go-impl)
   (use-package go-fill-struct)
