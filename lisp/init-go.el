@@ -10,6 +10,9 @@
   (use-package go-impl)
   (use-package go-fill-struct)
   (use-package go-snippets)
+  (use-package gotest :custom (go-test-verbose t))
+  (use-package go-gen-test :custom (go-gen-test-executable "gotests -template testify"))
+  (use-package go-tag)
   :mode-hydra
   ((:title "go-hydra" :foreign-keys warn :color red :quit-key "q")
    ("Test"
@@ -21,13 +24,6 @@
    ))
   )
 
-(use-package gotest :after go-mode :custom (go-test-verbose t))
-
-(use-package go-gen-test :after go-mode
-  :custom (go-gen-test-executable "gotests -template testify"))
-
-(use-package go-tag :after go-mode
-  :init (setq go-tag-args (list "-transform" "snakecase")))
 
 (use-package toml-mode)
 
