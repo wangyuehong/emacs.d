@@ -26,6 +26,9 @@
 (use-package go-gen-test :after go-mode
   :custom (go-gen-test-executable "gotests -template testify"))
 
+(use-package go-tag :after go-mode
+  :init (setq go-tag-args (list "-transform" "snakecase")))
+
 (use-package toml-mode)
 
 ;; Install: See https://github.com/golangci/golangci-lint#install
