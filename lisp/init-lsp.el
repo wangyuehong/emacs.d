@@ -31,11 +31,12 @@
   (lsp-eldoc-enable-hover nil)
 
   :config
-  (with-eval-after-load 'company
-    (defun my-lsp-company-hook ()
-      (progn
-        (push '(company-capf :with company-yasnippet :with company-dabbrev) company-backends)))
-    (add-hook 'lsp-after-open-hook 'my-lsp-company-hook)))
+  (add-hook 'lsp-completion-mode-hook
+            (lambda ()
+              (when lsp-completion-mode
+                (set (make-local-variable 'company-backends)
+                     (remq 'company-capf company-backends)))))
+  )
 
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)

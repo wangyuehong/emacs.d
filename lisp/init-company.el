@@ -14,14 +14,12 @@
          ("C-f" . company-next-page)
          ("<tab>" . company-complete-common-or-cycle)
          ("<backtab>" . my-company-yasnippet)
-         :map company-search-map
-         ("C-k" . company-select-previous)
-         ("C-j" . company-select-next))
+         )
   :custom
-  (company-echo-delay 0)
-  (company-idle-delay 0)
+  (company-echo-delay 0.1)
+  (company-idle-delay 0.1)
   (company-tooltip-limit 15)
-  (company-require-match nil)
+  (company-require-match t)
   (company-minimum-prefix-length 1)
   (company-tooltip-align-annotations t)
 
@@ -31,10 +29,10 @@
   (company-dabbrev-ignore-invisible t)
   (company-dabbrev-code-everywhere t)
   (company-transformers '(company-sort-by-backend-importance))
-  (company-backends '(company-capf
-                      company-files
-                      (company-dabbrev-code company-keywords)
-                      company-dabbrev))
+  (company-backends '((company-capf :separate company-yasnippet :with company-dabbrev)
+                      (company-dabbrev-code company-keywords company-files)
+                      ))
+  (company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend))
 
   :init
   (defun my-company-yasnippet ()
