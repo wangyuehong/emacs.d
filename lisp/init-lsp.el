@@ -14,6 +14,7 @@
   (lsp-enable-file-watchers nil)
   (lsp-enable-folding nil)
   (lsp-enable-indentation nil)
+  (lsp-headerline-breadcrumb-enable nil)
   (lsp-enable-links nil)
   (lsp-enable-on-type-formatting nil)
   (lsp-enable-semantic-highlighting nil)
@@ -29,13 +30,6 @@
   (lsp-signature-auto-activate t)
   (lsp-signature-doc-lines 2)
   (lsp-eldoc-enable-hover nil)
-
-  :config
-  (add-hook 'lsp-completion-mode-hook
-            (lambda ()
-              (when lsp-completion-mode
-                (set (make-local-variable 'company-backends)
-                     (remq 'company-capf company-backends)))))
   )
 
 (use-package lsp-ui
