@@ -24,8 +24,7 @@
 
 (use-package undo-tree
   :diminish
-  :hook (after-init . global-undo-tree-mode)
-  :bind (("C-r" . undo-tree-undo)))
+  :hook (after-init . global-undo-tree-mode))
 
 (use-package subword
   :ensure nil

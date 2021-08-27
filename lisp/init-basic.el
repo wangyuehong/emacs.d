@@ -85,7 +85,6 @@
 
 (use-package so-long
   :ensure nil
-  :when (>= emacs-major-version 27)
   :hook (after-init . global-so-long-mode))
 
 (use-package server
