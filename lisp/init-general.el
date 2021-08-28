@@ -19,7 +19,7 @@
    "K"  'kill-other-buffers
    "P"  'paradox-upgrade-packages
    "r"  'helm-show-kill-ring
-   ","  'git-gutter-hydra/body
+   ","  'diff-hl-hydra/body
    "v"  'revert-buffer
    "nn" 'narrow-to-region
    "nd" 'narrow-to-defun
