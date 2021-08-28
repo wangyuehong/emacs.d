@@ -2,12 +2,8 @@
 
 (use-package symbol-overlay
   :diminish
-  :bind (("M-i" . symbol-overlay-put)
-         ("M-n" . symbol-overlay-jump-next)
-         ("M-p" . symbol-overlay-jump-prev)
-         :map symbol-overlay-map
-         ("c" . symbol-overlay-remove-all)
-         )
+  :bind (:map symbol-overlay-map
+         ("c" . symbol-overlay-remove-all))
   :hook ((prog-mode yaml-mode) . symbol-overlay-mode)
   :custom
   (symbol-overlay-idle-time 0.1)
