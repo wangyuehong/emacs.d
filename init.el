@@ -59,7 +59,6 @@
 (require 'init-perl)
 (require 'init-ruby)
 (require 'init-misc)
-(require 'init-projectile)
 
 (require 'init-local nil t)
 
