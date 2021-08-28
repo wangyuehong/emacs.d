@@ -14,7 +14,10 @@
          ("C-b" . helm-previous-page)
          :map helm-find-files-map
          ("DEL" . helm-find-files-up-one-level)
-         ))
+         )
+  :config
+  (helm-mode 1)
+  )
 
 (use-package helm-ls-git
   :commands helm-ls-git-ls
