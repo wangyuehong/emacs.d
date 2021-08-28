@@ -1,12 +1,13 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package evil
-  :demand t
+  :hook (after-init . evil-mode)
   :bind
   (("C-x o" . evil-window-next)
    ("C-x -" . evil-window-split)
    ("C-x |" . evil-window-vsplit)
    ("M-]" . xref-find-references)
+   ([remap evil-quit] . kill-this-buffer)
    :map evil-normal-state-map
    ([remap evil-jump-to-tag] . xref-find-definitions))
 
@@ -43,7 +44,6 @@
   (evil-operator-state-tag (propertize "<O>" 'face '((:background "#9370db"))))
 
   :config
-  (evil-mode t)
   (defalias #'forward-evil-word #'forward-evil-symbol)
 
   (define-key evil-visual-state-map (kbd "v") 'er/expand-region)
@@ -51,21 +51,11 @@
   (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
   (define-key evil-insert-state-map (kbd "C-d") 'delete-char)
   (define-key evil-normal-state-map (kbd "C-d") 'delete-char)
-
-  ;; delete without sending to killring
-  ;; (defun my/evil-delete (orig-fn beg end &optional type _ &rest args)
-  ;;   (apply orig-fn beg end type ?_ args))
-  ;; (advice-add 'evil-delete :around 'my/evil-delete)
-
   (define-key evil-normal-state-map (kbd "q") 'quit-window)
   (define-key evil-normal-state-map (kbd "s") 'avy-goto-word-or-subword-1)
   (define-key evil-visual-state-map (kbd "s") 'avy-goto-word-or-subword-1)
-
   (define-key evil-normal-state-map (kbd "TAB") 'evil-indent-line)
   (define-key evil-visual-state-map (kbd "TAB") 'evil-indent)
-
-  ;; (key-chord-define evil-insert-state-map ";;" "\C-e;")
-  ;; (key-chord-define evil-insert-state-map ",," "\C-e,")
 
   ;; modes to map to different default states
   (dolist (mode-map '((comint-mode . emacs)
@@ -96,9 +86,7 @@
   :custom (evil-collection-company-use-tng  nil)
   :init (evil-collection-init))
 
-(use-package evil-surround :demand t :config (global-evil-surround-mode 1))
-(use-package evil-anzu :demand t :config (global-anzu-mode t))
-(use-package evil-visualstar :demand t :custom (evil-visualstar/persistent t) :config (global-evil-visualstar-mode))
+(use-package evil-surround :hook (after-init . global-evil-surround-mode))
 (use-package evil-nerd-commenter :demand t)
 
 
@@ -106,7 +94,6 @@
   :commands (evil-iedit-state evil-iedit-state/iedit-mode)
   :custom
   (evil-iedit-state-tag        (propertize "<E>"  'face '((:background "#228b22" ))))
-  (evil-iedit-insert-state-tag (propertize "<Ei>" 'face '((:background "#ff6347" ))))
-  )
+  (evil-iedit-insert-state-tag (propertize "<Ei>" 'face '((:background "#ff6347" )))))
 
 (provide 'init-evil)
