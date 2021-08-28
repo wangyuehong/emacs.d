@@ -30,7 +30,8 @@
   (show-paren-when-point-inside-paren t)
   (show-paren-when-point-in-periphery t))
 
-(use-package fic-mode :hook prog-mode)
+(use-package hl-todo
+  :hook (after-init . global-hl-todo-mode))
 
 (use-package rainbow-mode :diminish
   :hook (emacs-lisp-mode . rainbow-mode))
