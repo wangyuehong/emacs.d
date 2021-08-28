@@ -2,7 +2,7 @@
 
 (use-package helm
   :bind (("M-x" . helm-M-x)
-         ("C-x j j" . helm-bookmark)
+         ("C-x j j" . helm-bookmarks)
          ("C-x b" . helm-buffers-list)
          ("C-x C-f" . helm-find-files)
          :map helm-map
