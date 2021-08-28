@@ -4,8 +4,7 @@
   :init
   (setq-default
    magit-process-popup-time 10
-   magit-diff-refine-hunk t
-   magit-completing-read-function 'ivy-completing-read)
+   magit-diff-refine-hunk t)
   )
 
 (use-package git-gutter

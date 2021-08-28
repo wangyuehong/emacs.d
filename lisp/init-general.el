@@ -40,8 +40,7 @@
    "t"  'git-timemachine
    "f"  'flycheck-list-errors
    "l"  'helm-ls-git-ls
-   "s"  'swiper
-   "x"  'amx
+   "x"  'helm-M-x
    "y"  'youdao-dictionary-search-at-point+
    )
 )

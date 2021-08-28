@@ -43,7 +43,6 @@
 (require 'init-evil)
 (require 'init-general)
 (require 'init-highlight)
-(require 'init-ivy)
 (require 'init-hydra)
 (require 'init-search)
 (require 'init-dired)

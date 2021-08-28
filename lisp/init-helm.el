@@ -1,13 +1,20 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package helm
-  :bind (:map helm-map
-              ("C-h" . helm-previous-source)
-              ("C-l" . helm-next-source)
-              ("C-j" . helm-next-line)
-              ("C-k" . helm-previous-line)
-              ("C-f" . helm-next-page)
-              ("C-b" . helm-previous-page)))
+  :bind (("M-x" . helm-M-x)
+         ("C-x j j" . helm-bookmark)
+         ("C-x b" . helm-buffers-list)
+         ("C-x C-f" . helm-find-files)
+         :map helm-map
+         ("C-h" . helm-previous-source)
+         ("C-l" . helm-next-source)
+         ("C-j" . helm-next-line)
+         ("C-k" . helm-previous-line)
+         ("C-f" . helm-next-page)
+         ("C-b" . helm-previous-page)
+         :map helm-find-files-map
+         ("DEL" . helm-find-files-up-one-level)
+         ))
 
 (use-package helm-ls-git
   :commands helm-ls-git-ls

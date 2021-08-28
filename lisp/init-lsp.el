@@ -41,6 +41,4 @@
   (lsp-ui-sideline-enable nil)
   )
 
-(use-package lsp-ivy :after lsp-mode)
-
 (provide 'init-lsp)
