@@ -49,6 +49,7 @@
   (line-number-mode t)
   (size-indication-mode t)
   (line-move-visual nil)
+  (column-number-indicator-zero-based nil)
   (track-eol t)
   (save-interprogram-paste-before-kill t)
   (kill-do-not-save-duplicates t)
