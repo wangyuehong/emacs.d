@@ -24,12 +24,14 @@
   :pretty-hydra
   ((:title "diff-hl" :foreign-keys warn :color amaranth :quit-key "q")
     ("Hunk"
-     (("j" diff-hl-next-hunk)
-      ("k" diff-hl-previous-hunk)
+     (("k" diff-hl-previous-hunk)
+      ("j" diff-hl-next-hunk)
+      ("p" diff-hl-show-hunk))
+     "Show"
+     (("C-k" diff-hl-show-hunk-previous)
+      ("C-j" diff-hl-show-hunk-next)
       ("v" diff-hl-revert-hunk)
-      ("p" diff-hl-show-hunk)
-      ("c" diff-hl-show-hunk-copy-original-text)
-      ))))
+      ("c" diff-hl-show-hunk-copy-original-text)))))
 
 (use-package git-timemachine :commands git-timemachine)
 
