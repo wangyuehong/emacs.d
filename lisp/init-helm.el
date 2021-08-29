@@ -3,7 +3,7 @@
 (use-package helm
   :bind (("M-x" . helm-M-x)
          ("C-x j j" . helm-bookmarks)
-         ("C-x b" . helm-buffers-list)
+         ("C-x b" . helm-mini)
          ("C-x C-f" . helm-find-files)
          :map helm-map
          ("C-h" . helm-previous-source)
@@ -15,8 +15,13 @@
          :map helm-find-files-map
          ("DEL" . helm-find-files-up-one-level)
          )
+  :commands (helm-autoresize-mode)
   :config
   (helm-mode 1)
+  (helm-autoresize-mode t)
+  :custom
+  (helm-autoresize-max-height 36)
+  (helm-autoresize-min-height 36)
   )
 
 (use-package helm-ls-git

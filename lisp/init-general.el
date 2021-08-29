@@ -35,7 +35,7 @@
    "C"  'calendar
    "c"  'calculator
    "h"  'symbol-overlay-put
-   "i"  'helm-imenu
+   "i"  'helm-semantic-or-imenu
    "g"  'magit-status
    "t"  'git-timemachine
    "f"  'flycheck-list-errors
