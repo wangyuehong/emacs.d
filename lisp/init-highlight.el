@@ -2,9 +2,25 @@
 
 (use-package symbol-overlay
   :diminish
+  :functions (turn-off-symbol-overlay turn-on-symbol-overlay)
   :bind (:map symbol-overlay-map
-         ("c" . symbol-overlay-remove-all))
-  :hook ((prog-mode yaml-mode) . symbol-overlay-mode)
+        ("c" . symbol-overlay-remove-all))
+  :hook (((prog-mode yaml-mode) . symbol-overlay-mode)
+         (iedit-mode . turn-off-symbol-overlay)
+         (iedit-mode-end . turn-on-symbol-overlay))
+  :config
+  (defun turn-off-symbol-overlay (&rest _)
+    "Turn off symbol highlighting."
+    (interactive)
+    (symbol-overlay-mode -1))
+  (advice-add #'set-mark :after #'turn-off-symbol-overlay)
+
+  (defun turn-on-symbol-overlay (&rest _)
+    "Turn on symbol highlighting."
+    (interactive)
+    (when (derived-mode-p 'prog-mode 'yaml-mode)
+      (symbol-overlay-mode 1)))
+  (advice-add #'deactivate-mark :after #'turn-on-symbol-overlay)
   :custom
   (symbol-overlay-idle-time 0.1)
   :custom-face
