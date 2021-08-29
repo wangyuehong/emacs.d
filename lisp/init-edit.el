@@ -74,4 +74,16 @@
 
 (use-package xclip :demand xclip-mode)
 
+(defun paste-from-clipboard ()
+  (interactive)
+  (xclip-mode)
+  (yank)
+  (xclip-mode))
+
+(defun copy-to-clipboard()
+  (interactive)
+  (xclip-mode)
+  (kill-ring-save (region-beginning) (region-end))
+  (xclip-mode))
+
 (provide 'init-edit)

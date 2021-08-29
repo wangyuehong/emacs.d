@@ -11,9 +11,15 @@
    :map evil-normal-state-map
    ([remap evil-jump-to-tag] . xref-find-definitions))
 
+  :init
+  (setq evil-want-Y-yank-to-eol t
+        evil-want-keybinding nil
+        evil-want-fine-undo t
+        evil-want-C-i-jump nil
+        evil-want-abbrev-expand-on-insert-exit nil)
+
   :custom
   (evil-auto-indent t)
-  (evil-want-keybinding nil)
   (evil-default-cursor t)
   (evil-cross-lines t)
   (evil-search-module 'evil-search)
@@ -29,19 +35,7 @@
   (evil-ex-interactive-search-highlight 'selected-window)
   (evil-disable-insert-state-bindings t)
   (evil-insert-skip-empty-lines t)
-  (evil-want-fine-undo t)
   (evil-undo-system 'undo-redo)
-  (evil-want-C-i-jump nil)
-  (evil-want-Y-yank-to-eol t)
-  (evil-want-abbrev-expand-on-insert-exit nil)
-
-  (evil-normal-state-tag   (propertize "<N>"))
-  (evil-emacs-state-tag    (propertize "<M>" 'face '((:background "#444488"))))
-  (evil-insert-state-tag   (propertize "<I>" 'face '((:background "#ff6347"))))
-  (evil-replace-state-tag  (propertize "<R>" 'face '((:background "#b22222"))))
-  (evil-motion-state-tag   (propertize "<M>" 'face '((:background "#ffa54f"))))
-  (evil-visual-state-tag   (propertize "<V>" 'face '((:background "#1e90ff"))))
-  (evil-operator-state-tag (propertize "<O>" 'face '((:background "#9370db"))))
 
   :config
   (defalias #'forward-evil-word #'forward-evil-symbol)
@@ -51,6 +45,7 @@
   (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
   (define-key evil-insert-state-map (kbd "C-d") 'delete-char)
   (define-key evil-normal-state-map (kbd "C-d") 'delete-char)
+  (define-key evil-visual-state-map (kbd "C-y") 'copy-to-clipboard)
   (define-key evil-normal-state-map (kbd "q") 'quit-window)
   (define-key evil-normal-state-map (kbd "s") 'avy-goto-word-or-subword-1)
   (define-key evil-visual-state-map (kbd "s") 'avy-goto-word-or-subword-1)
