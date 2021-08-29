@@ -22,10 +22,6 @@
 (use-package mode-line-bell
   :hook (after-init . mode-line-bell-mode))
 
-(use-package undo-tree
-  :diminish
-  :hook (after-init . global-undo-tree-mode))
-
 (use-package subword
   :ensure nil
   :diminish

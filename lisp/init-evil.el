@@ -30,7 +30,7 @@
   (evil-disable-insert-state-bindings t)
   (evil-insert-skip-empty-lines t)
   (evil-want-fine-undo t)
-  (evil-undo-system 'undo-tree)
+  (evil-undo-system 'undo-redo)
   (evil-want-C-i-jump nil)
   (evil-want-Y-yank-to-eol t)
   (evil-want-abbrev-expand-on-insert-exit nil)
