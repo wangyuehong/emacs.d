@@ -69,13 +69,12 @@
                               (face-foreground 'mode-line))))
     (add-hook 'post-command-hook
               (lambda ()
-
                 (let* ((color (cond ((minibufferp) default-color)
                                     (buffer-read-only default-color)
-                                    ((evil-insert-state-p)  '("#ff6347" . "white"))
-                                    ((evil-replace-state-p) '("#b22222" . "white"))
-                                    ((evil-emacs-state-p)   '("#444488" . "white"))
-                                    ((buffer-modified-p)    '("#4f94cd" . "white"))
+                                    ((evil-insert-state-p)  '("#ff6347" . "#ffe7ba"))
+                                    ((evil-replace-state-p) '("#b22222" . "#ffe7ba"))
+                                    ((evil-emacs-state-p)   '("#444488" . "#ffe7ba"))
+                                    ((buffer-modified-p)    '("#4f94cd" . "#ffe7ba"))
                                     (t default-color))))
                   (set-face-background 'mode-line (car color))
                   (set-face-foreground 'mode-line (cdr color))))))
