@@ -18,7 +18,7 @@
 (use-package dired-single
   :bind
   (:map dired-mode-map
-        ;; ("C-x C-j" . dired-single-up-directory)
+        ("C-x C-j" . dired-single-up-directory)
         ([remap dired-find-file] . dired-single-buffer)
         ([remap dired-up-directory] . dired-single-up-directory)))
 
