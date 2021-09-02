@@ -20,10 +20,6 @@
    "P"  'paradox-upgrade-packages
    "r"  'helm-show-kill-ring
    ","  'diff-hl-hydra/body
-   "v"  'revert-buffer
-   "nn" 'narrow-to-region
-   "nd" 'narrow-to-defun
-   "nw" 'widen
    )
 
   (general-define-key
