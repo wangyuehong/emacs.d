@@ -15,7 +15,6 @@
   (setq evil-want-Y-yank-to-eol t
         evil-want-keybinding nil
         evil-want-fine-undo t
-        evil-want-C-i-jump nil
         evil-want-abbrev-expand-on-insert-exit nil)
 
   :custom
@@ -38,7 +37,7 @@
   (evil-undo-system 'undo-redo)
 
   :config
-  (defalias #'forward-evil-word #'forward-evil-symbol)
+  ;; (defalias #'forward-evil-word #'forward-evil-symbol)
 
   (define-key evil-visual-state-map (kbd "v") 'er/expand-region)
   (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
