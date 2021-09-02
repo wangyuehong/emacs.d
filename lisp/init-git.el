@@ -17,6 +17,8 @@
          (magit-pre-refresh  . diff-hl-magit-pre-refresh)
          (magit-post-refresh . diff-hl-magit-post-refresh)
          (dired-mode         . diff-hl-dired-mode-unless-remote))
+  :bind (:map diff-hl-command-map
+              ("v" . diff-hl-hydra/body))
   :config
   (unless (window-system) (diff-hl-margin-mode))
   (setq-default fringes-outside-margins t)
@@ -29,9 +31,11 @@
       ("p" diff-hl-show-hunk))
      "Show"
      (("C-k" diff-hl-show-hunk-previous)
-      ("C-j" diff-hl-show-hunk-next)
-      ("v" diff-hl-revert-hunk)
-      ("c" diff-hl-show-hunk-copy-original-text)))))
+      ("C-j" diff-hl-show-hunk-next))
+     "Action"
+     (("v" diff-hl-revert-hunk)
+      ("c" diff-hl-show-hunk-copy-original-text))
+     )))
 
 (use-package git-timemachine :commands git-timemachine)
 
