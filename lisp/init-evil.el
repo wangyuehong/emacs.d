@@ -54,26 +54,34 @@
   (define-key evil-visual-state-map (kbd "TAB") 'evil-indent)
 
   ;; modes to map to different default states
-  (dolist (mode-map '((comint-mode . emacs)
-                      (term-mode . emacs)
-                      (eshell-mode . emacs)
-                      (calculator-mode . emacs)
-                      (help-mode . motion)))
-    (evil-set-initial-state `,(car mode-map) `,(cdr mode-map)))
+  (dolist (p '((comint-mode . emacs)
+               (term-mode . emacs)
+               (eshell-mode . emacs)
+               (calculator-mode . emacs)
+               (help-mode . motion)
+               (minibuffer-inactive-mode . emacs)
+               (special-mode . emacs)
+               (Info-mode . emacs)
+               (term-mode . emacs)
+               (shell-mode . emacs)
+               (xref--xref-buffer-mode . emacs)
+               (fundamental-mode . emacs)))
+    (evil-set-initial-state (car p) (cdr p)))
 
-  (let* ((default-color (cons (face-background 'mode-line)
-                              (face-foreground 'mode-line))))
-    (add-hook 'post-command-hook
-              (lambda ()
-                (let* ((color (cond ((minibufferp) default-color)
-                                    (buffer-read-only default-color)
-                                    ((evil-insert-state-p)  '("#ff6347" . "#ffe7ba"))
-                                    ((evil-replace-state-p) '("#b22222" . "#ffe7ba"))
-                                    ((evil-emacs-state-p)   '("#444488" . "#ffe7ba"))
-                                    ((buffer-modified-p)    '("#4f94cd" . "#ffe7ba"))
-                                    (t default-color))))
-                  (set-face-background 'mode-line (car color))
-                  (set-face-foreground 'mode-line (cdr color))))))
+
+  (defconst my-default-color (cons (face-background 'mode-line)
+                                   (face-foreground 'mode-line)))
+  (defun my-show-evil-state ()
+    "Change mode line color to notify user evil current state."
+    (let* ((color (cond ((minibufferp) my-default-color)
+                        ((evil-insert-state-p)  '("#ff6347" . "#ffe7ba"))
+                        ((evil-replace-state-p) '("#b22222" . "#ffe7ba"))
+                        ((evil-emacs-state-p)   '("#444488" . "#ffe7ba"))
+                        ((buffer-modified-p)    '("#4f94cd" . "#ffe7ba"))
+                        (t my-default-color))))
+      (set-face-background 'mode-line (car color))
+      (set-face-foreground 'mode-line (cdr color))))
+  (add-hook 'post-command-hook #'my-show-evil-state)
  )
 
 (use-package evil-collection
@@ -84,11 +92,7 @@
 (use-package evil-surround :hook (after-init . global-evil-surround-mode))
 (use-package evil-nerd-commenter :demand t)
 
-
 (use-package evil-iedit-state
-  :commands (evil-iedit-state evil-iedit-state/iedit-mode)
-  :custom
-  (evil-iedit-state-tag        (propertize "<E>"  'face '((:background "#228b22" ))))
-  (evil-iedit-insert-state-tag (propertize "<Ei>" 'face '((:background "#ff6347" )))))
+  :commands (evil-iedit-state evil-iedit-state/iedit-mode))
 
 (provide 'init-evil)
