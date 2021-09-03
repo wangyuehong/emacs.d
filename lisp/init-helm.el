@@ -27,6 +27,7 @@
 (use-package helm-ls-git
   :commands helm-ls-git-ls
   :custom
+  (helm-ls-git-status-command 'magit-status-internal)
   (helm-ls-git-show-abs-or-relative 'relative)
   (helm-ff-transformer-show-only-basename nil)
   )
