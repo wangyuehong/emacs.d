@@ -22,6 +22,7 @@
   :custom
   (helm-autoresize-max-height 36)
   (helm-autoresize-min-height 36)
+  (helm-split-window-inside-p t)
   )
 
 (use-package helm-ls-git
