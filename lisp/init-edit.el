@@ -80,18 +80,6 @@
   :ensure nil
   :hook (after-init . delete-selection-mode))
 
-(use-package xclip :demand xclip-mode)
-
-(defun paste-from-clipboard ()
-  (interactive)
-  (xclip-mode)
-  (yank)
-  (xclip-mode))
-
-(defun copy-to-clipboard()
-  (interactive)
-  (xclip-mode)
-  (kill-ring-save (region-beginning) (region-end))
-  (xclip-mode))
+(use-package xclip :commands xclip-mode)
 
 (provide 'init-edit)
