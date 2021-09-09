@@ -9,6 +9,7 @@
 
 (use-package dockerfile-mode)
 (use-package docker-compose-mode)
+(use-package protobuf-mode)
 
 (use-package json-mode)
 (use-package js2-mode)
