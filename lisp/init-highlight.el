@@ -4,11 +4,15 @@
   :diminish
   :functions (turn-off-symbol-overlay turn-on-symbol-overlay)
   :bind (:map symbol-overlay-map
-        ("c" . symbol-overlay-remove-all))
+        ("c" . symbol-overlay-remove-all)
+        ("k" . symbol-overlay-jump-prev)
+        ("j" . symbol-overlay-jump-next))
   :hook (((prog-mode yaml-mode) . symbol-overlay-mode)
          (iedit-mode . turn-off-symbol-overlay)
          (iedit-mode-end . turn-on-symbol-overlay))
   :config
+  (unbind-key "w" symbol-overlay-map)
+  (unbind-key "e" symbol-overlay-map)
   (defun turn-off-symbol-overlay (&rest _)
     "Turn off symbol highlighting."
     (interactive)
