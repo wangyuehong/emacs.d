@@ -7,6 +7,7 @@
   (desktop-save-mode 1)
   :custom
   (desktop-path (list user-emacs-directory))
+  (desktop-load-locked-desktop t)
   (desktop-auto-save-timeout 300))
 
 (use-package session
