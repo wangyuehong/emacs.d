@@ -4,9 +4,9 @@
   :diminish
   :functions (turn-off-symbol-overlay turn-on-symbol-overlay)
   :bind (:map symbol-overlay-map
-        ("c" . symbol-overlay-remove-all)
-        ("k" . symbol-overlay-jump-prev)
-        ("j" . symbol-overlay-jump-next))
+        ("<escape>" . symbol-overlay-remove-all)
+        ("C-k" . symbol-overlay-jump-prev)
+        ("C-j" . symbol-overlay-jump-next))
   :hook (((prog-mode yaml-mode) . symbol-overlay-mode)
          (iedit-mode . turn-off-symbol-overlay)
          (iedit-mode-end . turn-on-symbol-overlay))
@@ -26,18 +26,7 @@
       (symbol-overlay-mode 1)))
   (advice-add #'deactivate-mark :after #'turn-on-symbol-overlay)
   :custom
-  (symbol-overlay-idle-time 0.1)
-  :custom-face
-  (symbol-overlay-default-face ((t (:inherit highlight bold))))
-  (symbol-overlay-face-1 ((t (:background "brightblue" :foreground "black"))))
-  (symbol-overlay-face-2 ((t (:background "brightgreen" :foreground "black"))))
-  (symbol-overlay-face-3 ((t (:background "brightred" :foreground "black"))))
-  (symbol-overlay-face-4 ((t (:background "brightmagenta" :foreground "black"))))
-  (symbol-overlay-face-5 ((t (:background "cyan" :foreground "black"))))
-  (symbol-overlay-face-6 ((t (:background "brightyellow" :foreground "black"))))
-  (symbol-overlay-face-7 ((t (:background "brightblack" :foreground "white"))))
-  (symbol-overlay-face-8 ((t (:background "magenta" :foreground "black"))))
-  )
+  (symbol-overlay-idle-time 0.1))
 
 (use-package paren
   :ensure nil
