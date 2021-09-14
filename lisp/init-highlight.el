@@ -7,7 +7,7 @@
         ("<escape>" . symbol-overlay-remove-all)
         ("C-k" . symbol-overlay-jump-prev)
         ("C-j" . symbol-overlay-jump-next))
-  :hook (((prog-mode yaml-mode) . symbol-overlay-mode)
+  :hook (((prog-mode yaml-mode protobuf-mode) . symbol-overlay-mode)
          (iedit-mode . turn-off-symbol-overlay)
          (iedit-mode-end . turn-on-symbol-overlay))
   :config
@@ -22,7 +22,7 @@
   (defun turn-on-symbol-overlay (&rest _)
     "Turn on symbol highlighting."
     (interactive)
-    (when (derived-mode-p 'prog-mode 'yaml-mode)
+    (when (derived-mode-p 'prog-mode 'yaml-mode 'protobuf-mode)
       (symbol-overlay-mode 1)))
   (advice-add #'deactivate-mark :after #'turn-on-symbol-overlay)
   :custom
@@ -36,22 +36,25 @@
   (show-paren-when-point-in-periphery t))
 
 (use-package hl-todo
-  :hook (after-init . global-hl-todo-mode))
+  :hook (after-init . global-hl-todo-mode)
+  :config
+  (with-eval-after-load 'protobuf-mode
+    (add-to-list 'hl-todo-include-modes 'protobuf-mode)))
 
 (use-package rainbow-mode :diminish
   :hook (emacs-lisp-mode . rainbow-mode))
 
 (use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
+  :hook ((prog-mode protobuf-mode) . rainbow-delimiters-mode))
 
 (use-package display-line-numbers
   :ensure nil
-  :hook ((prog-mode yaml-mode) . display-line-numbers-mode))
+  :hook ((prog-mode yaml-mode protobuf-mode) . display-line-numbers-mode))
 
 (use-package whitespace
   :ensure nil
   :diminish
-  :hook ((prog-mode yaml-mode markdown-mode conf-mode) . whitespace-mode)
+  :hook ((prog-mode yaml-mode markdown-mode conf-mode protobuf-mode) . whitespace-mode)
   :custom
   (whitespace-line-column 120) ;; config for lines-tail style
   (whitespace-style
