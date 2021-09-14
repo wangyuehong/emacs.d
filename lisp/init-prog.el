@@ -48,4 +48,13 @@
          ))
 
 (use-package dockerfile-mode)
+
+(use-package dumb-jump
+  :init
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate t)
+  :custom
+  (dumb-jump-quiet t)
+  (dumb-jump-aggressive t)
+  (dumb-jump-selector 'completing-read))
+
 (provide 'init-prog)
