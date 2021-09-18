@@ -84,12 +84,12 @@
  )
 
 (use-package evil-collection
-  :demand t
-  :custom (evil-collection-company-use-tng  nil)
-  :init (evil-collection-init))
+  :hook (evil-mode . evil-collection-init)
+  :custom
+  (evil-collection-company-use-tng nil))
 
 (use-package evil-surround :hook (after-init . global-evil-surround-mode))
-(use-package evil-nerd-commenter :demand t)
+(use-package evil-nerd-commenter)
 
 (use-package evil-iedit-state
   :commands (evil-iedit-state evil-iedit-state/iedit-mode))
