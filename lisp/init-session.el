@@ -1,24 +1,10 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
-;; save a list of open files in ~/.emacs.d/.emacs.desktop
-(use-package desktop
-  :ensure nil
-  :init
-  (desktop-save-mode 1)
+(use-package dashboard
+  :hook ((after-init . dashboard-setup-startup-hook))
   :custom
-  (desktop-path (list user-emacs-directory))
-  (desktop-load-locked-desktop t)
-  (desktop-auto-save-timeout 300))
-
-(use-package session
-  :hook (after-init . session-initialize)
-  :custom
-  (session-globals-max-size 128)
-  (session-globals-max-string (* 1 1024 1024)) ;; 1M
-  (session-save-file (expand-file-name ".session" user-emacs-directory))
-  (session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)")
-  (session-save-file-coding-system 'utf-8)
-  )
+  (dashboard-items '((recents   . 15)
+                     (bookmarks . 10))))
 
 (use-package recentf
   :ensure nil
@@ -27,12 +13,17 @@
   (recentf-max-saved-items 64)
   (recentf-save-file (expand-file-name ".recentf" user-emacs-directory))
   (recentf-exclude
-   '("\\.?cache" ".cask" "url" "COMMIT_EDITMSG\\'" "bookmarks"
-     "\\.\\(?:gz\\|gif\\|svg\\|png\\|jpe?g\\|bmp\\|xpm\\)$"
-     "\\.?ido\\.last$" "\\.revive$" "/G?TAGS$" "/.elfeed/"
-     "^/tmp/" "^/var/folders/.+$" ; "^/ssh:"
-     (lambda (file) (file-in-directory-p file package-user-dir))))
-  :config (push (expand-file-name recentf-save-file) recentf-exclude))
+   '("^/private/tmp/"
+     "^/var/folders/"
+     "^/tmp/"
+     "bookmarks"
+     "/ssh\\(x\\)?:"
+     "/su\\(do\\)?:"
+     "^/usr/include/"
+     "/TAGS\\'"
+     "/G?TAGS$"
+     "COMMIT_EDITMSG\\'")))
+
 
 (use-package saveplace
   :ensure nil
@@ -50,7 +41,6 @@
      search-ring
      regexp-search-ring
      extended-command-history))
-  (savehist-autosave-interval 300)
-  )
+  (savehist-autosave-interval 300))
 
 (provide 'init-session)
