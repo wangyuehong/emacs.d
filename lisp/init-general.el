@@ -23,7 +23,7 @@
 
   (general-define-key
    ;; :states '(normal motion insert emacs)
-   :states '(normal visual)
+   :states '(normal visual emacs)
    :keymaps 'override
    ;; :non-normal-prefix "C-SPC"
    :prefix "SPC"
