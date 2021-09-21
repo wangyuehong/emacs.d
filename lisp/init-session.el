@@ -3,8 +3,8 @@
 (use-package dashboard
   :hook ((after-init . dashboard-setup-startup-hook))
   :custom
-  (dashboard-items '((recents   . 15)
-                     (bookmarks . 10))))
+  (dashboard-items '((bookmarks . 10)
+                     (recents   . 15))))
 
 (use-package recentf
   :ensure nil
