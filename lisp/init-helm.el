@@ -31,6 +31,8 @@
   (helm-ls-git-status-command 'magit-status-internal)
   (helm-ls-git-show-abs-or-relative 'relative)
   (helm-ff-transformer-show-only-basename nil)
-  )
+  (helm-ls-git-default-sources '(helm-source-ls-git-status
+                                 helm-source-ls-git-buffers
+                                 helm-source-ls-git)))
 
 (provide 'init-helm)
