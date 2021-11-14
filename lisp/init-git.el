@@ -39,7 +39,6 @@
 
 (use-package git-timemachine :commands git-timemachine)
 
-(use-package gitignore-mode)
-(use-package gitconfig-mode)
+(use-package git-modes)
 
 (provide 'init-git)
