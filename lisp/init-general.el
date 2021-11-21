@@ -14,7 +14,6 @@
    "e"  'evil-iedit-state/iedit-mode
    "K"  'kill-other-buffers
    "k"  'kill-buffer-and-window
-   "P"  'paradox-upgrade-packages
    "q"  'quickrun
    "r"  'helm-show-kill-ring
    "W"  'save-some-buffers
@@ -31,6 +30,7 @@
    "c"  'calculator
    "d"  'osx-dictionary-search-word-at-point
    "f"  'flycheck-list-errors
+   "p"  'paradox-upgrade-packages
    "g"  'magit-status
    "h"  'symbol-overlay-put
    "i"  'helm-semantic-or-imenu
