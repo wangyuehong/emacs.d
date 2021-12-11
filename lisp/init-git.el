@@ -3,6 +3,7 @@
 (use-package magit
   :custom
   (magit-process-popup-time 10)
+  (magit-ediff-dwim-show-on-hunks t)
   (magit-diff-refine-hunk t))
 
 (use-package vc
@@ -20,7 +21,7 @@
   :bind (:map diff-hl-command-map
               ("v" . diff-hl-hydra/body))
   :config
-  (unless (window-system) (diff-hl-margin-mode))
+  (diff-hl-margin-mode)
   (setq-default fringes-outside-margins t)
   (diff-hl-flydiff-mode 1)
   :pretty-hydra
