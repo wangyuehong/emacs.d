@@ -2,6 +2,6 @@
 # name: if error
 # key: iferr
 # --
-if err != ${1:nil} {
-  reutrn err
+if err != nil {
+   return ${1:err}
 }
