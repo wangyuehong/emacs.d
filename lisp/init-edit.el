@@ -80,6 +80,7 @@
   :ensure nil
   :hook (after-init . delete-selection-mode))
 
-(use-package xclip :commands xclip-mode)
+(use-package xclip
+  :bind ("C-x C-x" . xclip-mode))
 
 (provide 'init-edit)
