@@ -11,6 +11,7 @@
    "A"  'rg
    "a"  'rg-project
    "c"  'evilnc-comment-or-uncomment-lines
+   "d"  'delete-trailing-whitespace
    "e"  'evil-iedit-state/iedit-mode
    "K"  'kill-other-buffers
    "k"  'kill-buffer-and-window
