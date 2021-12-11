@@ -34,7 +34,7 @@
    "g"  'magit-status
    "h"  'symbol-overlay-put
    "i"  'helm-imenu
-   "l"  'helm-ls-git-ls
+   "l"  'helm-browse-project
    "o"  'helm-occur
    "t"  'git-timemachine
    "x"  'helm-M-x
