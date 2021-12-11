@@ -41,4 +41,9 @@
 
 (use-package git-modes)
 
+(use-package git-link
+  :commands git-link
+  :custom
+  (git-link-open-in-browser t))
+
 (provide 'init-git)
