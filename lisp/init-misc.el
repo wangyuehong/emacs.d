@@ -14,6 +14,5 @@
   (ispell-extra-args '("--sug-mode=ultra" "--lang=en_US" "--run-together")))
 
 (use-package youdao-dictionary)
-(use-package osx-dictionary)
 
 (provide 'init-misc)

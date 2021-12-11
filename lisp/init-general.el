@@ -28,7 +28,6 @@
    :prefix "SPC"
    "C"  'calendar
    "c"  'calculator
-   "d"  'osx-dictionary-search-word-at-point
    "f"  'flycheck-list-errors
    "p"  'paradox-upgrade-packages
    "g"  'magit-status
