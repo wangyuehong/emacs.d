@@ -22,6 +22,7 @@
   (avy-all-windows t)
   (avy-background t)
   (avy-highlight-first t)
+  (avy-timeout-seconds 0.25)
   )
 
 (provide 'init-search)
