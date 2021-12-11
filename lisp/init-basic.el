@@ -98,4 +98,9 @@
 
 (use-package eldoc :ensure nil :diminish)
 
+(use-package imenu
+  :ensure nil
+  :hook (imenu-after-jump . recenter)
+  :custom (imenu-max-item-length 108))
+
 (provide 'init-basic)

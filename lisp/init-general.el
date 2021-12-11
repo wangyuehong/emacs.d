@@ -33,7 +33,7 @@
    "p"  'paradox-upgrade-packages
    "g"  'magit-status
    "h"  'symbol-overlay-put
-   "i"  'helm-semantic-or-imenu
+   "i"  'helm-imenu
    "l"  'helm-ls-git-ls
    "o"  'helm-occur
    "t"  'git-timemachine
