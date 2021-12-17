@@ -90,6 +90,11 @@
   :ensure nil
   :hook (after-init . global-so-long-mode))
 
+(use-package hideshow
+  :ensure nil
+  :diminish hs-minor-mode
+  :hook (prog-mode . hs-minor-mode))
+
 (use-package server
   :ensure nil
   :config
