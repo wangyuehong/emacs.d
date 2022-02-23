@@ -27,6 +27,7 @@
    :keymaps 'override
    ;; :non-normal-prefix "C-SPC"
    :prefix "SPC"
+   "!"  'shell-command
    "C"  'calendar
    "c"  'calculator
    "f"  'flycheck-list-errors
