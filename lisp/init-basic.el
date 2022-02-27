@@ -95,12 +95,6 @@
   :diminish hs-minor-mode
   :hook (prog-mode . hs-minor-mode))
 
-(use-package server
-  :ensure nil
-  :config
-  (unless (server-running-p)
-    (server-start)))
-
 (use-package eldoc :ensure nil :diminish)
 
 (use-package imenu
