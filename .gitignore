@@ -26,3 +26,4 @@ site-lisp/package/
 /lisp/init-local.el
 /projects
 /places
+/eln-cache
