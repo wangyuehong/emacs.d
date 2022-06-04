@@ -41,4 +41,17 @@
   (lsp-ui-sideline-enable nil)
   )
 
+(use-package dap-mode
+  :functions dap-hydra/nil
+  :diminish
+  :bind (:map lsp-mode-map
+              ("<f5>" . dap-debug)
+              ("M-<f5>" . dap-hydra))
+  :hook ((after-init . dap-auto-configure-mode)
+         (dap-stopped . (lambda (_args) (dap-hydra)))
+         (dap-terminated . (lambda (_args) (dap-hydra/nil)))
+         (go-mode . (lambda () (require 'dap-dlv-go))))
+  :init
+  (setq dap-auto-configure-features '(sessions locals breakpoints expressions controls)))
+
 (provide 'init-lsp)
