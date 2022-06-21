@@ -27,3 +27,4 @@ site-lisp/package/
 /projects
 /places
 /eln-cache
+/async-bytecomp.log
