@@ -2,8 +2,8 @@
 
 (use-package go-mode
   :config
-  (when (executable-find "goimports")
-    (setq gofmt-command "goimports"))
+  (when (executable-find "gofumpt")
+    (setq gofmt-command "gofumpt"))
   (add-hook 'before-save-hook #'gofmt-before-save)
   (use-package go-dlv)
   (use-package go-impl)
