@@ -45,10 +45,8 @@
   (define-key evil-insert-state-map (kbd "C-d") 'delete-char)
   (define-key evil-normal-state-map (kbd "C-d") 'delete-char)
   (define-key evil-normal-state-map (kbd "q") 'quit-window)
-  (define-key evil-normal-state-map (kbd "f") 'evil-avy-goto-char)
-  (define-key evil-visual-state-map (kbd "f") 'evil-avy-goto-char)
-  (define-key evil-normal-state-map (kbd "s") 'evil-avy-goto-char-timer)
-  (define-key evil-visual-state-map (kbd "s") 'evil-avy-goto-char-timer)
+  (define-key evil-normal-state-map (kbd "f") 'evil-avy-goto-char-timer)
+  (define-key evil-visual-state-map (kbd "f") 'evil-avy-goto-char-timer)
   (define-key evil-normal-state-map (kbd "TAB") 'evil-indent-line)
   (define-key evil-visual-state-map (kbd "TAB") 'evil-indent)
 
