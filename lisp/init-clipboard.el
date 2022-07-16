@@ -11,13 +11,14 @@
       (message "file full path => clipboard & yank ring")))
 
   (defun copy-to-x-clipboard ()
-    "Copy selected-string-or-current to clipboard."
+    "Copy selected-string-or-current-line to clipboard."
     (interactive)
-    (let* ((thing (if (region-active-p)
+    (let* ((in-region (region-active-p))
+           (thing (if in-region
                       (buffer-substring-no-properties (region-beginning) (region-end))
                     (thing-at-point 'line))))
-      (xclip-set-selection 'clipboard thing))
-    (if (region-active-p) (deactivate-mark))
-    (message "thing => clipboard!")))
+      (xclip-set-selection 'clipboard thing)
+      (if in-region (deactivate-mark)))
+    (message "copied to clipboard!")))
 
 (provide 'init-clipboard)
