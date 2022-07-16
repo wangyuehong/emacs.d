@@ -36,6 +36,7 @@
 ;; Load configs for specific features and modes
 ;;----------------------------------------------------------------------------
 (require 'init-basic)
+(require 'init-clipboard)
 (require 'init-theme)
 (require 'init-window)
 (require 'init-keybind)
