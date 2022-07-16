@@ -4,13 +4,14 @@
   :diminish
   :commands (lsp lsp-deferred)
   :hook ((go-mode . lsp-deferred)
+         (ruby-mode . lsp-deferred)
          (lsp-mode . lsp-enable-which-key-integration))
   :init
   (setq read-process-output-max (* 1024 1024)) ;; 1MB
   :custom
   (lsp-keymap-prefix "C-c l")
   (lsp-auto-guess-root t)
-  (lsp-client-packages '(lsp-go))
+  (lsp-client-packages '(lsp-go lsp-solargraph))
   (lsp-enable-file-watchers nil)
   (lsp-enable-folding nil)
   (lsp-enable-indentation nil)
