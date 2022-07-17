@@ -8,7 +8,9 @@
    ruby-insert-encoding-magic-comment nil)
   :config
   (key-chord-define ruby-mode-map "--" "->")
-  (key-chord-define ruby-mode-map "==" "=>")
-  )
+  (key-chord-define ruby-mode-map "==" "=>"))
+
+(use-package yard-mode
+  :hook (ruby-mode . yard-mode))
 
 (provide 'init-ruby)
