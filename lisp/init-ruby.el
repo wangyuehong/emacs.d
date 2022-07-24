@@ -13,4 +13,10 @@
 (use-package yard-mode
   :hook (ruby-mode . yard-mode))
 
+(use-package rspec-mode
+  :commands rspec-install-snippets
+  :hook (ruby-mode . rspec-mode)
+  :config
+  (rspec-install-snippets))
+
 (provide 'init-ruby)
