@@ -92,4 +92,8 @@
 (use-package evil-iedit-state
   :commands (evil-iedit-state evil-iedit-state/iedit-mode))
 
+(use-package evil-matchit
+  :init
+  (global-evil-matchit-mode 1))
+
 (provide 'init-evil)
