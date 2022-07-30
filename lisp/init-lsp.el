@@ -31,7 +31,6 @@
   (lsp-signature-auto-activate t)
   (lsp-signature-doc-lines 2)
   (lsp-eldoc-enable-hover nil)
-  ;; (lsp-solargraph-use-bundler t)
   )
 
 (use-package lsp-ui
