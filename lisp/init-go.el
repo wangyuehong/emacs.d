@@ -5,13 +5,6 @@
   (when (executable-find "gofumpt")
     (setq gofmt-command "gofumpt"))
   (add-hook 'before-save-hook #'gofmt-before-save)
-  (use-package go-dlv)
-  (use-package go-impl)
-  (use-package go-fill-struct)
-  (use-package go-snippets)
-  (use-package gotest :custom (go-test-verbose t))
-  (use-package go-gen-test :custom (go-gen-test-executable "gotests -template testify"))
-  (use-package go-tag)
   :mode-hydra
   ((:title "go-hydra" :foreign-keys warn :color red :quit-key "q")
    ("Test"
@@ -20,10 +13,15 @@
     "Code"
     (("f" go-fill-struct)
      ("i" go-impl))
-   ))
-  )
+    )))
 
-
+(use-package go-dlv)
+(use-package go-impl)
+(use-package go-fill-struct)
+(use-package go-snippets)
+(use-package gotest :custom (go-test-verbose t))
+(use-package go-gen-test :custom (go-gen-test-executable "gotests -template testify"))
+(use-package go-tag)
 (use-package toml-mode)
 
 ;; Install: See https://github.com/golangci/golangci-lint#install
