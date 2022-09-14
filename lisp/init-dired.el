@@ -11,7 +11,7 @@
   (dired-hide-details-hide-symlink-targets nil)
   (dired-listing-switches "-AFhlv")
   (dired-dwim-target t)
-  (dired-kill-when-opening-new-dired-buffer t)
+  ;; (dired-kill-when-opening-new-dired-buffer t)
   :config
   (when (string= system-type "darwin")
     (setq dired-use-ls-dired nil))
