@@ -14,6 +14,7 @@
   :custom
   (rg-group-result t)
   (rg-show-columns t)
+  (rg-command-line-flags '("--hidden" "--glob '!.git/'"))
   )
 
 (use-package avy
