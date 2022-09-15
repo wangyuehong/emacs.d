@@ -1,19 +1,11 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package go-mode
-  :config
-  (when (executable-find "gofumpt")
-    (setq gofmt-command "gofumpt"))
-  (add-hook 'before-save-hook #'gofmt-before-save)
-  :mode-hydra
-  ((:title "go-hydra" :foreign-keys warn :color red :quit-key "q")
-   ("Test"
-    (("t" go-test-current-file)
-     ("g" go-gen-test-dwim))
-    "Code"
-    (("f" go-fill-struct)
-     ("i" go-impl))
-    )))
+  ;; :config
+  ;; (when (executable-find "gofumpt")
+  ;;   (setq gofmt-command "gofumpt"))
+  ;; (add-hook 'before-save-hook #'gofmt-before-save)
+  )
 
 (use-package go-dlv)
 (use-package go-impl)

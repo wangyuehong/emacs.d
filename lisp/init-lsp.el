@@ -5,12 +5,16 @@
   :commands (lsp lsp-deferred)
   :hook ((go-mode . lsp-deferred)
          (ruby-mode . lsp-deferred)
-         (lsp-mode . lsp-enable-which-key-integration))
+         (lsp-mode . (lambda ()
+                       (lsp-enable-which-key-integration)
+                       (add-hook 'before-save-hook #'lsp-format-buffer t t)
+                       (add-hook 'before-save-hook #'lsp-organize-imports t t))))
+
   :init
   (setq read-process-output-max (* 1024 1024)) ;; 1MB
   :custom
   (lsp-keymap-prefix "C-c l")
-  (lsp-auto-guess-root t)
+  (lsp-auto-guess-root nil)
   (lsp-client-packages '(lsp-go lsp-solargraph))
   (lsp-enable-file-watchers nil)
   (lsp-enable-folding nil)
@@ -30,8 +34,7 @@
   (lsp-restart 'auto-restart)
   (lsp-signature-auto-activate t)
   (lsp-signature-doc-lines 2)
-  (lsp-eldoc-enable-hover nil)
-  )
+  (lsp-eldoc-enable-hover nil))
 
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
@@ -39,7 +42,6 @@
   (lsp-ui-doc-enable t)
   (lsp-ui-doc-delay 0.2)
   (lsp-ui-doc-include-signature t)
-  (lsp-ui-sideline-enable nil)
-  )
+  (lsp-ui-sideline-enable nil))
 
 (provide 'init-lsp)
