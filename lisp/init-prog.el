@@ -49,6 +49,10 @@
 
 (use-package dockerfile-mode)
 
+(use-package toml-mode)
+
+(use-package terraform-mode)
+
 (use-package dumb-jump
   :init
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate t)
