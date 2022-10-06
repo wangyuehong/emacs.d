@@ -7,7 +7,7 @@
 (use-package go-fill-struct)
 (use-package go-snippets)
 (use-package gotest :custom (go-test-verbose t))
-(use-package go-gen-test :custom (go-gen-test-executable "gotests -template testify"))
+(use-package go-gen-test :custom (go-gen-test-use-testify t))
 (use-package go-tag)
 
 (use-package flycheck-golangci-lint
