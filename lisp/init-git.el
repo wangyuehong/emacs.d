@@ -38,7 +38,10 @@
       ("c" diff-hl-show-hunk-copy-original-text))
      )))
 
-(use-package git-timemachine :commands git-timemachine)
+(use-package git-timemachine
+  :commands git-timemachine
+  :config
+  (set-face-background 'git-timemachine-minibuffer-detail-face "black"))
 
 (use-package git-modes)
 
