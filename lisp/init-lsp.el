@@ -19,7 +19,7 @@
   (lsp-enable-file-watchers nil)
   (lsp-enable-folding nil)
   (lsp-enable-indentation nil)
-  (lsp-headerline-breadcrumb-enable nil)
+  (lsp-headerline-breadcrumb-enable t)
   (lsp-enable-links nil)
   (lsp-enable-on-type-formatting nil)
   (lsp-enable-semantic-highlighting nil)
