@@ -1,11 +1,5 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
-(use-package dashboard
-  :hook ((after-init . dashboard-setup-startup-hook))
-  :custom
-  (dashboard-items '((bookmarks . 10)
-                     (recents   . 15))))
-
 (use-package recentf
   :ensure nil
   :hook (after-init . recentf-mode)
