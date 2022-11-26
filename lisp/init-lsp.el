@@ -3,6 +3,10 @@
 (use-package lsp-mode
   :diminish
   :commands (lsp lsp-deferred)
+  :bind
+  (:map evil-normal-state-map
+        ("gi" . lsp-find-implementation)
+        ("gt" . lsp-find-type-definition))
   :hook ((go-mode . lsp-deferred)
          (ruby-mode . lsp-deferred)
          (lsp-mode . (lambda ()
