@@ -5,15 +5,14 @@
   :hook ((prog-mode yaml-mode) . company-mode)
   :commands company-cancel
   :bind (:map company-mode-map
+         ("TAB" . company-tabnine)
          ("<backtab>" . company-yasnippet)
          :map company-active-map
          ("C-k" . company-select-previous)
          ("C-j" . company-select-next)
          ("C-b" . company-previous-page)
          ("C-f" . company-next-page)
-         ("TAB" . company-complete-common-or-cycle)
-         ("<backtab>" . my-company-yasnippet)
-         )
+         ("TAB" . company-complete-common-or-cycle))
   :custom
   (company-echo-delay 0.1)
   (company-idle-delay 0.1)
