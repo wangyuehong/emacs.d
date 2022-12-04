@@ -5,7 +5,7 @@
   :hook ((prog-mode yaml-mode) . company-mode)
   :commands company-cancel
   :bind (:map company-mode-map
-         ("TAB" . company-tabnine)
+         ("C-M-i" . company-tabnine) ;; alt+tab
          ("<backtab>" . company-yasnippet)
          :map company-active-map
          ("C-k" . company-select-previous)
