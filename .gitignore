@@ -28,3 +28,4 @@ site-lisp/package/
 /places
 /eln-cache
 /async-bytecomp.log
+/var

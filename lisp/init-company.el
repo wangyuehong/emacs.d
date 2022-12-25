@@ -2,10 +2,8 @@
 
 (use-package company
   :diminish
-  :hook ((prog-mode yaml-mode) . company-mode)
-  :commands company-cancel
+  :defines (company-dabbrev-ignore-case company-dabbrev-downcase)
   :bind (:map company-mode-map
-         ("C-M-i" . company-tabnine) ;; alt+tab
          ("<backtab>" . company-yasnippet)
          :map company-active-map
          ("C-k" . company-select-previous)
@@ -13,33 +11,78 @@
          ("C-b" . company-previous-page)
          ("C-f" . company-next-page)
          ("TAB" . company-complete-common-or-cycle))
-  :custom
-  (company-echo-delay 0.1)
-  (company-idle-delay 0.1)
-  (company-tooltip-limit 15)
-  (company-minimum-prefix-length 1)
-  (company-tooltip-align-annotations t)
-  (company-show-numbers t)
-  (company-dabbrev-other-buffers t)
-  (company-dabbrev-ignore-case nil)
-  (company-dabbrev-downcase nil)
-  (company-dabbrev-ignore-invisible t)
-  (company-dabbrev-code-everywhere t)
-  (company-transformers '(company-sort-by-backend-importance))
-  (company-backends '((company-capf :separate company-yasnippet :with company-tabnine)
-                      (company-dabbrev-code company-keywords company-files)
-                      ))
-
+  :hook (after-init . global-company-mode)
   :init
-  (defun my-company-yasnippet ()
-    "Hide the current completeions and show snippets."
-    (interactive)
-    (company-cancel)
-    (call-interactively 'company-yasnippet))
+  (setq company-tooltip-align-annotations t
+        company-tooltip-limit 15
+        company-idle-delay 0.1
+        company-echo-delay 0.1
+        company-minimum-prefix-length 1
+        company-require-match 'never
+        company-dabbrev-ignore-case nil
+        company-dabbrev-downcase nil
+        company-global-modes '(not erc-mode message-mode help-mode
+                                   gud-mode eshell-mode shell-mode)
+        company-transformers '(company-sort-by-backend-importance)
+        company-backends '((company-capf :separate company-yasnippet)
+                           (company-dabbrev-code company-keywords company-files)))
   :config
-  ;; `yasnippet' integration
   (with-no-warnings
+    ;; Company anywhere
+    ;; @see https://github.com/zk-phi/company-anywhere
+    (defun company-anywhere-after-finish (completion)
+      (when (and (stringp completion)
+                 (looking-at "\\(?:\\sw\\|\\s_\\)+")
+                 (save-match-data
+                   (string-match (regexp-quote (match-string 0)) completion)))
+        (delete-region (match-beginning 0) (match-end 0))))
+    (add-hook 'company-after-completion-hook 'company-anywhere-after-finish)
+
+    (defun company-anywhere-grab-word (_)
+      (buffer-substring (point) (save-excursion (skip-syntax-backward "w") (point))))
+    (advice-add 'company-grab-word :around 'company-anywhere-grab-word)
+
+    (defun company-anywhere-grab-symbol (_)
+      (buffer-substring (point) (save-excursion (skip-syntax-backward "w_") (point))))
+    (advice-add 'company-grab-symbol :around 'company-anywhere-grab-symbol)
+
+    (defun company-anywhere-dabbrev-prefix (_)
+      (company-grab-line (format "\\(?:^\\| \\)[^ ]*?\\(\\(?:%s\\)*\\)" company-dabbrev-char-regexp) 1))
+    (advice-add 'company-dabbrev--prefix :around 'company-anywhere-dabbrev-prefix)
+
+    (defun company-anywhere-capf (fn command &rest args)
+      (if (eq command 'prefix)
+          (let ((res (company--capf-data)))
+            (when res
+              (let ((length (plist-get (nthcdr 4 res) :company-prefix-length))
+                    (prefix (buffer-substring-no-properties (nth 1 res) (point))))
+                (cond
+                 (length (cons prefix length))
+                 (t prefix)))))
+        (apply fn command args)))
+    (advice-add 'company-capf :around 'company-anywhere-capf)
+
+    (defun company-anywhere-preview-show-at-point (pos completion)
+      (when (and (save-excursion
+                   (goto-char pos)
+                   (looking-at "\\(?:\\sw\\|\\s_\\)+"))
+                 (save-match-data
+                   (string-match (regexp-quote (match-string 0)) completion)))
+        (move-overlay company-preview-overlay (overlay-start company-preview-overlay) (match-end 0))
+        (let ((after-string (overlay-get company-preview-overlay 'after-string)))
+          (when after-string
+            (overlay-put company-preview-overlay 'display after-string)
+            (overlay-put company-preview-overlay 'after-string nil)))))
+    (advice-add 'company-preview-show-at-point :after 'company-anywhere-preview-show-at-point)
+
+    ;; `yasnippet' integration
     (with-eval-after-load 'yasnippet
+      (defun my-company-yasnippet ()
+        "Hide the current completeions and show snippets."
+        (interactive)
+        (company-cancel)
+        (call-interactively 'company-yasnippet))
+
       (defun company-backend-with-yas (backend)
         "Add `yasnippet' to company backend."
         (if (and (listp backend) (member 'company-yasnippet backend))
@@ -72,40 +115,62 @@
                      (len (length arg)))
                 (put-text-property 0 len 'yas-annotation snip arg)
                 (put-text-property 0 len 'yas-annotation-patch t arg)))
-            (funcall fn cmd  arg))))
-      (advice-add #'company-yasnippet :around #'my-company-yasnippet-disable-inline)))
-  )
+            (funcall fn cmd arg))))
+      (advice-add #'company-yasnippet :around #'my-company-yasnippet-disable-inline))))
 
-(use-package company-prescient :init (company-prescient-mode 1))
+(use-package prescient
+  :commands prescient-persist-mode
+  :init (prescient-persist-mode 1))
+
+(use-package company-prescient
+  :init (company-prescient-mode 1))
 
 (use-package company-tabnine
-  :after (company)
+  :defer 1
+  :custom
+  (company-tabnine-max-num-results 9)
+  :init
+  (defun company//sort-by-tabnine (candidates)
+    "Integrate company-tabnine with lsp-mode"
+    (if (or (functionp company-backend)
+            (not (and (listp company-backend) (memq 'company-tabnine company-backends))))
+        candidates
+      (let ((candidates-table (make-hash-table :test #'equal))
+            candidates-lsp
+            candidates-tabnine)
+        (dolist (candidate candidates)
+          (if (eq (get-text-property 0 'company-backend candidate)
+                  'company-tabnine)
+              (unless (gethash candidate candidates-table)
+                (push candidate candidates-tabnine))
+            (push candidate candidates-lsp)
+            (puthash candidate t candidates-table)))
+        (setq candidates-lsp (nreverse candidates-lsp))
+        (setq candidates-tabnine (nreverse candidates-tabnine))
+        (nconc (seq-take candidates-tabnine 3)
+               (seq-take candidates-lsp 6)))))
+  (defun lsp-after-open-tabnine ()
+    "Hook to attach to `lsp-after-open'."
+    (setq-local company-tabnine-max-num-results 3)
+    (add-to-list 'company-transformers 'company//sort-by-tabnine t)
+    (add-to-list 'company-backends '(company-capf :separate company-yasnippet :with company-tabnine)))
+  (defun company-tabnine-toggle (&optional enable)
+    "Enable/Disable TabNine. If ENABLE is non-nil, definitely enable it."
+    (interactive)
+    (if (or enable (not (memq 'company-tabnine company-backends)))
+        (progn
+          (add-hook 'lsp-after-open-hook #'lsp-after-open-tabnine)
+          (add-to-list 'company-backends #'company-tabnine)
+          (when (bound-and-true-p lsp-mode) (lsp-after-open-tabnine))
+          (message "TabNine enabled."))
+      (setq company-backends (delete 'company-tabnine company-backends))
+      (setq company-backends (delete '(company-capf :separate company-yasnippet :with company-tabnine) company-backends))
+      (remove-hook 'lsp-after-open-hook #'lsp-after-open-tabnine)
+      (company-tabnine-kill-process)
+      (message "TabNine disabled.")))
+  :hook
+  (kill-emacs . company-tabnine-kill-process)
   :config
-  (with-eval-after-load 'company
-    ;; (add-to-list 'company-backends 'company-tabnine)
-    ;; (add-to-list 'company-backends '(company-lsp :with company-tabnine :separate))
-
-    (defun company//sort-by-tabnine (candidates)
-      (if (or (functionp company-backend)
-              (not (and (listp company-backend) (memq 'company-tabnine company-backend))))
-          candidates
-        (let ((candidates-table (make-hash-table :test #'equal))
-              candidates-1
-              candidates-2)
-          (dolist (candidate candidates)
-            (if (eq (get-text-property 0 'company-backend candidate)
-                    'company-tabnine)
-                (unless (gethash candidate candidates-table)
-                  (push candidate candidates-2))
-              (push candidate candidates-1)
-              (puthash candidate t candidates-table)))
-          (setq candidates-1 (nreverse candidates-1))
-          (setq candidates-2 (nreverse candidates-2))
-          (nconc (seq-take candidates-1 2)
-                 (seq-take candidates-2 2)
-                 (seq-drop candidates-1 2)
-                 (seq-drop candidates-2 2)))))
-
-    (add-to-list 'company-transformers 'company//sort-by-tabnine t)))
+  (company-tabnine-toggle t))
 
 (provide 'init-company)
