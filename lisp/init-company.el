@@ -24,6 +24,7 @@
         company-dabbrev-downcase nil
         company-global-modes '(not erc-mode message-mode help-mode
                                    gud-mode eshell-mode shell-mode)
+        company-format-margin-function #'company-text-icons-margin
         company-transformers '(company-sort-by-backend-importance)
         company-backends '((company-capf :separate company-yasnippet)
                            (company-dabbrev-code company-keywords company-files)))
