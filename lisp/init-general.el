@@ -10,9 +10,6 @@
    ;; :non-normal-prefix "C-SPC"
    :prefix "SPC"
    "!"  'shell-command
-   "-"  'evil-window-split
-   "|"  'evil-window-vsplit
-   ","  'diff-hl-hydra/body
    "a"  'rg-project
    "A"  'rg
    "b"  'helm-mini
@@ -33,6 +30,7 @@
    "q"  'quickrun
    "r"  'helm-show-kill-ring
    "t"  'git-timemachine
+   "v"  'diff-hl-hydra/body
    "w"  'save-buffer
    "W"  'save-some-buffers
    "x"  'helm-M-x
