@@ -10,6 +10,7 @@
          ("C-j" . company-select-next)
          ("C-b" . company-previous-page)
          ("C-f" . company-next-page)
+         ("C-s" . company-filter-candidates)
          ("TAB" . company-complete-common-or-cycle))
   :hook (after-init . global-company-mode)
   :init
@@ -152,11 +153,11 @@
             (puthash candidate t candidates-table)))
         (setq candidates-lsp (nreverse candidates-lsp))
         (setq candidates-tabnine (nreverse candidates-tabnine))
-        (nconc (seq-take candidates-tabnine 3)
-               (seq-take candidates-lsp 6)))))
+        (nconc (seq-take candidates-tabnine 5)
+               (seq-take candidates-lsp 10)))))
   (defun lsp-after-open-tabnine ()
     "Hook to attach to `lsp-after-open'."
-    (setq-local company-tabnine-max-num-results 3)
+    (setq-local company-tabnine-max-num-results 5)
     (add-to-list 'company-transformers 'company//sort-by-tabnine t)
     (add-to-list 'company-backends '(company-tabnine :separate company-yasnippet :separate company-capf)))
   (defun company-tabnine-toggle (&optional enable)
