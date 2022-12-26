@@ -127,6 +127,11 @@
 
 (use-package company-tabnine
   :defer 1
+  :commands (lsp-after-open-tabnine company-tabnine-toggle)
+  :hook
+  (kill-emacs . company-tabnine-kill-process)
+  :config
+  (company-tabnine-toggle t)
   :custom
   (company-tabnine-max-num-results 9)
   :init
@@ -153,7 +158,7 @@
     "Hook to attach to `lsp-after-open'."
     (setq-local company-tabnine-max-num-results 3)
     (add-to-list 'company-transformers 'company//sort-by-tabnine t)
-    (add-to-list 'company-backends '(company-capf :separate company-yasnippet :with company-tabnine)))
+    (add-to-list 'company-backends '(company-tabnine :separate company-yasnippet :separate company-capf)))
   (defun company-tabnine-toggle (&optional enable)
     "Enable/Disable TabNine. If ENABLE is non-nil, definitely enable it."
     (interactive)
@@ -164,13 +169,9 @@
           (when (bound-and-true-p lsp-mode) (lsp-after-open-tabnine))
           (message "TabNine enabled."))
       (setq company-backends (delete 'company-tabnine company-backends))
-      (setq company-backends (delete '(company-capf :separate company-yasnippet :with company-tabnine) company-backends))
+      (setq company-backends (delete '(company-tabnine :separate company-yasnippet :separate company-capf) company-backends))
       (remove-hook 'lsp-after-open-hook #'lsp-after-open-tabnine)
       (company-tabnine-kill-process)
-      (message "TabNine disabled.")))
-  :hook
-  (kill-emacs . company-tabnine-kill-process)
-  :config
-  (company-tabnine-toggle t))
+      (message "TabNine disabled."))))
 
 (provide 'init-company)
