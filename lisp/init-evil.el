@@ -38,13 +38,8 @@
   (evil-vsplit-window-right t)
 
   :config
-  ;; (defalias #'forward-evil-word #'forward-evil-symbol)
   (define-key evil-visual-state-map (kbd "v") 'er/expand-region)
-  (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
-  (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
-  (define-key evil-insert-state-map (kbd "C-d") 'delete-char)
-  (define-key evil-normal-state-map (kbd "C-d") 'delete-char)
-  (define-key evil-normal-state-map (kbd "q") 'quit-window)
+  ;; (define-key evil-normal-state-map (kbd "q") 'quit-window)
   (define-key evil-normal-state-map (kbd "f") 'evil-avy-goto-char-timer)
   (define-key evil-visual-state-map (kbd "f") 'evil-avy-goto-char-timer)
   (define-key evil-normal-state-map (kbd "TAB") 'evil-indent-line)
