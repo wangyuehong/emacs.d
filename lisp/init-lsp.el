@@ -27,6 +27,7 @@
   (lsp-enable-links nil)
   (lsp-enable-on-type-formatting nil)
   (lsp-enable-semantic-highlighting nil)
+  (lsp-semantic-tokens-enable t)
   (lsp-enable-snippet t)
   (lsp-enable-symbol-highlighting nil)
   (lsp-enable-text-document-color nil)
