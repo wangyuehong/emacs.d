@@ -12,6 +12,8 @@
   (dired-listing-switches "-AFhlv")
   (dired-dwim-target t)
   ;; (dired-kill-when-opening-new-dired-buffer t)
+  (dired-clean-confirm-killing-deleted-buffers nil)
+  (dired-auto-revert-buffer #'dired-directory-changed-p)
   :config
   (when (string= system-type "darwin")
     (setq dired-use-ls-dired nil))
@@ -21,6 +23,7 @@
   :ensure nil
   :after dired
   :custom
+  (dired-vc-rename-file t)
   (dired-isearch-filenames 'dwim)
   (dired-create-destination-dirs 'ask))
 
@@ -28,8 +31,7 @@
   :ensure nil
   :hook (dired-mode . dired-omit-mode)
   :custom
-  (dired-omit-verbose nil)
-  (dired-clean-confirm-killing-deleted-buffers nil))
+  (dired-omit-verbose nil))
 
 (use-package diredfl
   :hook (dired-mode . diredfl-mode))
