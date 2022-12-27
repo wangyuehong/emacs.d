@@ -25,6 +25,8 @@
         company-global-modes '(not erc-mode message-mode help-mode
                                    gud-mode eshell-mode shell-mode)
         company-format-margin-function #'company-text-icons-margin
+        company-frontends '(company-pseudo-tooltip-frontend ; show tooltip even for single candidate
+                            company-echo-metadata-frontend)
         company-transformers '(company-sort-by-backend-importance)
         company-backends '((company-capf :separate company-yasnippet)
                            (company-dabbrev-code company-keywords company-files)))

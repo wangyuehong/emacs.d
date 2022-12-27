@@ -38,6 +38,9 @@
   (evil-vsplit-window-right t)
 
   :config
+  (with-eval-after-load 'evil-maps ; avoid conflict with company
+    (define-key evil-insert-state-map (kbd "C-k") nil))
+
   (define-key evil-visual-state-map (kbd "v") 'er/expand-region)
   ;; (define-key evil-normal-state-map (kbd "q") 'quit-window)
   (define-key evil-normal-state-map (kbd "f") 'evil-avy-goto-char-timer)
