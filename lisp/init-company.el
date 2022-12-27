@@ -11,15 +11,15 @@
          ("C-b" . company-previous-page)
          ("C-f" . company-next-page)
          ("C-s" . company-filter-candidates)
-         ("TAB" . company-complete-common-or-cycle))
+         ("TAB" . company-complete-common-or-cycle)
+         ("<backtab>" . company-select-previous-or-abort))
   :hook (after-init . global-company-mode)
   :init
   (setq company-tooltip-align-annotations t
         company-tooltip-limit 15
-        company-idle-delay 0.1
-        company-echo-delay 0.1
+        company-idle-delay 0
         company-minimum-prefix-length 1
-        company-require-match 'never
+        company-require-match nil
         company-dabbrev-ignore-case nil
         company-dabbrev-downcase nil
         company-global-modes '(not erc-mode message-mode help-mode
