@@ -15,4 +15,11 @@
 
 (use-package osx-dictionary)
 
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom
+  (doom-modeline-minor-modes t)
+  (doom-modeline-enable-word-count t)
+  (doom-modeline-project-detection 'auto))
+
 (provide 'init-misc)
