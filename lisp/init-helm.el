@@ -1,6 +1,7 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package helm
+  :diminish
   :bind (("M-x" . helm-M-x)
          ("C-x j j" . helm-bookmarks)
          ("C-x b" . helm-mini)
