@@ -41,8 +41,8 @@
   (with-eval-after-load 'evil-maps ; avoid conflict with company
     (define-key evil-insert-state-map (kbd "C-k") nil))
 
+  (define-key evil-insert-state-map (kbd "C-d") 'delete-char)
   (define-key evil-visual-state-map (kbd "v") 'er/expand-region)
-  ;; (define-key evil-normal-state-map (kbd "q") 'quit-window)
   (define-key evil-normal-state-map (kbd "f") 'evil-avy-goto-char-timer)
   (define-key evil-visual-state-map (kbd "f") 'evil-avy-goto-char-timer)
   (define-key evil-normal-state-map (kbd "TAB") 'evil-indent-line)
@@ -80,7 +80,6 @@
     (add-hook 'post-command-hook #'my-show-evil-state)))
 
 (use-package evil-collection
-  :diminish evil-collection-unimpaired-mode
   :hook (evil-mode . evil-collection-init))
 
 (use-package evil-surround :hook (after-init . global-evil-surround-mode))
