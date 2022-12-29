@@ -79,7 +79,10 @@
         (set-face-foreground 'mode-line (cdr color))))
     (add-hook 'post-command-hook #'my-show-evil-state)))
 
-(use-package evil-collection :hook (evil-mode . evil-collection-init))
+(use-package evil-collection
+  :diminish evil-collection-unimpaired-mode
+  :hook (evil-mode . evil-collection-init))
+
 (use-package evil-surround :hook (after-init . global-evil-surround-mode))
 (use-package evil-nerd-commenter)
 
