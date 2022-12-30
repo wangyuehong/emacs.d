@@ -45,7 +45,10 @@
          ("\\.bashrc\\'"       . sh-mode)
          ("\\.env\\'"          . sh-mode)
          ("\\.env\\.example\\'" . sh-mode)
-         ))
+         )
+  :custom
+  (sh-basic-offset 2)
+  (sh-indentation 2))
 
 (use-package dockerfile-mode)
 
