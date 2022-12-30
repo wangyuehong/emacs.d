@@ -7,6 +7,7 @@
   (flycheck-temp-prefix ".flycheck")
   (flycheck-check-syntax-automatically '(save mode-enabled))
   (flycheck-emacs-lisp-load-path 'inherit)
+  (flycheck-indication-mode 'left-margin)
   :config
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
   )
