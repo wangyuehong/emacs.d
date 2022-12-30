@@ -24,8 +24,7 @@
    "k"  'kill-buffer-and-window
    "K"  'kill-other-buffers
    "l"  'helm-browse-project
-   "O"  'helm-occur
-   "o"  'evil-window-next
+   "o"  'helm-occur
    "p"  'paradox-upgrade-packages
    "q"  'quickrun
    "r"  'helm-show-kill-ring
