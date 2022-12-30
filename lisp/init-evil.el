@@ -70,10 +70,10 @@
     (defun my-show-evil-state ()
       "Change mode line color to notify user evil current state."
       (let* ((color (cond ((minibufferp) my-default-color)
-                          ((evil-insert-state-p)  '("#ff6347" . "#ffe7ba"))
+                          ((evil-insert-state-p)  '("#8b3a3a" . "#ffe7ba"))
                           ((evil-replace-state-p) '("#b22222" . "#ffe7ba"))
                           ((evil-emacs-state-p)   '("#444488" . "#ffe7ba"))
-                          ((buffer-modified-p)    '("#4f94cd" . "#ffe7ba"))
+                          ((buffer-modified-p)    '("#00688b" . "#ffe7ba"))
                           (t my-default-color))))
         (set-face-background 'mode-line (car color))
         (set-face-foreground 'mode-line (cdr color))))
