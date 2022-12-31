@@ -42,6 +42,7 @@
     (define-key evil-insert-state-map (kbd "C-k") nil))
 
   (define-key evil-insert-state-map (kbd "C-d") 'delete-char)
+  (define-key evil-normal-state-map (kbd "q") 'quit-window)
   (define-key evil-visual-state-map (kbd "v") 'er/expand-region)
   (define-key evil-normal-state-map (kbd "f") 'evil-avy-goto-char-timer)
   (define-key evil-visual-state-map (kbd "f") 'evil-avy-goto-char-timer)
