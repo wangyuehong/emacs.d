@@ -23,6 +23,7 @@
    "j"  'helm-bookmarks
    "k"  'kill-buffer-and-window
    "K"  'kill-other-buffers
+   "m"  'makefile-executor-execute-project-target
    "l"  'helm-browse-project
    "o"  'helm-occur
    "p"  'paradox-upgrade-packages
