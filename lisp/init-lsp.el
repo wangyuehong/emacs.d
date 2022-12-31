@@ -43,17 +43,18 @@
   (lsp-modeline-code-actions-segments '(count name))
   (lsp-signature-auto-activate t)
   (lsp-signature-doc-lines 2)
-  (lsp-eldoc-enable-hover nil))
+  (lsp-eldoc-enable-hover nil)
 
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode)
-  :custom
-  (lsp-ui-doc-enable t)
-  (lsp-ui-doc-delay 0.2)
-  (lsp-ui-doc-include-signature t)
-  (lsp-ui-sideline-enable nil))
+  :config
+  (use-package lsp-ui
+    :hook (lsp-mode . lsp-ui-mode)
+    :custom
+    (lsp-ui-doc-enable t)
+    (lsp-ui-doc-delay 0.2)
+    (lsp-ui-doc-include-signature t)
+    (lsp-ui-sideline-enable nil))
 
-(use-package helm-lsp
-  :commands helm-lsp-workspace-symbol)
+  (use-package helm-lsp
+    :commands helm-lsp-workspace-symbol))
 
 (provide 'init-lsp)
