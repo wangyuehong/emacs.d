@@ -6,7 +6,11 @@
   :bind
   (:map evil-normal-state-map
         ("gi" . lsp-find-implementation)
-        ("gt" . lsp-find-type-definition))
+        ("gt" . lsp-find-type-definition)
+        :map lsp-command-map
+        ([remap helm-lsp-code-actions] . helm-lsp-code-actions)
+        ("ls" . helm-lsp-workspace-symbol)
+        ("ld" . helm-lsp-diagnostics))
   :hook ((go-mode . lsp-deferred)
          (ruby-mode . lsp-deferred)
          (lsp-mode . (lambda ()
@@ -35,8 +39,8 @@
   (lsp-diagnostics-provider :flycheck)
   (lsp-keep-workspace-alive nil)
   (lsp-modeline-code-actions-enable :file)
-  (lsp-modeline-diagnostics-scope :workspace)
-  (lsp-restart 'auto-restart)
+  (lsp-restart 'interactive)
+  (lsp-modeline-code-actions-segments '(count name))
   (lsp-signature-auto-activate t)
   (lsp-signature-doc-lines 2)
   (lsp-eldoc-enable-hover nil))
@@ -48,5 +52,8 @@
   (lsp-ui-doc-delay 0.2)
   (lsp-ui-doc-include-signature t)
   (lsp-ui-sideline-enable nil))
+
+(use-package helm-lsp
+  :commands helm-lsp-workspace-symbol)
 
 (provide 'init-lsp)
