@@ -61,4 +61,8 @@
   (dumb-jump-aggressive t)
   (dumb-jump-selector 'completing-read))
 
+(use-package makefile-executor
+  :config
+  (add-hook 'makefile-mode-hook 'makefile-executor-mode))
+
 (provide 'init-prog)
