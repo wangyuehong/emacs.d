@@ -77,19 +77,19 @@
                           (t my-default-color))))
         (set-face-background 'mode-line (car color))
         (set-face-foreground 'mode-line (cdr color))))
-    (add-hook 'post-command-hook #'my-show-evil-state)))
+    (add-hook 'post-command-hook #'my-show-evil-state))
 
-(use-package evil-collection
-  :hook (evil-mode . evil-collection-init))
+  (use-package evil-collection
+    :hook (evil-mode . evil-collection-init))
 
-(use-package evil-surround :hook (after-init . global-evil-surround-mode))
-(use-package evil-nerd-commenter)
+  (use-package evil-surround :hook (after-init . global-evil-surround-mode))
+  (use-package evil-nerd-commenter)
 
-(use-package evil-iedit-state
-  :commands (evil-iedit-state evil-iedit-state/iedit-mode))
+  (use-package evil-iedit-state
+    :commands (evil-iedit-state evil-iedit-state/iedit-mode))
 
-(use-package evil-matchit
-  :init
-  (global-evil-matchit-mode 1))
+  (use-package evil-matchit
+    :init
+    (global-evil-matchit-mode 1)))
 
 (provide 'init-evil)
