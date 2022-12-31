@@ -38,6 +38,7 @@
 (use-package iedit)
 
 (use-package pangu-spacing
+  :diminish
   :hook (after-init . global-pangu-spacing-mode))
 
 (use-package simple
