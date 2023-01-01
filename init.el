@@ -69,6 +69,6 @@
 (when (file-exists-p custom-file)
   (load custom-file))
 
-(setq debug-on-error t)
+(setq debug-on-error nil)
 
 (provide 'init)

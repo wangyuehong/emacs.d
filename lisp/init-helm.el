@@ -13,6 +13,7 @@
          ("C-k" . helm-previous-line)
          ("C-f" . helm-next-page)
          ("C-b" . helm-previous-page)
+         ("C-e" . helm-execute-persistent-action)
          :map helm-find-files-map
          ("DEL" . helm-find-files-up-one-level)
          )
@@ -23,11 +24,9 @@
   :custom
   (helm-autoresize-max-height 36)
   (helm-autoresize-min-height 36)
-  (helm-split-window-inside-p t)
-  )
+  (helm-split-window-inside-p t))
 
 (use-package helm-ls-git
-  :commands helm-ls-git-ls
   :custom
   (helm-ls-git-status-command 'magit-status-internal)
   (helm-ls-git-show-abs-or-relative 'relative)

@@ -22,4 +22,19 @@
   (doom-modeline-enable-word-count t)
   (doom-modeline-project-detection 'auto))
 
+(use-package xterm-color
+  :defines (compilation-environment
+            eshell-preoutput-filter-functions
+            eshell-output-filter-functions)
+  :functions (compilation-filter my-advice-compilation-filter)
+  :init
+  (setq compilation-environment '("TERM=xterm-256color"))
+  (defun my-advice-compilation-filter (f proc string)
+    (funcall f proc
+             (if (eq major-mode 'rg-mode) ; compatible with `rg'
+                 string
+               (xterm-color-filter string))))
+  (advice-add 'compilation-filter :around #'my-advice-compilation-filter)
+  (advice-add 'gud-filter :around #'my-advice-compilation-filter))
+
 (provide 'init-misc)
