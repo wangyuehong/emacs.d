@@ -7,7 +7,7 @@
 
 (use-package which-key
   :diminish
-  :custom (which-key-idle-delay 0.6)
+  :custom (which-key-idle-delay 0.5)
   :hook (after-init . which-key-mode)
   )
 
