@@ -18,6 +18,12 @@
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
   :custom
+  (evil-normal-state-tag (propertize "[Normal]"))
+  (evil-emacs-state-tag (propertize "[Emacs]"))
+  (evil-insert-state-tag (propertize "[Insert]"))
+  (evil-motion-state-tag (propertize "[Motion]"))
+  (evil-visual-state-tag (propertize "[Visual]"))
+  (evil-operator-state-tag (propertize "[Operator]"))
   (doom-modeline-minor-modes t)
   (doom-modeline-enable-word-count t)
   (doom-modeline-project-detection 'auto))
