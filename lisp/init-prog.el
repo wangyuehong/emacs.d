@@ -6,6 +6,8 @@
   (quickrun-timeout-seconds 15))
 
 (use-package yaml-mode)
+(use-package csv-mode
+  :hook (csv-mode . csv-align-mode))
 
 (use-package dockerfile-mode)
 (use-package docker-compose-mode)
