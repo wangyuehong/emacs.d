@@ -17,6 +17,11 @@
         evil-want-fine-undo t
         evil-want-abbrev-expand-on-insert-exit nil)
 
+  (if (executable-find "im-select")
+      (add-hook 'evil-insert-state-exit-hook
+                (lambda ()
+                  (start-process "set-input-source" nil "im-select" "com.apple.keylayout.ABC"))))
+
   :custom
   (evil-auto-indent t)
   (evil-cross-lines t)
