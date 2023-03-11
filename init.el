@@ -3,8 +3,6 @@
 ;; Produce backtraces when errors occur
 (setq debug-on-error t)
 
-(require 'cl)
-
 ;;; This file bootstraps the configuration, which is divided into
 ;;; a number of other files.
 
