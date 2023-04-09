@@ -43,4 +43,12 @@
   (advice-add 'compilation-filter :around #'my-advice-compilation-filter)
   (advice-add 'gud-filter :around #'my-advice-compilation-filter))
 
+(defun open-file-in-vscode ()
+  "Open the current file in Visual Studio Code and jump to the current position."
+  (interactive)
+  (let ((file-path (buffer-file-name))
+        (line-num (number-to-string (line-number-at-pos)))
+        (col-num (number-to-string (current-column))))
+    (shell-command (format "code --goto %s:%s:%s" (shell-quote-argument file-path) line-num col-num))))
+
 (provide 'init-misc)
