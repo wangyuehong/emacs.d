@@ -37,10 +37,6 @@
 
 (use-package iedit)
 
-(use-package pangu-spacing
-  :diminish
-  :hook (after-init . global-pangu-spacing-mode))
-
 (use-package simple
   :ensure nil
   :hook ((prog-mode markdown-mode yaml-mode conf-mode) . enable-trailing-whitespace)
