@@ -12,7 +12,6 @@
         ("ls" . helm-lsp-workspace-symbol)
         ("ld" . helm-lsp-diagnostics))
   :hook ((go-mode . lsp-deferred)
-         (ruby-mode . lsp-deferred)
          (lsp-mode . (lambda ()
                        (lsp-enable-which-key-integration)
                        (add-hook 'before-save-hook #'lsp-format-buffer t t)
@@ -23,7 +22,7 @@
   :custom
   (lsp-keymap-prefix "C-c l")
   (lsp-auto-guess-root nil)
-  (lsp-client-packages '(lsp-go lsp-solargraph))
+  (lsp-client-packages '(lsp-go))
   (lsp-enable-file-watchers nil)
   (lsp-enable-folding nil)
   (lsp-enable-indentation nil)
