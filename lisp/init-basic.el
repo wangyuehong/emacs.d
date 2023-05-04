@@ -103,4 +103,7 @@
   :hook (imenu-after-jump . recenter)
   :custom (imenu-max-item-length 108))
 
+(when (window-system)
+  (set-face-attribute 'default nil :font "Consolas-19"))
+
 (provide 'init-basic)
