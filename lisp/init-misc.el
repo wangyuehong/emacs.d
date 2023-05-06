@@ -24,6 +24,7 @@
   (evil-motion-state-tag (propertize "[Motion]"))
   (evil-visual-state-tag (propertize "[Visual]"))
   (evil-operator-state-tag (propertize "[Operator]"))
+  (doom-modeline-icon nil)
   (doom-modeline-minor-modes t)
   (doom-modeline-enable-word-count t)
   (doom-modeline-project-detection 'auto))
