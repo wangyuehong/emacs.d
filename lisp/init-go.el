@@ -10,8 +10,12 @@
   (use-package go-snippets)
   (use-package gotest
     :bind (:map go-mode-map
-                ("C-c t t" . go-test-current-test))
-    :custom (go-test-verbose t))
+				("C-c t t" . go-test-current-test)
+				("C-c t p" . go-test-current-project))
+	:config
+	(setq go-test-args "-failfast -race -count=1 ")
+    :custom
+    (go-test-verbose t))
 
   (use-package go-gen-test
     :bind (:map go-mode-map
