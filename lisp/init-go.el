@@ -13,7 +13,7 @@
 				("C-c t t" . go-test-current-test)
 				("C-c t p" . go-test-current-project))
 	:config
-	(setq go-test-args "-failfast -race -count=1 ")
+	(setq go-test-args "-failfast -race")
     :custom
     (go-test-verbose t))
 
