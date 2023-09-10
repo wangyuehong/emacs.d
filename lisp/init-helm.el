@@ -2,6 +2,7 @@
 
 (use-package helm
   :diminish
+  :straight t
   :bind (("M-x" . helm-M-x)
          ("C-x j j" . helm-bookmarks)
          ("C-x b" . helm-mini)
@@ -27,6 +28,7 @@
   (helm-split-window-inside-p t))
 
 (use-package helm-ls-git
+  :straight t
   :custom
   (helm-ls-git-status-command 'magit-status-internal)
   (helm-ls-git-show-abs-or-relative 'relative)

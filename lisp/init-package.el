@@ -5,10 +5,13 @@
   (setq package-enable-at-startup nil)          ; To prevent initializing twice
   (package-initialize))
 
-;; Setup `use-package'
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+;; Install use-package
+(straight-use-package 'use-package)
+
+;; Configure use-package to use straight.el by default
+;; (use-package straight
+;;   :custom
+;;   (straight-use-package-by-default t))
 
 ;; Should set before loading `use-package'
 (eval-and-compile

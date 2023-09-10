@@ -1,6 +1,7 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package evil
+  :straight t
   :hook (after-init . evil-mode)
   :bind
   (("C-x o" . evil-window-next)
