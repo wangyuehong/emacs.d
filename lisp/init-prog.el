@@ -7,7 +7,9 @@
 
 (use-package yaml-mode)
 (use-package csv-mode
-  :hook (csv-mode . csv-align-mode))
+  :hook (csv-mode . csv-align-mode)
+  :custom
+  (csv-invisibility-default nil))
 
 (use-package dockerfile-mode)
 (use-package docker-compose-mode)
@@ -60,7 +62,7 @@
 
 (use-package dumb-jump
   :init
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate t)
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
   :custom
   (dumb-jump-quiet t)
   (dumb-jump-aggressive t)
