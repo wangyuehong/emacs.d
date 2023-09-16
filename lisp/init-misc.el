@@ -55,4 +55,8 @@ If the current buffer is not associated with a file, open a new Visual Studio Co
         (shell-command (format "code --goto %s:%s:%s" (shell-quote-argument file-path) line-num col-num)))
     (shell-command "code")))
 
+(use-package direnv
+ :config
+ (direnv-mode))
+
 (provide 'init-misc)
