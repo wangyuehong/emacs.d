@@ -1,8 +1,5 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
-;; Disable package.el in favor of straight.el
-(setq package-enable-at-startup nil)
-
 ;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum)
 

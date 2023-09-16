@@ -30,3 +30,4 @@ site-lisp/package/
 /async-bytecomp.log
 /var
 /straight/
+/.last-package-update-day

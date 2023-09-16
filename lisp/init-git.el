@@ -1,7 +1,6 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package magit
-  :straight t
   :custom
   (magit-process-popup-time 10)
   (magit-ediff-dwim-show-on-hunks t)

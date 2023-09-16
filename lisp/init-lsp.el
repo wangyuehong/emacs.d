@@ -54,6 +54,7 @@
     (lsp-ui-sideline-enable nil))
 
   (use-package helm-lsp
+    :straight t
     :commands helm-lsp-workspace-symbol))
 
 (provide 'init-lsp)

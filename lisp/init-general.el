@@ -28,7 +28,7 @@
    "mp"  '(makefile-executor-execute-project-target :which-key "makefile-exec-project")
    "l"  'helm-browse-project
    "o"  'helm-occur
-   "p"  'paradox-upgrade-packages
+   "p"  'upgrade-all-packages
    "q"  'quickrun
    "r"  'helm-show-kill-ring
    "t"  'git-timemachine
