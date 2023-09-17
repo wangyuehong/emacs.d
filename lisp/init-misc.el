@@ -57,6 +57,8 @@ If the current buffer is not associated with a file, open a new Visual Studio Co
 
 (use-package direnv
  :config
- (direnv-mode))
+ (direnv-mode)
+ :custom
+ (direnv-always-show-summary nil))
 
 (provide 'init-misc)
