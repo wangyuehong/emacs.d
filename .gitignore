@@ -31,3 +31,4 @@ site-lisp/package/
 /var
 /straight/
 /.last-package-update-day
+/forge-database.sqlite

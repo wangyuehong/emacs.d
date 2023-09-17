@@ -6,6 +6,11 @@
   (magit-ediff-dwim-show-on-hunks t)
   (magit-diff-refine-hunk t))
 
+(use-package forge
+  :after magit
+  :init
+  (setq auth-sources '("~/.authinfo")))
+
 (use-package vc
   :ensure nil
   :custom
@@ -41,7 +46,18 @@
 (use-package git-timemachine
   :commands git-timemachine
   :config
-  (set-face-background 'git-timemachine-minibuffer-detail-face "black"))
+  (set-face-background 'git-timemachine-minibuffer-detail-face "black")
+  :hook ((git-timemachine-mode . (lambda ()
+                                   "improve `git-timemachine' buffers."
+                                   ;; display different colors in mode-line
+                                   (if (facep 'mode-line-active)
+                                       (face-remap-add-relative 'mode-line-active 'custom-state)
+                                     (face-remap-add-relative 'mode-line 'custom-state))
+
+                                   ;; display line numbers
+                                   (and (derived-mode-p 'prog-mode 'yaml-mode 'protobuf-mode)
+                                        (fboundp 'display-line-numbers-mode)
+                                        (display-line-numbers-mode t))))))
 
 (use-package git-modes)
 
