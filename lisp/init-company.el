@@ -181,22 +181,13 @@
 ;; init copilot
 (use-package copilot
   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
-  :init
-  (defun my-tab()
-    (interactive)
-    (or (copilot-accept-completion)
-        (company-indent-or-complete-common nil)))
   :hook
-  (prog-mode . copilot-mode)
-  (git-commit-setup . copilot-mode)
-
-  :bind (:map evil-insert-state-map
-              ("C-f" . 'copilot-accept-completion)
-              ("C-l" . 'copilot-accept-completion-by-word)
-              :map company-active-map
-              ("<tab>" . 'my-tab)
-              ("TAB" . 'my-tab)
-              ("C-f" . 'copilot-accept-completion)
-              ("C-l" . 'copilot-accept-completion-by-word)))
+  ((prog-mode git-commit-setup) . copilot-mode)
+  :bind
+  (:map copilot-mode-map
+        ("C-f" . 'copilot-accept-completion))
+  (:map copilot-completion-map
+        ("RET" . 'copilot-accept-completion)
+        ("C-w" . 'copilot-accept-completion-by-word)))
 
 (provide 'init-company)
