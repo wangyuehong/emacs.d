@@ -13,8 +13,6 @@
   (ispell-program-name "aspell")
   (ispell-extra-args '("--sug-mode=ultra" "--lang=en_US" "--run-together")))
 
-(use-package osx-dictionary)
-
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
   :custom
@@ -60,5 +58,9 @@ If the current buffer is not associated with a file, open a new Visual Studio Co
  (direnv-mode)
  :custom
  (direnv-always-show-summary nil))
+
+(use-package fanyi
+  :ensure t
+  :commands fanyi-dwim fanyi-dwim2)
 
 (provide 'init-misc)

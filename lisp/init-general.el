@@ -14,7 +14,7 @@
    "A"  'rg
    "b"  'helm-mini
    "c"  'evilnc-comment-or-uncomment-lines
-   "d"  'osx-dictionary-search-word-at-point
+   "d"  'fanyi-dwim2
    "e"  'evil-iedit-state/iedit-mode
    "f"  'flycheck-list-errors
    "g"  'magit-status
