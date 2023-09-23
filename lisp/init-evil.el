@@ -100,4 +100,9 @@
   :init
   (global-evil-matchit-mode 1))
 
+(use-package evil-terminal-cursor-changer
+  :init
+  (unless (display-graphic-p)
+    (evil-terminal-cursor-changer-activate)))
+
 (provide 'init-evil)
