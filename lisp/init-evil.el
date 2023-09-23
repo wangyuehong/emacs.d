@@ -14,7 +14,9 @@
   :init
   (setq evil-want-C-u-scroll t
         evil-want-abbrev-expand-on-insert-exit nil
+        evil-disable-insert-state-bindings t
         evil-want-fine-undo t
+        evil-want-integration t
         evil-want-keybinding nil
         evil-want-Y-yank-to-eol t)
 
@@ -27,7 +29,6 @@
   (evil-auto-indent t)
   (evil-cross-lines t)
   (evil-default-cursor t)
-  (evil-disable-insert-state-bindings t)
   (evil-ex-complete-emacs-commands nil)
   (evil-ex-interactive-search-highlight 'selected-window)
   (evil-ex-search-vim-style-regexp t)
@@ -42,12 +43,7 @@
   (evil-symbol-word-search t)
   (evil-undo-system 'undo-redo)
   (evil-vsplit-window-right t)
-
   :config
-  (with-eval-after-load 'evil-maps ; avoid conflict with company
-    (define-key evil-insert-state-map (kbd "C-k") nil))
-
-  (define-key evil-insert-state-map (kbd "C-d") 'delete-char)
   (define-key evil-normal-state-map (kbd "q") 'quit-window)
   (define-key evil-visual-state-map (kbd "v") 'er/expand-region)
   (define-key evil-normal-state-map (kbd "f") 'evil-avy-goto-char-timer)
