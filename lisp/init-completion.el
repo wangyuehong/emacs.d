@@ -9,7 +9,6 @@
          ("C-k" . company-select-previous)
          ("C-j" . company-select-next)
          ("C-b" . company-previous-page)
-         ("C-f" . company-next-page)
          ("C-s" . company-filter-candidates)
          ("TAB" . company-complete-common-or-cycle)
          ("<backtab>" . company-select-previous-or-abort))
@@ -187,7 +186,7 @@
   (:map copilot-mode-map
         ("C-f" . 'copilot-accept-completion))
   (:map copilot-completion-map
-        ("RET" . 'copilot-accept-completion)
+        ("C-f" . 'copilot-accept-completion)
         ("C-w" . 'copilot-accept-completion-by-word)))
 
 (provide 'init-completion)
