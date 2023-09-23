@@ -12,10 +12,11 @@
    ([remap evil-jump-to-tag] . xref-find-definitions))
 
   :init
-  (setq evil-want-Y-yank-to-eol t
-        evil-want-keybinding nil
+  (setq evil-want-C-u-scroll t
+        evil-want-abbrev-expand-on-insert-exit nil
         evil-want-fine-undo t
-        evil-want-abbrev-expand-on-insert-exit nil)
+        evil-want-keybinding nil
+        evil-want-Y-yank-to-eol t)
 
   (if (executable-find "im-select")
       (add-hook 'evil-insert-state-exit-hook

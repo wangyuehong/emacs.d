@@ -2,39 +2,29 @@
 
 (use-package company
   :diminish
-  :defines (company-dabbrev-ignore-case company-dabbrev-downcase)
+  :hook ((prog-mode yaml-mode protobuf-mode) . company-mode)
   :bind (:map company-mode-map
-         ("<backtab>" . company-yasnippet)
-         :map company-active-map
-         ("C-k" . company-select-previous)
-         ("C-j" . company-select-next)
-         ("C-b" . company-previous-page)
-         ("C-s" . company-filter-candidates)
-         ("TAB" . company-complete-common-or-cycle)
-         ("<backtab>" . company-select-previous-or-abort))
-  :hook (after-init . global-company-mode)
-  :init
-  (setq company-tooltip-align-annotations t
-        company-tooltip-limit 15
-        company-idle-delay 0
-        company-minimum-prefix-length 1
-        company-require-match nil
-        company-dabbrev-ignore-case nil
-        company-dabbrev-downcase nil
-        company-global-modes '(not erc-mode message-mode help-mode gud-mode eshell-mode shell-mode)
-        company-format-margin-function #'company-text-icons-margin
-        company-frontends '(company-pseudo-tooltip-frontend ; show tooltip even for single candidate
-                            company-echo-metadata-frontend)
-        company-transformers '(company-sort-by-backend-importance)
-        company-backends '((company-capf :with company-yasnippet :separate)
-                           (company-dabbrev-code company-keywords company-files))))
-
-(use-package prescient
-  :commands prescient-persist-mode
-  :init (prescient-persist-mode 1))
-
-(use-package company-prescient
-  :init (company-prescient-mode 1))
+        ([remap completion-at-point] . company-complete)
+        ("<backtab>" . company-yasnippet)
+        :map company-active-map
+        ("C-s" . company-filter-candidates)
+        ("TAB" . company-complete-common-or-cycle)
+        ([backtab] . company-select-previous-or-abort))
+  :custom
+  (company-dabbrev-downcase nil)
+  (company-dabbrev-ignore-case nil)
+  (company-files-exclusions '(".git/" ".DS_Store"))
+  (company-format-margin-function nil)
+  (company-idle-delay 0)
+  (company-minimum-prefix-length 2)
+  (company-require-match nil)
+  (company-show-quick-access t)
+  (company-tooltip-align-annotations t)
+  (company-tooltip-limit 10)
+  (company-tooltip-width-grow-only t)
+  (company-transformers '(company-sort-by-backend-importance))
+  (company-backends '((company-capf :with company-yasnippet :separate)
+                      (company-dabbrev-code company-keywords company-files))))
 
 (use-package company-tabnine
   :defer 1
