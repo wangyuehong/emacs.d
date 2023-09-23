@@ -190,4 +190,4 @@
         ("RET" . 'copilot-accept-completion)
         ("C-w" . 'copilot-accept-completion-by-word)))
 
-(provide 'init-company)
+(provide 'init-completion)

@@ -48,7 +48,7 @@
 (require 'init-search)
 (require 'init-dired)
 (require 'init-session)
-(require 'init-company)
+(require 'init-completion)
 (require 'init-helm)
 (require 'init-yasnippet)
 (require 'init-git)
