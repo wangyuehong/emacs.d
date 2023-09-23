@@ -83,7 +83,8 @@
   :bind
   (:map copilot-mode-map
         ("C-f" . 'copilot-accept-completion)
-        ("TAB" . 'copilot-accept-completion))
+        ("TAB" . 'copilot-accept-completion)
+        ("RET" . 'copilot-accept-completion))
   (:map copilot-completion-map
         ("C-f" . 'copilot-accept-completion)
         ("C-w" . 'copilot-accept-completion-by-word)))
