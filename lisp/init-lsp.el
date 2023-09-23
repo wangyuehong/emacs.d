@@ -45,14 +45,6 @@
   (lsp-eldoc-enable-hover nil)
 
   :config
-  (use-package lsp-ui
-    :hook (lsp-mode . lsp-ui-mode)
-    :custom
-    (lsp-ui-doc-enable t)
-    (lsp-ui-doc-delay 0.2)
-    (lsp-ui-doc-include-signature t)
-    (lsp-ui-sideline-enable nil))
-
   (use-package helm-lsp
     :straight t
     :commands helm-lsp-workspace-symbol))
