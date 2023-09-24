@@ -1,9 +1,10 @@
 /url/cache
 /auto-save-list
 /network-security.data
-/.session
 /.recentf
 /custom.el
+/.emacs.desktop
+/.emacs.desktop.lock
 *.elc
 *~
 .*.lock
