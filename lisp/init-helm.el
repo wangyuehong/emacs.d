@@ -8,27 +8,28 @@
          ("C-x b" . helm-mini)
          ("C-x C-f" . helm-find-files)
          :map helm-map
-         ("C-h" . helm-previous-source)
-         ("C-l" . helm-next-source)
          ("C-j" . helm-next-line)
          ("C-k" . helm-previous-line)
          ("C-f" . helm-next-page)
          ("C-b" . helm-previous-page)
-         ("C-e" . helm-execute-persistent-action)
-         :map helm-find-files-map
-         ("DEL" . helm-find-files-up-one-level)
-         )
+         ("C-e" . helm-execute-persistent-action))
   :commands (helm-autoresize-mode)
   :config
   (helm-mode 1)
   (helm-autoresize-mode t)
   :custom
-  (helm-autoresize-max-height 36)
-  (helm-autoresize-min-height 36)
+  (helm-quick-update t)
+  (helm-input-idle-delay 0.01)
+  (helm-move-to-line-cycle-in-source)
+  (helm-reuse-last-window-split-state t)
+  (helm-always-two-windows            t)
+  (helm-autoresize-max-height 40)
+  (helm-autoresize-min-height 20)
   (helm-split-window-inside-p t))
 
 (use-package helm-ls-git
   :straight t
+  :after helm
   :custom
   (helm-ls-git-status-command 'magit-status-internal)
   (helm-ls-git-show-abs-or-relative 'relative)
