@@ -6,10 +6,7 @@
   (("C-x o" . evil-window-next)
    ("C-x -" . evil-window-split)
    ("C-x |" . evil-window-vsplit)
-   ("M-]" . xref-find-references)
-   ([remap evil-quit] . kill-this-buffer)
-   :map evil-normal-state-map
-   ([remap evil-jump-to-tag] . xref-find-definitions))
+   ("M-]" . xref-find-references))
 
   :init
   (setq evil-want-C-u-scroll t
