@@ -29,7 +29,6 @@
 
 (use-package helm-ls-git
   :straight t
-  :after helm
   :custom
   (helm-ls-git-status-command 'magit-status-internal)
   (helm-ls-git-show-abs-or-relative 'relative)
