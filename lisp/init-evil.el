@@ -3,8 +3,7 @@
 (use-package evil
   :hook (after-init . evil-mode)
   :bind
-  (("C-x o" . evil-window-next)
-   ("C-x -" . evil-window-split)
+  (("C-x -" . evil-window-split)
    ("C-x |" . evil-window-vsplit)
    ("M-]" . xref-find-references))
 

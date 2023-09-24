@@ -40,4 +40,9 @@
   (interactive)
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
+(use-package ace-window
+  :bind ("C-x o" . ace-window)
+  :custom
+  (aw-keys '(?o ?i ?j ?k ?l)))
+
 (provide 'init-window)
