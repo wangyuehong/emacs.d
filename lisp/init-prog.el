@@ -60,14 +60,6 @@
 
 (use-package terraform-mode)
 
-(use-package dumb-jump
-  :init
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
-  :custom
-  (dumb-jump-quiet t)
-  (dumb-jump-aggressive t)
-  (dumb-jump-selector 'completing-read))
-
 (use-package makefile-executor
   :config
   (add-hook 'makefile-mode-hook 'makefile-executor-mode))
