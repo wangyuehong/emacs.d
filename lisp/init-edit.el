@@ -80,4 +80,6 @@
   :ensure nil
   :hook (after-init . delete-selection-mode))
 
+(use-package undo-fu)
+
 (provide 'init-edit)

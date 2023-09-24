@@ -8,8 +8,7 @@
    ("M-]" . xref-find-references))
 
   :init
-  (setq evil-want-C-u-scroll t
-        evil-want-abbrev-expand-on-insert-exit nil
+  (setq evil-want-abbrev-expand-on-insert-exit nil
         evil-disable-insert-state-bindings t
         evil-want-fine-undo t
         evil-want-integration t
@@ -46,6 +45,8 @@
   (define-key evil-visual-state-map (kbd "f") 'evil-avy-goto-char-timer)
   (define-key evil-normal-state-map (kbd "TAB") 'evil-indent-line)
   (define-key evil-visual-state-map (kbd "TAB") 'evil-indent)
+  (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
+  (define-key evil-normal-state-map (kbd "C-r") 'undo-fu-only-redo)
 
   (with-no-warnings
     ;; modes to map to different default states
