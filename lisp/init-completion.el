@@ -23,6 +23,8 @@
   (company-tooltip-limit 10)
   (company-tooltip-width-grow-only t)
   (company-transformers '(company-sort-by-backend-importance))
+  (company-frontends '(company-pseudo-tooltip-frontend ; show tooltip even for single candidate
+                       company-echo-metadata-frontend))
   (company-backends '((company-capf :with company-yasnippet :separate)
                       (company-dabbrev-code company-keywords company-files))))
 
