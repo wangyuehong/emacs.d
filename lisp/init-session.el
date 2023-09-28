@@ -1,18 +1,10 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
-(use-package desktop
-  :ensure nil
-  :init
-  (desktop-save-mode 1)
-  :custom
-  (desktop-load-locked-desktop t)
-  (desktop-auto-save-timeout 60))
-
 (use-package recentf
   :ensure nil
   :hook (after-init . recentf-mode)
   :custom
-  (recentf-max-saved-items 256)
+  (recentf-max-saved-items 32)
   (recentf-auto-cleanup 'never)
   (recentf-save-file (expand-file-name ".recentf" user-emacs-directory))
   (recentf-exclude '("^/private/tmp/"
