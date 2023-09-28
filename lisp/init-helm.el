@@ -37,21 +37,4 @@
                                  helm-source-ls-git-buffers
                                  helm-source-ls-git)))
 
-(use-package helm-ag
-  :straight t
-  :custom
-  (helm-ag-base-command "rg --no-heading --line-number --color never")
-  (helm-ag-insert-at-point 'symbol)
-  (helm-ag-use-temp-buffer t))
-
-(use-package helm-swoop
-  :straight t
-  :bind (("M-i" . helm-swoop)
-         ("C-c M-i" . helm-multi-swoop))
-  :config
-  (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
-  (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
-  (setq helm-multi-swoop-edit-save t
-        helm-swoop-speed-or-color nil))
-
 (provide 'init-helm)
