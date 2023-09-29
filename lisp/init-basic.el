@@ -26,6 +26,8 @@
  xref-prompt-for-identifier nil
  scroll-conservatively 10000
  ring-bell-function 'ignore
+ display-warning-minimum-level :error
+ warning-minimum-level :error
  truncate-partial-width-windows nil)
 
 (add-hook 'after-init-hook 'transient-mark-mode)
