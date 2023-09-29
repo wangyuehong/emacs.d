@@ -56,7 +56,6 @@
 (require 'init-flycheck)
 (require 'init-lsp)
 (require 'init-go)
-(require 'init-perl)
 (require 'init-ruby)
 (require 'init-misc)
 

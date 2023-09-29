@@ -5,10 +5,6 @@
   :init
   (setq-default
    ruby-use-encoding-map nil
-   ruby-insert-encoding-magic-comment nil)
-  :config
-  (key-chord-define ruby-mode-map "--" "->")
-  (key-chord-define ruby-mode-map "==" "=>")
-  )
+   ruby-insert-encoding-magic-comment nil))
 
 (provide 'init-ruby)

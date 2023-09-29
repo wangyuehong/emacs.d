@@ -1,14 +1,8 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
-(use-package key-chord :config (key-chord-mode t))
-
-(define-key minibuffer-local-map (kbd "C-h") 'left-char)
-(define-key minibuffer-local-map (kbd "C-l") 'right-char)
-
 (use-package which-key
   :diminish
   :custom (which-key-idle-delay 0.5)
-  :hook (after-init . which-key-mode)
-  )
+  :hook (after-init . which-key-mode))
 
 (provide 'init-keybind)
