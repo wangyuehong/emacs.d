@@ -20,6 +20,14 @@
                 (lambda ()
                   (start-process "set-input-source" nil "im-select" "com.apple.keylayout.ABC"))))
 
+  (defun my/replace-at-point-or-region ()
+  "Setup buffer replace string for word at point or active region using evil ex mode."
+  (interactive)
+  (let ((text (if (region-active-p)
+                  (buffer-substring-no-properties (region-beginning) (region-end))
+                (word-at-point))))
+    (evil-ex (concat "%s/" text "/"))))
+
   :custom
   (evil-auto-indent t)
   (evil-cross-lines t)
