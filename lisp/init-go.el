@@ -24,13 +24,6 @@
   (use-package go-tag
     :bind (:map go-mode-map
                 ("C-c t a" . go-tag-add)
-                ("C-c t r" . go-tag-remove)))
-  )
-
-(use-package flycheck-golangci-lint
-  :if (executable-find "golangci-lint")
-  :custom
-  (flycheck-golangci-lint-enable-all t)
-  (flycheck-golangci-lint-disable-linters '("nolintlint" "nonamedreturns")))
+                ("C-c t r" . go-tag-remove))))
 
 (provide 'init-go)
