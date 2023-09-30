@@ -33,7 +33,7 @@
   (lsp-enable-links nil)
   (lsp-enable-on-type-formatting nil)
   (lsp-enable-semantic-highlighting nil)
-  (lsp-enable-snippet nil)
+  (lsp-enable-snippet t)
   (lsp-enable-symbol-highlighting nil)
   (lsp-enable-text-document-color nil)
   (lsp-semantic-tokens-apply-modifiers nil)
@@ -44,7 +44,7 @@
   (lsp-modeline-code-actions-segments '(count name))
   (lsp-restart 'interactive)
   (lsp-semantic-tokens-enable t)
-  (lsp-signature-auto-activate nil)
+  (lsp-signature-auto-activate t)
 
   :config
   (use-package helm-lsp
