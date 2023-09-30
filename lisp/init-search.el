@@ -19,11 +19,10 @@
 
 (use-package avy
   :custom
-  (avy-keys (string-to-list "asdfghjklqweruiopzxcv"))
+  (avy-keys (string-to-list "asdfghjklqweruiop"))
   (avy-all-windows t)
   (avy-background t)
   (avy-highlight-first t)
-  (avy-timeout-seconds 0.25)
-  )
+  (avy-timeout-seconds 0.35))
 
 (provide 'init-search)
