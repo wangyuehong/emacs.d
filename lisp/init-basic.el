@@ -86,8 +86,7 @@
 (use-package bookmark
   :ensure nil
   :init
-  (setq bookmark-default-file (expand-file-name ".bookmarks.el" user-emacs-directory))
-  )
+  (setq bookmark-default-file (expand-file-name ".bookmarks.el" user-emacs-directory)))
 
 (use-package so-long
   :ensure nil
@@ -104,8 +103,5 @@
   :ensure nil
   :hook (imenu-after-jump . recenter)
   :custom (imenu-max-item-length 108))
-
-(when (window-system)
-  (set-face-attribute 'default nil :font "Consolas-19"))
 
 (provide 'init-basic)
