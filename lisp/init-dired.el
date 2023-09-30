@@ -11,13 +11,11 @@
   (dired-hide-details-hide-symlink-targets nil)
   (dired-listing-switches "-AFhlv")
   (dired-dwim-target t)
-  ;; (dired-kill-when-opening-new-dired-buffer t)
   (dired-clean-confirm-killing-deleted-buffers nil)
   (dired-auto-revert-buffer #'dired-directory-changed-p)
   :config
   (when (string= system-type "darwin")
-    (setq dired-use-ls-dired nil))
-  )
+    (setq dired-use-ls-dired nil)))
 
 (use-package dired-aux
   :ensure nil
