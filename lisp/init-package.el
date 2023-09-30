@@ -11,15 +11,11 @@
   (package-install 'use-package))
 
 ;; Should set before loading `use-package'
-(eval-and-compile
-  (setq use-package-always-ensure t)
-  (setq use-package-always-defer t)
-  (setq use-package-expand-minimally t)
-  (setq use-package-enable-imenu-support t)
-  (setq straight-vc-git-default-clone-depth 1))
-
-(eval-when-compile
-  (require 'use-package))
+(setq use-package-always-ensure t
+      use-package-always-defer t
+      use-package-expand-minimally t
+      use-package-enable-imenu-support t
+      straight-vc-git-default-clone-depth 1)
 
 ;; init straight.el
 (defvar bootstrap-version)
@@ -37,7 +33,6 @@
 
 ;; Required by `use-package'
 (use-package diminish)
-(use-package bind-key)
 
 ;; Update GPG keyring for GNU ELPA
 (use-package gnu-elpa-keyring-update)
@@ -60,7 +55,7 @@
 (defun upgrade-all-packages ()
   "update all packages using auto-package-update and straight-pull-all"
   (interactive)
-  (auto-package-update-now-async)
+  (auto-package-update-now)
   (straight-pull-all))
 
 (provide 'init-package)
