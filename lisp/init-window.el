@@ -1,20 +1,17 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
-(use-package winner
+(use-package tab-bar
   :ensure nil
-  :commands (winner-undo winner-redo)
-  :hook (after-init . winner-mode)
+  :hook
+  (after-init . tab-bar-mode)
+  (after-init . tab-bar-history-mode)
   :custom
-  (winner-boring-buffers '("*Completions*"
-                           "*Compile-Log*"
-                           "*inferior-lisp*"
-                           "*Fuzzy Completions*"
-                           "*Apropos*"
-                           "*Help*"
-                           "*cvs*"
-                           "*Buffer List*"
-                           "*Ibuffer*"
-                           "*esh command on file*")))
+  (tab-bar-close-button-show nil)
+  (tab-bar-history-buttons-show nil)
+  (tab-bar-format '(tab-bar-format-tabs tab-bar-separator))
+  (tab-bar-show nil)
+  (tab-bar-tab-hints t)
+  (tab-bar-tab-name-function 'tab-bar-tab-name-all))
 
 (use-package shackle
     :hook (after-init . shackle-mode)
@@ -26,7 +23,7 @@
     (shackle-rules '((compilation-mode         :select t :align t :size 0.4)
                      (go-test-mode             :select t :align t :size 0.4)
                      (help-mode                :select t :align t :size 0.4)
-                     (rg-mode                  :select t :align right :size 0.4)
+                     (rg-mode                  :select t :align t)
                      (flymake-diagnostics-buffer-mode :select t :align t :size 0.4)
                      (magit-status-mode :select t :inhibit-window-quit t :same t)
                      (magit-log-mode    :select t :inhibit-window-quit t :same t)
