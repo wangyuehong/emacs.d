@@ -27,7 +27,7 @@
                      (go-test-mode             :select t :align t :size 0.4)
                      (help-mode                :select t :align t :size 0.4)
                      (rg-mode                  :select t :align right :size 0.4)
-                     (flymake-diagnostics-buffer-mode :select t :size 0.4)
+                     (flymake-diagnostics-buffer-mode :select t :align t :size 0.4)
                      (magit-status-mode :select t :inhibit-window-quit t :same t)
                      (magit-log-mode    :select t :inhibit-window-quit t :same t)
                      ("*quickrun*"      :select t :inhibit-window-quit t :same t)
