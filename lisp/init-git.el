@@ -19,29 +19,28 @@
   (vc-handled-backends '(Git)))
 
 (use-package diff-hl
-  :hook ((after-init         . global-diff-hl-mode)
-         (magit-pre-refresh  . diff-hl-magit-pre-refresh)
-         (magit-post-refresh . diff-hl-magit-post-refresh)
-         (dired-mode         . diff-hl-dired-mode-unless-remote))
+  :hook ((after-init . global-diff-hl-mode)
+         (dired-mode . diff-hl-dired-mode))
   :bind (:map diff-hl-command-map
               ("v" . diff-hl-hydra/body))
   :config
-  (diff-hl-margin-mode)
-  (setq-default fringes-outside-margins t)
   (diff-hl-flydiff-mode 1)
+  (setq-default fringes-outside-margins t)
+  (unless (display-graphic-p)
+    (diff-hl-margin-mode 1))
+  (with-eval-after-load 'magit
+    (add-hook 'magit-pre-refresh-hook #'diff-hl-magit-pre-refresh)
+    (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh))
+
   :pretty-hydra
   ((:title "diff-hl" :foreign-keys warn :color amaranth :quit-key "q")
     ("Hunk"
      (("k" diff-hl-previous-hunk)
       ("j" diff-hl-next-hunk)
       ("p" diff-hl-show-hunk))
-     "Show"
-     (("C-k" diff-hl-show-hunk-previous)
-      ("C-j" diff-hl-show-hunk-next))
      "Action"
      (("v" diff-hl-revert-hunk)
-      ("c" diff-hl-show-hunk-copy-original-text))
-     )))
+      ("c" diff-hl-show-hunk-copy-original-text)))))
 
 (use-package git-timemachine
   :commands git-timemachine
