@@ -23,9 +23,6 @@
    "j"  'helm-bookmarks
    "k"  'kill-buffer-and-window
    "K"  'kill-other-buffers
-   "m"  '(:which-key "makefile-exec")
-   "ml"  '(makefile-executor-execute-last :which-key "makefile-exec-last")
-   "mp"  '(makefile-executor-execute-project-target :which-key "makefile-exec-project")
    "l"  'helm-browse-project
    "o"  'helm-occur
    "p"  'upgrade-all-packages

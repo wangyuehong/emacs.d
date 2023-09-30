@@ -60,8 +60,11 @@
 
 (use-package terraform-mode)
 
-(use-package makefile-executor
-  :config
-  (add-hook 'makefile-mode-hook 'makefile-executor-mode))
+(use-package ruby-mode
+  :ensure nil
+  :init
+  (setq-default
+   ruby-use-encoding-map nil
+   ruby-insert-encoding-magic-comment nil))
 
 (provide 'init-prog)

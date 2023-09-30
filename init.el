@@ -56,7 +56,6 @@
 (require 'init-flymake)
 (require 'init-lsp)
 (require 'init-go)
-(require 'init-ruby)
 (require 'init-misc)
 
 (require 'init-local nil t)
