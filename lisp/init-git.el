@@ -4,6 +4,7 @@
   :custom
   (magit-process-popup-time 10)
   (magit-ediff-dwim-show-on-hunks t)
+  (magit-diff-paint-whitespace nil)
   (magit-diff-refine-hunk t))
 
 (use-package forge
