@@ -1,32 +1,47 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
+(use-package xref
+  :ensure nil
+  :hook ((xref-after-return xref-after-jump) . recenter)
+  :custom
+  (xref-search-program (cond ((executable-find "rg") 'ripgrep)
+                             ((executable-find "ugrep") 'ugrep)
+                             (t 'grep)))
+  (xref-history-storage 'xref-window-local-history)
+  (xref-show-xrefs-function #'xref-show-definitions-completing-read)
+  (xref-show-definitions-function #'xref-show-definitions-completing-read))
+
+(use-package dumb-jump
+  :init
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+  :custom
+  (dumb-jump-quiet t)
+  (dumb-jump-aggressive t)
+  (dumb-jump-force-searcher 'rg)
+  (dumb-jump-selector 'completing-read))
+
 (use-package quickrun
   :commands quickrun
   :custom
   (quickrun-timeout-seconds 15))
 
-(use-package yaml-mode)
-(use-package csv-mode
-  :hook (csv-mode . csv-align-mode)
-  :custom
-  (csv-invisibility-default nil))
+(use-package ruby-mode :ensure nil)
 
 (use-package dockerfile-mode)
 (use-package docker-compose-mode)
 (use-package protobuf-mode)
-
-(use-package json-mode)
+(use-package yaml-mode)
+(use-package toml-mode)
+(use-package terraform-mode)
 (use-package js2-mode)
-(use-package typescript-mode
-  :config (setq typescript-indent-level 2)
-  :mode ("\\.ts[x]\\'" . typescript-mode))
+(use-package typescript-mode :mode ("\\.ts[x]\\'" . typescript-mode))
 
 (use-package css-mode
   :ensure nil
   :config (setq css-indent-offset 2))
 
 (use-package web-mode
-  :mode "\\.\\(phtml\\|php|[gj]sp\\|as[cp]x\\|erb\\|djhtml\\|html?\\|hbs\\|ejs\\|jade\\|swig\\|tm?pl\\|vue\\)$"
+  :mode "\\.\\(phtml\\|php\\|[gj]sp\\|as[cp]x\\|erb\\|djhtml\\|html?\\|hbs\\|ejs\\|jade\\|swig\\|tm?pl\\|vue\\)$"
   :config
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 2)
@@ -53,18 +68,5 @@
   :custom
   (sh-basic-offset 2)
   (sh-indentation 2))
-
-(use-package dockerfile-mode)
-
-(use-package toml-mode)
-
-(use-package terraform-mode)
-
-(use-package ruby-mode
-  :ensure nil
-  :init
-  (setq-default
-   ruby-use-encoding-map nil
-   ruby-insert-encoding-magic-comment nil))
 
 (provide 'init-prog)
