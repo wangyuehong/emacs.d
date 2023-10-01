@@ -29,7 +29,7 @@
    "K"  'kill-other-buffers
    "l"  'helm-browse-project
    "o"  'helm-occur
-   "p"  'upgrade-all-packages
+   "p"  'package-upgrade-all
    "q"  'quickrun
    "r"  'helm-show-kill-ring
    "t"  'git-timemachine

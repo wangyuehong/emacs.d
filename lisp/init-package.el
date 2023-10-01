@@ -37,25 +37,4 @@
 ;; Update GPG keyring for GNU ELPA
 (use-package gnu-elpa-keyring-update)
 
-;; A modern Packages Menu
-(use-package paradox
-  :custom
-  (paradox-execute-asynchronously t)
-  (paradox-github-token t)
-  (paradox-display-star-count nil))
-
-;; Auto update packages
-(use-package auto-package-update
-  :init
-  (defalias 'upgrade-packages #'auto-package-update-now)
-  :custom
-  (auto-package-update-delete-old-versions t)
-  (auto-package-update-hide-results t))
-
-(defun upgrade-all-packages ()
-  "update all packages using auto-package-update and straight-pull-all"
-  (interactive)
-  (auto-package-update-now)
-  (straight-pull-all))
-
 (provide 'init-package)
