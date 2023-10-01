@@ -7,11 +7,6 @@
   (magit-diff-paint-whitespace nil)
   (magit-diff-refine-hunk t))
 
-(use-package forge
-  :after magit
-  :init
-  (setq auth-sources '("~/.authinfo")))
-
 (use-package vc
   :ensure nil
   :custom
@@ -22,8 +17,8 @@
 (use-package diff-hl
   :hook ((after-init . global-diff-hl-mode)
          (dired-mode . diff-hl-dired-mode))
-  :bind (:map diff-hl-command-map
-              ("v" . diff-hl-hydra/body))
+  :bind (:map diff-hl-mode-map
+         ("C-x v v" . my/diff-hl-menu))
   :config
   (diff-hl-flydiff-mode 1)
   (setq-default fringes-outside-margins t)
@@ -32,16 +27,18 @@
   (with-eval-after-load 'magit
     (add-hook 'magit-pre-refresh-hook #'diff-hl-magit-pre-refresh)
     (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh))
-
-  :pretty-hydra
-  ((:title "diff-hl" :foreign-keys warn :color amaranth :quit-key "q")
-    ("Hunk"
-     (("k" diff-hl-previous-hunk)
-      ("j" diff-hl-next-hunk)
-      ("p" diff-hl-show-hunk))
-     "Action"
-     (("v" diff-hl-revert-hunk)
-      ("c" diff-hl-show-hunk-copy-original-text)))))
+  (transient-define-prefix my/diff-hl-menu ()
+    "Show diff-hl menu."
+    :transient-suffix 'transient--do-stay
+    [["Navigate"
+      ("j" "next hunk"     diff-hl-next-hunk)
+      ("k" "previous hunk" diff-hl-previous-hunk)
+      ("p" "show hunk"     diff-hl-show-hunk)]
+     ["Action"
+      ("r" "revert hunk"        diff-hl-revert-hunk)
+      ("s" "stash current hunk" diff-hl-stage-current-hunk)
+      ("c" "copy original hunk" diff-hl-show-hunk-copy-original-text)
+      ("U" "unstage file"       diff-hl-unstage-file)]]))
 
 (use-package git-timemachine
   :commands git-timemachine

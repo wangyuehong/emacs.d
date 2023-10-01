@@ -1,54 +1,37 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-lsp.el --- lsp by eglot. -*- lexical-binding: t; -*-
 
-(use-package lsp-mode
-  :diminish
-  :commands (lsp lsp-deferred)
-  :bind
-  (:map evil-normal-state-map
-        ("gi" . lsp-find-implementation)
-        ("gt" . lsp-find-type-definition)
-        :map lsp-command-map
-        ([remap helm-lsp-code-actions] . helm-lsp-code-actions)
-        ("ls" . helm-lsp-workspace-symbol)
-        ("ld" . helm-lsp-diagnostics)
-        :map lsp-mode-map
-        ([remap xref-find-definitions] . lsp-find-definition)
-        ([remap xref-find-references] . lsp-find-references))
-  :hook ((go-mode . lsp-deferred)
-         (lsp-mode . (lambda ()
-                       (lsp-enable-which-key-integration)
-                       (add-hook 'before-save-hook #'lsp-format-buffer t t)
-                       (add-hook 'before-save-hook #'lsp-organize-imports t t))))
+;;; Commentary:
 
-  :init
-  (setq read-process-output-max (* 1024 1024)) ;; 1MB
-  :custom
-  (lsp-keymap-prefix "C-c l")
-  (lsp-auto-guess-root nil)
-  (lsp-client-packages '(lsp-go))
-  (lsp-eldoc-enable-hover nil)
-  (lsp-enable-file-watchers nil)
-  (lsp-enable-folding nil)
-  (lsp-enable-indentation nil)
-  (lsp-enable-links nil)
-  (lsp-enable-on-type-formatting nil)
-  (lsp-enable-semantic-highlighting nil)
-  (lsp-enable-snippet t)
-  (lsp-enable-symbol-highlighting nil)
-  (lsp-enable-text-document-color nil)
-  (lsp-semantic-tokens-apply-modifiers nil)
-  (lsp-flycheck-live-reporting nil)
-  (lsp-headerline-breadcrumb-enable t)
-  (lsp-keep-workspace-alive nil)
-  (lsp-modeline-code-actions-enable :file)
-  (lsp-modeline-code-actions-segments '(count name))
-  (lsp-restart 'interactive)
-  (lsp-semantic-tokens-enable t)
-  (lsp-signature-auto-activate t)
+;;; Code:
 
+(use-package eglot
+  :preface
+  (defun my/eglot-organize-imports () (interactive)
+         (eglot-code-actions nil nil "source.organizeImports" t))
+  (defun my/eglot-setup-hooks () (interactive)
+         (add-hook 'before-save-hook 'my/eglot-organize-imports nil t)
+         (add-hook 'before-save-hook 'eglot-format-buffer nil t))
+  :bind (:map eglot-mode-map
+              ("C-c l r" . eglot-rename)
+              ("C-c l v" . eglot-reconnect)
+              ("C-c l r" . eglot-rename)
+              ("C-c l a" . eglot-code-actions)
+              ("C-c l b" . flymake-show-buffer-diagnostics)
+              ("C-c l p" . flymake-show-project-diagnostics))
+  :hook ((go-mode . eglot-ensure)
+         (eglot-managed-mode . my/eglot-setup-hooks))
   :config
-  (use-package helm-lsp
-    :straight t
-    :commands helm-lsp-workspace-symbol))
+  (use-package consult-eglot
+    :bind (:map eglot-mode-map
+                ("C-c l s" . consult-eglot-symbols)))
+  (setq-default eglot-workspace-configuration
+                '(:gopls (:usePlaceholders t)))
+
+  :custom
+  (eglot-events-buffer-size 0)
+  (eglot-confirm-server-initiated-edits nil))
+
 
 (provide 'init-lsp)
+
+;;; init-lsp.el ends here

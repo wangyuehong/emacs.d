@@ -23,18 +23,18 @@
    "f"  'flymake-show-buffer-diagnostics
    "g"  'magit-status
    "h"  'symbol-overlay-put
-   "i"  'helm-imenu
-   "j"  'helm-bookmarks
+   "i"  'imenu
    "k"  'kill-buffer-and-window
    "K"  'kill-other-buffers
-   "l"  'helm-browse-project
-   "o"  'helm-occur
+   "l"  'consult-ls-git
+   "o"  'consult-line
    "p"  'package-upgrade-all
    "q"  'quickrun
-   "r"  'helm-show-kill-ring
+   "r"  'consult-yank-from-kill-ring
    "t"  'git-timemachine
-   "v"  'diff-hl-hydra/body
    "w"  'save-buffer
    "W"  'save-some-buffers
-   "x"  'helm-M-x))
+   "x"  'execute-extended-command)
+  )
+
 (provide 'init-general)

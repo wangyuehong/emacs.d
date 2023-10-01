@@ -2,4 +2,4 @@
 # name: fmt.Sprintf
 # key: sp
 # --
-fmt.Sprintf("${1:s}: %s", $0)
+fmt.Sprintf("${0:s}: %s", $1)

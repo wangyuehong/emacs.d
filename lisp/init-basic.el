@@ -85,6 +85,8 @@
 
 (use-package bookmark
   :ensure nil
+  :bind
+  (("C-x j j" . bookmark-jump))
   :init
   (setq bookmark-default-file (expand-file-name ".bookmarks.el" user-emacs-directory)))
 

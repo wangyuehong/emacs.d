@@ -58,7 +58,7 @@
   :diminish
   :hook ((prog-mode yaml-mode markdown-mode conf-mode protobuf-mode) . whitespace-mode)
   :custom
-  (whitespace-line-column 120) ;; config for lines-tail style
+  (whitespace-line-column 100) ;; config for lines-tail style
   (whitespace-style
    '(face spaces tabs space-before-tab newline
           space-mark tab-mark newline-mark lines-tail))

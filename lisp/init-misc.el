@@ -64,7 +64,6 @@ If the current buffer is not associated with a file, open a new Visual Studio Co
   (envrc-global-mode))
 
 (use-package fanyi
-  :ensure t
   :commands fanyi-dwim fanyi-dwim2)
 
 (provide 'init-misc)

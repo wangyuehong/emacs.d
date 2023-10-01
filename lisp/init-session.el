@@ -25,14 +25,7 @@
   :ensure nil
   :hook (after-init . savehist-mode)
   :custom
-  (enable-recursive-minibuffers t) ; Allow commands in minibuffers
   (savehist-file (expand-file-name ".savehist" user-emacs-directory))
-  (savehist-additional-variables
-   '(mark-ring
-     global-mark-ring
-     search-ring
-     regexp-search-ring
-     extended-command-history))
   (savehist-autosave-interval 300))
 
 (provide 'init-session)

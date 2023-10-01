@@ -13,6 +13,8 @@
   (add-hook 'emacs-startup-hook
             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
 
+(setq read-process-output-max (* 1024 1024))
+
 ;; load path
 (defun update-load-path (&rest _)
   "Update `load-path'."
@@ -44,12 +46,10 @@
 (require 'init-evil)
 (require 'init-general)
 (require 'init-highlight)
-(require 'init-hydra)
 (require 'init-search)
 (require 'init-dired)
 (require 'init-session)
 (require 'init-completion)
-(require 'init-helm)
 (require 'init-yasnippet)
 (require 'init-git)
 (require 'init-prog)

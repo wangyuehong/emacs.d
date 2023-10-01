@@ -1,90 +1,33 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-completion.el --- auto complete by corfu and copilot.    -*- lexical-binding: t; -*-
 
-(use-package company
-  :diminish
-  :hook ((prog-mode yaml-mode protobuf-mode) . company-mode)
-  :bind (:map company-mode-map
-        ([remap completion-at-point] . company-complete)
-        ("<backtab>" . company-yasnippet)
-        :map company-active-map
-        ("C-s" . company-filter-candidates)
-        ("TAB" . company-complete-common-or-cycle)
-        ([backtab] . company-select-previous-or-abort))
+;;; Commentary:
+
+;;; Code:
+
+(use-package corfu
   :custom
-  (company-dabbrev-downcase nil)
-  (company-dabbrev-ignore-case nil)
-  (company-files-exclusions '(".git/" ".DS_Store"))
-  (company-format-margin-function nil)
-  (company-idle-delay 0)
-  (company-minimum-prefix-length 2)
-  (company-require-match nil)
-  (company-show-quick-access t)
-  (company-tooltip-align-annotations t)
-  (company-tooltip-limit 10)
-  (company-tooltip-width-grow-only t)
-  (company-transformers '(company-sort-by-backend-importance))
-  (company-frontends '(company-pseudo-tooltip-frontend ; show tooltip even for single candidate
-                       company-echo-metadata-frontend))
-  (company-backends '((company-capf :with company-yasnippet :separate)
-                      (company-dabbrev-code company-keywords company-files))))
+  (corfu-auto t)
+  (corfu-auto-prefix 2)
+  (corfu-cycle t)
+  :bind
+  (:map corfu-map
+        ("C-j" . corfu-next)
+        ("C-k" . corfu-previous)
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next))
+  :hook ((after-init . global-corfu-mode)))
 
-(use-package prescient
-  :commands prescient-persist-mode
-  :init (prescient-persist-mode 1))
+(use-package corfu-terminal
+  :if (not (display-graphic-p))
+  :hook (global-corfu-mode . corfu-terminal-mode))
 
-(use-package company-prescient
-  :init (company-prescient-mode 1))
-
-(use-package company-tabnine
-  :defer 1
-  :commands (lsp-after-open-tabnine enable-company-tabnine)
-  :hook
-  (kill-emacs . company-tabnine-kill-process)
-  :config
-  (enable-company-tabnine)
-  :custom
-  (company-tabnine-max-num-results 3)
+(use-package cape
   :init
-  (defun company//sort-by-tabnine (candidates)
-    "Integrate company-tabnine with lsp-mode and prioritize yasnippet"
-    (if (or (functionp company-backend)
-            (not (and (listp company-backend) (memq 'company-tabnine company-backends))))
-        candidates
-      (let ((candidates-table (make-hash-table :test #'equal))
-            candidates-other
-            candidates-tabnine
-            candidates-yasnippet)
-        (dolist (candidate candidates)
-          (let ((backend (get-text-property 0 'company-backend candidate)))
-            (cond
-             ((eq backend 'company-tabnine)
-              (unless (gethash candidate candidates-table)
-                (push candidate candidates-tabnine)))
-             ((eq backend 'company-yasnippet)
-              (push candidate candidates-yasnippet))
-             (t
-              (push candidate candidates-other)
-              (puthash candidate t candidates-table)))))
-        (setq candidates-other (nreverse candidates-other))
-        (setq candidates-tabnine (nreverse candidates-tabnine))
-        (setq candidates-yasnippet (nreverse candidates-yasnippet))
-        (nconc candidates-yasnippet
-               (seq-take candidates-tabnine 2)
-               (seq-take candidates-other 7)))))
-
-  (defun lsp-after-open-tabnine ()
-    "Hook to attach to `lsp-after-open'."
-    (add-to-list 'company-transformers 'company//sort-by-tabnine t)
-    (add-to-list 'company-backends '(company-capf :with company-tabnine company-yasnippet :separate)))
-  (defun enable-company-tabnine ()
-    "Enable TabNine."
-    (interactive)
-    (if (not (memq 'company-tabnine company-backends))
-        (progn
-          (add-hook 'lsp-after-open-hook #'lsp-after-open-tabnine)
-          (add-to-list 'company-backends #'company-tabnine)
-          (when (bound-and-true-p lsp-mode) (lsp-after-open-tabnine))
-          (message "TabNine enabled.")))))
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  (add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster))
 
 ;; init copilot
 (use-package copilot
@@ -95,5 +38,56 @@
   (:map copilot-completion-map
         ("C-f" . 'copilot-accept-completion)
         ("C-w" . 'copilot-accept-completion-by-word)))
+
+(use-package orderless
+:init
+(setq completion-styles '(orderless basic)
+      completion-category-overrides '((file (styles basic partial-completion)))))
+
+(use-package vertico
+  :hook (after-init . vertico-mode)
+  :bind (:map vertico-map
+              ("C-f" . vertico-next-group)
+              ("C-b" . vertico-previous-group)
+              ("C-j" . vertico-next)
+              ("C-k" . vertico-previous))
+  :custom
+  (vertico-count 15)
+  (vertico-cycle t))
+
+(use-package marginalia
+  :hook (after-init . marginalia-mode))
+
+(use-package consult
+  :bind (("C-x b" . consult-buffer))
+  :init
+  (with-eval-after-load 'xref
+    (setq xref-show-xrefs-function #'consult-xref
+          xref-show-definitions-function #'consult-xref))
+  :config
+  (setq consult-narrow-key "<")
+  (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help))
+
+(use-package embark
+  :bind
+  (("C-x c" . embark-act)))
+
+(use-package embark-consult
+  :after (embark consult))
+
+(use-package consult-ls-git
+  :after (consult))
+
+(use-package consult-dir
+  :after (consult)
+  :bind (("C-x C-d" . consult-dir)
+         :map vertico-map
+         ("C-x C-d" . consult-dir)
+         ("C-x C-j" . consult-dir-jump-file)))
+
+(use-package consult-yasnippet
+  :after (consult yasnippet)
+  :bind (("S-TAB" . consult-yasnippet)
+         ([backtab] . consult-yasnippet)))
 
 (provide 'init-completion)
