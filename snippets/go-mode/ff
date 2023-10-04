@@ -2,4 +2,4 @@
 # name: fmt.Printf
 # key: ff
 # --
-fmt.Printf("${0:v}: #+v\n", $1)
+fmt.Printf("${0:v}: %#v\n", $1)
