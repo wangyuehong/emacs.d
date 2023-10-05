@@ -11,6 +11,13 @@
   (defun my/eglot-setup-hooks () (interactive)
          (add-hook 'before-save-hook 'my/eglot-organize-imports nil t)
          (add-hook 'before-save-hook 'eglot-format-buffer nil t))
+  (defun my/eglot-capf ()
+    (setq-local completion-at-point-functions
+                (list (cape-super-capf
+                       #'eglot-completion-at-point
+                       #'tabnine-completion-at-point
+                       #'yasnippet-capf
+                       #'cape-file))))
   :bind (:map eglot-mode-map
               ("C-c l r" . eglot-rename)
               ("C-c l v" . eglot-reconnect)
@@ -19,7 +26,8 @@
               ("C-c l b" . flymake-show-buffer-diagnostics)
               ("C-c l p" . flymake-show-project-diagnostics))
   :hook ((go-mode . eglot-ensure)
-         (eglot-managed-mode . my/eglot-setup-hooks))
+         (eglot-managed-mode . my/eglot-setup-hooks)
+         (eglot-managed-mode . my/eglot-capf))
   :config
   (use-package consult-eglot
     :bind (:map eglot-mode-map

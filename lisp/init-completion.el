@@ -21,28 +21,63 @@
   :if (not (display-graphic-p))
   :hook (global-corfu-mode . corfu-terminal-mode))
 
+(use-package kind-icon
+  :after corfu
+  :custom
+  (kind-icon-default-face 'corfu-default)
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
 (use-package cape
   :init
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-keyword)
   (add-to-list 'completion-at-point-functions #'cape-abbrev)
-  (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster))
+  (advice-add #'eglot-completion-at-point :around #'cape-wrap-buster))
 
-;; init copilot
+(use-package tabnine
+  :disabled
+  :commands (tabnine-start-process)
+  :hook (prog-mode . tabnine-mode)
+  :diminish "⌬"
+  :custom
+  (tabnine-max-num-results 3)
+  :hook (kill-emacs . tabnine-kill-process)
+  :config
+  (add-to-list 'completion-at-point-functions #'tabnine-completion-at-point)
+  (tabnine-start-process)
+  :custom-face
+  (tabnine-overlay-face ((t (:inherit shadow :foreground "#cd5c5c"))))
+  :bind
+  (:map tabnine-completion-map
+        ("C-f" . tabnine-accept-completion)
+        ("C-w" . tabnine-accept-completion-by-word)))
+
 (use-package copilot
+  :diminish
   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
   :hook
   ((prog-mode git-commit-setup) . copilot-mode)
   :bind
   (:map copilot-completion-map
         ("C-f" . 'copilot-accept-completion)
-        ("C-w" . 'copilot-accept-completion-by-word)))
+        ("C-w" . 'copilot-accept-completion-by-word))
+  :custom-face
+  (copilot-overlay-face ((t (:inherit shadow :foreground "#7ec0ee")))))
+
+(use-package emacs
+  :init
+  (setq completion-cycle-threshold 3)
+  (when (boundp 'read-extended-command-predicate)
+    (setq read-extended-command-predicate
+          #'command-completion-default-include-p))
+  (setq tab-always-indent 'complete))
 
 (use-package orderless
-:init
-(setq completion-styles '(orderless basic)
-      completion-category-overrides '((file (styles basic partial-completion)))))
+  :init
+  (setq completion-styles '(orderless basic)
+        completion-category-overrides '((file (styles basic partial-completion)))))
 
 (use-package vertico
   :hook (after-init . vertico-mode)
@@ -65,8 +100,7 @@
     (setq xref-show-xrefs-function #'consult-xref
           xref-show-definitions-function #'consult-xref))
   :config
-  (setq consult-narrow-key "<")
-  (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help))
+  (setq consult-preview-key (list :debounce 0.5 'any)))
 
 (use-package embark
   :bind
