@@ -37,6 +37,20 @@
 
 (use-package iedit)
 
+(use-package markdown-mode
+  :init
+  (advice-add #'markdown--command-map-prompt :override #'ignore)
+  (advice-add #'markdown--style-map-prompt   :override #'ignore)
+  :mode ("README\\(?:\\.md\\)?\\'" . gfm-mode)
+  :hook (markdown-mode . visual-line-mode)
+  :custom
+  (markdown-header-scaling t)
+  (markdown-enable-wiki-links t)
+  (markdown-italic-underscore t)
+  (markdown-asymmetric-header t)
+  (markdown-gfm-uppercase-checkbox t)
+  (markdown-fontify-code-blocks-natively t))
+
 (use-package simple
   :ensure nil
   :hook ((prog-mode markdown-mode yaml-mode conf-mode) . enable-trailing-whitespace)
