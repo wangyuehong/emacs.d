@@ -71,18 +71,18 @@
                  (fundamental-mode . emacs)))
       (evil-set-initial-state (car p) (cdr p)))
 
-
-    (defconst mode-line-default-color (face-background 'mode-line))
-
+    (defconst mode-line-default-color (cons (face-background 'mode-line)
+                                            (face-foreground 'mode-line)))
     (defun my/show-evil-state ()
-      "Change modeline background color to notify user evil current state."
-      (let ((background-color (cond
-                               ((minibufferp) mode-line-default-color)
-                               ((evil-insert-state-p) "#a52a2a")
-                               ((evil-emacs-state-p) "#444488")
-                               ((buffer-modified-p) "#104e8b")
-                               (t mode-line-default-color))))
-        (set-face-background 'mode-line background-color)))
+      "Change modeline color to notify user evil current state."
+      (let ((color (cond
+                    ((minibufferp) mode-line-default-color)
+                    ((evil-insert-state-p) '("#a52a2a" . "#b6a784"))
+                    ((evil-emacs-state-p) '("#444488" . "#b6a784"))
+                    ((buffer-modified-p) '("#104e8b" . "#b6a784"))
+                    (t mode-line-default-color))))
+        (set-face-background 'mode-line (car color))
+        (set-face-foreground 'mode-line (cdr color))))
     (add-hook 'post-command-hook #'my/show-evil-state)))
 
 (use-package evil-collection
