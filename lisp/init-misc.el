@@ -21,16 +21,8 @@
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
   :custom
-  (evil-normal-state-tag (propertize "[Normal]"))
-  (evil-emacs-state-tag (propertize "[Emacs]"))
-  (evil-insert-state-tag (propertize "[Insert]"))
-  (evil-motion-state-tag (propertize "[Motion]"))
-  (evil-visual-state-tag (propertize "[Visual]"))
-  (evil-operator-state-tag (propertize "[Operator]"))
-  (doom-modeline-icon nil)
-  (doom-modeline-minor-modes t)
-  (doom-modeline-enable-word-count t)
-  (doom-modeline-project-detection 'auto))
+  (doom-modeline-vcs-max-length 36)
+  (doom-modeline-enable-word-count t))
 
 (use-package xterm-color
   :defines (compilation-environment
@@ -65,5 +57,9 @@ If the current buffer is not associated with a file, open a new Visual Studio Co
 
 (use-package fanyi
   :commands fanyi-dwim fanyi-dwim2)
+
+(use-package open-junk-file
+  :custom
+  (open-junk-file-format "~/junk/%Y-%m-%d/%H-%M-%S.md"))
 
 (provide 'init-misc)
