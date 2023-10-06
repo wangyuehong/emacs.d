@@ -15,13 +15,12 @@
     (setq-local completion-at-point-functions
                 (list (cape-super-capf
                        #'eglot-completion-at-point
-                       #'tabnine-completion-at-point
+                       ;; #'tabnine-completion-at-point
                        #'yasnippet-capf
                        #'cape-file))))
   :bind (:map eglot-mode-map
-              ("C-c l r" . eglot-rename)
-              ("C-c l v" . eglot-reconnect)
-              ("C-c l r" . eglot-rename)
+              ("C-c l e" . eglot-rename)
+              ("C-c l r" . eglot-reconnect)
               ("C-c l a" . eglot-code-actions)
               ("C-c l b" . flymake-show-buffer-diagnostics)
               ("C-c l p" . flymake-show-project-diagnostics))
@@ -31,7 +30,7 @@
   :config
   (use-package consult-eglot
     :bind (:map eglot-mode-map
-                ("C-c l s" . consult-eglot-symbols)))
+                ("C-c l l" . consult-eglot-symbols)))
   (setq-default eglot-workspace-configuration
                 '(:gopls (:usePlaceholders t)))
 
