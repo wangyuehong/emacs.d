@@ -7,7 +7,6 @@
 
 (use-package flyspell
   :ensure nil
-  :diminish
   :if (executable-find "aspell")
   :hook
   ((text-mode outline-mode) . flyspell-mode)

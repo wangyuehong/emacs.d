@@ -8,7 +8,6 @@
 
 (use-package autorevert
   :ensure nil
-  :diminish
   :hook (after-init . global-auto-revert-mode))
 
 (use-package uniquify
@@ -24,7 +23,6 @@
 
 (use-package subword
   :ensure nil
-  :diminish
   :hook ((prog-mode . subword-mode)
          (minibuffer-setup . subword-mode)))
 

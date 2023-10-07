@@ -96,10 +96,10 @@
 
 (use-package hideshow
   :ensure nil
-  :diminish hs-minor-mode
   :hook (prog-mode . hs-minor-mode))
 
-(use-package eldoc :ensure nil :diminish)
+(use-package eldoc
+  :ensure nil)
 
 (use-package imenu
   :ensure nil

@@ -1,7 +1,6 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
 (use-package symbol-overlay
-  :diminish
   :functions (turn-off-symbol-overlay turn-on-symbol-overlay)
   :bind (:map symbol-overlay-map
         ("<escape>" . symbol-overlay-remove-all)
@@ -43,7 +42,7 @@
   (with-eval-after-load 'protobuf-mode
     (add-to-list 'hl-todo-include-modes 'protobuf-mode)))
 
-(use-package rainbow-mode :diminish
+(use-package rainbow-mode
   :hook (emacs-lisp-mode . rainbow-mode))
 
 (use-package rainbow-delimiters
@@ -55,7 +54,6 @@
 
 (use-package whitespace
   :ensure nil
-  :diminish
   :hook ((prog-mode yaml-mode markdown-mode conf-mode protobuf-mode) . whitespace-mode)
   :custom
   (whitespace-line-column 100) ;; config for lines-tail style

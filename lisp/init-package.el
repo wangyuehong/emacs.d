@@ -31,9 +31,6 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-;; Required by `use-package'
-(use-package diminish)
-
 ;; Update GPG keyring for GNU ELPA
 (use-package gnu-elpa-keyring-update)
 

@@ -40,7 +40,6 @@
   :disabled
   :commands (tabnine-start-process)
   :hook (prog-mode . tabnine-mode)
-  :diminish "⌬"
   :custom
   (tabnine-max-num-results 3)
   :hook (kill-emacs . tabnine-kill-process)
@@ -55,7 +54,6 @@
         ("C-w" . tabnine-accept-completion-by-word)))
 
 (use-package copilot
-  :diminish
   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
   :hook
   ((prog-mode git-commit-setup) . copilot-mode)
