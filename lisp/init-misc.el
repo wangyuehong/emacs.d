@@ -17,6 +17,10 @@
   (ispell-program-name "aspell")
   (ispell-extra-args '("--sug-mode=ultra" "--lang=en_US" "--run-together")))
 
+(use-package nerd-icons
+  :config
+  (setf (cdr (assoc "nf-dev-go" nerd-icons/devicon-alist)) "\xe627"))
+
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
   :custom
