@@ -77,7 +77,7 @@
       "Change modeline color to notify user evil current state."
       (let ((color (cond
                     ((minibufferp) mode-line-default-color)
-                    ((evil-insert-state-p) '("#a52a2a" . "#b6a784"))
+                    ((evil-insert-state-p) '("#8b2323" . "#b6a784"))
                     ((evil-emacs-state-p) '("#444488" . "#b6a784"))
                     ((buffer-modified-p) '("#104e8b" . "#b6a784"))
                     (t mode-line-default-color))))
