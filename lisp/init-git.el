@@ -2,10 +2,11 @@
 
 (use-package magit
   :custom
-  (magit-process-popup-time 10)
-  (magit-ediff-dwim-show-on-hunks t)
+  (magit-commit-show-diff nil)
   (magit-diff-paint-whitespace nil)
-  (magit-diff-refine-hunk t))
+  (magit-diff-refine-hunk t)
+  (magit-ediff-dwim-show-on-hunks t)
+  (magit-process-popup-time 10))
 
 (use-package vc
   :ensure nil
