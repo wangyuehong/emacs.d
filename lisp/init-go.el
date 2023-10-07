@@ -16,7 +16,10 @@
 (use-package go-mode
   :bind (:map go-mode-map
               ("C-c i" . go-import-add))
+  :custom
+  (gofmt-command "goimports")
   :config
+  (add-hook 'before-save-hook #'gofmt-before-save)
   (use-package go-tag)
   (use-package go-gen-test)
   (use-package go-snippets)
