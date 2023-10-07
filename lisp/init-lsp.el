@@ -15,8 +15,10 @@
     (setq-local completion-at-point-functions
                 (list (cape-super-capf
                        #'eglot-completion-at-point
-                       ;; #'tabnine-completion-at-point
                        #'yasnippet-capf
+                       ;; #'tabnine-completion-at-point
+                       #'cape-dabbrev
+                       #'cape-abbrev
                        #'cape-file))))
   :bind (:map eglot-mode-map
               ("C-c l e" . eglot-rename)
@@ -33,7 +35,8 @@
                 ("C-c l l" . consult-eglot-symbols)))
   (setq-default eglot-workspace-configuration
                 '(:gopls (:usePlaceholders t)))
-
+  :init
+  (advice-add #'eglot-completion-at-point :around #'cape-wrap-buster)
   :custom
   (eglot-events-buffer-size 0)
   (eglot-confirm-server-initiated-edits nil))

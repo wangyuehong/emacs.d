@@ -4,6 +4,14 @@
 
 ;;; Code:
 
+(use-package emacs
+  :init
+  (setq completion-cycle-threshold 3)
+  (when (boundp 'read-extended-command-predicate)
+    (setq read-extended-command-predicate
+          #'command-completion-default-include-p))
+  (setq tab-always-indent 'complete))
+
 (use-package corfu
   :custom
   (corfu-auto t)
@@ -31,21 +39,20 @@
 (use-package cape
   :init
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-keyword)
   (add-to-list 'completion-at-point-functions #'cape-abbrev)
-  (advice-add #'eglot-completion-at-point :around #'cape-wrap-buster))
+  (add-to-list 'completion-at-point-functions #'cape-file))
 
 (use-package tabnine
   :disabled
   :commands (tabnine-start-process)
-  :hook (prog-mode . tabnine-mode)
-  :custom
-  (tabnine-max-num-results 3)
-  :hook (kill-emacs . tabnine-kill-process)
+  :hook ((prog-mode . tabnine-mode)
+         (kill-emacs . tabnine-kill-process))
   :config
   (add-to-list 'completion-at-point-functions #'tabnine-completion-at-point)
+  ;; (add-to-list 'tabnine-disable-display-predicates #'(lambda () t))
   (tabnine-start-process)
+  :custom
+  (tabnine-max-num-results 3)
   :custom-face
   (tabnine-overlay-face ((t (:inherit shadow :foreground "#cd5c5c"))))
   :bind
@@ -62,15 +69,17 @@
         ("C-f" . 'copilot-accept-completion)
         ("C-w" . 'copilot-accept-completion-by-word))
   :custom-face
-  (copilot-overlay-face ((t (:inherit shadow :foreground "#7ec0ee")))))
+  (copilot-overlay-face ((t (:inherit shadow :foreground "#7ec0ee"))))
+  :custom
+  (copilot-log-max 0)
+  :config
+  (defun my/copilot-inhibited-p ()
+  "Return t if the corfu completion menu is active, nil otherwise."
+  (if (display-graphic-p)
+      (frame-live-p corfu--frame)
+    (bound-and-true-p corfu-terminal--popon)))
 
-(use-package emacs
-  :init
-  (setq completion-cycle-threshold 3)
-  (when (boundp 'read-extended-command-predicate)
-    (setq read-extended-command-predicate
-          #'command-completion-default-include-p))
-  (setq tab-always-indent 'complete))
+  (add-to-list 'copilot-disable-display-predicates #'my/copilot-inhibited-p))
 
 (use-package orderless
   :init
