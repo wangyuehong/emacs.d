@@ -21,8 +21,10 @@
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
   :custom
-  (doom-modeline-vcs-max-length 36)
-  (doom-modeline-enable-word-count t))
+  (doom-modeline-buffer-encoding 'nondefault)
+  (doom-modeline-buffer-file-name-style 'relative-from-project)
+  (doom-modeline-enable-word-count t)
+  (doom-modeline-vcs-max-length 36))
 
 (use-package xterm-color
   :defines (compilation-environment
