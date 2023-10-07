@@ -25,6 +25,19 @@
   (doom-modeline-enable-word-count t)
   (doom-modeline-vcs-max-length 36))
 
+(use-package nerd-icons-dired
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
+
+(use-package nerd-icons-ibuffer
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+
+(use-package nerd-icons-completion
+  :after marginalia
+  :hook (marginalia-mode . nerd-icons-completion-marginalia-setup)
+  :config
+  (nerd-icons-completion-mode))
+
 (use-package xterm-color
   :defines (compilation-environment
             eshell-preoutput-filter-functions
