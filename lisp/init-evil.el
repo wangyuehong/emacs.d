@@ -86,7 +86,9 @@
     (add-hook 'post-command-hook #'my/show-evil-state)))
 
 (use-package evil-collection
-  :hook (evil-mode . evil-collection-init))
+  :hook (evil-mode . evil-collection-init)
+  :custom
+  (evil-collection-want-unimpaired-p nil))
 
 (use-package evil-surround
   :hook (after-init . global-evil-surround-mode))
