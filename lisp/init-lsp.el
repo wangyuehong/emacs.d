@@ -42,7 +42,7 @@
   (advice-add #'eglot-completion-at-point :around #'cape-wrap-buster)
   :custom
   (eglot-confirm-server-initiated-edits nil)
-  (setq eldoc-echo-area-use-multiline-p nil)
+  (eldoc-echo-area-use-multiline-p nil)
   (eglot-events-buffer-size 0))
 
 
