@@ -1,11 +1,10 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-basic.el --- basic configurations. -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
 
-(when (fboundp 'menu-bar-mode)
-  (menu-bar-mode -1))
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
-(when (fboundp 'set-scroll-bar-mode)
-  (set-scroll-bar-mode nil))
+(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode nil))
+(unless (display-graphic-p) (menu-bar-mode -1))
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -107,3 +106,4 @@
   :custom (imenu-max-item-length 108))
 
 (provide 'init-basic)
+;;; init-basic.el ends here
