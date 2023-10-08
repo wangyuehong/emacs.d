@@ -60,8 +60,11 @@
         ("C-f" . tabnine-accept-completion)
         ("C-w" . tabnine-accept-completion-by-word)))
 
+(use-package s)
+(use-package dash)
+(use-package editorconfig)
 (use-package copilot
-  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+  :load-path "site-lisp/copilot.el"
   :hook
   ((prog-mode git-commit-setup) . copilot-mode)
   :bind
@@ -74,10 +77,10 @@
   (copilot-log-max 0)
   :config
   (defun my/copilot-inhibited-p ()
-  "Return t if the corfu completion menu is active, nil otherwise."
-  (if (display-graphic-p)
-      (frame-live-p corfu--frame)
-    (bound-and-true-p corfu-terminal--popon)))
+    "Return t if the corfu completion menu is active, nil otherwise."
+    (if (display-graphic-p)
+        (frame-live-p corfu--frame)
+      (bound-and-true-p corfu-terminal--popon)))
 
   (add-to-list 'copilot-disable-display-predicates #'my/copilot-inhibited-p))
 

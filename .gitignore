@@ -30,6 +30,4 @@ site-lisp/package/
 /eln-cache
 /async-bytecomp.log
 /var
-/straight/
 /.last-package-update-day
-/forge-database.sqlite
