@@ -20,6 +20,17 @@
   (dumb-jump-force-searcher 'rg)
   (dumb-jump-selector 'completing-read))
 
+(use-package citre
+  :init
+  (require 'citre-config)
+  :bind (("C-c c j" . citre-jump)
+         ("C-c c u" . citre-update-this-tags-file))
+  :custom
+  (citre-auto-enable-citre-mode-modes '(ruby-mode))
+  (citre-enable-capf-integration nil)
+  (citre-prompt-language-for-ctags-command t)
+  (citre-use-project-root-when-creating-tags t))
+
 (use-package quickrun
   :commands quickrun
   :custom
