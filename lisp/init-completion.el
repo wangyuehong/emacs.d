@@ -64,6 +64,7 @@
 (use-package dash)
 (use-package editorconfig)
 (use-package copilot
+  ;; :disabled
   :load-path "site-lisp/copilot.el"
   :hook
   ((prog-mode git-commit-setup) . copilot-mode)
