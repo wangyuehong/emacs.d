@@ -62,6 +62,7 @@
                  (eshell-mode . emacs)
                  (calculator-mode . emacs)
                  (help-mode . motion)
+                 (messages-buffer-mode . motion)
                  (minibuffer-inactive-mode . emacs)
                  (special-mode . emacs)
                  (Info-mode . emacs)
