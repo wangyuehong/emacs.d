@@ -19,7 +19,8 @@
 
 (use-package nerd-icons
   :config
-  (setf (cdr (assoc "nf-dev-go" nerd-icons/devicon-alist)) "\xe627"))
+  (setf (cdr (assoc "nf-dev-go"   nerd-icons/devicon-alist)) "\xe627")
+  (setf (cdr (assoc "nf-oct-ruby" nerd-icons/octicon-alist)) "\xe23e"))
 
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
