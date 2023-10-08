@@ -3,8 +3,6 @@
 /network-security.data
 /.recentf
 /custom.el
-/.emacs.desktop
-/.emacs.desktop.lock
 *.elc
 *~
 .*.lock
@@ -14,14 +12,11 @@ cookies
 \#*
 /elpa
 /elpa-*
-site-lisp/package/
-/swank
 /.mc-lists.el
 .DS_Store
 /.bookmarks.el
 /network-security.data
 .yas-compiled-snippets.el
-/.lsp-session-v1
 /transient
 /.savehist
 /lisp/init-local.el
