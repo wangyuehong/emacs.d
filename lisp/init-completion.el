@@ -66,7 +66,7 @@
   ;; :disabled
   :load-path "site-lisp/copilot.el"
   :hook
-  ((prog-mode git-commit-setup) . copilot-mode)
+  ((prog-mode git-commit-setup yaml-mode protobuf-mode markdown-mode) . copilot-mode)
   :bind
   (:map copilot-completion-map
         ("C-f" . 'copilot-accept-completion)
