@@ -30,6 +30,7 @@
  truncate-partial-width-windows nil)
 
 (add-hook 'after-init-hook 'transient-mark-mode)
+(add-hook 'after-init-hook 'repeat-mode)
 
 (add-hook 'after-change-major-mode-hook
           (lambda ()
