@@ -18,28 +18,26 @@
 (use-package diff-hl
   :hook ((after-init . global-diff-hl-mode)
          (dired-mode . diff-hl-dired-mode))
-  :bind (:map diff-hl-mode-map
-         ("C-x v v" . my/diff-hl-menu))
+  :bind (:map diff-hl-command-map
+         ("k" . diff-hl-previous-hunk)
+         ("j" . diff-hl-next-hunk)
+         ("r" . diff-hl-revert-hunk)
+         ("S" . diff-hl-stage-current-hunk)
+         ("U" . diff-hl-unstage-file))
   :config
   (diff-hl-flydiff-mode 1)
+
   (setq-default fringes-outside-margins t)
   (unless (display-graphic-p)
     (diff-hl-margin-mode 1))
+
   (with-eval-after-load 'magit
     (add-hook 'magit-pre-refresh-hook #'diff-hl-magit-pre-refresh)
     (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh))
-  (transient-define-prefix my/diff-hl-menu ()
-    "Show diff-hl menu."
-    :transient-suffix 'transient--do-stay
-    [["Navigate"
-      ("j" "next hunk"     diff-hl-next-hunk)
-      ("k" "previous hunk" diff-hl-previous-hunk)
-      ("p" "show hunk"     diff-hl-show-hunk)]
-     ["Action"
-      ("r" "revert hunk"        diff-hl-revert-hunk)
-      ("s" "stash current hunk" diff-hl-stage-current-hunk)
-      ("c" "copy original hunk" diff-hl-show-hunk-copy-original-text)
-      ("U" "unstage file"       diff-hl-unstage-file)]]))
+
+  (unbind-key "n" diff-hl-command-map)
+  (unbind-key "[" diff-hl-command-map)
+  (unbind-key "]" diff-hl-command-map))
 
 (use-package git-timemachine
   :commands git-timemachine
