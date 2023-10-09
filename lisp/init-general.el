@@ -10,7 +10,7 @@
    "a"  'rg-menu
    "r"  'my/replace-at-point-or-region)
   (general-define-key
-   :states '(normal visual)
+   :states '(normal motion visual)
    :keymaps 'override
    ;; :non-normal-prefix "C-SPC"
    :prefix "SPC"

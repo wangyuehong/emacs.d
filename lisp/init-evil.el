@@ -48,6 +48,7 @@
   (evil-vsplit-window-right t)
   :config
   (define-key evil-visual-state-map (kbd "v") 'er/expand-region)
+  (define-key evil-motion-state-map (kbd "f") 'evil-avy-goto-char-timer)
   (define-key evil-normal-state-map (kbd "f") 'evil-avy-goto-char-timer)
   (define-key evil-visual-state-map (kbd "f") 'evil-avy-goto-char-timer)
   (define-key evil-normal-state-map (kbd "TAB") 'evil-indent-line)
