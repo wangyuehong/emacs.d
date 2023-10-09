@@ -15,6 +15,7 @@
                      "^/usr/include/"
                      "/TAGS\\'"
                      "/G?TAGS$"
+                     "/.bookmarks.el"
                      "COMMIT_EDITMSG\\'")))
 
 (use-package saveplace
