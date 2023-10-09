@@ -62,7 +62,6 @@
 
 (use-package s)
 (use-package dash)
-(use-package editorconfig)
 (use-package copilot
   ;; :disabled
   :load-path "site-lisp/copilot.el"

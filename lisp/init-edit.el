@@ -49,9 +49,12 @@
   (markdown-gfm-uppercase-checkbox t)
   (markdown-fontify-code-blocks-natively t))
 
+(use-package editorconfig
+  :hook (after-init . editorconfig-mode))
+
 (use-package simple
   :ensure nil
-  :hook ((prog-mode markdown-mode yaml-mode conf-mode) . enable-trailing-whitespace)
+  ;; :hook ((prog-mode markdown-mode yaml-mode conf-mode) . enable-trailing-whitespace)
   :custom
   (column-number-mode t)
   (line-number-mode t)
