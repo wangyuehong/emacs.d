@@ -69,6 +69,11 @@ If the current buffer is not associated with a file, open a new Visual Studio Co
         (shell-command (format "code --goto %s:%s:%s" (shell-quote-argument file-path) line-num col-num)))
     (shell-command "code")))
 
+(use-package repeat-help
+  :hook (repeat-mode . repeat-help-mode)
+  :custom
+  (repeat-help-auto t))
+
 (use-package envrc
   :if (executable-find "direnv")
   :config
