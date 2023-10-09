@@ -57,19 +57,20 @@
 
   (with-no-warnings
     ;; modes to map to different default states
-    (dolist (p '((comint-mode . emacs)
-                 (term-mode . emacs)
-                 (eshell-mode . emacs)
+    (dolist (p '((Info-mode . emacs)
                  (calculator-mode . emacs)
+                 (comint-mode . emacs)
+                 (dashboard-mode . motion)
+                 (eshell-mode . emacs)
+                 (fundamental-mode . emacs)
                  (help-mode . motion)
                  (messages-buffer-mode . motion)
                  (minibuffer-inactive-mode . emacs)
-                 (special-mode . emacs)
-                 (Info-mode . emacs)
-                 (term-mode . emacs)
                  (shell-mode . emacs)
-                 (xref--xref-buffer-mode . emacs)
-                 (fundamental-mode . emacs)))
+                 (special-mode . emacs)
+                 (term-mode . emacs)
+                 (term-mode . emacs)
+                 (xref--xref-buffer-mode . emacs)))
       (evil-set-initial-state (car p) (cdr p)))
 
     (defconst mode-line-default-color (cons (face-background 'mode-line)

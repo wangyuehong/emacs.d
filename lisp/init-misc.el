@@ -81,4 +81,17 @@ If the current buffer is not associated with a file, open a new Visual Studio Co
   :custom
   (open-junk-file-format "~/junk/%Y-%m-%d/%H-%M-%S.md"))
 
+(use-package dashboard
+  :hook ((after-init . dashboard-setup-startup-hook))
+  :custom
+  (dashboard-projects-backend 'project-el)
+  (dashboard-display-icons-p t)
+  (dashboard-icon-type 'nerd-icons)
+  (dashboard-path-style 'truncate-middle)
+  (dashboard-set-heading-icons t)
+  (dashboard-set-file-icons t)
+  (dashboard-set-init-info t)
+  (dashboard-items '((recents  . 10)
+                     (projects . 10))))
+
 (provide 'init-misc)
