@@ -46,17 +46,4 @@
   (pulse-highlight-start-face ((t (:inherit region :background unspecified))))
   (pulse-highlight-face ((t (:inherit region :background unspecified :extend t)))))
 
-(use-package switchy-window
-  :custom (switchy-window-delay 1.5) ;; default value
-  :bind (:map switchy-window-minor-mode-map
-              ("<remap> <other-window>" . switchy-window))
-  :init
-  (switchy-window-minor-mode)
-  (defun my-pulse-line-on-window-selection-change (frame)
-    (when (eq frame (selected-frame))
-      (pulse-momentary-highlight-one-line)))
-
-  (add-hook 'window-selection-change-functions
-          #'my-pulse-line-on-window-selection-change))
-
 (provide 'init-window)
