@@ -46,4 +46,16 @@
   (pulse-highlight-start-face ((t (:inherit region :background unspecified))))
   (pulse-highlight-face ((t (:inherit region :background unspecified :extend t)))))
 
+(use-package emacs
+  :bind (:map window-prefix-map
+          ("j" . enlarge-window)
+          ("k" . shrink-window)
+          ("h" . enlarge-window-horizontally)
+          ("l" . shrink-window-horizontally)
+          :repeat-map my/window-repeat-map
+          ("j" . enlarge-window)
+          ("k" . shrink-window)
+          ("h" . enlarge-window-horizontally)
+          ("l" . shrink-window-horizontally)))
+
 (provide 'init-window)
