@@ -1,4 +1,6 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-dired.el --- dired config. -*- lexical-binding: t; -*-
+;;; Commentary:
+;;; Code:
 
 (use-package dired
   :ensure nil
@@ -14,6 +16,7 @@
   (dired-clean-confirm-killing-deleted-buffers nil)
   (dired-auto-revert-buffer #'dired-directory-changed-p)
   :config
+  (unbind-key "j" dired-jump-map)
   (when (string= system-type "darwin")
     (setq dired-use-ls-dired nil)))
 
@@ -35,3 +38,4 @@
   :hook (dired-mode . diredfl-mode))
 
 (provide 'init-dired)
+;;; init-dired.el ends here
