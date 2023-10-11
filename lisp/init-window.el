@@ -40,12 +40,6 @@
   (interactive)
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
-(use-package pulse
-  :ensure nil
-  :custom-face
-  (pulse-highlight-start-face ((t (:inherit region :background unspecified))))
-  (pulse-highlight-face ((t (:inherit region :background unspecified :extend t)))))
-
 (use-package emacs
   :bind (:map window-prefix-map
           ("j" . enlarge-window)
