@@ -52,10 +52,28 @@
           ("k" . shrink-window)
           ("h" . enlarge-window-horizontally)
           ("l" . shrink-window-horizontally)
+          ("C-j" . scroll-other-window-line)
+          ("C-k" . scroll-other-window-down-line)
+          ("C-f" . scroll-other-window)
+          ("C-b" . scroll-other-window-down)
           :repeat-map my/window-repeat-map
           ("j" . enlarge-window)
           ("k" . shrink-window)
           ("h" . enlarge-window-horizontally)
-          ("l" . shrink-window-horizontally)))
+          ("l" . shrink-window-horizontally)
+          ("C-j" . scroll-other-window-line)
+          ("C-k" . scroll-other-window-down-line)
+          ("C-f" . scroll-other-window)
+          ("C-b" . scroll-other-window-down))
+  :config
+  (defun scroll-other-window-line ()
+    "Scroll up of one line in other window."
+    (interactive)
+    (scroll-other-window 1))
+
+  (defun scroll-other-window-down-line ()
+    "Scroll down of one line in other window."
+    (interactive)
+    (scroll-other-window-down 1)))
 
 (provide 'init-window)
