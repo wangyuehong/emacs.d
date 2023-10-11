@@ -70,7 +70,6 @@
                  (shell-mode . emacs)
                  (special-mode . emacs)
                  (term-mode . emacs)
-                 (term-mode . emacs)
                  (xref--xref-buffer-mode . emacs)))
       (evil-set-initial-state (car p) (cdr p)))
 
