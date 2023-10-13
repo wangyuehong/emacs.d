@@ -11,7 +11,7 @@
   (dired-recursive-deletes 'always)
   (dired-recursive-copies 'always)
   (dired-hide-details-hide-symlink-targets nil)
-  (dired-listing-switches "-AFhlv")
+  (dired-listing-switches "-Ahlv")
   (dired-dwim-target t)
   (dired-clean-confirm-killing-deleted-buffers nil)
   (dired-auto-revert-buffer #'dired-directory-changed-p)
