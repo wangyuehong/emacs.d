@@ -12,14 +12,16 @@
          ;; (add-hook 'before-save-hook 'my/eglot-organize-imports nil t)
          (add-hook 'before-save-hook 'eglot-format-buffer nil t))
   (defun my/eglot-capf ()
+    (setq-local my/completion-functions (list #'yasnippet-capf
+                                          #'cape-dabbrev
+                                          #'cape-abbrev
+                                          #'cape-file))
+    (when (fboundp #'tabnine-completion-at-point)
+      (setq-local my/completion-functions (cons #'tabnine-completion-at-point
+                                            my/completion-functions)))
     (setq-local completion-at-point-functions
-                (list (cape-super-capf
-                       #'eglot-completion-at-point
-                       #'yasnippet-capf
-                       ;; #'tabnine-completion-at-point
-                       #'cape-dabbrev
-                       #'cape-abbrev
-                       #'cape-file))))
+      (list (apply #'cape-super-capf (cons #'eglot-completion-at-point
+                                       my/completion-functions)))))
   :bind (:map eglot-mode-map
               ("C-c l a" . eglot-code-actions)
               ("C-c l b" . flymake-show-buffer-diagnostics)
