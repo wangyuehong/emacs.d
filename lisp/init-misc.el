@@ -11,7 +11,8 @@
   :hook
   ((text-mode outline-mode) . flyspell-mode)
   (prog-mode . flyspell-prog-mode)
-
+  :config
+  (unbind-key "C-;" flyspell-mode-map)
   :custom
   (flyspell-issue-message-flag nil)
   (ispell-program-name "aspell")
