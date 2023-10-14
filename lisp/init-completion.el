@@ -1,7 +1,5 @@
 ;;; init-completion.el --- auto complete by corfu and copilot.    -*- lexical-binding: t; -*-
-
 ;;; Commentary:
-
 ;;; Code:
 
 (use-package emacs

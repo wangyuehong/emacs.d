@@ -1,32 +1,34 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-evil.el --- evil config. -*- lexical-binding: t; -*-
+;;; Commentary:
+;;; Code:
 
 (use-package evil
   :hook (after-init . evil-mode)
   :bind
   (("C-x -" . evil-window-split)
-   ("C-x |" . evil-window-vsplit)
-   ("M-]" . xref-find-references))
+    ("C-x |" . evil-window-vsplit)
+    ("M-]" . xref-find-references))
 
   :init
   (setq evil-want-abbrev-expand-on-insert-exit nil
-        evil-disable-insert-state-bindings t
-        evil-want-fine-undo t
-        evil-want-integration t
-        evil-want-keybinding nil
-        evil-want-Y-yank-to-eol t)
+    evil-disable-insert-state-bindings t
+    evil-want-fine-undo t
+    evil-want-integration t
+    evil-want-keybinding nil
+    evil-want-Y-yank-to-eol t)
 
   (if (executable-find "im-select")
-      (add-hook 'evil-insert-state-exit-hook
-                (lambda ()
-                  (start-process "set-input-source" nil "im-select" "com.apple.keylayout.ABC"))))
+    (add-hook 'evil-insert-state-exit-hook
+      (lambda ()
+        (start-process "set-input-source" nil "im-select" "com.apple.keylayout.ABC"))))
 
   (defun my/replace-at-point-or-region ()
-  "Setup buffer replace string for word at point or active region using evil ex mode."
-  (interactive)
-  (let ((text (if (region-active-p)
+    "Setup buffer replace string for word at point or active region using evil ex mode."
+    (interactive)
+    (let ((text (if (region-active-p)
                   (buffer-substring-no-properties (region-beginning) (region-end))
-                (word-at-point))))
-    (evil-ex (concat "%s/" text "/"))))
+                  (word-at-point))))
+      (evil-ex (concat "%s/" text "/"))))
 
   :custom
   (evil-auto-indent t)
@@ -56,36 +58,35 @@
   (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
   (define-key evil-normal-state-map (kbd "C-r") 'undo-fu-only-redo)
 
-  (with-no-warnings
-    ;; modes to map to different default states
-    (dolist (p '((Info-mode . emacs)
-                 (calculator-mode . emacs)
-                 (comint-mode . emacs)
-                 (dashboard-mode . motion)
-                 (eshell-mode . emacs)
-                 (fundamental-mode . emacs)
-                 (help-mode . motion)
-                 (messages-buffer-mode . motion)
-                 (minibuffer-inactive-mode . emacs)
-                 (shell-mode . emacs)
-                 (special-mode . emacs)
-                 (term-mode . emacs)
-                 (xref--xref-buffer-mode . emacs)))
-      (evil-set-initial-state (car p) (cdr p)))
+  ;; modes to map to different default states
+  (dolist (p '((Info-mode . emacs)
+                (calculator-mode . emacs)
+                (comint-mode . emacs)
+                (dashboard-mode . motion)
+                (eshell-mode . emacs)
+                (fundamental-mode . emacs)
+                (help-mode . motion)
+                (messages-buffer-mode . motion)
+                (minibuffer-inactive-mode . emacs)
+                (shell-mode . emacs)
+                (special-mode . emacs)
+                (term-mode . emacs)
+                (xref--xref-buffer-mode . emacs)))
+    (evil-set-initial-state (car p) (cdr p)))
 
-    (defconst mode-line-default-color (cons (face-background 'mode-line)
-                                            (face-foreground 'mode-line)))
-    (defun my/show-evil-state ()
-      "Change modeline color to notify user evil current state."
-      (let ((color (cond
-                    ((minibufferp) mode-line-default-color)
-                    ((evil-insert-state-p) '("#8b2323" . "#b6a784"))
-                    ((evil-emacs-state-p) '("#444488" . "#b6a784"))
-                    ((buffer-modified-p) '("#104e8b" . "#b6a784"))
-                    (t mode-line-default-color))))
-        (set-face-background 'mode-line (car color))
-        (set-face-foreground 'mode-line (cdr color))))
-    (add-hook 'post-command-hook #'my/show-evil-state)))
+  (defconst mode-line-default-color (cons (face-background 'mode-line)
+                                      (face-foreground 'mode-line)))
+  (defun my/show-evil-state ()
+    "Change modeline color to notify user evil current state."
+    (let ((color (cond
+                   ((minibufferp) mode-line-default-color)
+                   ((evil-insert-state-p) '("#8b2323" . "#b6a784"))
+                   ((evil-emacs-state-p) '("#444488" . "#b6a784"))
+                   ((buffer-modified-p) '("#104e8b" . "#b6a784"))
+                   (t mode-line-default-color))))
+      (set-face-background 'mode-line (car color))
+      (set-face-foreground 'mode-line (cdr color))))
+  (add-hook 'post-command-hook #'my/show-evil-state))
 
 (use-package evil-collection
   :hook (evil-mode . evil-collection-init)
@@ -110,3 +111,4 @@
     (evil-terminal-cursor-changer-activate)))
 
 (provide 'init-evil)
+;;; init-evil.el
