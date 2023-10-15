@@ -1,7 +1,5 @@
 ;;; init-lsp.el --- lsp by eglot. -*- lexical-binding: t; -*-
-
 ;;; Commentary:
-
 ;;; Code:
 
 (use-package eglot

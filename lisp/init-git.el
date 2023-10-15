@@ -1,4 +1,6 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-lsp.el --- git config. -*- lexical-binding: t; -*-
+;;; Commentary:
+;;; Code:
 
 (use-package magit
   :custom
@@ -64,3 +66,4 @@
   (git-link-open-in-browser t))
 
 (provide 'init-git)
+;;; init-git.el ends here
