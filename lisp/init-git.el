@@ -2,6 +2,7 @@
 
 (use-package magit
   :custom
+  (magit-bury-buffer-function #'magit-restore-window-configuration)
   (magit-commit-show-diff nil)
   (magit-diff-paint-whitespace nil)
   (magit-diff-refine-hunk t)
