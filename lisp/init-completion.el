@@ -45,17 +45,17 @@
   :commands (tabnine-start-process)
   :hook ((prog-mode . tabnine-mode)
           (kill-emacs . tabnine-kill-process))
+  :bind
+  (:map tabnine-completion-map
+    ("C-f" . tabnine-accept-completion)
+    ("C-w" . tabnine-accept-completion-by-word))
   :config
   (add-to-list 'completion-at-point-functions #'tabnine-completion-at-point)
   (tabnine-start-process)
   :custom
   (tabnine-max-num-results 3)
   :custom-face
-  (tabnine-overlay-face ((t (:inherit shadow :foreground "#cd5c5c"))))
-  :bind
-  (:map tabnine-completion-map
-    ("C-f" . tabnine-accept-completion)
-    ("C-w" . tabnine-accept-completion-by-word)))
+  (tabnine-overlay-face ((t (:inherit shadow :foreground "#cd5c5c")))))
 
 (use-package s)
 (use-package dash)
