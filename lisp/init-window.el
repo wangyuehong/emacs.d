@@ -1,4 +1,6 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-window.el --- window config. -*- lexical-binding: t; -*-
+;;; Commentary:
+;;; Code:
 
 (use-package tab-bar
   :ensure nil
@@ -28,7 +30,25 @@
                      (flymake-project-diagnostics-mode :select t :align t :size 0.4)
                      (magit-status-mode :select t :inhibit-window-quit t :same t)
                      (magit-log-mode    :select t :inhibit-window-quit t :same t)
-                     ("*quickrun*"      :select t :inhibit-window-quit t))))
+                     ("*quickrun*"      :select t :align t))))
+
+(use-package popper
+  :bind (("C-'" . popper-toggle)
+         ("M-'" . popper-cycle))
+  :custom
+  (popper-display-control nil)
+  (popper-group-function 'popper-group-by-project)
+  (popper-reference-buffers
+    '("\\*Messages\\*"
+      "\\*rg\\*"
+      "\\*quickrun\\*"
+      "\\*Go Test\\*"
+      "\\*Flymake diagnostics"
+      help-mode
+      compilation-mode))
+  :config
+  (popper-mode t)
+  (popper-echo-mode t))
 
 (use-package ibuffer
   :ensure nil
@@ -70,3 +90,4 @@
     (scroll-other-window-down 1)))
 
 (provide 'init-window)
+;;; init-window.el ends here
