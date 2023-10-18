@@ -16,36 +16,36 @@
   (tab-bar-tab-name-function 'tab-bar-tab-name-all))
 
 (use-package shackle
-    :hook (after-init . shackle-mode)
-    :custom
-    (shackle-default-rule nil)
-    (shackle-default-size 0.4)
-    (shackle-default-alignment 'below)
-    (shackle-select-reused-windows t)
-    (shackle-rules '((compilation-mode         :select t :align t :size 0.4)
-                     (go-test-mode             :select t :align t :size 0.4)
-                     (help-mode                :select t :align t :size 0.4)
-                     (rg-mode                  :select t :align t)
-                     (flymake-diagnostics-buffer-mode :select t :align t :size 0.4)
-                     (flymake-project-diagnostics-mode :select t :align t :size 0.4)
-                     (magit-status-mode :select t :same t)
-                     (magit-log-mode    :select t :same t)
-                     ("*quickrun*"      :select t :align t))))
+  :hook (after-init . shackle-mode)
+  :custom
+  (shackle-default-rule nil)
+  (shackle-default-size 0.4)
+  (shackle-default-alignment 'below)
+  (shackle-select-reused-windows t)
+  (shackle-rules '((compilation-mode :select t :align t)
+                    (go-test-mode     :select t :align t)
+                    (help-mode        :select t :align t)
+                    (rg-mode          :select t :align t)
+                    (flymake-diagnostics-buffer-mode  :select t :align t)
+                    (flymake-project-diagnostics-mode :select t :align t)
+                    (magit-status-mode :select t :same t)
+                    (magit-log-mode    :select t :same t)
+                    ("*quickrun*"      :select t :align t)
+                    )))
 
 (use-package popper
-  :bind (("C-'" . popper-toggle)
-         ("M-'" . popper-cycle))
+  :bind (("M-`" . popper-toggle))
   :custom
   (popper-display-control nil)
   (popper-group-function 'popper-group-by-project)
   (popper-reference-buffers
     '("\\*Messages\\*"
-      "\\*rg\\*"
-      "\\*quickrun\\*"
-      "\\*Go Test\\*"
-      "\\*Flymake diagnostics"
-      help-mode
-      compilation-mode))
+       "\\*rg\\*"
+       "\\*quickrun\\*"
+       "\\*Go Test\\*"
+       "\\*Flymake diagnostics"
+       help-mode
+       compilation-mode))
   :config
   (popper-mode t)
   (popper-echo-mode t))
