@@ -20,13 +20,13 @@
 
 (use-package diff-hl
   :hook ((after-init . global-diff-hl-mode)
-         (dired-mode . diff-hl-dired-mode))
+          (dired-mode . diff-hl-dired-mode))
   :bind (:map diff-hl-command-map
-         ("k" . diff-hl-previous-hunk)
-         ("j" . diff-hl-next-hunk)
-         ("r" . diff-hl-revert-hunk)
-         ("S" . diff-hl-stage-current-hunk)
-         ("U" . diff-hl-unstage-file))
+          ("k" . diff-hl-previous-hunk)
+          ("j" . diff-hl-next-hunk)
+          ("r" . diff-hl-revert-hunk)
+          ("S" . diff-hl-stage-current-hunk)
+          ("U" . diff-hl-unstage-file))
   :config
   (diff-hl-flydiff-mode 1)
 
@@ -43,20 +43,20 @@
   (unbind-key "]" diff-hl-command-map))
 
 (use-package git-timemachine
-  :commands git-timemachine
+  :bind (("C-x v t" . git-timemachine))
   :config
   (set-face-background 'git-timemachine-minibuffer-detail-face "black")
   :hook ((git-timemachine-mode . (lambda ()
                                    "improve `git-timemachine' buffers."
                                    ;; display different colors in mode-line
                                    (if (facep 'mode-line-active)
-                                       (face-remap-add-relative 'mode-line-active 'custom-state)
+                                     (face-remap-add-relative 'mode-line-active 'custom-state)
                                      (face-remap-add-relative 'mode-line 'custom-state))
 
                                    ;; display line numbers
                                    (and (derived-mode-p 'prog-mode 'yaml-mode 'protobuf-mode)
-                                        (fboundp 'display-line-numbers-mode)
-                                        (display-line-numbers-mode t))))))
+                                     (fboundp 'display-line-numbers-mode)
+                                     (display-line-numbers-mode t))))))
 
 (use-package git-modes)
 
