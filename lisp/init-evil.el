@@ -17,10 +17,31 @@
     evil-want-keybinding nil
     evil-want-Y-yank-to-eol t)
 
-  (if (executable-find "im-select")
-    (add-hook 'evil-insert-state-exit-hook
-      (lambda ()
-        (start-process "set-input-source" nil "im-select" "com.apple.keylayout.ABC"))))
+  (make-variable-buffer-local
+    (defvar my/last-input-method-in-buffer nil "input method to restore."))
+
+  (defun my/save-current-input-method ()
+    (setq my/last-input-method-in-buffer
+      (string-trim-right (shell-command-to-string "im-select"))))
+
+  (defun my/restore-input-method ()
+    (if my/last-input-method-in-buffer
+      (start-process "set-input-source" nil "im-select" my/last-input-method-in-buffer)))
+
+  (defun my/set-english-input-method ()
+    (start-process "set-input-source" nil "im-select" "com.apple.keylayout.ABC"))
+
+  (with-eval-after-load 'evil
+    (if (executable-find "im-select")
+      (progn
+        (add-hook 'evil-insert-state-exit-hook
+          (lambda ()
+            (my/save-current-input-method)
+            (my/set-english-input-method)))
+
+        (add-hook 'evil-insert-state-entry-hook
+          #'my/restore-input-method))))
+
 
   (defun my/replace-at-point-or-region ()
     "Setup buffer replace string for word at point or active region using evil ex mode."
