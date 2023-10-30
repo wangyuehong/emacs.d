@@ -20,16 +20,22 @@
   (make-variable-buffer-local
     (defvar my/last-input-method-in-buffer nil "input method to restore."))
 
+  (defun my/get-current-input-method ()
+    (string-trim-right (shell-command-to-string "im-select")))
+
   (defun my/save-current-input-method ()
-    (setq my/last-input-method-in-buffer
-      (string-trim-right (shell-command-to-string "im-select"))))
+    (setq my/last-input-method-in-buffer (my/get-current-input-method)))
 
   (defun my/restore-input-method ()
-    (if my/last-input-method-in-buffer
-      (start-process "set-input-source" nil "im-select" my/last-input-method-in-buffer)))
+    (let ((current-input-method (my/get-current-input-method)))
+      (if (and my/last-input-method-in-buffer
+            (not (string= current-input-method my/last-input-method-in-buffer)))
+        (start-process "set-input-source" nil "im-select" my/last-input-method-in-buffer))))
 
   (defun my/set-english-input-method ()
-    (start-process "set-input-source" nil "im-select" "com.apple.keylayout.ABC"))
+    (let ((current-input-method (my/get-current-input-method)))
+      (unless (string= current-input-method "com.apple.keylayout.ABC")
+        (start-process "set-input-source" nil "im-select" "com.apple.keylayout.ABC"))))
 
   (with-eval-after-load 'evil
     (if (executable-find "im-select")
@@ -41,7 +47,6 @@
 
         (add-hook 'evil-insert-state-entry-hook
           #'my/restore-input-method))))
-
 
   (defun my/replace-at-point-or-region ()
     "Setup buffer replace string for word at point or active region using evil ex mode."
