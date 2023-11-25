@@ -41,26 +41,19 @@
   (add-to-list 'completion-at-point-functions #'cape-file))
 
 (use-package tabnine
-  :disabled
   :commands (tabnine-start-process)
-  :hook ((prog-mode . tabnine-mode)
-          (kill-emacs . tabnine-kill-process))
-  :bind
-  (:map tabnine-completion-map
-    ("C-f" . tabnine-accept-completion)
-    ("C-w" . tabnine-accept-completion-by-word))
+  :hook ((kill-emacs . tabnine-kill-process))
   :config
   (add-to-list 'completion-at-point-functions #'tabnine-completion-at-point)
   (tabnine-start-process)
   :custom
-  (tabnine-max-num-results 3)
+  (tabnine-max-num-results 5)
   :custom-face
   (tabnine-overlay-face ((t (:inherit shadow :foreground "#cd5c5c")))))
 
 (use-package s)
 (use-package dash)
 (use-package copilot
-  ;; :disabled
   :load-path "site-lisp/copilot.el"
   :hook
   ((prog-mode git-commit-setup yaml-mode protobuf-mode markdown-mode) . copilot-mode)
