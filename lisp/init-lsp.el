@@ -18,7 +18,7 @@
       (setq-local my/completion-functions (cons #'tabnine-completion-at-point
                                             my/completion-functions)))
     (setq-local completion-at-point-functions
-      (list (apply #'cape-super-capf (cons #'eglot-completion-at-point
+      (list (apply #'cape-capf-super (cons #'eglot-completion-at-point
                                        my/completion-functions)))))
   :bind (:map eglot-mode-map
               ("C-c l a" . eglot-code-actions)
