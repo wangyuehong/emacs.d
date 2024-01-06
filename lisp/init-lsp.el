@@ -32,7 +32,9 @@
   :config
   (use-package consult-eglot
     :bind (:map eglot-mode-map
-                ("C-c l l" . consult-eglot-symbols)))
+            ("C-c l l" . consult-eglot-symbols))
+    :custom
+    (consult-eglot-show-kind-name t))
   (setq-default eglot-workspace-configuration
                 '((:gopls . ((completeUnimported . t)
                              (gofumpt            . t)
