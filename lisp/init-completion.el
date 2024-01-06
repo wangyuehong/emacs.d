@@ -60,6 +60,7 @@
     ("C-k" . 'copilot-previous-completion)
     ("C-g" . 'copilot-clear-overlay)
     ("C-f" . 'copilot-accept-completion)
+    ("C-<return>" . 'copilot-accept-completion)
     ("C-w" . 'copilot-accept-completion-by-word))
   :custom-face
   (copilot-overlay-face ((t (:inherit shadow :foreground "#7ec0ee"))))
@@ -75,9 +76,10 @@
   (add-to-list 'copilot-disable-display-predicates #'my/copilot-inhibited-p))
 
 (use-package orderless
-  :init
-  (setq completion-styles '(orderless basic)
-    completion-category-overrides '((file (styles basic partial-completion)))))
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion))))
+  (orderless-component-separator #'orderless-escapable-split-on-space))
 
 (use-package vertico
   :hook (after-init . vertico-mode)
@@ -94,7 +96,8 @@
   :hook (after-init . marginalia-mode))
 
 (use-package consult
-  :bind (("C-x b" . consult-buffer))
+  :bind (("C-x b" . consult-buffer)
+          ([remap imenu] . consult-imenu))
   :init
   (with-eval-after-load 'xref
     (setq xref-show-xrefs-function #'consult-xref
