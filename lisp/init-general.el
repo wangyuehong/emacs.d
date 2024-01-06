@@ -26,6 +26,7 @@
     "d"  'fanyi-dwim2
     "e"  'evil-iedit-state/iedit-mode
     "f"  'flymake-show-buffer-diagnostics
+    "F"  'flymake-show-project-diagnostics
     "g"  'magit-status
     "h"  'symbol-overlay-put
     "i"  'imenu
@@ -41,6 +42,7 @@
     "tn" '(display-line-numbers-mode :which-key "toggle-display-line-numbers")
     "r"  'consult-yank-from-kill-ring
     "w"  'save-buffer
+    "W"  'save-some-buffers
     "x"  'execute-extended-command)
   )
 
