@@ -25,7 +25,7 @@
     "c"  'evilnc-comment-or-uncomment-lines
     "d"  'fanyi-dwim2
     "e"  'evil-iedit-state/iedit-mode
-    "f"  'flymake-show-buffer-diagnostics
+    "f"  'consult-flymake
     "F"  'flymake-show-project-diagnostics
     "g"  'magit-status
     "h"  'symbol-overlay-put
