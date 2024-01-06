@@ -19,8 +19,7 @@
   (:map corfu-map
     ("C-j" . corfu-next)
     ("C-k" . corfu-previous)
-    ("TAB" . corfu-next)
-    ([tab] . corfu-next))
+    ("TAB" . corfu-next))
   :hook ((after-init . global-corfu-mode)))
 
 (use-package corfu-terminal
@@ -41,13 +40,13 @@
   (add-to-list 'completion-at-point-functions #'cape-file))
 
 (use-package tabnine
-  :commands (tabnine-start-process)
+  ;; :commands (tabnine-start-process)
   :hook ((kill-emacs . tabnine-kill-process))
   :config
   (add-to-list 'completion-at-point-functions #'tabnine-completion-at-point)
-  (tabnine-start-process)
+  ;; (tabnine-start-process)
   :custom
-  (tabnine-max-num-results 5)
+  (tabnine-max-num-results 3)
   :custom-face
   (tabnine-overlay-face ((t (:inherit shadow :foreground "#cd5c5c")))))
 
@@ -59,6 +58,9 @@
   ((prog-mode git-commit-setup yaml-mode protobuf-mode markdown-mode) . copilot-mode)
   :bind
   (:map copilot-completion-map
+    ("C-j" . 'copilot-next-completion)
+    ("C-k" . 'copilot-previous-completion)
+    ("C-g" . 'copilot-clear-overlay)
     ("C-f" . 'copilot-accept-completion)
     ("C-w" . 'copilot-accept-completion-by-word))
   :custom-face
