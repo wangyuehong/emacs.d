@@ -26,17 +26,15 @@
   :if (not (display-graphic-p))
   :hook (global-corfu-mode . corfu-terminal-mode))
 
-(use-package kind-icon
+(use-package nerd-icons-corfu
   :after corfu
-  :custom
-  (kind-icon-default-face 'corfu-default)
-  :config
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+  :init (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package cape
   :init
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (add-to-list 'completion-at-point-functions #'cape-keyword)
   (add-to-list 'completion-at-point-functions #'cape-file))
 
 (use-package tabnine
