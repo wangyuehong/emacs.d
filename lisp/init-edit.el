@@ -1,4 +1,6 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-edit.el --- edit config . -*- lexical-binding: t; -*-
+;;; Commentary:
+;;; Code:
 
 (use-package elec-pair
   :ensure nil
