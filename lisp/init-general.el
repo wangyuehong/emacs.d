@@ -40,6 +40,7 @@
     "tl" '(toggle-truncate-lines     :which-key "toggle-truncate-lines")
     "tt" '(git-timemachine-toggle    :which-key "toggle-timemachine")
     "tn" '(display-line-numbers-mode :which-key "toggle-display-line-numbers")
+    "tp" '(electric-pair-mode        :which-key "electric-pair-mode")
     "r"  'consult-yank-from-kill-ring
     "w"  'save-buffer
     "W"  'save-some-buffers
