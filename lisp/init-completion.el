@@ -1,4 +1,4 @@
-;;; init-completion.el --- auto complete by corfu and copilot.    -*- lexical-binding: t; -*-
+;;; init-completion.el --- code completion. -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 
@@ -36,44 +36,6 @@
   (add-to-list 'completion-at-point-functions #'cape-abbrev)
   (add-to-list 'completion-at-point-functions #'cape-keyword)
   (add-to-list 'completion-at-point-functions #'cape-file))
-
-(use-package tabnine
-  ;; :commands (tabnine-start-process)
-  :hook ((kill-emacs . tabnine-kill-process))
-  :config
-  (add-to-list 'completion-at-point-functions #'tabnine-completion-at-point)
-  ;; (tabnine-start-process)
-  :custom
-  (tabnine-max-num-results 3)
-  :custom-face
-  (tabnine-overlay-face ((t (:inherit shadow :foreground "#cd5c5c")))))
-
-(use-package s)
-(use-package dash)
-(use-package copilot
-  :load-path "site-lisp/copilot.el"
-  :hook
-  ((prog-mode git-commit-setup yaml-mode protobuf-mode markdown-mode) . copilot-mode)
-  :bind
-  (:map copilot-completion-map
-    ("C-j" . 'copilot-next-completion)
-    ("C-k" . 'copilot-previous-completion)
-    ("C-g" . 'copilot-clear-overlay)
-    ("C-f" . 'copilot-accept-completion)
-    ("C-<return>" . 'copilot-accept-completion)
-    ("C-w" . 'copilot-accept-completion-by-word))
-  :custom-face
-  (copilot-overlay-face ((t (:inherit shadow :foreground "#7ec0ee"))))
-  :custom
-  (copilot-log-max 0)
-  :config
-  (defun my/copilot-inhibited-p ()
-    "Return t if the corfu completion menu is active, nil otherwise."
-    (if (display-graphic-p)
-      (frame-live-p corfu--frame)
-      (bound-and-true-p corfu-terminal--popon)))
-
-  (add-to-list 'copilot-disable-display-predicates #'my/copilot-inhibited-p))
 
 (use-package orderless
   :custom

@@ -50,6 +50,7 @@
 (require 'init-lsp)
 (require 'init-go)
 (require 'init-misc)
+(require 'init-ai)
 
 (require 'init-local nil t)
 
