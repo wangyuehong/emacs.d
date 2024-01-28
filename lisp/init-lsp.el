@@ -21,6 +21,8 @@
       (list (apply #'cape-capf-super (cons #'eglot-completion-at-point
                                        my/completion-functions)))))
   :bind (:map eglot-mode-map
+              ("C-c l t" . eglot-find-typeDefinition)
+              ("C-c l i" . eglot-find-implementation)
               ("C-c l a" . eglot-code-actions)
               ("C-c l b" . flymake-show-buffer-diagnostics)
               ("C-c l e" . eglot-rename)
