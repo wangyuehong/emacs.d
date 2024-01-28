@@ -5,7 +5,6 @@
   :hook ((xref-after-return xref-after-jump) . recenter)
   :custom
   (xref-search-program (cond ((executable-find "rg") 'ripgrep)
-                             ((executable-find "ugrep") 'ugrep)
                              (t 'grep)))
   (xref-history-storage 'xref-window-local-history)
   (xref-show-xrefs-function #'xref-show-definitions-completing-read)
