@@ -44,11 +44,12 @@
 
   :init
   (advice-add #'eglot-completion-at-point :around #'cape-wrap-buster)
+  (setq read-process-output-max (* 1024 1024)) ; 1MB
   :custom
+  (eglot-autoshutdown t)
   (eglot-confirm-server-initiated-edits nil)
   (eldoc-echo-area-use-multiline-p nil)
   (eglot-events-buffer-size 0))
-
 
 (provide 'init-lsp)
 
