@@ -4,7 +4,7 @@
 
 (use-package elec-pair
   :ensure nil
-  :hook (after-init . electric-pair-mode)
+  ;; :hook (after-init . electric-pair-mode)
   :custom
   (electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit))
 
