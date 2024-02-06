@@ -12,9 +12,10 @@
 
 ;; Should set before loading `use-package'
 (setq use-package-always-ensure t
-      use-package-always-defer t
-      use-package-expand-minimally t
-      use-package-enable-imenu-support t)
+  use-package-always-defer t
+  use-package-expand-minimally t
+  package-install-upgrade-built-in t
+  use-package-enable-imenu-support t)
 
 ;; Update GPG keyring for GNU ELPA
 (use-package gnu-elpa-keyring-update)
