@@ -14,7 +14,6 @@
     ("C-g" . copilot-clear-overlay)
     ("C-f" . copilot-accept-completion)
     ("C-<return>" . copilot-accept-completion)
-    ("SPC" . copilot-accept-completion)
     ("C-w" . copilot-accept-completion-by-word))
   :custom-face
   (copilot-overlay-face ((t (:inherit shadow :foreground "#7ec0ee"))))
