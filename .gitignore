@@ -26,3 +26,4 @@ cookies
 /async-bytecomp.log
 /var
 /.last-package-update-day
+/.cache
