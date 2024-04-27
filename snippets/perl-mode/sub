@@ -1,7 +1,0 @@
-# name: sub ... { ... }
-# key: sub
-# --
-sub ${1:function_name} {
-    my($self) = @_;
-    $0
-}

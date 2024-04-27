@@ -1,6 +1,0 @@
-# name: while each
-# key: whileach
-# --
-while (my ($key, $value) = each %$1) {
-    $0
-}
