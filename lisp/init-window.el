@@ -2,19 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-(use-package tab-bar
-  :ensure nil
-  :hook
-  (after-init . tab-bar-mode)
-  (after-init . tab-bar-history-mode)
-  :custom
-  (tab-bar-close-button-show nil)
-  (tab-bar-history-buttons-show nil)
-  (tab-bar-format '(tab-bar-format-tabs tab-bar-separator))
-  (tab-bar-show nil)
-  (tab-bar-tab-hints t)
-  (tab-bar-tab-name-function 'tab-bar-tab-name-all))
-
 (use-package shackle
   :hook (after-init . shackle-mode)
   :custom
