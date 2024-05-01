@@ -26,10 +26,6 @@
   :if (not (display-graphic-p))
   :hook (global-corfu-mode . corfu-terminal-mode))
 
-(use-package nerd-icons-corfu
-  :after corfu
-  :init (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
-
 (use-package cape
   :init
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
