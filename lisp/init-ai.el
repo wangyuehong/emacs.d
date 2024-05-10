@@ -3,8 +3,9 @@
 ;;; Code:
 
 (use-package copilot
-  ;; :requires (dash s editorconfig jsonrpc)
-  :load-path (lambda () (expand-file-name "site-lisp/copilot.el" user-emacs-directory))
+  :vc (:url "https://github.com/copilot-emacs/copilot.el"
+        :branch "main"
+        :rev :newest)
   :hook
   ((prog-mode git-commit-setup yaml-mode protobuf-mode markdown-mode) . copilot-mode)
   :bind
@@ -13,7 +14,6 @@
     ("C-k" . copilot-previous-completion)
     ("C-g" . copilot-clear-overlay)
     ("C-f" . copilot-accept-completion)
-    ("C-<return>" . copilot-accept-completion)
     ("C-w" . copilot-accept-completion-by-word))
   :custom-face
   (copilot-overlay-face ((t (:inherit shadow :foreground "#7ec0ee"))))
