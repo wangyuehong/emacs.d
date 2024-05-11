@@ -13,11 +13,11 @@
 (use-package corfu
   :custom
   (corfu-auto t)
+  (corfu-auto-delay 0.1)
   (corfu-auto-prefix 2)
   (corfu-cycle t)
-  (corfu-auto-delay 0.4)
+  (corfu-on-exact-match nil)
   (corfu-preselect 'prompt)
-  (corfu-on-exact-match nil)  ; Don't auto expand tempel snippets
   :bind
   (:map corfu-map
     ("C-j" . corfu-next)
