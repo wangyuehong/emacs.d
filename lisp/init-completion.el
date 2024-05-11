@@ -15,12 +15,20 @@
   (corfu-auto t)
   (corfu-auto-prefix 2)
   (corfu-cycle t)
+  (corfu-auto-delay 0.4)
+  (corfu-preselect 'prompt)
+  (corfu-on-exact-match nil)  ; Don't auto expand tempel snippets
   :bind
   (:map corfu-map
     ("C-j" . corfu-next)
     ("C-k" . corfu-previous)
     ("TAB" . corfu-next))
+  :init
+  (corfu-history-mode)
   :hook ((after-init . global-corfu-mode)))
+
+(use-package corfu-prescient
+  :after corfu)
 
 (use-package corfu-terminal
   :if (not (display-graphic-p))
@@ -35,7 +43,7 @@
 
 (use-package orderless
   :custom
-  (completion-styles '(orderless basic))
+  (completion-styles '(orderless partial-completion basic))
   (completion-category-overrides '((file (styles basic partial-completion))))
   (orderless-component-separator #'orderless-escapable-split-on-space))
 
