@@ -14,9 +14,6 @@
                                           #'cape-dabbrev
                                           #'cape-abbrev
                                           #'cape-file))
-    (when (fboundp #'tabnine-completion-at-point)
-      (setq-local my/completion-functions (cons #'tabnine-completion-at-point
-                                            my/completion-functions)))
     (setq-local completion-at-point-functions
       (list (apply #'cape-capf-super (cons #'eglot-completion-at-point
                                        my/completion-functions)))))
@@ -38,9 +35,10 @@
     :custom
     (consult-eglot-show-kind-name t))
   (setq-default eglot-workspace-configuration
-                '((:gopls . ((completeUnimported . t)
-                             (gofumpt            . t)
-                             (usePlaceholders    . t)))))
+    '((:gopls . ((completeUnimported . t)
+                  (staticcheck . t)
+                  (gofumpt     . t)
+                  (usePlaceholders . t)))))
 
   :init
   (advice-add #'eglot-completion-at-point :around #'cape-wrap-buster)
