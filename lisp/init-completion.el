@@ -17,7 +17,6 @@
   (corfu-auto-prefix 2)
   (corfu-cycle t)
   (corfu-on-exact-match nil)
-  (corfu-preselect 'prompt)
   :bind
   (:map corfu-map
     ("C-j" . corfu-next)
