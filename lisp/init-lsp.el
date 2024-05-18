@@ -9,14 +9,6 @@
   (defun my/eglot-setup-hooks () (interactive)
          (add-hook 'before-save-hook 'my/eglot-organize-imports nil t)
          (add-hook 'before-save-hook 'eglot-format-buffer nil t))
-  (defun my/eglot-capf ()
-    (setq-local my/completion-functions (list #'yasnippet-capf
-                                          #'cape-dabbrev
-                                          #'cape-abbrev
-                                          #'cape-file))
-    (setq-local completion-at-point-functions
-      (list (apply #'cape-capf-super (cons #'eglot-completion-at-point
-                                       my/completion-functions)))))
   :bind (:map eglot-mode-map
               ("C-c l t" . eglot-find-typeDefinition)
               ("C-c l i" . eglot-find-implementation)
@@ -26,8 +18,7 @@
               ("C-c l p" . flymake-show-project-diagnostics)
               ("C-c l r" . eglot-reconnect))
   :hook ((go-mode . eglot-ensure)
-         (eglot-managed-mode . my/eglot-setup-hooks)
-         (eglot-managed-mode . my/eglot-capf))
+         (eglot-managed-mode . my/eglot-setup-hooks))
   :config
   (use-package consult-eglot
     :bind (:map eglot-mode-map
@@ -41,7 +32,6 @@
                   (usePlaceholders . t)))))
 
   :init
-  (advice-add #'eglot-completion-at-point :around #'cape-wrap-buster)
   (setq read-process-output-max (* 1024 1024)) ; 1MB
   :custom
   (eglot-autoshutdown t)
