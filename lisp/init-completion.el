@@ -40,7 +40,7 @@
   (add-to-list 'completion-at-point-functions #'cape-keyword)
   (add-to-list 'completion-at-point-functions #'cape-file)
 
-  (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster))
+  (advice-add #'eglot-completion-at-point :around #'cape-wrap-buster))
 
 (use-package orderless
   :custom
