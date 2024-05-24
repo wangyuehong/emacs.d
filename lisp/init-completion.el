@@ -21,6 +21,7 @@
   (:map corfu-map
     ("C-j" . corfu-next)
     ("C-k" . corfu-previous)
+    ("C-s" . corfu-insert-separator)
     ("TAB" . corfu-next))
   :init
   (corfu-history-mode)
@@ -44,8 +45,8 @@
 
 (use-package orderless
   :custom
-  (completion-styles '(orderless partial-completion basic))
-  (completion-category-overrides '((file (styles basic partial-completion))))
+  (completion-styles '(orderless flex))
+  (completion-category-overrides '((eglot (styles . (orderless flex)))))
   (orderless-component-separator #'orderless-escapable-split-on-space))
 
 (use-package vertico
