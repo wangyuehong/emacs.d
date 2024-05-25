@@ -62,8 +62,8 @@
 (use-package vertico
   :hook (after-init . vertico-mode)
   :bind (:map vertico-map
-          ("C-f" . vertico-next-group)
-          ("C-b" . vertico-previous-group)
+          ("C-f" . vertico-scroll-up)
+          ("C-b" . vertico-scroll-down)
           ("C-j" . vertico-next)
           ("C-k" . vertico-previous))
   :custom
@@ -83,9 +83,7 @@
   :config
   (setq consult-preview-key (list :debounce 0.5 'any)))
 
-(use-package embark
-  :bind
-  (("C-;" . embark-act)))
+(use-package embark)
 
 (use-package embark-consult
   :after (embark consult))
