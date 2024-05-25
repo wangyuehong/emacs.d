@@ -10,15 +10,15 @@
   (shackle-default-alignment 'below)
   (shackle-select-reused-windows t)
   (shackle-rules '((compilation-mode :select t :align t)
-                    (go-test-mode     :select t :align t)
-                    (help-mode        :select t :align t)
-                    (rg-mode          :select t :align t)
                     (flymake-diagnostics-buffer-mode  :select t :align t)
                     (flymake-project-diagnostics-mode :select t :align t)
-                    (magit-status-mode :select t :same t)
-                    (magit-log-mode    :select t :same t)
-                    ("*quickrun*"      :select t :align t)
-                    )))
+                    (go-test-mode      :select t :align t)
+                    (help-mode         :select t :align t)
+                    (magit-log-mode    :select t :same  t)
+                    (magit-status-mode :select t :same  t)
+                    (occur-mode        :select t :align t)
+                    (rg-mode           :select t :align t)
+                    ("*quickrun*"      :select t :align t))))
 
 (use-package popper
   :bind (("M-`" . popper-toggle))
@@ -31,8 +31,10 @@
        "\\*quickrun\\*"
        "\\*Go Test\\*"
        "\\*Flymake diagnostics"
-       help-mode
-       compilation-mode))
+       compilation-mode
+       fanyi-mode
+       help-mode helpful-mode
+       occur-mode))
   :config
   (popper-mode t)
   (popper-echo-mode t))
