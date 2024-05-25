@@ -2,10 +2,6 @@
 
 (use-package general
   :demand t
-  :bind (:repeat-map my/general-repeat-map
-          ("l" . toggle-truncate-lines)
-          ("t" . git-timemachine-toggle)
-          ("n" . display-line-numbers-mode))
   :config
   (general-evil-setup t)
   (general-define-key
@@ -14,6 +10,7 @@
     :prefix ";"
     "r" 'my/replace-at-point-or-region
     "a" 'embark-act
+    "d" '(:keymap diff-hl-command-map :wk "diff-hl")
     ";" 'popper-toggle)
   (general-define-key
     :states '(normal motion visual)
@@ -38,7 +35,6 @@
     "q"  'quickrun
     "t"  '(:which-key "toggles")
     "tl" '(toggle-truncate-lines     :which-key "toggle-truncate-lines")
-    "tt" '(git-timemachine-toggle    :which-key "toggle-timemachine")
     "tn" '(display-line-numbers-mode :which-key "toggle-display-line-numbers")
     "tp" '(electric-pair-mode        :which-key "electric-pair-mode")
     "r"  'consult-yank-from-kill-ring
