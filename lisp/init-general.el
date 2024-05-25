@@ -31,7 +31,8 @@
     "K"  'kill-other-buffers
     "l"  'consult-ls-git
     "o"  'consult-line
-    "p"  'package-upgrade-all
+    "p"  '(:keymap project-prefix-map :package project :wk "project")
+    "P"  'package-upgrade-all
     "q"  'quickrun
     "t"  '(:which-key "toggles")
     "tl" '(toggle-truncate-lines     :which-key "toggle-truncate-lines")
