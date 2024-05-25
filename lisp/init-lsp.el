@@ -9,6 +9,9 @@
   (defun my/eglot-setup-hooks () (interactive)
          (add-hook 'before-save-hook 'my/eglot-organize-imports nil t)
          (add-hook 'before-save-hook 'eglot-format-buffer nil t))
+  (defun my/eglot-capf ()
+    (add-to-list 'completion-at-point-functions #'cape-dabbrev))
+
   :bind (:map eglot-mode-map
               ("C-c l t" . eglot-find-typeDefinition)
               ("C-c l i" . eglot-find-implementation)
@@ -18,7 +21,8 @@
               ("C-c l p" . flymake-show-project-diagnostics)
               ("C-c l r" . eglot-reconnect))
   :hook ((go-mode . eglot-ensure)
-         (eglot-managed-mode . my/eglot-setup-hooks))
+          (eglot-managed-mode . my/eglot-capf)
+          (eglot-managed-mode . my/eglot-setup-hooks))
   :config
   (use-package consult-eglot
     :bind (:map eglot-mode-map
@@ -33,6 +37,7 @@
 
   :init
   (setq read-process-output-max (* 1024 1024)) ; 1MB
+  (setq completion-category-overrides '((eglot (styles orderless flex))))
   :custom
   (eglot-autoshutdown t)
   (eglot-confirm-server-initiated-edits nil)

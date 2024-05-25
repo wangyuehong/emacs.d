@@ -17,6 +17,10 @@
   (corfu-auto-prefix 1)
   (corfu-cycle t)
   (corfu-on-exact-match nil)
+  (corfu-preselect-first nil)
+  (corfu-preview-current 'insert)
+  (corfu-quit-at-boundary 'separator)
+  (corfu-quit-no-match 'separator)
   :bind
   (:map corfu-map
     ("C-j" . corfu-next)
@@ -27,6 +31,10 @@
   (corfu-history-mode)
   :hook ((after-init . global-corfu-mode)))
 
+(use-package nerd-icons-corfu
+  :after corfu
+  :init (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+
 (use-package corfu-prescient
   :after corfu)
 
@@ -35,18 +43,20 @@
   :hook (global-corfu-mode . corfu-terminal-mode))
 
 (use-package cape
+  :custom
+  (cape-dabbrev-min-length 3)
+  (cape-dabbrev-check-other-buffers #'cape--buffers-major-mode)
   :init
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-abbrev)
   (add-to-list 'completion-at-point-functions #'cape-keyword)
-  (add-to-list 'completion-at-point-functions #'cape-file)
 
   (advice-add #'eglot-completion-at-point :around #'cape-wrap-buster))
 
 (use-package orderless
   :custom
-  (completion-styles '(orderless flex))
-  (completion-category-overrides '((eglot (styles . (orderless flex)))))
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion))))
   (orderless-component-separator #'orderless-escapable-split-on-space))
 
 (use-package vertico
