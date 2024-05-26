@@ -44,21 +44,6 @@
   :config
   (nerd-icons-completion-mode))
 
-(use-package xterm-color
-  :defines (compilation-environment
-            eshell-preoutput-filter-functions
-            eshell-output-filter-functions)
-  :functions (compilation-filter my-advice-compilation-filter)
-  :init
-  (setq compilation-environment '("TERM=xterm-256color"))
-  (defun my-advice-compilation-filter (f proc string)
-    (funcall f proc
-             (if (eq major-mode 'rg-mode) ; compatible with `rg'
-                 string
-               (xterm-color-filter string))))
-  (advice-add 'compilation-filter :around #'my-advice-compilation-filter)
-  (advice-add 'gud-filter :around #'my-advice-compilation-filter))
-
 (defun open-file-in-vscode ()
   "Open the current file in Visual Studio Code and jump to the current position.
 If the current buffer is not associated with a file, open a new Visual Studio Code window."
