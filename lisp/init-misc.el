@@ -83,6 +83,10 @@ If the current buffer is not associated with a file, open a new Visual Studio Co
 (use-package fanyi
   :commands fanyi-dwim fanyi-dwim2)
 
+(use-package breadcrumb
+  :hook
+  (after-init . breadcrumb-mode))
+
 (use-package open-junk-file
   :custom
   (open-junk-file-format "~/junk/%Y-%m-%dT%H-%M-%S.md"))
