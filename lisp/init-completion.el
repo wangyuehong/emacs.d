@@ -75,7 +75,11 @@
 
 (use-package consult
   :bind (("C-x b" . consult-buffer)
-          ([remap imenu] . consult-imenu))
+          ([remap imenu] . consult-imenu)
+          :map minibuffer-local-map
+          ("C-r" . consult-history)
+          ("C-p" . previous-history-element)
+          ("C-n" . next-history-element))
   :init
   (with-eval-after-load 'xref
     (setq xref-show-xrefs-function #'consult-xref
