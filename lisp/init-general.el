@@ -22,6 +22,7 @@
     "c"  'evilnc-comment-or-uncomment-lines
     "d"  'fanyi-dwim2
     "e"  'evil-iedit-state/iedit-mode
+    "E"  '(:keymap envrc-command-map :package envrc :wk "direnv")
     "f"  'consult-flymake
     "F"  'flymake-show-project-diagnostics
     "g"  'magit-status
