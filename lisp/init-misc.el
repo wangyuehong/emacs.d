@@ -104,12 +104,4 @@ If the current buffer is not associated with a file, open a new Visual Studio Co
   (dashboard-items '((recents  . 10)
                      (projects . 10))))
 
-(use-package helpful
-  :bind
-  (([remap describe-command]   . helpful-command)
-    ([remap describe-key]      . helpful-key)
-    ([remap describe-symbol]   . helpful-symbol)
-    ([remap describe-variable] . helpful-variable)
-    ([remap describe-function] . helpful-callable))
-
 (provide 'init-misc)

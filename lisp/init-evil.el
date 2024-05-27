@@ -92,7 +92,6 @@
                 (eshell-mode . emacs)
                 (fundamental-mode . emacs)
                 (help-mode . motion)
-                (helpful-mode . motion)
                 (messages-buffer-mode . motion)
                 (minibuffer-inactive-mode . emacs)
                 (shell-mode . emacs)
