@@ -29,7 +29,15 @@
   (doom-modeline-buffer-encoding 'nondefault)
   (doom-modeline-buffer-file-name-style 'relative-from-project)
   (doom-modeline-enable-word-count t)
-  (doom-modeline-vcs-max-length 36))
+  (doom-modeline-vcs-max-length 36)
+  (doom-modeline-modal-icon nil)
+  (evil-normal-state-tag (propertize "[Normal]"))
+  (evil-emacs-state-tag (propertize "[Emacs]"))
+  (evil-insert-state-tag (propertize "[Insert]"))
+  (evil-motion-state-tag (propertize "[Motion]"))
+  (evil-visual-state-tag (propertize "[Visual]"))
+  (evil-operator-state-tag (propertize "[Operator]"))
+  (evil-replace-state-tag (propertize "[Replace")))
 
 (use-package nerd-icons-dired
   :hook
