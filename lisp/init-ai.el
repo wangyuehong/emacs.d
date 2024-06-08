@@ -20,4 +20,8 @@
   :custom
   (copilot-log-max 0))
 
+(use-package gptel
+  :config
+  (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
+
 (provide 'init-ai)
