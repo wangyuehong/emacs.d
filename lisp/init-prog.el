@@ -1,4 +1,6 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-prog.el --- Programming languages support -*- lexical-binding: t; -*-
+;;; Commentary:
+;;; Code:
 
 (use-package xref
   :ensure nil
@@ -80,3 +82,4 @@
   (sh-indentation 2))
 
 (provide 'init-prog)
+;;; init-prog.el ends here

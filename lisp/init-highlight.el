@@ -1,4 +1,6 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-highlight.el --- Highlighting configurations -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
 
 (use-package symbol-overlay
   :functions (turn-off-symbol-overlay turn-on-symbol-overlay)
@@ -82,3 +84,4 @@
   )
 
 (provide 'init-highlight)
+;;; init-highlight.el ends here

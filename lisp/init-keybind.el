@@ -1,4 +1,6 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-keybind.el --- Keybind configuration -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
 
 (use-package which-key
   :custom (which-key-idle-delay 0.5)
@@ -47,3 +49,4 @@ Return an event vector."
              (setq c (1+ c))))))))
 
 (provide 'init-keybind)
+;;; init-keybind.el ends here

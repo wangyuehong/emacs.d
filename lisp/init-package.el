@@ -21,3 +21,4 @@
 (use-package gnu-elpa-keyring-update)
 
 (provide 'init-package)
+;;; init-package.el ends here

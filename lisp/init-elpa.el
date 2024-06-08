@@ -1,4 +1,6 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-elpa.el --- init elpa config. -*- lexical-binding: t; -*-
+;;; Commentary:
+;;; Code:
 
 (require 'package)
 
@@ -15,3 +17,4 @@
      ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 
 (provide 'init-elpa)
+;;; init-elpa.el ends here

@@ -45,5 +45,4 @@
   (eglot-events-buffer-size 0))
 
 (provide 'init-lsp)
-
 ;;; init-lsp.el ends here

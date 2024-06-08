@@ -1,4 +1,6 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-general.el --- config general. -*- lexical-binding: t; -*-
+;;; Commentary:
+;;; Code:
 
 (use-package general
   :demand t
@@ -46,3 +48,4 @@
   )
 
 (provide 'init-general)
+;;; init-general.el ends here

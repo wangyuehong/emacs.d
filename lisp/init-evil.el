@@ -132,4 +132,4 @@
     (evil-terminal-cursor-changer-activate)))
 
 (provide 'init-evil)
-;;; init-evil.el
+;;; init-evil.el ends here

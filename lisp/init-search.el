@@ -1,4 +1,6 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-search.el --- Search configurations -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
 
 (setq-default grep-highlight-matches t
               grep-scroll-output t)
@@ -26,3 +28,4 @@
   (avy-timeout-seconds 0.35))
 
 (provide 'init-search)
+;;; init-search.el ends here

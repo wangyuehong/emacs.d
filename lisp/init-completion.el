@@ -108,3 +108,4 @@
           ([backtab] . consult-yasnippet)))
 
 (provide 'init-completion)
+;;; init-completion.el ends here

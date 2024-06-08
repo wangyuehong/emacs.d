@@ -98,3 +98,4 @@
 (use-package undo-fu)
 
 (provide 'init-edit)
+;;; init-edit.el ends here

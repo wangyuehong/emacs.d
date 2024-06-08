@@ -1,10 +1,5 @@
 ;; init-yasnippet.el --- yasnippet config. -*- lexical-binding: t -*-
-
 ;;; Commentary:
-;;
-;; Yasnippet configurations.
-;;
-
 ;;; Code:
 
 (use-package yasnippet
@@ -18,3 +13,4 @@
   (add-to-list 'completion-at-point-functions #'yasnippet-capf))
 
 (provide 'init-yasnippet)
+;;; init-yasnippet.el ends here

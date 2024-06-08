@@ -1,4 +1,6 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-session.el --- Session management -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
 
 (use-package recentf
   :ensure nil
@@ -30,3 +32,4 @@
   (savehist-autosave-interval 300))
 
 (provide 'init-session)
+;;; init-session.el ends here

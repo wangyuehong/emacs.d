@@ -1,4 +1,6 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-misc.el --- Miscellaneous configurations -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
 
 (use-package csv-mode
   :hook (csv-mode . csv-align-mode)
@@ -113,3 +115,4 @@ If the current buffer is not associated with a file, open a new Visual Studio Co
                      (projects . 10))))
 
 (provide 'init-misc)
+;;; init-misc.el ends here

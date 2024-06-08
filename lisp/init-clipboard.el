@@ -1,4 +1,7 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; init-clipboard.el --- Clipboard settings -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
 (use-package xclip
   :commands (xclip-set-selection copy-fullpath-of-current-buffer)
   :bind (("C-x C-x" . copy-to-x-clipboard))
@@ -22,3 +25,4 @@
     (message "copied to clipboard!")))
 
 (provide 'init-clipboard)
+;;; init-clipboard.el ends here

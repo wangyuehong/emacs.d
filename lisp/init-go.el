@@ -1,7 +1,5 @@
-;;; init-completion.el --- go. -*- lexical-binding: t; -*-
-
+;;; init-go.el --- config go. -*- lexical-binding: t; -*-
 ;;; Commentary:
-
 ;;; Code:
 
 (defun project-find-go-module (dir)
@@ -30,3 +28,4 @@
     (go-test-verbose t)))
 
 (provide 'init-go)
+;;; init-go.el ends here

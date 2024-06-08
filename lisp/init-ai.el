@@ -25,3 +25,4 @@
   (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
 
 (provide 'init-ai)
+;;; init-ai.el ends here
