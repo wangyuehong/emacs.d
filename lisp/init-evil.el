@@ -107,6 +107,13 @@
   :custom
   (evil-collection-want-unimpaired-p nil))
 
+(use-package evil-args
+  :after evil
+  :bind (:map evil-inner-text-objects-map
+          ("a" . evil-inner-arg)
+          :map evil-outer-text-objects-map
+          ("a" . evil-outer-arg)))
+
 (use-package evil-surround
   :hook (after-init . global-evil-surround-mode))
 
