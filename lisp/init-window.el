@@ -26,14 +26,16 @@
   (popper-display-control nil)
   (popper-group-function 'popper-group-by-project)
   (popper-reference-buffers
-    '("\\*Messages\\*"
-       "\\*rg\\*"
-       "\\*quickrun\\*"
-       "\\*Go Test\\*"
+    '("\\*ChatGPT\\*"
        "\\*Flymake diagnostics"
+       "\\*Go Test\\*"
+       "\\*Messages\\*"
+       "\\*quickrun\\*"
+       "\\*rg\\*"
        compilation-mode
        fanyi-mode
-       help-mode helpful-mode
+       gptel-mode
+       help-mode
        occur-mode))
   :config
   (popper-mode t)
