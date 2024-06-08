@@ -106,5 +106,9 @@
   :hook (imenu-after-jump . recenter)
   :custom (imenu-max-item-length 108))
 
+(use-package exec-path-from-shell
+  :when (eq system-type 'darwin)
+  :hook (after-init . exec-path-from-shell-initialize))
+
 (provide 'init-basic)
 ;;; init-basic.el ends here
