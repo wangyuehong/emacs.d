@@ -21,9 +21,8 @@
                     ("*quickrun*"      :select t :align t))))
 
 (use-package popper
-  :bind (("M-`" . popper-toggle))
+  :bind (("C-<tab>" . popper-cycle))
   :custom
-  (popper-display-control nil)
   (popper-group-function 'popper-group-by-project)
   (popper-reference-buffers
     '("\\*ChatGPT\\*"
