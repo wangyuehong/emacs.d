@@ -62,3 +62,4 @@
 (setq debug-on-error nil)
 
 (provide 'init)
+;;; init.el ends here
