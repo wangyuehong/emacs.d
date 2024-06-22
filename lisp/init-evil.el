@@ -82,6 +82,7 @@
   (define-key evil-normal-state-map (kbd "s") 'evil-avy-goto-word-or-subword-1)
   (define-key evil-visual-state-map (kbd "s") 'evil-avy-goto-word-or-subword-1)
   (define-key evil-normal-state-map (kbd "f") 'evil-avy-goto-char-in-line)
+  (define-key evil-visual-state-map (kbd "f") 'evil-avy-goto-char-in-line)
   (define-key evil-visual-state-map (kbd "TAB") 'evil-indent)
   (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
   (define-key evil-normal-state-map (kbd "C-r") 'undo-fu-only-redo)
