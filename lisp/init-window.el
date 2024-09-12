@@ -30,7 +30,6 @@
        "\\*Go Test\\*"
        "\\*Messages\\*"
        "\\*quickrun\\*"
-       "\\*rg\\*"
        compilation-mode
        fanyi-mode
        gptel-mode
