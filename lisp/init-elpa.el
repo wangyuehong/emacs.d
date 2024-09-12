@@ -14,7 +14,9 @@
 (setq package-archives
   '(("gnu"    . "https://elpa.gnu.org/packages/")
      ("melpa"  . "https://melpa.org/packages/")
-     ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+     ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+     ;; ("gnu-devel" . "https://elpa.gnu.org/devel/")
+     ))
 
 (provide 'init-elpa)
 ;;; init-elpa.el ends here
