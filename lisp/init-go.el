@@ -14,6 +14,7 @@
 (use-package go-mode
   :bind (:map go-mode-map
           ("C-c i" . go-import-add))
+  :hook (go-mode . eglot-ensure)
   :config
   (use-package go-tag)
   (use-package go-gen-test)

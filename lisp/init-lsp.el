@@ -20,8 +20,7 @@
               ("C-c l e" . eglot-rename)
               ("C-c l p" . flymake-show-project-diagnostics)
               ("C-c l r" . eglot-reconnect))
-  :hook ((go-mode . eglot-ensure)
-          (eglot-managed-mode . my/eglot-capf)
+  :hook ((eglot-managed-mode . my/eglot-capf)
           (eglot-managed-mode . my/eglot-setup-hooks))
   :config
   (use-package consult-eglot
