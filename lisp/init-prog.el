@@ -11,7 +11,10 @@
 
 (use-package xref
   :ensure nil
-  :hook ((xref-after-return xref-after-jump) . recenter)
+  :bind
+  (("M-]" . xref-find-references))
+  :hook
+  ((xref-after-return xref-after-jump) . recenter)
   :custom
   (xref-search-program (cond ((executable-find "rg") 'ripgrep)
                              (t 'grep)))
@@ -55,16 +58,10 @@
 (use-package typescript-mode :mode ("\\.ts[x]\\'" . typescript-mode))
 (use-package yaml-mode)
 
-(use-package css-mode
-  :ensure nil
-  :config (setq css-indent-offset 2))
+(use-package css-mode :ensure nil)
 
 (use-package web-mode
-  :mode "\\.\\(phtml\\|php\\|[gj]sp\\|as[cp]x\\|erb\\|djhtml\\|html?\\|hbs\\|ejs\\|jade\\|swig\\|tm?pl\\|vue\\)$"
-  :config
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-css-indent-offset 2)
-  (setq web-mode-code-indent-offset 2))
+  :mode "\\.\\(phtml\\|php\\|[gj]sp\\|as[cp]x\\|erb\\|djhtml\\|html?\\|hbs\\|ejs\\|jade\\|swig\\|tm?pl\\|vue\\)$")
 
 (use-package sh-script
   :ensure nil
@@ -82,11 +79,7 @@
          ("\\.zsh\\'"          . sh-mode)
          ("\\.bashrc\\'"       . sh-mode)
          ("\\.env\\'"          . sh-mode)
-         ("\\.env\\.example\\'" . sh-mode)
-         )
-  :custom
-  (sh-basic-offset 2)
-  (sh-indentation 2))
+         ("\\.env\\.example\\'" . sh-mode)))
 
 (provide 'init-prog)
 ;;; init-prog.el ends here

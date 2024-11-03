@@ -6,9 +6,7 @@
   :hook (after-init . evil-mode)
   :bind
   (("C-x -" . evil-window-split)
-    ("C-x |" . evil-window-vsplit)
-    ("M-]" . xref-find-references))
-
+    ("C-x |" . evil-window-vsplit))
   :init
   (setq evil-want-abbrev-expand-on-insert-exit nil
     evil-disable-insert-state-bindings t
@@ -69,7 +67,6 @@
   (evil-move-cursor-back nil)
   (evil-respect-visual-line-mode t)
   (evil-search-module 'evil-search)
-  (evil-shift-width 4)
   (evil-split-window-below t)
   (evil-symbol-word-search t)
   (evil-undo-system 'undo-redo)
