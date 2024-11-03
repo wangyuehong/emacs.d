@@ -45,7 +45,6 @@
 (require 'init-yasnippet)
 (require 'init-git)
 (require 'init-prog)
-(require 'init-flymake)
 (require 'init-lsp)
 (require 'init-go)
 (require 'init-python)

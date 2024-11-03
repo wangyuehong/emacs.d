@@ -2,6 +2,13 @@
 ;;; Commentary:
 ;;; Code:
 
+(use-package flymake
+  :ensure nil
+  :bind (:map flymake-mode-map
+          ("M-n" . flymake-goto-next-error)
+          ("M-p" . flymake-goto-prev-error))
+  :hook (prog-mode . flymake-mode))
+
 (use-package xref
   :ensure nil
   :hook ((xref-after-return xref-after-jump) . recenter)
