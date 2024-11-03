@@ -13,9 +13,9 @@
   (defun my/eglot-capf ()
     (setq-local completion-at-point-functions
       (list (cape-capf-super
+              #'yasnippet-capf
               #'eglot-completion-at-point
-              #'cape-dabbrev
-              #'yasnippet-capf))))
+              #'cape-dabbrev))))
 
   :bind (:map eglot-mode-map
               ("C-c l t" . eglot-find-typeDefinition)
