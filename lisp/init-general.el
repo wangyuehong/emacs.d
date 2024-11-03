@@ -12,8 +12,7 @@
     :prefix ";"
     "r" 'my/replace-at-point-or-region
     "a" 'embark-act
-    "d" '(:keymap diff-hl-command-map :package diff-hl :wk "diff-hl")
-    ";" 'popper-toggle)
+    "d" '(:keymap diff-hl-command-map :package diff-hl :wk "diff-hl"))
   (general-define-key
     :states '(normal motion visual)
     :keymaps 'override
