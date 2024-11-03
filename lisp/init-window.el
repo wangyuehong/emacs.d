@@ -20,25 +20,6 @@
                     (rg-mode           :select t :align t)
                     ("*quickrun*"      :select t :align t))))
 
-(use-package popper
-  :bind (("C-<tab>" . popper-cycle))
-  :custom
-  (popper-group-function 'popper-group-by-project)
-  (popper-reference-buffers
-    '("\\*ChatGPT\\*"
-       "\\*Flymake diagnostics"
-       "\\*Go Test\\*"
-       "\\*Messages\\*"
-       "\\*quickrun\\*"
-       compilation-mode
-       fanyi-mode
-       gptel-mode
-       help-mode
-       occur-mode))
-  :config
-  (popper-mode t)
-  (popper-echo-mode t))
-
 (use-package ibuffer
   :ensure nil
   :bind ("C-x C-b" . ibuffer))
