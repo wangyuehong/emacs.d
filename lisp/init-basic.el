@@ -94,10 +94,6 @@
   :ensure nil
   :hook (after-init . global-so-long-mode))
 
-(use-package hideshow
-  :ensure nil
-  :hook (prog-mode . hs-minor-mode))
-
 (use-package eldoc
   :ensure nil)
 
