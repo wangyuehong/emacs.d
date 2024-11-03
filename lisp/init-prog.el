@@ -37,16 +37,16 @@
   :custom
   (quickrun-timeout-seconds 15))
 
-(use-package ruby-mode :ensure nil)
-
-(use-package dockerfile-mode)
 (use-package docker-compose-mode)
-(use-package protobuf-mode)
-(use-package yaml-mode)
-(use-package toml-mode)
-(use-package terraform-mode)
+(use-package dockerfile-mode)
 (use-package js2-mode)
+(use-package lua-mode)
+(use-package protobuf-mode)
+(use-package ruby-mode :ensure nil)
+(use-package terraform-mode)
+(use-package toml-mode)
 (use-package typescript-mode :mode ("\\.ts[x]\\'" . typescript-mode))
+(use-package yaml-mode)
 
 (use-package css-mode
   :ensure nil
