@@ -11,7 +11,11 @@
     (when (eglot--server-capable :documentFormattingProvider)
       (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
   (defun my/eglot-capf ()
-    (add-to-list 'completion-at-point-functions #'cape-dabbrev))
+    (setq-local completion-at-point-functions
+      (list (cape-capf-super
+              #'eglot-completion-at-point
+              #'cape-dabbrev
+              #'yasnippet-capf))))
 
   :bind (:map eglot-mode-map
               ("C-c l t" . eglot-find-typeDefinition)
@@ -37,7 +41,6 @@
 
   :init
   (setq read-process-output-max (* 1024 1024)) ; 1MB
-  (setq completion-category-overrides '((eglot (styles orderless flex))))
   :custom
   (eglot-autoshutdown t)
   (eglot-confirm-server-initiated-edits nil)

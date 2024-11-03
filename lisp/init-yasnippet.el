@@ -7,10 +7,14 @@
 
 (use-package yasnippet-snippets)
 
+(use-package consult-yasnippet
+  :after (consult yasnippet)
+  :bind ("M-y" . consult-yasnippet)
+  :custom
+  (consult-yasnippet-use-thing-at-point t))
+
 (use-package yasnippet-capf
-  :after (yasnippet cape)
-  :init
-  (add-to-list 'completion-at-point-functions #'yasnippet-capf))
+  :after (yasnippet cape))
 
 (provide 'init-yasnippet)
 ;;; init-yasnippet.el ends here

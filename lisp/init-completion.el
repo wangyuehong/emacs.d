@@ -13,8 +13,8 @@
 (use-package corfu
   :custom
   (corfu-auto t)
-  (corfu-auto-delay 0.1)
-  (corfu-auto-prefix 1)
+  (corfu-auto-delay 0.3)
+  (corfu-auto-prefix 2)
   (corfu-cycle t)
   (corfu-on-exact-match nil)
   (corfu-preselect-first nil)
@@ -60,7 +60,8 @@
   (orderless-component-separator #'orderless-escapable-split-on-space))
 
 (use-package vertico
-  :hook (after-init . vertico-mode)
+  :hook ((after-init . vertico-mode)
+         (minibuffer-setup . vertico-repeat-save))
   :bind (:map vertico-map
           ("C-f" . vertico-scroll-up)
           ("C-b" . vertico-scroll-down)
@@ -94,18 +95,6 @@
 
 (use-package consult-ls-git
   :after (consult))
-
-(use-package consult-dir
-  :after (consult)
-  :bind (("C-x C-d" . consult-dir)
-          :map vertico-map
-          ("C-x C-d" . consult-dir)
-          ("C-x C-j" . consult-dir-jump-file)))
-
-(use-package consult-yasnippet
-  :after (consult yasnippet)
-  :bind (("S-TAB" . consult-yasnippet)
-          ([backtab] . consult-yasnippet)))
 
 (provide 'init-completion)
 ;;; init-completion.el ends here
