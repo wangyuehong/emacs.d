@@ -7,8 +7,9 @@
   (defun my/eglot-organize-imports () (interactive)
          (eglot-code-actions nil nil "source.organizeImports" t))
   (defun my/eglot-setup-hooks () (interactive)
-         (add-hook 'before-save-hook 'my/eglot-organize-imports nil t)
-         (add-hook 'before-save-hook 'eglot-format-buffer nil t))
+    (add-hook 'before-save-hook 'my/eglot-organize-imports nil t)
+    (when (eglot--server-capable :documentFormattingProvider)
+      (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
   (defun my/eglot-capf ()
     (add-to-list 'completion-at-point-functions #'cape-dabbrev))
 
