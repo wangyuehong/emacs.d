@@ -63,6 +63,8 @@
   :hook ((after-init . vertico-mode)
          (minibuffer-setup . vertico-repeat-save))
   :bind (:map vertico-map
+          ("RET" . vertico-directory-enter)
+          ("DEL" . vertico-directory-delete-char)
           ("C-f" . vertico-scroll-up)
           ("C-b" . vertico-scroll-down)
           ("C-j" . vertico-next)
