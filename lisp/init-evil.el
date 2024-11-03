@@ -10,6 +10,8 @@
   :init
   (setq evil-want-abbrev-expand-on-insert-exit nil
     evil-disable-insert-state-bindings t
+    evil-want-C-i-jump nil
+    evil-want-C-u-scroll t
     evil-want-fine-undo t
     evil-want-integration t
     evil-want-keybinding nil
@@ -78,9 +80,6 @@
   (define-key evil-motion-state-map (kbd "s") 'evil-avy-goto-word-or-subword-1)
   (define-key evil-normal-state-map (kbd "s") 'evil-avy-goto-word-or-subword-1)
   (define-key evil-visual-state-map (kbd "s") 'evil-avy-goto-word-or-subword-1)
-  (define-key evil-motion-state-map (kbd "S") 'avy-goto-char-timer)
-  (define-key evil-normal-state-map (kbd "S") 'avy-goto-char-timer)
-  (define-key evil-visual-state-map (kbd "S") 'avy-goto-char-timer)
   (define-key evil-normal-state-map (kbd "f") 'evil-avy-goto-char-in-line)
   (define-key evil-visual-state-map (kbd "f") 'evil-avy-goto-char-in-line)
   (define-key evil-visual-state-map (kbd "TAB") 'evil-indent)
@@ -107,13 +106,6 @@
   :hook (evil-mode . evil-collection-init)
   :custom
   (evil-collection-want-unimpaired-p nil))
-
-(use-package evil-args
-  :after evil
-  :bind (:map evil-inner-text-objects-map
-          ("a" . evil-inner-arg)
-          :map evil-outer-text-objects-map
-          ("a" . evil-outer-arg)))
 
 (use-package evil-surround
   :hook (after-init . global-evil-surround-mode))
