@@ -10,9 +10,9 @@
     :states '(normal motion visual)
     :keymaps 'override
     :prefix ";"
-    "r" 'my/replace-at-point-or-region
     "a" 'embark-act
-    "d" '(:keymap diff-hl-command-map :package diff-hl :wk "diff-hl"))
+    "d" 'fanyi-dwim2
+    "r" 'my/replace-at-point-or-region)
   (general-define-key
     :states '(normal motion visual)
     :keymaps 'override
@@ -21,7 +21,7 @@
     "a"  'rg-project
     "A"  'rg
     "c"  'evilnc-comment-or-uncomment-lines
-    "d"  'fanyi-dwim2
+    "d" '(:keymap diff-hl-command-map :package diff-hl :wk "diff-hl")
     "e"  'evil-iedit-state/iedit-mode
     "E"  '(:keymap envrc-command-map :package envrc :wk "direnv")
     "f"  'consult-flymake
