@@ -6,15 +6,23 @@
   :hook (after-init . evil-mode)
   :bind
   (("C-x -" . evil-window-split)
-    ("C-x |" . evil-window-vsplit))
+    ("C-x |" . evil-window-vsplit)
+    :map evil-normal-state-map
+    ("q" . quit-window)
+    ("s" . evil-avy-goto-word-or-subword-1)
+    ("f" . evil-avy-goto-char-in-line)
+    ("u" . undo-fu-only-undo)
+    ("C-r" . undo-fu-only-redo)
+    :map evil-motion-state-map
+    ("q" . quit-window)
+    ("s" . evil-avy-goto-word-or-subword-1)
+    :map evil-visual-state-map
+    ("v" . er/expand-region)
+    ("s" . evil-avy-goto-word-or-subword-1)
+    ("f" . evil-avy-goto-char-in-line)
+    ("TAB" . evil-indent))
   :init
-  (setq evil-want-abbrev-expand-on-insert-exit nil
-    evil-disable-insert-state-bindings t
-    evil-want-C-i-jump nil
-    evil-want-C-u-scroll t
-    evil-want-fine-undo t
-    evil-want-integration t
-    evil-want-keybinding nil
+  (setq evil-disable-insert-state-bindings t
     evil-want-Y-yank-to-eol t)
 
   (make-variable-buffer-local
@@ -73,19 +81,13 @@
   (evil-symbol-word-search t)
   (evil-undo-system 'undo-redo)
   (evil-vsplit-window-right t)
+  (evil-want-C-i-jump nil)
+  (evil-want-C-u-scroll t)
+  (evil-want-abbrev-expand-on-insert-exit nil)
+  (evil-want-fine-undo t)
+  (evil-want-integration t)
+  (evil-want-keybinding nil)
   :config
-  (define-key evil-normal-state-map (kbd "q") 'quit-window)
-  (define-key evil-motion-state-map (kbd "q") 'quit-window)
-  (define-key evil-visual-state-map (kbd "v") 'er/expand-region)
-  (define-key evil-motion-state-map (kbd "s") 'evil-avy-goto-word-or-subword-1)
-  (define-key evil-normal-state-map (kbd "s") 'evil-avy-goto-word-or-subword-1)
-  (define-key evil-visual-state-map (kbd "s") 'evil-avy-goto-word-or-subword-1)
-  (define-key evil-normal-state-map (kbd "f") 'evil-avy-goto-char-in-line)
-  (define-key evil-visual-state-map (kbd "f") 'evil-avy-goto-char-in-line)
-  (define-key evil-visual-state-map (kbd "TAB") 'evil-indent)
-  (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
-  (define-key evil-normal-state-map (kbd "C-r") 'undo-fu-only-redo)
-
   ;; modes to map to different default states
   (dolist (p '((Info-mode . emacs)
                 (calculator-mode . emacs)
