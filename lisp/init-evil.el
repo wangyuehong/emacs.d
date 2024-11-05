@@ -22,6 +22,7 @@
     ("f" . evil-avy-goto-char-in-line)
     ("TAB" . evil-indent))
   :init
+  ;; https://github.com/emacs-evil/evil/issues/1486
   (setq evil-disable-insert-state-bindings t
     evil-want-Y-yank-to-eol t)
 
