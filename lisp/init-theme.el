@@ -6,7 +6,5 @@
   :init (load-theme 'srcery t)
   :custom (srcery-invert-region nil))
 
-(use-package gruvbox-theme)
-
 (provide 'init-theme)
 ;;; init-theme.el ends here
