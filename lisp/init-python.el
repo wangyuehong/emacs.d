@@ -6,9 +6,11 @@
   :ensure nil
   :hook (python-mode . eglot-ensure))
 
-(use-package ruff-format
-  :hook (python-mode . ruff-format-on-save-mode)
-  :when (executable-find "ruff"))
+(use-package lazy-ruff
+  :if (executable-find "ruff")
+  :hook (python-mode . lazy-ruff-mode)
+  :config
+  (setq lazy-ruff-only-format-buffer t))
 
 (provide 'init-python)
 ;;; init-python.el ends here
