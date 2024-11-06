@@ -43,22 +43,6 @@
   (unbind-key "[" diff-hl-command-map)
   (unbind-key "]" diff-hl-command-map))
 
-(use-package git-timemachine
-  :bind (("C-x v t" . git-timemachine))
-  :config
-  (set-face-background 'git-timemachine-minibuffer-detail-face "black")
-  :hook ((git-timemachine-mode . (lambda ()
-                                   "improve `git-timemachine' buffers."
-                                   ;; display different colors in mode-line
-                                   (if (facep 'mode-line-active)
-                                     (face-remap-add-relative 'mode-line-active 'custom-state)
-                                     (face-remap-add-relative 'mode-line 'custom-state))
-
-                                   ;; display line numbers
-                                   (and (derived-mode-p 'prog-mode 'yaml-mode 'protobuf-mode)
-                                     (fboundp 'display-line-numbers-mode)
-                                     (display-line-numbers-mode t))))))
-
 (use-package git-modes)
 
 (use-package git-link
