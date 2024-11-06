@@ -31,15 +31,11 @@
   (corfu-history-mode)
   :hook ((after-init . global-corfu-mode)))
 
-(use-package nerd-icons-corfu
-  :after corfu
-  :init (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
-
 (use-package corfu-prescient
   :after corfu)
 
 (use-package corfu-terminal
-  :if (not (display-graphic-p))
+  :unless (display-graphic-p)
   :hook (global-corfu-mode . corfu-terminal-mode))
 
 (use-package cape
