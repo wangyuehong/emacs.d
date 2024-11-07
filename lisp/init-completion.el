@@ -76,9 +76,7 @@
   :bind (("C-x b" . consult-buffer)
           ([remap imenu] . consult-imenu)
           :map minibuffer-local-map
-          ("C-r" . consult-history)
-          ("C-p" . previous-history-element)
-          ("C-n" . next-history-element))
+          ("C-r" . consult-history))
   :init
   (with-eval-after-load 'xref
     (setq xref-show-xrefs-function #'consult-xref
@@ -86,7 +84,8 @@
   :config
   (setq consult-preview-key (list :debounce 0.5 'any)))
 
-(use-package embark)
+(use-package embark
+  :bind (("C-;" . embark-act)))
 
 (use-package embark-consult
   :after (embark consult))
