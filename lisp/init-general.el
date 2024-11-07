@@ -22,7 +22,6 @@
     "c"  'evilnc-comment-or-uncomment-lines
     "d" '(:keymap diff-hl-command-map :package diff-hl :wk "diff-hl")
     "e"  'evil-iedit-state/iedit-mode
-    "E"  '(:keymap envrc-command-map :package envrc :wk "direnv")
     "f"  'consult-flymake
     "F"  'flymake-show-project-diagnostics
     "g"  'magit-status
@@ -32,7 +31,6 @@
     "K"  'kill-other-buffers
     "l"  'consult-ls-git
     "o"  'consult-line
-    "p"  '(:keymap project-prefix-map :package project :wk "project")
     "P"  'package-upgrade-all
     "q"  'quickrun
     "t"  '(:which-key "toggles")
