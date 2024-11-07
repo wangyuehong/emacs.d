@@ -38,10 +38,8 @@
           ("C-c c p" . citre-peak)
           ("C-c c u" . citre-update-this-tags-file))
   :custom
-  (citre-auto-enable-citre-mode-modes '(ruby-mode))
-  (citre-enable-capf-integration nil)
-  (citre-prompt-language-for-ctags-command t)
-  (citre-use-project-root-when-creating-tags t))
+  (citre-auto-enable-citre-mode-modes '(prog-mode))
+  (citre-enable-capf-integration nil))
 
 (use-package quickrun
   :commands quickrun
