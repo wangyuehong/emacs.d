@@ -11,6 +11,7 @@
     :keymaps 'override
     :prefix ";"
     "a" 'embark-act
+    "d" 'fanyi-dwim2
     "r" 'my/replace-at-point-or-region)
   (general-define-key
     :states '(normal motion visual)

@@ -17,7 +17,36 @@
   (unbind-key "C-;" flyspell-mode-map)
   :custom
   (flyspell-issue-message-flag nil)
-  (ispell-pr  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+  (ispell-program-name "aspell")
+  (ispell-extra-args '("--sug-mode=ultra" "--lang=en_US" "--run-together")))
+
+(use-package nerd-icons
+  :config
+  (setf (cdr (assoc "nf-dev-go"   nerd-icons/devicon-alist)) "\xe627")
+  (setf (cdr (assoc "nf-oct-ruby" nerd-icons/octicon-alist)) "\xe23e"))
+
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom
+  (doom-modeline-buffer-encoding 'nondefault)
+  (doom-modeline-buffer-file-name-style 'relative-from-project)
+  (doom-modeline-enable-word-count t)
+  (doom-modeline-vcs-max-length 36)
+  (doom-modeline-modal-icon nil)
+  (evil-normal-state-tag (propertize "[Normal]"))
+  (evil-emacs-state-tag (propertize "[Emacs]"))
+  (evil-insert-state-tag (propertize "[Insert]"))
+  (evil-motion-state-tag (propertize "[Motion]"))
+  (evil-visual-state-tag (propertize "[Visual]"))
+  (evil-operator-state-tag (propertize "[Operator]"))
+  (evil-replace-state-tag (propertize "[Replace")))
+
+(use-package nerd-icons-dired
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
+
+(use-package nerd-icons-ibuffer
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
 (use-package nerd-icons-completion
   :after marginalia
@@ -60,6 +89,9 @@ If the current buffer is not associated with a file, open a new Visual Studio Co
   :if (executable-find "direnv")
   :config
   (envrc-global-mode))
+
+(use-package fanyi
+  :commands fanyi-dwim fanyi-dwim2)
 
 (use-package breadcrumb
   :hook
