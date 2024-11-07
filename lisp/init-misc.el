@@ -90,9 +90,6 @@ If the current buffer is not associated with a file, open a new Visual Studio Co
   :config
   (envrc-global-mode))
 
-(use-package fanyi
-  :commands fanyi-dwim fanyi-dwim2)
-
 (use-package breadcrumb
   :hook
   (after-init . breadcrumb-mode))
