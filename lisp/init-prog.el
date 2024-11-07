@@ -35,7 +35,8 @@
   :init
   (require 'citre-config)
   :bind (("C-c c j" . citre-jump)
-         ("C-c c u" . citre-update-this-tags-file))
+          ("C-c c p" . citre-peak)
+          ("C-c c u" . citre-update-this-tags-file))
   :custom
   (citre-auto-enable-citre-mode-modes '(ruby-mode))
   (citre-enable-capf-integration nil)
