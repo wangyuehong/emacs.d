@@ -14,7 +14,7 @@
   :custom
   (corfu-auto t)
   (corfu-auto-delay 0.3)
-  (corfu-auto-prefix 2)
+  (corfu-auto-prefix 1)
   (corfu-cycle t)
   (corfu-on-exact-match nil)
   (corfu-preselect-first nil)
