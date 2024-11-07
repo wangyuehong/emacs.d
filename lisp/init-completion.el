@@ -74,7 +74,10 @@
 
 (use-package consult
   :bind (("C-x b" . consult-buffer)
-          ([remap imenu] . consult-imenu)
+          ([remap bookmark-jump]      . consult-bookmark)
+          ([remap goto-line]          . consult-goto-line)
+          ([remap imenu]              . consult-imenu)
+          ([remap recentf-open-files] . consult-recent-file)
           :map minibuffer-local-map
           ("C-r" . consult-history))
   :init
