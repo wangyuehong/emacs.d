@@ -1,4 +1,4 @@
-;;; init-lsp.el --- git config. -*- lexical-binding: t; -*-
+;;; init-git.el --- git config. -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 
