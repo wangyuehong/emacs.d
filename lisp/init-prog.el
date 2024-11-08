@@ -2,6 +2,15 @@
 ;;; Commentary:
 ;;; Code:
 
+(use-package display-fill-column-indicator
+  :ensure nil
+  :hook ((prog-mode yaml-mode protobuf-mode) . display-fill-column-indicator-mode)
+  :init
+  (setq-default fill-column 120)
+  (setq-default display-fill-column-indicator-character ?\N{U+2506})
+  :custom-face
+  (fill-column-indicator ((t (:inherit shadow :foreground "dimgray")))))
+
 (use-package flymake
   :ensure nil
   :bind (:map flymake-mode-map

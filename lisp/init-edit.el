@@ -56,7 +56,6 @@
 
 (use-package simple
   :ensure nil
-  ;; :hook ((prog-mode markdown-mode yaml-mode conf-mode) . enable-trailing-whitespace)
   :custom
   (column-number-mode t)
   (line-number-mode t)
@@ -68,11 +67,7 @@
   (kill-do-not-save-duplicates t)
   (set-mark-command-repeat-pop t)
   :init
-  (setq-default show-trailing-whitespace nil) ; Don't show trailing whitespace by default
-  (defun enable-trailing-whitespace()
-    "Show trailing spaces and delete on saving."
-    (setq show-trailing-whitespace t)
-    (add-hook 'before-save-hook #'delete-trailing-whitespace nil t)))
+  (setq-default show-trailing-whitespace nil)); Don't show trailing whitespace by default
 
 (use-package ediff
   :ensure nil

@@ -37,7 +37,6 @@
             (modify-syntax-entry ?_ "w")))
 
 (setq-default major-mode 'text-mode
-              fill-column 80
               tab-width 4
               indent-tabs-mode nil)
 
