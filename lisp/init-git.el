@@ -30,8 +30,6 @@
           ("S" . diff-hl-stage-current-hunk)
           ("U" . diff-hl-unstage-file))
   :config
-  (diff-hl-flydiff-mode 1)
-
   (setq-default fringes-outside-margins t)
   (unless (display-graphic-p)
     (diff-hl-margin-mode 1))

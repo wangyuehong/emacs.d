@@ -26,7 +26,7 @@
   (setf (cdr (assoc "nf-oct-ruby" nerd-icons/octicon-alist)) "\xe23e"))
 
 (use-package doom-modeline
-  :init (doom-modeline-mode 1)
+  :hook (after-init . doom-modeline-mode)
   :custom
   (doom-modeline-buffer-encoding 'nondefault)
   (doom-modeline-buffer-file-name-style 'truncate-with-project)

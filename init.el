@@ -2,6 +2,9 @@
 ;;; Commentary:
 ;;; Code:
 
+;; (setq use-package-compute-statistics t)
+;; C-x use-package-report
+
 ;; Produce backtraces when errors occur
 (setq debug-on-error t)
 

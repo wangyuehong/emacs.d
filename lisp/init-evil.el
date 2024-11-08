@@ -119,6 +119,7 @@
   :commands (evil-iedit-state evil-iedit-state/iedit-mode))
 
 (use-package evil-matchit
+  :after evil
   :init
   (global-evil-matchit-mode 1))
 
