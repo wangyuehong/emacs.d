@@ -6,6 +6,7 @@
   :custom
   (magit-bury-buffer-function #'magit-restore-window-configuration)
   (magit-commit-show-diff nil)
+  (magit-define-global-key-bindings 'recommended)
   (magit-diff-paint-whitespace nil)
   (magit-diff-refine-hunk t)
   (magit-ediff-dwim-show-on-hunks t)
