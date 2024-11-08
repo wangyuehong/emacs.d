@@ -18,9 +18,7 @@
   :custom
   (xref-search-program (cond ((executable-find "rg") 'ripgrep)
                              (t 'grep)))
-  (xref-history-storage 'xref-window-local-history)
-  (xref-show-xrefs-function #'xref-show-definitions-completing-read)
-  (xref-show-definitions-function #'xref-show-definitions-completing-read))
+  (xref-history-storage 'xref-window-local-history))
 
 (use-package dumb-jump
   :init
@@ -35,8 +33,11 @@
   :init
   (require 'citre-config)
   :bind (("C-c c j" . citre-jump)
-          ("C-c c p" . citre-peak)
-          ("C-c c u" . citre-update-this-tags-file))
+          ("C-c c p" . citre-peek)
+          ("C-c c u" . citre-update-this-tags-file)
+          :map citre-peek-keymap
+          ("C-j" . citre-peek-next-tag)
+          ("C-k" . citre-peek-prev-tag))
   :custom
   (citre-auto-enable-citre-mode-modes '(prog-mode))
   (citre-enable-capf-integration nil))
