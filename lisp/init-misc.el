@@ -29,7 +29,8 @@
   :init (doom-modeline-mode 1)
   :custom
   (doom-modeline-buffer-encoding 'nondefault)
-  (doom-modeline-buffer-file-name-style 'relative-from-project)
+  (doom-modeline-buffer-file-name-style 'truncate-with-project)
+  (doom-modeline-project-detection 'project)
   (doom-modeline-enable-word-count t)
   (doom-modeline-vcs-max-length 36)
   (doom-modeline-modal-icon nil)
