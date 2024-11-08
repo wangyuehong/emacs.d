@@ -12,7 +12,7 @@
     (cdr project))
 
   (defun my/set-go-project-find-functions ()
-    "Add 'project-find-go-mod' to 'project-find-functions' in go-mode."
+    "Add project-find-go-mod to project-find-functions in go-mode."
     (add-to-list 'project-find-functions #'project-find-go-mod))
   :bind (:map go-mode-map
           ("C-c i" . go-import-add))
