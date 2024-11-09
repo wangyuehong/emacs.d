@@ -6,6 +6,9 @@
               grep-scroll-output t)
 
 (use-package wgrep
+  :bind
+  (:map grep-mode-map
+    ("C-c C-p" . wgrep-change-to-wgrep-mode))
   :custom
   (wgrep-auto-save-buffer t)
   (wgrep-change-readonly-file t))
