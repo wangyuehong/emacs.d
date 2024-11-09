@@ -20,6 +20,11 @@
   :custom
   (copilot-log-max 0))
 
+(use-package copilot-chat
+  :after copilot
+  :config
+  (add-hook 'git-commit-setup-hook 'copilot-chat-insert-commit-message))
+
 (use-package gptel
   :config
   (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
