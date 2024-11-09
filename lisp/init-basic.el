@@ -82,6 +82,13 @@
 (set-selection-coding-system 'utf-8)
 (modify-coding-system-alist 'process "*" 'utf-8)
 
+(use-package emacs
+  :ensure nil
+  :hook
+  (after-init . auto-save-visited-mode)
+  :custom
+  (auto-save-visited-interval 1))
+
 (use-package bookmark
   :ensure nil
   :bind
