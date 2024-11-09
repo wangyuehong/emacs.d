@@ -41,7 +41,8 @@
 (use-package citre
   :init
   (require 'citre-config)
-  :bind (("C-c c j" . citre-jump)
+  :bind (:map prog-mode-map
+          ("C-c c j" . citre-jump)
           ("C-c c p" . citre-peek)
           ("C-c c u" . citre-update-this-tags-file)
           :map citre-peek-keymap
