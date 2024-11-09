@@ -3,8 +3,10 @@
 ;;; Code:
 
 (use-package which-key
-  :custom (which-key-idle-delay 0.5)
-  :hook (after-init . which-key-mode))
+  :hook (after-init . which-key-mode)
+  :custom
+  (which-key-idle-delay 0.3)
+  (which-key-sort-order 'which-key-key-order-alpha))
 
 (use-package emacs
     :if (not (display-graphic-p))
