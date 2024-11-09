@@ -7,6 +7,7 @@
   :bind
   (("C-x -" . evil-window-split)
     ("C-x |" . evil-window-vsplit)
+    ("M-r" . my/replace-at-point-or-region)
     :map evil-normal-state-map
     ("q" . quit-window)
     ("s" . evil-avy-goto-word-or-subword-1)
