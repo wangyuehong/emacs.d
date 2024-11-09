@@ -91,10 +91,6 @@ If the current buffer is not associated with a file, open a new Visual Studio Co
   :config
   (envrc-global-mode))
 
-(use-package breadcrumb
-  :hook
-  (after-init . breadcrumb-mode))
-
 (use-package open-junk-file
   :custom
   (open-junk-file-format "~/junk/%Y-%m-%dT%H-%M-%S.md"))

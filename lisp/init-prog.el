@@ -11,6 +11,9 @@
   :custom-face
   (fill-column-indicator ((t (:inherit shadow :foreground "dimgray")))))
 
+(use-package breadcrumb
+  :hook ((prog-mode yaml-mode protobuf-mode) . breadcrumb-mode))
+
 (use-package flymake
   :ensure nil
   :bind (:map flymake-mode-map
