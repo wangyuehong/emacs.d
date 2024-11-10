@@ -55,6 +55,7 @@
 
     "g"  '(:wk "git")
     "gg" '(magit-status :wk "magit-status")
+    "gi" '(copilot-chat-insert-commit-message           :wk "insert-commit-message")
     "gd" '(:keymap diff-hl-command-map :package diff-hl :wk "diff-hl")
 
     "s"  '(:wk "search")
