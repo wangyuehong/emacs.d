@@ -23,9 +23,7 @@
     :states '(normal motion visual)
     :keymaps 'override
     :prefix "SPC"
-    "SPC" '(:wk "+++")
-    "SPC w" '(save-buffer    :wk "save-buffer")
-    "SPC l" '(consult-ls-git :wk "ls-git")
+    "SPC" '(consult-ls-git :wk "ls-git")
 
     "a" 'embark-act
 
@@ -71,6 +69,7 @@
     "tn" '(display-line-numbers-mode :wk "toggle-display-line-numbers")
     "tp" '(electric-pair-mode        :wk "electric-pair-mode")
 
+    "w" '(save-buffer    :wk "save-buffer")
     "x"  'execute-extended-command))
 
 (provide 'init-general)
