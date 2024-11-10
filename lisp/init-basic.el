@@ -87,7 +87,7 @@
   :hook
   (after-init . auto-save-visited-mode)
   :custom
-  (auto-save-visited-interval 1))
+  (auto-save-visited-interval 60))
 
 (use-package bookmark
   :ensure nil
