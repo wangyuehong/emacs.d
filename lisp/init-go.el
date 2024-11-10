@@ -21,7 +21,6 @@
   :config
   (use-package go-tag)
   (use-package go-gen-test)
-  (use-package go-snippets)
   (use-package gotest
     :bind (:map go-mode-map
             ("C-c t t" . go-test-current-test)
