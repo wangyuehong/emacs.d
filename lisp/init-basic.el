@@ -93,8 +93,8 @@
 
 (use-package bookmark
   :ensure nil
-  :bind
-  (("C-x j j" . bookmark-jump))
+  :bind (("C-x j j" . bookmark-jump)
+         ("C-x j d" . bookmark-delete))
   :init
   (setq bookmark-default-file (expand-file-name ".bookmarks.el" user-emacs-directory)))
 
