@@ -5,7 +5,10 @@
 (use-package which-key
   :hook (after-init . which-key-mode)
   :custom
+  (which-key-dont-use-unicode nil)
   (which-key-idle-delay 0.3)
+  (which-key-show-remaining-keys t)
+  (which-key-side-window-max-height 0.35)
   (which-key-sort-order 'which-key-key-order-alpha))
 
 (use-package emacs
