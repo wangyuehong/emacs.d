@@ -21,12 +21,21 @@
   (copilot-log-max 0))
 
 (use-package copilot-chat
-  :after (copilot magit)
-  :bind
-  (:map git-commit-mode-map
-    ("C-c i" . copilot-chat-insert-commit-message))
+  :after copilot
+  :bind (("C-x c r" . copilot-chat-review)
+          ("C-x c d" . copilot-chat-doc)
+          ("C-x c e" . copilot-chat-explain)
+          ("C-x c f" . copilot-chat-fix)
+          ("C-x c o" . copilot-chat-optimize)
+          ("C-x c t" . copilot-chat-test)
+          :map git-commit-mode-map
+          ("C-c i" . copilot-chat-insert-commit-message))
   :config
-  (add-hook 'git-commit-setup-hook 'copilot-chat-insert-commit-message))
+  (with-eval-after-load 'magit
+    (add-hook 'git-commit-setup-hook 'copilot-chat-insert-commit-message))
+
+  (with-eval-after-load 'which-key
+    (which-key-add-key-based-replacements "C-x c" "copilot")))
 
 (use-package gptel
   :config
