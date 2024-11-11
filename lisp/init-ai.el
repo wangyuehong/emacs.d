@@ -21,9 +21,10 @@
   (copilot-log-max 0))
 
 (use-package copilot-chat
-  :after copilot
-  :bind (:map git-commit-mode
-         ("C-c i" . copilot-chat-insert-commit-message))
+  :after (copilot magit)
+  :bind
+  (:map git-commit-mode-map
+    ("C-c i" . copilot-chat-insert-commit-message))
   :config
   (add-hook 'git-commit-setup-hook 'copilot-chat-insert-commit-message))
 
