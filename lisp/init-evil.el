@@ -14,6 +14,9 @@
     ("f" . evil-avy-goto-char-in-line)
     ("u" . undo-fu-only-undo)
     ("C-r" . undo-fu-only-redo)
+    :map evil-operator-state-map
+    ("s" . evil-avy-goto-word-or-subword-1)
+    ("f" . evil-avy-goto-char-in-line)
     :map evil-motion-state-map
     ("q" . quit-window)
     ("s" . evil-avy-goto-word-or-subword-1)
