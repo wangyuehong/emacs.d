@@ -22,7 +22,7 @@
   (copilot-log-max 0))
 
 (use-package copilot-chat
-  :after (copilot magit)
+  :after magit
   :bind (("C-x c r" . copilot-chat-review)
           ("C-x c d" . copilot-chat-doc)
           ("C-x c e" . copilot-chat-explain)
