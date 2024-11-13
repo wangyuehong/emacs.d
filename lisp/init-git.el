@@ -36,11 +36,7 @@
 
   (with-eval-after-load 'magit
     (add-hook 'magit-pre-refresh-hook #'diff-hl-magit-pre-refresh)
-    (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh))
-
-  (unbind-key "n" diff-hl-command-map)
-  (unbind-key "[" diff-hl-command-map)
-  (unbind-key "]" diff-hl-command-map))
+    (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)))
 
 (use-package git-modes)
 
