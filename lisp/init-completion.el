@@ -88,7 +88,10 @@
   (setq consult-preview-key (list :debounce 0.5 'any)))
 
 (use-package embark
-  :bind (("C-;" . embark-act)))
+  :bind (("C-;" . embark-act)
+          ([remap describe-bindings] . embark-bindings))
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command))
 
 (use-package embark-consult
   :after (embark consult))
