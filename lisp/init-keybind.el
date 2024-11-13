@@ -4,6 +4,23 @@
 
 (use-package which-key
   :hook (after-init . which-key-mode)
+  :config
+  (which-key-add-key-based-replacements "C-c &" "yasnippet")
+  (which-key-add-key-based-replacements "C-c @" "hideshow")
+  (which-key-add-key-based-replacements "C-c t" "gotest")
+  (which-key-add-key-based-replacements "C-c l" "lsp")
+
+  (which-key-add-key-based-replacements "C-x 8" "unicode")
+  (which-key-add-key-based-replacements "C-x 8 e" "emoji")
+  (which-key-add-key-based-replacements "C-x a" "abbrev")
+  (which-key-add-key-based-replacements "C-x c" "copilot")
+  (which-key-add-key-based-replacements "C-x n" "narrow")
+  (which-key-add-key-based-replacements "C-x p" "project")
+  (which-key-add-key-based-replacements "C-x j" "bookmark")
+  (which-key-add-key-based-replacements "C-x r" "register & bookmark")
+  (which-key-add-key-based-replacements "C-x t" "tab")
+  (which-key-add-key-based-replacements "C-x x" "buffer")
+  (which-key-add-key-based-replacements "C-x RET" "coding-system")
   :custom
   (which-key-dont-use-unicode nil)
   (which-key-idle-delay 0.3)
