@@ -9,7 +9,8 @@
   :hook
   ((prog-mode git-commit-setup yaml-mode protobuf-mode markdown-mode) . copilot-mode)
   :bind
-  (:map copilot-completion-map
+  (("C-x c g" . copilot-diagnose)
+    :map copilot-completion-map
     ("C-j" . copilot-next-completion)
     ("C-k" . copilot-previous-completion)
     ("C-g" . copilot-clear-overlay)
@@ -22,16 +23,24 @@
   (copilot-log-max 0))
 
 (use-package copilot-chat
-  :bind (("C-x c r" . copilot-chat-review)
+  :bind (("C-x c a"  . copilot-chat-add-current-buffer)
+          ("C-x c c" . copilot-chat-custom-prompt-selection)
           ("C-x c d" . copilot-chat-doc)
           ("C-x c e" . copilot-chat-explain)
           ("C-x c f" . copilot-chat-fix)
+          ("C-x c l" . copilot-chat-list)
           ("C-x c o" . copilot-chat-optimize)
+          ("C-x c p" . copilot-chat-display)
+          ("C-x c r" . copilot-chat-review)
           ("C-x c t" . copilot-chat-test)
+          ("C-x c x" . copilot-chat-reset)
           :map git-commit-mode-map
           ("C-c i" . copilot-chat-insert-commit-message))
   :hook
-  (git-commit-setup-hook . copilot-chat-insert-commit-message))
+  (git-commit-setup-hook . copilot-chat-insert-commit-message)
+  :custom
+  (copilot-chat-prompt-explain "Please write an explanation for the following code in Chinese \
+without including the code itself to shorten the response length:\n"))
 
 (use-package gptel
   :config
