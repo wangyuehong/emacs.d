@@ -3,6 +3,7 @@
 ;;; Code:
 
 (use-package display-fill-column-indicator
+  :disabled t
   :ensure nil
   :hook ((prog-mode yaml-mode protobuf-mode) . display-fill-column-indicator-mode)
   :init
@@ -24,7 +25,7 @@
 (use-package xref
   :ensure nil
   :bind
-  (("M-]" . xref-find-references))
+  (("C-\\" . xref-find-references))
   :hook
   ((xref-after-return xref-after-jump) . recenter)
   :custom
