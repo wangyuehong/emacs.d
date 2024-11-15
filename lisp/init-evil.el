@@ -17,6 +17,7 @@
     ("o" . other-window)
     ("u" . winner-undo)
     ("C-r" . winner-redo)
+    ("C-h" . nil)
     :map evil-normal-state-map
     ("q" . quit-window)
     ("s" . evil-avy-goto-word-or-subword-1)
