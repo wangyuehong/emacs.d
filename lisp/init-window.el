@@ -2,6 +2,18 @@
 ;;; Commentary:
 ;;; Code:
 
+(use-package winner-mode
+  :ensure nil
+  :hook (after-init . winner-mode)
+  :bind (:map window-prefix-map
+          ("u" . winner-undo)
+          ("C-r" . winner-redo)
+          :repeat-map winner-repeat-map
+          ("u" . winner-undo)
+          ("C-r" . winner-redo))
+  :custom
+  (winner-dont-bind-my-keys t))
+
 (use-package shackle
   :hook (after-init . shackle-mode)
   :custom

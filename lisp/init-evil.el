@@ -7,13 +7,23 @@
   :bind
   (("C-x -" . evil-window-split)
     ("C-x |" . evil-window-vsplit)
-    ("M-r" . my/replace-at-point-or-region)
+    ("C-x \\" . evil-window-vsplit)
+    :map evil-window-map
+    ("-" . evil-window-split)
+    ("|" . evil-window-vsplit)
+    ("\\" . evil-window-vsplit)
+    ("0" . delete-window)
+    ("1" . delete-other-windows)
+    ("o" . other-window)
+    ("u" . winner-undo)
+    ("C-r" . winner-redo)
     :map evil-normal-state-map
     ("q" . quit-window)
     ("s" . evil-avy-goto-word-or-subword-1)
     ("f" . evil-avy-goto-char-in-line)
     ("u" . undo-fu-only-undo)
     ("C-r" . undo-fu-only-redo)
+    ("M-r" . my/replace-at-point-or-region)
     :map evil-operator-state-map
     ("s" . evil-avy-goto-word-or-subword-1)
     ("f" . evil-avy-goto-char-in-line)
