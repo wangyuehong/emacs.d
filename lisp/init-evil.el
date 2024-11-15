@@ -104,19 +104,11 @@
   (evil-want-keybinding nil)
   :config
   ;; modes to map to different default states
-  (dolist (p '((Info-mode . emacs)
+  (dolist (p '((Info-mode . motion)
                 (calculator-mode . emacs)
-                (comint-mode . emacs)
                 (dashboard-mode . motion)
-                (eshell-mode . emacs)
-                (fundamental-mode . emacs)
                 (help-mode . motion)
-                (messages-buffer-mode . motion)
-                (minibuffer-inactive-mode . emacs)
-                (shell-mode . emacs)
-                (special-mode . emacs)
-                (term-mode . emacs)
-                (xref--xref-buffer-mode . emacs)))
+                (messages-buffer-mode . motion)))
     (evil-set-initial-state (car p) (cdr p))))
 
 (use-package evil-collection
