@@ -45,5 +45,15 @@
   :custom
   (git-link-open-in-browser t))
 
+(use-package smerge-mode
+  :ensure nil
+  :bind (:repeat-map my/smerge-basic-map
+          ("n" . smerge-next)
+          ("p" . smerge-prev)
+          ("a" . smerge-keep-all)
+          ("c" . smerge-keep-current)
+          ("u" . smerge-keep-upper)
+          ("l" . smerge-keep-lower)))
+
 (provide 'init-git)
 ;;; init-git.el ends here
