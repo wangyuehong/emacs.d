@@ -43,8 +43,23 @@
 without including the code itself to shorten the response length:\n"))
 
 (use-package gptel
+  :bind
+  (:map gptel-mode-map
+        ("C-c m" . gptel-menu))
+  :custom
+  (gptel-backend gptel--openai)
+  (gptel-model "gpt-4o")
+  (gptel-post-stream-hook #'gptel-auto-scroll)
+  (gptel-post-response-functions #'gptel-end-of-response)
   :config
-  (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
+  (gptel-make-anthropic "Claude" :stream t)
+  (gptel-make-ollama "Ollama" :stream t :models '(llama3.2:3b qwen2.5-coder:7b)))
+
+(use-package elysium
+  :custom
+  (elysium-window-size 0.33)
+  (elysium-window-style 'horizontal)
+  (elysium-apply-changes-hook 'smerge-start-session))
 
 (provide 'init-ai)
 ;;; init-ai.el ends here
