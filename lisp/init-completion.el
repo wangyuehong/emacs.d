@@ -85,7 +85,7 @@
     (setq xref-show-xrefs-function #'consult-xref
       xref-show-definitions-function #'consult-xref))
   :config
-  (setq consult-narrow-key "<")
+  (setq consult-narrow-key "C-s")
   (setq consult-preview-key (list :debounce 0.5 'any)))
 
 (use-package embark
