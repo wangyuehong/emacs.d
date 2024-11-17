@@ -53,7 +53,7 @@ without including the code itself to shorten the response length:\n"))
   (gptel-post-response-functions #'gptel-end-of-response)
   :config
   (gptel-make-anthropic "Claude" :stream t)
-  (gptel-make-ollama "Ollama" :stream t :models '(llama3.2:3b qwen2.5-coder:7b)))
+  (gptel-make-ollama "Ollama" :stream t :models '(llama3.2:3b qwen2.5-coder:14b)))
 
 (use-package elysium
   :custom
