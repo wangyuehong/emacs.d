@@ -28,7 +28,7 @@
   (avy-all-windows t)
   (avy-background t)
   (avy-highlight-first t)
-  (avy-timeout-seconds 0.5))
+  (avy-timeout-seconds 0.4))
 
 (provide 'init-search)
 ;;; init-search.el ends here
