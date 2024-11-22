@@ -16,6 +16,7 @@
   (corfu-auto-delay 0.3)
   (corfu-auto-prefix 1)
   (corfu-cycle t)
+  (corfu-preselect 'prompt)
   (corfu-on-exact-match nil)
   (corfu-preselect-first nil)
   (corfu-preview-current 'insert)
@@ -23,12 +24,11 @@
   (corfu-quit-no-match 'separator)
   :bind
   (:map corfu-map
-    ("C-j" . corfu-next)
-    ("C-k" . corfu-previous)
     ("C-s" . corfu-insert-separator)
-    ("TAB" . corfu-next))
-  :init
-  (corfu-history-mode)
+    ("TAB" . corfu-next)
+    ([tab] . corfu-next)
+    ("S-TAB" . corfu-previous)
+    ([backtab] . corfu-previous))
   :hook ((after-init . global-corfu-mode)))
 
 (use-package corfu-prescient
