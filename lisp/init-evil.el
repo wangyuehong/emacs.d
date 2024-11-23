@@ -3,6 +3,7 @@
 ;;; Code:
 
 (use-package evil
+  :functions (my/replace-at-point-or-region evil-set-initial-state)
   :hook (after-init . evil-mode)
   :bind
   (("C-x -" . evil-window-split)
@@ -70,11 +71,12 @@
           #'my/restore-input-method))))
 
   (defun my/replace-at-point-or-region ()
-    "Setup buffer replace string for word at point or active region using evil ex mode."
+    "Setup buffer replace string for symbol at point
+ or active region using evil ex mode."
     (interactive)
     (let ((text (if (region-active-p)
                   (buffer-substring-no-properties (region-beginning) (region-end))
-                  (word-at-point))))
+                  (symbol-at-point))))
       (evil-ex (concat "%s/" text "/"))))
 
   :custom
