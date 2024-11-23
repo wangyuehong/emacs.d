@@ -9,7 +9,6 @@
 
 (use-package consult-yasnippet
   :after (consult yasnippet)
-  :bind ("M-y" . consult-yasnippet)
   :custom
   (consult-yasnippet-use-thing-at-point t))
 
