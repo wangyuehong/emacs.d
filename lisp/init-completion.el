@@ -15,12 +15,13 @@
   (corfu-auto-delay 0.3)
   (corfu-auto-prefix 1)
   (corfu-cycle t)
-  (corfu-preselect 'prompt)
   (corfu-on-exact-match nil)
+  (corfu-preselect 'prompt)
   (corfu-preselect-first nil)
   (corfu-preview-current 'insert)
   (corfu-quit-at-boundary 'separator)
   (corfu-quit-no-match 'separator)
+  (global-corfu-minibuffer nil)
   :bind
   (:map corfu-map
     ("C-s" . corfu-insert-separator)
@@ -110,6 +111,13 @@ selected region as initial input."
 
 (use-package consult-ls-git
   :after (consult))
+
+(use-package minibuffer
+  :ensure nil
+  :bind(:map completion-in-region-mode-map
+         ("TAB" . minibuffer-next-completion)
+         ([backtab] . minibuffer-previous-completion)
+         ("RET" . minibuffer-choose-completion)))
 
 (provide 'init-completion)
 ;;; init-completion.el ends here
