@@ -2,10 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode nil))
-(unless (display-graphic-p) (menu-bar-mode -1))
-
 (fset 'yes-or-no-p 'y-or-n-p)
 
 (setq load-prefer-newer t)
@@ -83,12 +79,6 @@
 (set-terminal-coding-system 'utf-8)
 (set-selection-coding-system 'utf-8)
 (modify-coding-system-alist 'process "*" 'utf-8)
-
-(use-package emacs
-  :hook
-  (after-init . auto-save-visited-mode)
-  :custom
-  (auto-save-visited-interval 60))
 
 (use-package bookmark
   :ensure nil
