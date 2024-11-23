@@ -3,6 +3,7 @@
 ;;; Code:
 
 (use-package general
+  :functions (general-evil-setup general-define-key)
   :demand t
   :config
   (general-evil-setup t)
