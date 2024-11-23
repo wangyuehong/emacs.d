@@ -38,6 +38,7 @@
 (use-package iedit)
 
 (use-package markdown-mode
+  :functions (markdown--command-map-prompt markdown--style-map-prompt)
   :init
   (advice-add #'markdown--command-map-prompt :override #'ignore)
   (advice-add #'markdown--style-map-prompt   :override #'ignore)
