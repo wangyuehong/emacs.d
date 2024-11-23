@@ -37,11 +37,6 @@
   :hook ((eglot-managed-mode . my/eglot-capf)
           (eglot-managed-mode . my/eglot-setup-hooks))
   :config
-  (use-package consult-eglot
-    :bind (:map eglot-mode-map
-            ("C-c l l" . consult-eglot-symbols))
-    :custom
-    (consult-eglot-show-kind-name t))
   (setq-default eglot-workspace-configuration
     '((:gopls . ((completeUnimported . t)
                   (gofumpt     . t)
@@ -50,11 +45,19 @@
 
   :init
   (setq read-process-output-max (* 1024 1024)) ; 1MB
+  (advice-add #'eglot-completion-at-point :around #'cape-wrap-buster)
   :custom
   (eglot-autoshutdown t)
   (eglot-confirm-server-initiated-edits nil)
   (eldoc-echo-area-use-multiline-p nil)
   (eglot-events-buffer-size 0))
+
+(use-package consult-eglot
+  :after (consult eglot)
+  :bind (:map eglot-mode-map
+          ("C-c l l" . consult-eglot-symbols))
+  :custom
+  (consult-eglot-show-kind-name t))
 
 (provide 'init-lsp)
 ;;; init-lsp.el ends here

@@ -39,14 +39,13 @@
   :hook (global-corfu-mode . corfu-terminal-mode))
 
 (use-package cape
+  :functions (cape-dabbrev cape-keyword cape-wrap-buster)
   :custom
   (cape-dabbrev-min-length 3)
   (cape-dabbrev-check-other-buffers #'cape--buffers-major-mode)
   :init
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-keyword)
-
-  (advice-add #'eglot-completion-at-point :around #'cape-wrap-buster))
+  (add-to-list 'completion-at-point-functions #'cape-keyword))
 
 (use-package orderless
   :custom
@@ -72,9 +71,11 @@
   :hook (after-init . marginalia-mode))
 
 (use-package consult
+  :functions (consult-line consult-xref)
   :preface
   (defun my/consult-line ()
-    "Call `consult-line` with the current symbol at point or selected region as initial input."
+    "Call `consult-line` with the current symbol at point or
+selected region as initial input."
     (interactive)
     (let ((initial-input
             (if (use-region-p)
@@ -93,11 +94,12 @@
   (with-eval-after-load 'xref
     (setq xref-show-xrefs-function #'consult-xref
       xref-show-definitions-function #'consult-xref))
-  :config
-  (setq consult-narrow-key "C-s")
-  (setq consult-preview-key (list :debounce 0.5 'any)))
+  :custom
+  (consult-narrow-key "C-s")
+  (consult-preview-key (list :debounce 0.5 'any)))
 
 (use-package embark
+  :functions embark-prefix-help-command
   :bind (("C-;" . embark-act)
           ([remap describe-bindings] . embark-bindings))
   :init
