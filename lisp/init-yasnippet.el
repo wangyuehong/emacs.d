@@ -7,11 +7,6 @@
 
 (use-package yasnippet-snippets)
 
-(use-package consult-yasnippet
-  :after (consult yasnippet)
-  :custom
-  (consult-yasnippet-use-thing-at-point t))
-
 (use-package yasnippet-capf
   :after (yasnippet cape))
 
