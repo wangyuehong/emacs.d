@@ -20,6 +20,7 @@
   (vc-handled-backends '(Git)))
 
 (use-package diff-hl
+  :functions (diff-hl-magit-pre-refresh diff-hl-magit-post-refresh)
   :hook ((after-init . global-diff-hl-mode)
           (dired-mode . diff-hl-dired-mode))
   :bind (:map diff-hl-command-map
@@ -38,7 +39,8 @@
     (add-hook 'magit-pre-refresh-hook #'diff-hl-magit-pre-refresh)
     (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)))
 
-(use-package git-modes)
+(use-package git-modes
+  :mode (("\\.gitconfig.local\\'" . gitconfig-mode)))
 
 (use-package git-link
   :commands git-link

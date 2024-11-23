@@ -34,6 +34,7 @@
   (xref-history-storage 'xref-window-local-history))
 
 (use-package dumb-jump
+  :functions dumb-jump-xref-activate
   :init
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
   :custom
@@ -75,25 +76,27 @@
 (use-package css-mode :ensure nil)
 
 (use-package web-mode
-  :mode "\\.\\(phtml\\|php\\|[gj]sp\\|as[cp]x\\|erb\\|djhtml\\|html?\\|hbs\\|ejs\\|jade\\|swig\\|tm?pl\\|vue\\)$")
+  :mode "\\.\\(php\\|jsp\\|as[cp]x\\|erb\\|djhtml\\|html?\\|hbs\\|ejs\\|vue\\)$")
 
 (use-package sh-script
   :ensure nil
-  :mode (("\\.alias\\'"        . sh-mode)
-         ("\\.gpms\\'"         . sh-mode)
-         ("\\.cfg\\'"          . sh-mode)
-         ("\\.c*sh\\'"         . sh-mode)
-         ("\\.[a-zA-Z]+rc\\'"  . sh-mode)
-         ("crontab.*\\'"       . sh-mode)
-         ("\\.bash_profile\\'" . sh-mode)
-         ("\\.bash_history\\'" . sh-mode)
-         ("\\.sh\\'"           . sh-mode)
-         ("\\.bash\\'"         . sh-mode)
-         ("\\.bashrc.local\\'" . sh-mode)
-         ("\\.zsh\\'"          . sh-mode)
-         ("\\.bashrc\\'"       . sh-mode)
-         ("\\.env\\'"          . sh-mode)
-         ("\\.env\\.example\\'" . sh-mode)))
+  :mode (("\\.aliases\\'"      . sh-mode)
+          ("\\.env\\.example\\'" . sh-mode)
+          ("\\.[a-zA-Z]+rc\\'"  . sh-mode)
+          ("\\.bash\\'"         . sh-mode)
+          ("\\.bash_history\\'" . sh-mode)
+          ("\\.bash_profile\\'" . sh-mode)
+          ("\\.bashrc.local\\'" . sh-mode)
+          ("\\.bashrc\\'"       . sh-mode)
+          ("\\.c*sh\\'"         . sh-mode)
+          ("\\.cfg\\'"          . sh-mode)
+          ("\\.env\\'"          . sh-mode)
+          ("\\.gpms\\'"         . sh-mode)
+          ("\\.sh\\'"           . sh-mode)
+          ("\\.zprofile.local\\'" . sh-mode)
+          ("\\.zsh\\'"          . sh-mode)
+          ("\\.zshrc.local\\'"  . sh-mode)
+          ("crontab.*\\'"       . sh-mode)))
 
 (provide 'init-prog)
 ;;; init-prog.el ends here
