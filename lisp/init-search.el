@@ -6,9 +6,6 @@
               grep-scroll-output t)
 
 (use-package wgrep
-  :bind
-  (:map grep-mode-map
-    ("C-c C-p" . wgrep-change-to-wgrep-mode))
   :custom
   (wgrep-auto-save-buffer t)
   (wgrep-change-readonly-file t))
@@ -17,17 +14,16 @@
   :if (executable-find "rg")
   :hook (after-init . rg-enable-default-bindings)
   :custom
-  (rg-group-result t)
-  (rg-show-columns t)
   (rg-command-line-flags '("--hidden" "--glob '!.git/'"))
-  )
+  (rg-group-result t)
+  (rg-show-columns t))
 
 (use-package avy
   :custom
-  (avy-keys (string-to-list "asdfghjklqweruiop"))
   (avy-all-windows t)
   (avy-background t)
   (avy-highlight-first t)
+  (avy-keys (string-to-list "asdfghjklqweruiop"))
   (avy-timeout-seconds 0.4))
 
 (provide 'init-search)
