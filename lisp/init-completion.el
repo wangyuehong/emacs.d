@@ -25,6 +25,7 @@
   :bind
   (:map corfu-map
     ("C-s" . corfu-insert-separator)
+    ("RET" . corfu-complete)
     ("TAB" . corfu-next)
     ([tab] . corfu-next)
     ("S-TAB" . corfu-previous)
