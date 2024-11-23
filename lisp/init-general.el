@@ -31,8 +31,9 @@
 
     "t"  '(:wk "toggles")
     "tl" '(toggle-truncate-lines       :wk "toggle-truncate-lines")
+    "tm" '(xterm-mouse-mode            :wk "toggle-mouse-mode")
     "tn" '(display-line-numbers-mode   :wk "toggle-display-line-numbers")
-    "tp" '(electric-pair-mode          :wk "electric-pair-mode")
+    "tp" '(electric-pair-mode          :wk "toggle-electric-pair-mode")
     ))
 
 (provide 'init-general)
