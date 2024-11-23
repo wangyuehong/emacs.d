@@ -44,7 +44,6 @@
   (cape-dabbrev-check-other-buffers #'cape--buffers-major-mode)
   :init
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-abbrev)
   (add-to-list 'completion-at-point-functions #'cape-keyword)
 
   (advice-add #'eglot-completion-at-point :around #'cape-wrap-buster))
