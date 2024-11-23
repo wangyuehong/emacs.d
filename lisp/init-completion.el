@@ -3,12 +3,11 @@
 ;;; Code:
 
 (use-package emacs
-  :init
-  (setq completion-cycle-threshold 3)
-  (when (boundp 'read-extended-command-predicate)
-    (setq read-extended-command-predicate
-      #'command-completion-default-include-p))
-  (setq tab-always-indent 'complete))
+  :custom
+  (completion-cycle-threshold 3)
+  (read-extended-command-predicate #'command-completion-default-include-p)
+  (tab-always-indent 'complete)
+  (text-mode-ispell-word-completion nil))
 
 (use-package corfu
   :custom

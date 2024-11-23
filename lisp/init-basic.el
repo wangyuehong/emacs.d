@@ -85,7 +85,6 @@
 (modify-coding-system-alist 'process "*" 'utf-8)
 
 (use-package emacs
-  :ensure nil
   :hook
   (after-init . auto-save-visited-mode)
   :custom
