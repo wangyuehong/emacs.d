@@ -39,7 +39,7 @@
   :hook
   (git-commit-setup-hook . copilot-chat-insert-commit-message)
   :custom
-  (copilot-chat-prompt-explain "Please write an explanation for the following code in Chinese \
+  (copilot-chat-prompt-explain "Please write an explanation in detail for the following code in Chinese \
 without including the code itself to shorten the response length:\n"))
 
 (use-package gptel
