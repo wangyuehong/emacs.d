@@ -4,8 +4,17 @@
 
 (use-package eglot
   :preface
-  (defun my/eglot-organize-imports () (interactive)
-         (eglot-code-actions nil nil "source.organizeImports" t))
+  (defun my/eglot-organize-imports ()
+    "Check if `source.organizeImports` is available and execute it if possible."
+    (interactive)
+    (let* ((actions (eglot-code-actions nil nil nil nil))
+            (organize-imports-action
+              (seq-find (lambda (action)
+                          (string-prefix-p "source.organizeImports" (plist-get action :kind)))
+                actions)))
+      (if organize-imports-action
+        (eglot-code-actions nil nil "source.organizeImports" t))))
+
   (defun my/eglot-setup-hooks () (interactive)
     (add-hook 'before-save-hook 'my/eglot-organize-imports nil t)
     (when (eglot--server-capable :documentFormattingProvider)
@@ -35,8 +44,8 @@
     (consult-eglot-show-kind-name t))
   (setq-default eglot-workspace-configuration
     '((:gopls . ((completeUnimported . t)
-                  (staticcheck . t)
                   (gofumpt     . t)
+                  (staticcheck . t)
                   (usePlaceholders . t)))))
 
   :init
