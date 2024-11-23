@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: debug log.Debug().Msgf
-# key: ll
-# --
-log.Debug().Msgf("${1:ll}: %+v", $0)
