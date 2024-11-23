@@ -17,8 +17,8 @@
             user-emacs-directory)))
     (setq package-user-dir versioned-package-dir))
   (setq package-archives
-    '(("gnu"    . "https://elpa.gnu.org/packages/")
-       ("melpa"  . "https://melpa.org/packages/")
+    '(("melpa"   . "https://melpa.org/packages/")
+       ("gnu"    . "https://elpa.gnu.org/packages/")
        ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
   (unless (bound-and-true-p package--initialized)
     (package-initialize)))
