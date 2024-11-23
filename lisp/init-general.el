@@ -23,7 +23,7 @@
     "h" 'symbol-overlay-put
     "i" 'imenu
     "l" '(consult-ls-git                    :wk "ls-git")
-    "o" '(consult-line                      :wk "occur")
+    "o" '(my/consult-line                   :wk "occur")
     "q" 'quickrun
     "r" '(consult-yank-from-kill-ring       :wk "yank-from-kill-ring")
     "w" 'save-buffer

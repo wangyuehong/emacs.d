@@ -74,6 +74,16 @@
   :hook (after-init . marginalia-mode))
 
 (use-package consult
+  :preface
+  (defun my/consult-line ()
+    "Call `consult-line` with the current symbol at point or selected region as initial input."
+    (interactive)
+    (let ((initial-input
+            (if (use-region-p)
+              (buffer-substring-no-properties (region-beginning) (region-end))
+              (thing-at-point 'symbol t))))
+      (consult-line initial-input)))
+
   :bind (("C-x b" . consult-buffer)
           ([remap bookmark-jump]      . consult-bookmark)
           ([remap goto-line]          . consult-goto-line)
