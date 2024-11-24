@@ -25,8 +25,8 @@
  warning-minimum-level :error
  truncate-partial-width-windows nil)
 
-(add-hook 'window-setup-hook 'transient-mark-mode)
-(add-hook 'window-setup-hook 'repeat-mode)
+(add-hook 'after-init-hook 'transient-mark-mode)
+(add-hook 'after-init-hook 'repeat-mode)
 (put 'other-window 'repeat-map nil)
 
 (add-hook 'after-change-major-mode-hook
