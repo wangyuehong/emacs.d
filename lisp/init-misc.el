@@ -17,8 +17,8 @@
   :ensure nil
   :if (executable-find "aspell")
   :hook
-  ((text-mode outline-mode) . flyspell-mode)
-  (prog-mode . flyspell-prog-mode)
+  ((text-mode  . flyspell-mode)
+    (prog-mode . flyspell-prog-mode))
   :config
   (unbind-key "C-;" flyspell-mode-map)
   :custom
