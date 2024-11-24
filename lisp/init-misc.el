@@ -110,8 +110,8 @@ open a new Visual Studio Code window."
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
   (dashboard-set-init-info t)
-  (dashboard-items '((recents  . 10)
-                     (projects . 10))))
+  (dashboard-items '((recents   . 5)
+                     (bookmarks . 5))))
 
 (provide 'init-misc)
 ;;; init-misc.el ends here
