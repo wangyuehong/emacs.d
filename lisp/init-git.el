@@ -21,7 +21,7 @@
 
 (use-package diff-hl
   :functions (diff-hl-magit-pre-refresh diff-hl-magit-post-refresh)
-  :hook ((after-init . global-diff-hl-mode)
+  :hook ((window-setup . global-diff-hl-mode)
           (dired-mode . diff-hl-dired-mode))
   :bind (:map diff-hl-command-map
           ("k" . diff-hl-previous-hunk)

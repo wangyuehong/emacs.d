@@ -93,7 +93,7 @@ open a new Visual Studio Code window."
   (repeat-help-auto t))
 
 (use-package envrc
-  :hook (after-init . envrc-global-mode)
+  :hook (window-setup . envrc-global-mode)
   :if (executable-find "direnv"))
 
 (use-package open-junk-file
