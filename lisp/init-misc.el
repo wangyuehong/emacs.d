@@ -57,9 +57,8 @@
 
 (use-package nerd-icons-completion
   :after marginalia
-  :hook (marginalia-mode . nerd-icons-completion-marginalia-setup)
-  :config
-  (nerd-icons-completion-mode))
+  :hook ((marginalia-mode . nerd-icons-completion-marginalia-setup)
+          (after-init . nerd-icons-completion-mode)))
 
 (use-package xterm-color
   :defines (compilation-environment
