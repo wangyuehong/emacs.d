@@ -3,9 +3,10 @@
 ;;; Code:
 
 (use-package yasnippet
-  :hook (after-init . yas-global-mode))
+  :hook (window-setup . yas-global-mode))
 
-(use-package yasnippet-snippets)
+(use-package yasnippet-snippets
+  :after yasnippet)
 
 (use-package yasnippet-capf
   :after (yasnippet cape))
