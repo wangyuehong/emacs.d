@@ -4,7 +4,9 @@
 
 (use-package exec-path-from-shell
   :when (eq system-type 'darwin)
-  :hook (after-init . exec-path-from-shell-initialize))
+  :hook (after-init . exec-path-from-shell-initialize)
+  :custom
+  (exec-path-from-shell-arguments nil))
 
 (use-package csv-mode
   :hook (csv-mode . csv-align-mode)
