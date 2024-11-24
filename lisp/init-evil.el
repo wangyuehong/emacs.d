@@ -112,27 +112,29 @@
     (evil-set-initial-state (car p) (cdr p))))
 
 (use-package evil-collection
+  :after evil
   :hook (evil-mode . evil-collection-init)
   :custom
   (evil-collection-want-unimpaired-p nil))
 
 (use-package evil-surround
-  :hook (after-init . global-evil-surround-mode))
+  :after evil
+  :hook (evil-mode . global-evil-surround-mode))
 
-(use-package evil-nerd-commenter)
+(use-package evil-nerd-commenter :after evil)
 
 (use-package evil-iedit-state
+  :after evil
   :commands (evil-iedit-state evil-iedit-state/iedit-mode))
 
 (use-package evil-matchit
   :after evil
-  :init
-  (global-evil-matchit-mode 1))
+  :hook (evil-mode . global-evil-matchit-mode))
 
 (use-package evil-terminal-cursor-changer
-  :init
-  (unless (display-graphic-p)
-    (evil-terminal-cursor-changer-activate)))
+  :after evil
+  :unless (display-graphic-p)
+  :hook (evil-mode . evil-terminal-cursor-changer-activate))
 
 (provide 'init-evil)
 ;;; init-evil.el ends here
