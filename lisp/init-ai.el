@@ -19,7 +19,7 @@
   :custom-face
   (copilot-overlay-face ((t (:inherit shadow :foreground "#7ec0ee"))))
   :custom
-  (copilot-idle-delay 0.1)
+  (copilot-idle-delay 0)
   (copilot-log-max 0))
 
 (use-package copilot-chat
