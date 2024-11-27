@@ -47,13 +47,11 @@ without including the code itself to shorten the response length:\n"))
   (:map gptel-mode-map
         ("C-c m" . gptel-menu))
   :custom
-  (gptel-backend gptel--openai)
-  (gptel-model "gpt-4o")
   (gptel-post-stream-hook #'gptel-auto-scroll)
   (gptel-post-response-functions #'gptel-end-of-response)
   :config
-  (gptel-make-anthropic "Claude" :stream t)
-  (gptel-make-ollama "Ollama" :stream t :models '(llama3.2:3b qwen2.5-coder:14b)))
+  (setq gptel-backend (gptel-make-ollama "Ollama" :stream t :models '(llama3.2:3b qwen2.5-coder:7b)))
+  (setq gptel-model 'llama3.2:3b))
 
 (use-package elysium
   :custom
