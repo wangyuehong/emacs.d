@@ -19,11 +19,12 @@
   :custom-face
   (copilot-overlay-face ((t (:inherit shadow :foreground "#7ec0ee"))))
   :custom
-  (copilot-version "1.40.0")
+  ;; (copilot-version "1.40.0")
   (copilot-idle-delay 0)
   (copilot-log-max 0))
 
 (use-package copilot-chat
+  :commands (copilot-chat-insert-commit-message)
   :bind (("C-x c a"  . copilot-chat-add-current-buffer)
           ("C-x c c" . copilot-chat-custom-prompt-selection)
           ("C-x c d" . copilot-chat-doc)
