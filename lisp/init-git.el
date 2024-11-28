@@ -3,6 +3,8 @@
 ;;; Code:
 
 (use-package magit
+  :bind(:map git-commit-mode-map
+         ("C-c i" . copilot-chat-insert-commit-message))
   :custom
   (magit-bury-buffer-function #'magit-restore-window-configuration)
   (magit-commit-show-diff nil)

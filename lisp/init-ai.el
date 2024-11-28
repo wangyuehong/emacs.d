@@ -24,7 +24,6 @@
   (copilot-log-max 0))
 
 (use-package copilot-chat
-  :after magit
   :bind (("C-x c a"  . copilot-chat-add-current-buffer)
           ("C-x c c" . copilot-chat-custom-prompt-selection)
           ("C-x c d" . copilot-chat-doc)
@@ -35,9 +34,7 @@
           ("C-x c p" . copilot-chat-display)
           ("C-x c r" . copilot-chat-review)
           ("C-x c t" . copilot-chat-test)
-          ("C-x c x" . copilot-chat-reset)
-          :map git-commit-mode-map
-          ("C-c i" . copilot-chat-insert-commit-message))
+          ("C-x c x" . copilot-chat-reset))
   :custom
   (copilot-chat-prompt-explain "Please write an explanation in detail for the following code in Chinese \
 without including the code itself to shorten the response length:\n"))
