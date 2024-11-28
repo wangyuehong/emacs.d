@@ -3,7 +3,7 @@
 ;;; Code:
 
 (use-package copilot
-  :vc (:url "https://github.com/copilot-emacs/copilot.el"
+  :vc (:url "https://github.com/wangyuehong/copilot.el"
         :branch "main"
         :rev :newest)
   :hook
@@ -11,15 +11,15 @@
   :bind
   (("C-x c g" . copilot-diagnose)
     :map copilot-completion-map
-    ("C-j" . copilot-next-completion)
-    ("C-k" . copilot-previous-completion)
+    ("C-n" . copilot-next-completion)
+    ("C-p" . copilot-previous-completion)
     ("C-g" . copilot-clear-overlay)
     ("C-f" . copilot-accept-completion)
     ("M-f" . copilot-accept-completion-by-word))
   :custom-face
   (copilot-overlay-face ((t (:inherit shadow :foreground "#7ec0ee"))))
   :custom
-  ;; (copilot-version "1.40.0")
+  (copilot-version "1.41.0")
   (copilot-idle-delay 0)
   (copilot-log-max 0))
 
