@@ -35,7 +35,17 @@
   (dired-omit-verbose nil))
 
 (use-package diredfl
+  :after dired
   :hook (dired-mode . diredfl-mode))
+
+(use-package dired-subtree
+  :after dired
+  :bind
+  (:map dired-mode-map
+    ("<tab>" . dired-subtree-toggle)
+    ("TAB" . dired-subtree-toggle))
+  :custom
+  (dired-subtree-use-backgrounds nil))
 
 (provide 'init-dired)
 ;;; init-dired.el ends here
