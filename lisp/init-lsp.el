@@ -22,8 +22,8 @@
   (defun my/eglot-capf ()
     (setq-local completion-at-point-functions
       (list (cape-capf-super
-              #'yasnippet-capf
               #'eglot-completion-at-point
+              #'yasnippet-capf
               #'cape-dabbrev))))
 
   :bind (:map eglot-mode-map
@@ -37,11 +37,12 @@
   :hook ((eglot-managed-mode . my/eglot-capf)
           (eglot-managed-mode . my/eglot-setup-hooks))
   :config
+  (setq completion-category-overrides '((eglot (styles orderless))
+                                         (eglot-capf (styles orderless))))
   (setq-default eglot-workspace-configuration
     '((:gopls . ((completeUnimported . t)
                   (gofumpt     . t)
-                  (staticcheck . t)
-                  (usePlaceholders . t)))))
+                  (staticcheck . t)))))
 
   :init
   (setq read-process-output-max (* 1024 1024)) ; 1MB
@@ -49,8 +50,10 @@
   :custom
   (eglot-autoshutdown t)
   (eglot-confirm-server-initiated-edits nil)
-  (eldoc-echo-area-use-multiline-p nil)
-  (eglot-events-buffer-size 0))
+  (eglot-events-buffer-size 0)
+  (eglot-extend-to-xref t)
+  (eglot-report-progress nil)
+  (eglot-sync-connect nil))
 
 (use-package consult-eglot
   :after (consult eglot)
