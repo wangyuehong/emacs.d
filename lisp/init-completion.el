@@ -15,6 +15,7 @@
   (corfu-auto-delay 0.3)
   (corfu-auto-prefix 1)
   (corfu-cycle t)
+  (corfu-max-width 60)
   (corfu-on-exact-match nil)
   (corfu-preselect 'prompt)
   (corfu-preselect-first nil)
