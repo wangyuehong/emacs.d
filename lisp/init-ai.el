@@ -36,8 +36,8 @@
           ("C-x c t" . copilot-chat-test)
           ("C-x c x" . copilot-chat-reset))
   :custom
-  (copilot-chat-prompt-explain "Please write an explanation in detail for the following code in Chinese \
-without including the code itself to shorten the response length:\n"))
+  (copilot-chat-prompt-optimize "Please optimize and refactor the following code:\n")
+  (copilot-chat-prompt-explain "Please write an explanation in detail for the following code in Chinese without including the code itself to shorten the response length:\n"))
 
 (use-package gptel
   :bind
