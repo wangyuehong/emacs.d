@@ -13,8 +13,8 @@
     :prefix "SPC"
 
     "SPC"  '(:wk "ai")
-    "SPC g" '(gptel         :wk "gptel")
-    "SPC e" '(elysium-query :wk "elysium")
+    "SPC g" '(gptel              :wk "gptel")
+    "SPC r" '(gptel-rewrite-menu :wk "gptel-rewrite")
 
     "A" 'rg
     "a" 'rg-project
