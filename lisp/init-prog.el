@@ -51,8 +51,8 @@
           ("C-c c p" . citre-peek)
           ("C-c c u" . citre-update-this-tags-file)
           :map citre-peek-keymap
-          ("C-j" . citre-peek-next-tag)
-          ("C-k" . citre-peek-prev-tag))
+          ("C-n" . citre-peek-next-tag)
+          ("C-p" . citre-peek-prev-tag))
   :custom
   (citre-auto-enable-citre-mode-modes '(prog-mode))
   (citre-enable-capf-integration nil))
