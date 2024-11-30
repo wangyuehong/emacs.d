@@ -70,5 +70,28 @@ Return an event vector."
                      ("\e\[%d;8u" control meta shift)))
              (setq c (1+ c))))))))
 
+;; https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/
+(defun my/keyboard-quit-dwim ()
+  "Do-What-I-Mean behaviour for a general `keyboard-quit'.
+
+The DWIM behaviour of this command is as follows:
+
+- When the region is active, disable it.
+- When a minibuffer is open, but not focused, close the minibuffer.
+- When the Completions buffer is selected, close it.
+- In every other case use the regular `keyboard-quit'."
+  (interactive)
+  (cond
+   ((region-active-p)
+    (keyboard-quit))
+   ((derived-mode-p 'completion-list-mode)
+    (delete-completion-window))
+   ((> (minibuffer-depth) 0)
+    (abort-recursive-edit))
+   (t
+    (keyboard-quit))))
+
+(define-key global-map (kbd "C-g") #'my/keyboard-quit-dwim)
+
 (provide 'init-keybind)
 ;;; init-keybind.el ends here
