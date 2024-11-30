@@ -103,7 +103,10 @@ selected region as initial input."
 (use-package embark
   :functions embark-prefix-help-command
   :bind (("C-;" . embark-act)
-          ([remap describe-bindings] . embark-bindings))
+          ([remap describe-bindings] . embark-bindings)
+          :map minibuffer-local-map
+          ("C-c C-c" . embark-collect)
+          ("C-c C-e" . embark-export))
   :init
   (setq prefix-help-command #'embark-prefix-help-command))
 
