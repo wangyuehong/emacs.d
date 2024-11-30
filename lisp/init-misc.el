@@ -112,5 +112,11 @@ open a new Visual Studio Code window."
   (dashboard-set-init-info t)
   (dashboard-items '((recents . 5))))
 
+(use-package helpful
+  :bind (("C-h f" . helpful-callable)
+          ("C-h v" . helpful-variable)
+          ("C-h k" . helpful-key)
+          ("C-h x" . helpful-command)))
+
 (provide 'init-misc)
 ;;; init-misc.el ends here
