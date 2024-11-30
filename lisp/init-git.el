@@ -51,13 +51,16 @@
 
 (use-package smerge-mode
   :ensure nil
+  :bind-keymap ("C-c s" . smerge-basic-map)
   :bind (:repeat-map my/smerge-basic-map
           ("n" . smerge-next)
           ("p" . smerge-prev)
           ("a" . smerge-keep-all)
           ("c" . smerge-keep-current)
           ("u" . smerge-keep-upper)
-          ("l" . smerge-keep-lower)))
+          ("l" . smerge-keep-lower))
+  :custom
+  (smerge-command-prefix "none"))
 
 (provide 'init-git)
 ;;; init-git.el ends here

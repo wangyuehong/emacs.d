@@ -14,6 +14,7 @@
   :if (executable-find "rg")
   :hook (after-init . rg-enable-default-bindings)
   :custom
+  (rg-keymap-prefix nil)
   (rg-command-line-flags '("--hidden" "--glob '!.git/'"))
   (rg-group-result t)
   (rg-show-columns t))
