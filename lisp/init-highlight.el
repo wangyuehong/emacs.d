@@ -5,9 +5,7 @@
 (use-package symbol-overlay
   :functions (turn-off-symbol-overlay turn-on-symbol-overlay)
   :bind (:map symbol-overlay-map
-        ("<escape>" . symbol-overlay-remove-all)
-        ("C-k" . symbol-overlay-jump-prev)
-        ("C-j" . symbol-overlay-jump-next))
+        ("<escape>" . symbol-overlay-remove-all))
   :hook (((prog-mode yaml-mode protobuf-mode) . symbol-overlay-mode)
          (iedit-mode . turn-off-symbol-overlay)
          (iedit-mode-end . turn-on-symbol-overlay))
