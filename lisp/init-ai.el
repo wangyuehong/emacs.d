@@ -48,6 +48,7 @@
   (gptel-post-response-functions #'gptel-end-of-response)
   (gptel-rewrite-default-action #'gptel--rewrite-merge)
   :config
+  (gptel-make-anthropic "Claude" :stream t)
   (setq gptel-backend (gptel-make-ollama "Ollama" :stream t :models '(llama3.2:3b qwen2.5-coder:7b)))
   (setq gptel-model 'qwen2.5-coder:7b))
 
