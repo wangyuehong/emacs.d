@@ -3,10 +3,8 @@
 ;;; Code:
 
 (use-package exec-path-from-shell
-  :when (eq system-type 'darwin)
-  :hook (after-init . exec-path-from-shell-initialize)
-  :custom
-  (exec-path-from-shell-arguments nil))
+  :if (display-graphic-p)
+  :hook (after-init . exec-path-from-shell-initialize))
 
 (use-package csv-mode
   :hook (csv-mode . csv-align-mode)
