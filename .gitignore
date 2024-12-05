@@ -27,3 +27,4 @@ cookies
 /var
 /.last-package-update-day
 /.cache
+/.env

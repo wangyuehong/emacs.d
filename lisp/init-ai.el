@@ -47,11 +47,17 @@
   (gptel-log-level 'debug)
   (gptel-post-stream-hook #'gptel-auto-scroll)
   (gptel-post-response-functions #'gptel-end-of-response)
-  (gptel-rewrite-default-action #'gptel--rewrite-merge)
+  (gptel-rewrite-default-action #'gptel--rewrite-diff)
   :config
   (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key)
-  (setq gptel-backend (gptel-make-ollama "Ollama" :stream t :models '(llama3.2:3b qwen2.5-coder:7b)))
-  (setq gptel-model 'qwen2.5-coder:7b))
+  (when (string-equal (getenv "GPTEL_AZURE_ENABLED") "true")
+    (gptel-make-azure "Azure"
+      :stream t
+      :key #'gptel-api-key
+      :host (getenv "GPTEL_AZURE_HOST")
+      :endpoint (getenv "GPTEL_AZURE_ENDPOINT")
+      :models '(gpt-4o-mini)))
+  (gptel-make-ollama "Ollama" :stream t :models '(llama3.2:3b qwen2.5-coder:7b)))
 
 (provide 'init-ai)
 ;;; init-ai.el ends here
