@@ -34,15 +34,15 @@
   (company-idle-delay 0.2)
   (company-minimum-prefix-length 2)
   (company-tooltip-minimum-width 20)
+  (company-frontends '(company-pseudo-tooltip-frontend
+                        company-echo-metadata-frontend))
   (company-require-match nil)
   (company-show-quick-access t)
   (company-tooltip-align-annotations t)
   (company-tooltip-maximum-width 50)
   (company-tooltip-width-grow-only t)
-  (company-backends '((company-capf :with company-yasnippet)
-                       company-files
-                       (company-dabbrev-code company-keywords)
-                       company-dabbrev)))
+  (company-backends '((company-capf :with company-yasnippet company-dabbrev company-dabbrev-code)
+                       company-files)))
 
 (use-package company-prescient
   :after company
