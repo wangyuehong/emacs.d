@@ -9,45 +9,44 @@
   (tab-always-indent 'complete)
   (text-mode-ispell-word-completion nil))
 
-(use-package corfu
-  :custom
-  (corfu-auto t)
-  (corfu-auto-delay 0.3)
-  (corfu-auto-prefix 1)
-  (corfu-cycle t)
-  (corfu-max-width 60)
-  (corfu-on-exact-match nil)
-  (corfu-preselect 'prompt)
-  (corfu-preselect-first nil)
-  (corfu-preview-current 'insert)
-  (corfu-quit-at-boundary 'separator)
-  (corfu-quit-no-match 'separator)
-  (global-corfu-minibuffer nil)
-  :bind
-  (:map corfu-map
-    ("C-s" . corfu-insert-separator)
-    ("RET" . corfu-complete)
-    ("TAB" . corfu-next)
-    ([tab] . corfu-next)
-    ("S-TAB" . corfu-previous)
-    ([backtab] . corfu-previous))
-  :hook ((after-init . global-corfu-mode)))
-
-(use-package corfu-prescient
-  :after corfu)
-
-(use-package corfu-terminal
-  :unless (display-graphic-p)
-  :hook (global-corfu-mode . corfu-terminal-mode))
-
-(use-package cape
-  :functions (cape-dabbrev cape-keyword cape-wrap-buster)
-  :custom
-  (cape-dabbrev-min-length 3)
-  (cape-dabbrev-check-other-buffers #'cape--buffers-major-mode)
+(use-package company
+  :ensure t
+  :hook ((prog-mode yaml-mode protobuf-mode) . company-mode)
+  :bind (:map company-mode-map
+          ([remap completion-at-point] . company-complete)
+          ("C-c y" . company-yasnippet)
+          :map company-active-map
+          ("C-s"     . company-filter-candidates)
+          ([backtab] . company-select-previous-or-abort))
   :init
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-keyword))
+  (add-variable-watcher 'company-backends
+    (lambda (symbol new-value operation where)
+      (message "%s changed: where=%s, operation=%s, new-value=%s"
+        symbol where operation new-value)))
+  :custom
+  (company-dabbrev-code-everywhere t)
+  (company-dabbrev-code-ignore-case t)
+  (company-dabbrev-downcase nil)
+  (company-dabbrev-ignore-case t)
+  (company-dabbrev-other-buffers t)
+  (company-files-exclusions '(".git/" ".DS_Store"))
+  (company-format-margin-function #'company-text-icons-margin)
+  (company-idle-delay 0.2)
+  (company-minimum-prefix-length 2)
+  (company-tooltip-minimum-width 20)
+  (company-require-match nil)
+  (company-show-quick-access t)
+  (company-tooltip-align-annotations t)
+  (company-tooltip-maximum-width 50)
+  (company-tooltip-width-grow-only t)
+  (company-backends '((company-capf :with company-yasnippet)
+                       company-files
+                       (company-dabbrev-code company-keywords)
+                       company-dabbrev)))
+
+(use-package company-prescient
+  :after company
+  :hook (company-mode . company-prescient-mode))
 
 (use-package orderless
   :custom
@@ -57,7 +56,7 @@
 
 (use-package vertico
   :hook ((after-init . vertico-mode)
-         (minibuffer-setup . vertico-repeat-save))
+          (minibuffer-setup . vertico-repeat-save))
   :bind (:map vertico-map
           ("RET" . vertico-directory-enter)
           ("DEL" . vertico-directory-delete-char)
