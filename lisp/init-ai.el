@@ -18,6 +18,9 @@
     ("M-f" . copilot-accept-completion-by-word))
   :custom-face
   (copilot-overlay-face ((t (:inherit shadow :foreground "#7ec0ee"))))
+  :config
+  (with-eval-after-load 'company
+    (add-to-list 'copilot-disable-display-predicates 'company-tooltip-visible-p t))
   :custom
   (copilot-version "1.41.0")
   (copilot-idle-delay 0)
