@@ -23,14 +23,15 @@
     (lambda (symbol new-value operation where)
       (message "%s changed: where=%s, operation=%s, new-value=%s"
         symbol where operation new-value)))
+  :custom-face
+  (company-tooltip-selection ((t (:inherit shadow :weight bold :foreground "#ef2f27" :background "#3b3b3b"))))
   :custom
   (company-dabbrev-code-everywhere t)
-  (company-dabbrev-code-ignore-case t)
+  (company-dabbrev-code-ignore-case nil)
   (company-dabbrev-downcase nil)
-  (company-dabbrev-ignore-case t)
+  (company-dabbrev-ignore-case nil)
   (company-dabbrev-other-buffers t)
   (company-files-exclusions '(".git/" ".DS_Store"))
-  (company-format-margin-function #'company-text-icons-margin)
   (company-idle-delay 0.2)
   (company-minimum-prefix-length 2)
   (company-tooltip-minimum-width 20)
