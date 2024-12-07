@@ -29,9 +29,14 @@
 (add-hook 'after-init-hook 'repeat-mode)
 (put 'other-window 'repeat-map nil)
 
-(add-hook 'after-change-major-mode-hook
-          (lambda ()
-            (modify-syntax-entry ?_ "w")))
+(use-package emacs
+  :ensure nil
+  :preface
+  (defun my-coding-setup ()
+    (modify-syntax-entry ?_ "w")
+    (modify-syntax-entry ?- "w"))
+  :hook
+  ((prog-mode yaml-mode protobuf-mode) . my-coding-setup))
 
 (setq-default major-mode 'text-mode
               tab-width 4
