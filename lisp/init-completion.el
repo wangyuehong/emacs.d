@@ -10,6 +10,7 @@
   (text-mode-ispell-word-completion nil))
 
 (use-package company
+  :defines (company-mode-map company-active-map)
   :ensure t
   :hook ((prog-mode yaml-mode protobuf-mode) . company-mode)
   :bind (:map company-mode-map
@@ -55,6 +56,7 @@
   (orderless-component-separator #'orderless-escapable-split-on-space))
 
 (use-package vertico
+  :defines (vertico-map)
   :hook ((after-init . vertico-mode)
           (minibuffer-setup . vertico-repeat-save))
   :bind (:map vertico-map
@@ -91,11 +93,9 @@ selected region as initial input."
           ([remap recentf-open-files] . consult-recent-file)
           :map minibuffer-local-map
           ("C-r" . consult-history))
-  :init
-  (with-eval-after-load 'xref
-    (setq xref-show-xrefs-function #'consult-xref
-      xref-show-definitions-function #'consult-xref))
   :custom
+  (xref-show-xrefs-function #'consult-xref)
+  (xref-show-definitions-function #'consult-xref)
   (consult-narrow-key "C-s")
   (consult-preview-key (list :debounce 0.5 'any)))
 
