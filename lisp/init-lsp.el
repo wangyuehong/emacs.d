@@ -3,6 +3,7 @@
 ;;; Code:
 
 (use-package eglot
+  :functions eglot-server-capable
   :preface
   (defun my/eglot-organize-imports ()
     "Check if `source.organizeImports` is available and execute it if possible."
@@ -17,7 +18,7 @@
 
   (defun my/eglot-setup-hooks () (interactive)
     (add-hook 'before-save-hook 'my/eglot-organize-imports nil t)
-    (when (eglot--server-capable :documentFormattingProvider)
+    (when (eglot-server-capable :documentFormattingProvider)
       (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
   :bind (:map eglot-mode-map
               ("C-c l t" . eglot-find-typeDefinition)
