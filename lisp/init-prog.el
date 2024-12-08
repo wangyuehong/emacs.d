@@ -103,5 +103,9 @@
   :hook (window-setup . envrc-global-mode)
   :if (executable-find "direnv"))
 
+(use-package ansi-color
+  :ensure nil
+  :hook (compilation-filter . ansi-color-compilation-filter))
+
 (provide 'init-prog)
 ;;; init-prog.el ends here

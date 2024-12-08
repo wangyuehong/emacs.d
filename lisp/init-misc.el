@@ -41,6 +41,7 @@
   :after marginalia
   :hook ((marginalia-mode . nerd-icons-completion-marginalia-setup)
           (after-init . nerd-icons-completion-mode)))
+
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode)
   :custom
@@ -58,10 +59,6 @@
   (evil-operator-state-tag (propertize "[Operator]"))
   (evil-replace-state-tag (propertize "[Replace")))
 
-
-(use-package ansi-color
-  :ensure nil
-  :hook (compilation-filter . ansi-color-compilation-filter))
 
 (defun open-file-in-vscode ()
   "Open the current file in Visual Studio Code and jump to the current position.
