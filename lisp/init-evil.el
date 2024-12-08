@@ -3,7 +3,12 @@
 ;;; Code:
 
 (use-package evil
-  :functions (my/replace-at-point-or-region evil-set-initial-state)
+  :functions
+  (evil-ex evil-set-initial-state my/replace-at-point-or-region my/get-current-input-method
+    my/save-current-input-method my/restore-input-method my/set-english-input-method)
+  :defines
+  (evil-window-map evil-normal-state-map evil-motion-state-map evil-visual-state-map
+    evil-operator-state-map evil-disable-insert-state-bindings evil-want-Y-yank-to-eol)
   :hook (after-init . evil-mode)
   :bind
   (("C-x -" . evil-window-split)
@@ -72,12 +77,12 @@
 
   (defun my/replace-at-point-or-region ()
     "Setup buffer replace string for symbol at point
- or active region using evil ex mode."
+or active region using evil ex mode."
     (interactive)
     (let ((text (if (region-active-p)
                   (buffer-substring-no-properties (region-beginning) (region-end))
-                  (symbol-at-point))))
-      (evil-ex (concat "%s/" text "/"))))
+                  (thing-at-point 'symbol t))))
+      (evil-ex (concat "%s/" (regexp-quote text) "/"))))
 
   :custom
   (evil-auto-indent t)
