@@ -99,5 +99,9 @@
           ("\\.zshrc.local\\'"  . sh-mode)
           ("crontab.*\\'"       . sh-mode)))
 
+(use-package envrc
+  :hook (window-setup . envrc-global-mode)
+  :if (executable-find "direnv"))
+
 (provide 'init-prog)
 ;;; init-prog.el ends here

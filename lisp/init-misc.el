@@ -30,6 +30,17 @@
   (setf (cdr (assoc "nf-dev-go"   nerd-icons/devicon-alist)) "\xe627")
   (setf (cdr (assoc "nf-oct-ruby" nerd-icons/octicon-alist)) "\xe23e"))
 
+(use-package nerd-icons-dired
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
+
+(use-package nerd-icons-ibuffer
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+
+(use-package nerd-icons-completion
+  :after marginalia
+  :hook ((marginalia-mode . nerd-icons-completion-marginalia-setup)
+          (after-init . nerd-icons-completion-mode)))
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode)
   :custom
@@ -47,17 +58,6 @@
   (evil-operator-state-tag (propertize "[Operator]"))
   (evil-replace-state-tag (propertize "[Replace")))
 
-(use-package nerd-icons-dired
-  :hook
-  (dired-mode . nerd-icons-dired-mode))
-
-(use-package nerd-icons-ibuffer
-  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
-
-(use-package nerd-icons-completion
-  :after marginalia
-  :hook ((marginalia-mode . nerd-icons-completion-marginalia-setup)
-          (after-init . nerd-icons-completion-mode)))
 
 (use-package ansi-color
   :ensure nil
@@ -79,10 +79,6 @@ open a new Visual Studio Code window."
   :hook (repeat-mode . repeat-help-mode)
   :custom
   (repeat-help-auto t))
-
-(use-package envrc
-  :hook (window-setup . envrc-global-mode)
-  :if (executable-find "direnv"))
 
 (use-package open-junk-file
   :custom
