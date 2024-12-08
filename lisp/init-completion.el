@@ -30,7 +30,7 @@
   (company-dabbrev-code-everywhere t)
   (company-dabbrev-code-ignore-case nil)
   (company-dabbrev-downcase nil)
-  (company-dabbrev-ignore-case nil)
+  (company-dabbrev-ignore-case t)
   (company-dabbrev-other-buffers t)
   (company-files-exclusions '(".git/" ".DS_Store"))
   (company-idle-delay 0.2)
