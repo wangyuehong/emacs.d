@@ -3,6 +3,7 @@
 ;;; Code:
 
 (use-package go-mode
+  :defines (go-mode-map)
   :preface
   (defun project-find-go-mod (dir)
     (when-let ((root (locate-dominating-file dir "go.mod")))
