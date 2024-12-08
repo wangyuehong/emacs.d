@@ -3,7 +3,7 @@
 ;;; Code:
 
 (use-package yasnippet
-  :hook (window-setup . yas-global-mode))
+  :hook (after-init . yas-global-mode))
 
 (use-package yasnippet-snippets
   :after yasnippet)

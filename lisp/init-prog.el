@@ -100,7 +100,7 @@
           ("crontab.*\\'"       . sh-mode)))
 
 (use-package envrc
-  :hook (window-setup . envrc-global-mode)
+  :hook (after-init . envrc-global-mode)
   :if (executable-find "direnv"))
 
 (use-package ansi-color
