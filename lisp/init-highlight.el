@@ -3,6 +3,7 @@
 ;;; Code:
 
 (use-package symbol-overlay
+  :defines symbol-overlay-map
   :functions (turn-off-symbol-overlay turn-on-symbol-overlay)
   :bind (:map symbol-overlay-map
         ("<escape>" . symbol-overlay-remove-all))
@@ -37,6 +38,7 @@
   (show-paren-when-point-in-periphery t))
 
 (use-package hl-todo
+  :defines hl-todo-include-modes
   :hook (after-init . global-hl-todo-mode)
   :config
   (with-eval-after-load 'protobuf-mode
