@@ -58,20 +58,21 @@
   :hook ((marginalia-mode . nerd-icons-completion-marginalia-setup)
           (after-init . nerd-icons-completion-mode)))
 
-(use-package xterm-color
-  :defines (compilation-environment
-            eshell-preoutput-filter-functions
-            eshell-output-filter-functions)
-  :functions (compilation-filter xterm-color-filter my-advice-compilation-filter)
-  :init
-  (setq compilation-environment '("TERM=xterm-256color"))
-  (defun my-advice-compilation-filter (f proc string)
-    (funcall f proc
-             (if (eq major-mode 'rg-mode) ; compatible with `rg'
-                 string
-               (xterm-color-filter string))))
-  (advice-add 'compilation-filter :around #'my-advice-compilation-filter)
-  (advice-add 'gud-filter :around #'my-advice-compilation-filter))
+(use-package ansi-color
+  :ensure nil
+  :hook (compilation-filter . ansi-color-compilation-filter))
+
+;; (use-package xterm-color
+;;   :functions (compilation-filter xterm-color-filter my/advice-compilation-filter)
+;;   :init
+;;   (defun my/advice-compilation-filter (f proc string)
+;;     (funcall f proc
+;;              (if (eq major-mode 'rg-mode) ; compatible with `rg'
+;;                  string
+;;                (xterm-color-filter string))))
+;;   (advice-add 'compilation-filter :around #'my/advice-compilation-filter)
+;;   :custom
+;;   (compilation-environment '("TERM=xterm-256color")))
 
 (defun open-file-in-vscode ()
   "Open the current file in Visual Studio Code and jump to the current position.
