@@ -7,6 +7,7 @@
   :hook (python-mode . eglot-ensure))
 
 (use-package lazy-ruff
+  :defines lazy-ruff-only-format-buffer
   :if (executable-find "ruff")
   :hook (python-mode . lazy-ruff-mode)
   :config
