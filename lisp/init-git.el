@@ -3,6 +3,7 @@
 ;;; Code:
 
 (use-package magit
+  :defines (git-commit-mode-map)
   :bind(:map git-commit-mode-map
          ("C-c i" . copilot-chat-insert-commit-message))
   :custom
@@ -22,6 +23,7 @@
   (vc-handled-backends '(Git)))
 
 (use-package diff-hl
+  :defines (diff-hl-command-map)
   :functions (diff-hl-magit-pre-refresh diff-hl-magit-post-refresh)
   :hook ((window-setup . global-diff-hl-mode)
           (dired-mode . diff-hl-dired-mode))
