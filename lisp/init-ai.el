@@ -6,6 +6,7 @@
   :vc (:url "https://github.com/wangyuehong/copilot.el"
         :branch "main"
         :rev :newest)
+  :defines (copilot-completion-map copilot-disable-display-predicates)
   :hook
   ((prog-mode git-commit-setup yaml-mode protobuf-mode markdown-mode) . copilot-mode)
   :bind
@@ -49,6 +50,8 @@
   (copilot-chat-prompt-explain "Please write an explanation in detail for the following code in Chinese without including the code itself to shorten the response length:\n"))
 
 (use-package gptel
+  :defines (gptel-mode-map)
+  :functions (gptel-make-anthropic gptel-make-azure gptel-make-ollama gptel-api-key)
   :bind
   (:map gptel-mode-map
         ("C-c m" . gptel-menu))
