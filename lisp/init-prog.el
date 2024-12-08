@@ -44,6 +44,7 @@
   (dumb-jump-selector 'completing-read))
 
 (use-package citre
+  :defines (citre-peek-keymap)
   :init
   (require 'citre-config)
   :bind (:map prog-mode-map
