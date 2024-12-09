@@ -36,12 +36,10 @@
           ("U" . diff-hl-unstage-file))
   :config
   (setq-default fringes-outside-margins t)
-  (unless (display-graphic-p)
-    (diff-hl-margin-mode 1))
+  (unless (display-graphic-p) (diff-hl-margin-mode))
 
   (with-eval-after-load 'magit
-    (add-hook 'magit-pre-refresh-hook #'diff-hl-magit-pre-refresh)
-    (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)))
+    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)))
 
 (use-package git-modes
   :mode (("\\.gitconfig.local\\'" . gitconfig-mode)))
