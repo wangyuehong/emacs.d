@@ -17,6 +17,8 @@
           ([remap completion-at-point] . company-complete)
           ("C-c y" . company-yasnippet)
           :map company-active-map
+          ("C-b"     . company-previous-page)
+          ("C-f"     . company-next-page)
           ("C-s"     . company-filter-candidates)
           ([backtab] . company-select-previous-or-abort))
   :init
