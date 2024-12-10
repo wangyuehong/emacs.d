@@ -35,15 +35,14 @@
   (company-dabbrev-ignore-case t)
   (company-dabbrev-other-buffers t)
   (company-files-exclusions '(".git/" ".DS_Store"))
-  (company-idle-delay 0.2)
-  (company-minimum-prefix-length 2)
-  (company-tooltip-minimum-width 20)
   (company-frontends '(company-pseudo-tooltip-frontend
                         company-echo-metadata-frontend))
+  (company-idle-delay 0.3)
+  (company-minimum-prefix-length 2)
   (company-show-quick-access t)
   (company-tooltip-align-annotations t)
   (company-tooltip-maximum-width 70)
-  (company-tooltip-width-grow-only t)
+  (company-tooltip-minimum-width 20)
   (company-backends '((company-capf :with company-yasnippet company-dabbrev)
                        (company-dabbrev-code company-keywords))))
 
