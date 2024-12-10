@@ -41,6 +41,7 @@
                         company-echo-metadata-frontend))
   (company-idle-delay 0.3)
   (company-minimum-prefix-length 2)
+  (company-search-regexp-function #'company-search-words-in-any-order-regexp)
   (company-show-quick-access t)
   (company-tooltip-align-annotations t)
   (company-tooltip-maximum-width 70)
