@@ -18,6 +18,8 @@
 (use-package flymake
   :ensure nil
   :bind (:map flymake-mode-map
+          ("C-c m" . consult-flymake)
+          ("C-c M" . flymake-show-project-diagnostics)
           ("M-n" . flymake-goto-next-error)
           ("M-p" . flymake-goto-prev-error))
   :hook (prog-mode . flymake-mode))

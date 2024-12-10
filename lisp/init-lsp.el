@@ -24,9 +24,7 @@
               ("C-c l t" . eglot-find-typeDefinition)
               ("C-c l i" . eglot-find-implementation)
               ("C-c l a" . eglot-code-actions)
-              ("C-c l b" . flymake-show-buffer-diagnostics)
               ("C-c l e" . eglot-rename)
-              ("C-c l p" . flymake-show-project-diagnostics)
               ("C-c l r" . eglot-reconnect))
   :hook ((eglot-managed-mode . my/eglot-setup-hooks))
   :config
