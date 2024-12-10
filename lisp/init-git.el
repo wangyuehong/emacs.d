@@ -49,6 +49,10 @@
   :custom
   (git-link-open-in-browser t))
 
+(use-package git-timemachine
+  :defines (git-timemachine-mode-map)
+  :bind (("C-x v t" . git-timemachine)))
+
 (use-package smerge-mode
   :ensure nil
   :bind-keymap ("C-c s" . smerge-basic-map)

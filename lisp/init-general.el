@@ -35,6 +35,7 @@
     "tm" '(xterm-mouse-mode            :wk "toggle-mouse-mode")
     "tn" '(display-line-numbers-mode   :wk "toggle-display-line-numbers")
     "tp" '(electric-pair-mode          :wk "toggle-electric-pair-mode")
+    "tt" '(git-timemachine-toggle      :wk "toggle-git-timemachine")
     ))
 
 (provide 'init-general)
