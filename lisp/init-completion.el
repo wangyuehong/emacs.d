@@ -3,6 +3,7 @@
 ;;; Code:
 
 (use-package emacs
+  :ensure nil
   :custom
   (completion-cycle-threshold 3)
   (read-extended-command-predicate #'command-completion-default-include-p)
