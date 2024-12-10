@@ -14,6 +14,7 @@
 
     "SPC"  '(:wk "ai")
     "SPC g" '(gptel         :wk "gptel")
+    "SPC m" '(gptel-menu    :wk "gptel-menu")
     "SPC r" '(gptel-rewrite :wk "gptel-rewrite")
 
     "A" 'rg
