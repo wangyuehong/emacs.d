@@ -46,6 +46,7 @@
   (dumb-jump-selector 'completing-read))
 
 (use-package citre
+  :disabled t
   :defines (citre-peek-keymap)
   :init
   (require 'citre-config)
@@ -54,6 +55,7 @@
           ("C-c c p" . citre-peek)
           ("C-c c u" . citre-update-this-tags-file)
           :map citre-peek-keymap
+          ("C-g" . citre-peek-abort)
           ("C-n" . citre-peek-next-tag)
           ("C-p" . citre-peek-prev-tag))
   :custom
