@@ -50,7 +50,7 @@
   (copilot-chat-prompt-explain "Please write an explanation in detail for the following code in Chinese without including the code itself to shorten the response length:\n"))
 
 (use-package gptel
-  :defines (gptel-mode-map)
+  :defines (gptel-mode-map gptel-backend)
   :functions (gptel-make-anthropic gptel-make-azure gptel-make-ollama gptel-api-key)
   :bind
   (:map gptel-mode-map
@@ -63,13 +63,12 @@
   :config
   (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key)
   (when (string-equal (getenv "GPTEL_AZURE_ENABLED") "true")
-    (gptel-make-azure "Azure"
-      :stream t
-      :key #'gptel-api-key
-      :host (getenv "GPTEL_AZURE_HOST")
-      :endpoint (getenv "GPTEL_AZURE_ENDPOINT")
-      :models '(gpt-4o-mini)))
-  (gptel-make-ollama "Ollama" :stream t :models '(llama3.2:3b qwen2.5-coder:7b)))
+    (setq gptel-backend (gptel-make-azure "Azure"
+                          :stream t
+                          :key #'gptel-api-key
+                          :host (getenv "GPTEL_AZURE_HOST")
+                          :endpoint (getenv "GPTEL_AZURE_ENDPOINT")
+                          :models '(gpt-4o-mini)))))
 
 (provide 'init-ai)
 ;;; init-ai.el ends here
