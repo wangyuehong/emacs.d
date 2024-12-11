@@ -77,7 +77,7 @@
      ))
 
   :config
-  (set-face-foreground 'whitespace-newline "brightblack")
+  ;; (set-face-foreground 'whitespace-newline "brightblack")
   (set-face-foreground 'whitespace-space "brightblue") ;; -> "　"
   (set-face-foreground 'whitespace-tab "brightblack")
   (set-face-foreground 'whitespace-space-before-tab "brightmagenta"))
