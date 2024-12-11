@@ -37,6 +37,7 @@
           ("C-x c C" . copilot-chat-custom-prompt-mini-buffer)
           ("C-x c d" . copilot-chat-doc)
           ("C-x c e" . copilot-chat-explain)
+          ("C-x c f" . copilot-chat-fix)
           ("C-x c o" . copilot-chat-optimize)
           ("C-x c p" . copilot-chat-display)
           ("C-x c r" . copilot-chat-review)
