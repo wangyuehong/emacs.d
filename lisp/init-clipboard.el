@@ -3,17 +3,17 @@
 ;;; Code:
 
 (use-package xclip
-  :commands (xclip-set-selection copy-fullpath-of-current-buffer)
-  :bind (("C-x C-x" . copy-to-x-clipboard))
-  :init
-  (defun copy-fullpath-of-current-buffer ()
+  :commands (xclip-set-selection)
+  :bind (("C-x C-x" . my/copy-to-clipboard))
+  :preface
+  (defun my/copy-buffer-fullpath ()
     "Copy full path into the yank ring and OS clipboard"
     (interactive)
     (when buffer-file-name
       (xclip-set-selection 'clipboard (file-truename buffer-file-name))
-      (message "file full path => clipboard & yank ring")))
+      (message "copied to clipboard!")))
 
-  (defun copy-to-x-clipboard ()
+  (defun my/copy-to-clipboard ()
     "Copy selected-string-or-current-line to clipboard."
     (interactive)
     (let* ((in-region (region-active-p))
