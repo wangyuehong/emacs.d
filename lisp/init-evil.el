@@ -54,18 +54,18 @@ or active region using evil ex mode."
     ("C-h" . nil)
     :map evil-normal-state-map
     ("q" . quit-window)
-    ("s" . evil-avy-goto-char-timer)
+    ("s" . evil-avy-goto-word-or-subword-1)
     ("u" . undo-fu-only-undo)
     ("C-r" . undo-fu-only-redo)
     ("M-r" . my/replace-at-point-or-region)
     :map evil-operator-state-map
-    ("s" . evil-avy-goto-char-timer)
+    ("s" . evil-avy-goto-word-or-subword-1)
     :map evil-motion-state-map
     ("q" . quit-window)
-    ("s" . evil-avy-goto-char-timer)
+    ("s" . evil-avy-goto-word-or-subword-1)
     :map evil-visual-state-map
     ("v" . er/expand-region)
-    ("s" . evil-avy-goto-char-timer)
+    ("s" . evil-avy-goto-word-or-subword-1)
     ("TAB" . evil-indent))
   :init
   ;; https://github.com/emacs-evil/evil/issues/1486
