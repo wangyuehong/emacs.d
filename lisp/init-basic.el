@@ -18,9 +18,6 @@
   (when (fboundp 'set-charset-priority)
     (set-charset-priority 'unicode))
 
-  ;; Explicitly set the prefered coding systems to avoid annoying prompt
-  ;; from emacs (especially on Microsoft Windows)
-  (prefer-coding-system 'utf-8)
   (setq locale-coding-system 'utf-8)
 
   (set-locale-environment "en_US.UTF-8")
