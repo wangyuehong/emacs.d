@@ -45,7 +45,7 @@
   (company-tooltip-align-annotations t)
   (company-tooltip-maximum-width 70)
   (company-tooltip-minimum-width 20)
-  (company-backends '((company-capf :with company-yasnippet company-dabbrev)
+  (company-backends '((company-capf company-dabbrev company-files :with company-yasnippet)
                        (company-dabbrev-code company-keywords))))
 
 (use-package company-prescient
