@@ -20,8 +20,8 @@
           :map company-active-map
           ("C-b"     . company-previous-page)
           ("C-f"     . company-next-page)
-          ("C-s"     . company-search-candidates)
-          ("M-s"     . company-filter-candidates)
+          ("C-s"     . company-filter-candidates)
+          ("M-s"     . company-search-candidates)
           ([backtab] . company-select-previous-or-abort))
   :init
   (add-variable-watcher 'company-backends
@@ -29,7 +29,7 @@
       (message "%s changed: where=%s, operation=%s, new-value=%s"
         symbol where operation new-value)))
   :custom-face
-  (company-tooltip-selection ((t (:inherit shadow :weight bold :foreground "#ef2f27" :background "#3b3b3b"))))
+  (company-tooltip-selection ((t (:inherit shadow :weight bold :foreground "dodgerblue" :background "#3b3b3b"))))
   :custom
   (company-dabbrev-code-everywhere t)
   (company-dabbrev-code-ignore-case nil)
@@ -37,8 +37,7 @@
   (company-dabbrev-ignore-case t)
   (company-dabbrev-other-buffers t)
   (company-files-exclusions '(".git/" ".DS_Store"))
-  (company-frontends '(company-pseudo-tooltip-frontend
-                        company-echo-metadata-frontend))
+  (company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend))
   (company-idle-delay 0.3)
   (company-minimum-prefix-length 2)
   (company-search-regexp-function #'company-search-words-in-any-order-regexp)
