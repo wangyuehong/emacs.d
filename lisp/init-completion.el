@@ -56,8 +56,8 @@
        (enum-member "" font-lock-builtin-face)
        (enum "" font-lock-builtin-face)
        (field "" font-lock-variable-name-face)
-       (file "" font-lock-string-face)
-       (folder "" font-lock-doc-face)
+       (file "" font-lock-string-face)
+       (folder "" font-lock-doc-face)
        (interface "" font-lock-type-face)
        (keyword "" font-lock-keyword-face)
        (method "" font-lock-function-name-face)
@@ -75,8 +75,7 @@
        (unit "󰻐" shadow)
        (value "" font-lock-builtin-face)
        (variable "󰫧" font-lock-variable-name-face)
-       (t "." shadow)))
-  )
+       (t "." shadow))))
 
 (use-package company-prescient
   :after company
