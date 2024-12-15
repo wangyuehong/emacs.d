@@ -8,7 +8,7 @@
         :rev :newest)
   :defines (copilot-completion-map copilot-disable-display-predicates)
   :hook
-  ((prog-mode git-commit-setup yaml-mode protobuf-mode markdown-mode) . copilot-mode)
+  ((prog-mode git-commit-setup yaml-mode markdown-mode) . copilot-mode)
   :bind
   (("C-x c g" . copilot-diagnose)
     :map copilot-completion-map

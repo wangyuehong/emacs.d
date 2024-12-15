@@ -13,7 +13,7 @@
 (use-package company
   :defines (company-mode-map company-active-map)
   :ensure t
-  :hook ((prog-mode yaml-mode protobuf-mode) . company-mode)
+  :hook ((prog-mode yaml-mode) . company-mode)
   :bind (:map company-mode-map
           ([remap completion-at-point] . company-complete)
           ("C-c y" . company-yasnippet)
@@ -31,7 +31,7 @@
   :custom-face
   (company-tooltip-selection ((t (:inherit shadow :weight bold :foreground "dodgerblue" :background "#3b3b3b"))))
   :custom
-  (company-backends '((company-capf company-yasnippet company-dabbrev :separate)
+  (company-backends '((company-capf :with company-yasnippet company-dabbrev)
                        (company-keywords company-dabbrev-code)))
   (company-dabbrev-downcase nil)
   (company-dabbrev-ignore-case t)

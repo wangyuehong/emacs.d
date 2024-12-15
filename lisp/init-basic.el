@@ -9,7 +9,7 @@
     (modify-syntax-entry ?_ "w")
     (modify-syntax-entry ?- "w"))
   :hook
-  ((prog-mode yaml-mode protobuf-mode) . my/coding-setup)
+  ((prog-mode yaml-mode) . my/coding-setup)
   (after-init . transient-mark-mode)
   (after-init . repeat-mode)
   :init

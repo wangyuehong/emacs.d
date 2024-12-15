@@ -7,7 +7,7 @@
   :functions (turn-off-symbol-overlay turn-on-symbol-overlay)
   :bind (:map symbol-overlay-map
         ("<escape>" . symbol-overlay-remove-all))
-  :hook (((prog-mode yaml-mode protobuf-mode) . symbol-overlay-mode)
+  :hook (((prog-mode yaml-mode) . symbol-overlay-mode)
          (iedit-mode . turn-off-symbol-overlay)
          (iedit-mode-end . turn-on-symbol-overlay))
   :config
@@ -39,24 +39,21 @@
 
 (use-package hl-todo
   :defines hl-todo-include-modes
-  :hook (after-init . global-hl-todo-mode)
-  :config
-  (with-eval-after-load 'protobuf-mode
-    (add-to-list 'hl-todo-include-modes 'protobuf-mode)))
+  :hook (after-init . global-hl-todo-mode))
 
 (use-package rainbow-mode
   :hook (emacs-lisp-mode . rainbow-mode))
 
 (use-package rainbow-delimiters
-  :hook ((prog-mode protobuf-mode) . rainbow-delimiters-mode))
+  :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package display-line-numbers
   :ensure nil
-  :hook ((prog-mode yaml-mode protobuf-mode) . display-line-numbers-mode))
+  :hook ((prog-mode yaml-mode) . display-line-numbers-mode))
 
 (use-package whitespace
   :ensure nil
-  :hook ((prog-mode yaml-mode markdown-mode conf-mode protobuf-mode) . whitespace-mode)
+  :hook ((prog-mode yaml-mode markdown-mode conf-mode) . whitespace-mode)
   :custom
   (whitespace-line-column 120) ;; config for lines-tail style
   (whitespace-style

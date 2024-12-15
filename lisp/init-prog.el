@@ -5,7 +5,7 @@
 (use-package display-fill-column-indicator
   :disabled t
   :ensure nil
-  :hook ((prog-mode yaml-mode protobuf-mode) . display-fill-column-indicator-mode)
+  :hook ((prog-mode yaml-mode) . display-fill-column-indicator-mode)
   :init
   (setq-default fill-column 120)
   (setq-default display-fill-column-indicator-character ?\N{U+2506})
@@ -13,7 +13,7 @@
   (fill-column-indicator ((t (:inherit shadow :foreground "dimgray")))))
 
 (use-package breadcrumb
-  :hook ((prog-mode yaml-mode protobuf-mode) . breadcrumb-mode))
+  :hook ((prog-mode yaml-mode) . breadcrumb-mode))
 
 (use-package flymake
   :ensure nil
@@ -110,6 +110,12 @@
 (use-package ansi-color
   :ensure nil
   :hook (compilation-filter . ansi-color-compilation-filter))
+
+(use-package hideshow
+  :ensure nil
+  :hook (prog-mode . hs-minor-mode)
+  :custom
+  (hs-hide-comments-when-hiding-all t))
 
 (provide 'init-prog)
 ;;; init-prog.el ends here
