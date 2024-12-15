@@ -18,18 +18,19 @@
   :bind (:map go-mode-map
           ("C-c i" . go-import-add))
   :hook ((go-mode  . eglot-ensure)
-          (go-mode . my/set-go-project-find-functions))
+          (go-mode . my/set-go-project-find-functions)))
+
+(use-package go-tag :after go-mode)
+(use-package go-gen-test :after go-mode)
+(use-package gotest
+  :after go-mode
+  :bind (:map go-mode-map
+          ("C-c t t" . go-test-current-test)
+          ("C-c t p" . go-test-current-project))
   :config
-  (use-package go-tag)
-  (use-package go-gen-test)
-  (use-package gotest
-    :bind (:map go-mode-map
-            ("C-c t t" . go-test-current-test)
-            ("C-c t p" . go-test-current-project))
-    :config
-    (setq go-test-args "-failfast -race")
-    :custom
-    (go-test-verbose t)))
+  (setq go-test-args "-failfast -race")
+  :custom
+  (go-test-verbose t))
 
 (provide 'init-go)
 ;;; init-go.el ends here
