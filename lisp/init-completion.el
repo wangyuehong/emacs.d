@@ -31,9 +31,9 @@
   :custom-face
   (company-tooltip-selection ((t (:inherit shadow :weight bold :foreground "dodgerblue" :background "#3b3b3b"))))
   :custom
-  (company-backends '((company-capf :with company-yasnippet company-dabbrev)
+  (company-backends '((company-capf company-yasnippet company-dabbrev :separate)
                        (company-keywords company-dabbrev-code)))
-  (company-dabbrev-downcase nil)
+  (company-dabbrev-downcase t)
   (company-dabbrev-ignore-case t)
   (company-dabbrev-other-buffers t)
   (company-dabbrev-code-everywhere t)
