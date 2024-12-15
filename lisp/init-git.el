@@ -30,7 +30,7 @@
   :bind (:map diff-hl-command-map
           ("k" . diff-hl-previous-hunk)
           ("j" . diff-hl-next-hunk)
-          ("r" . diff-hl-revert-hunk)
+          ("x" . diff-hl-revert-hunk)
           ("s" . diff-hl-show-hunk)
           ("S" . diff-hl-stage-current-hunk)
           ("U" . diff-hl-unstage-file))
