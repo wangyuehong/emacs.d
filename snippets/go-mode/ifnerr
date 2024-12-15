@@ -3,5 +3,5 @@
 # key: ifnerr
 # --
 if err := $1; err != nil {
-   return ${0:err}
+	return ${0:err}
 }

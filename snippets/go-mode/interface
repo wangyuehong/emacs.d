@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: interface
+# key: interface
+# --
+type ${1:Name} interface {
+	${2:Method}() (${3:Return})
+	$0
+}
