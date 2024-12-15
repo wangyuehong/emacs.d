@@ -7,7 +7,7 @@
   :config
   (which-key-add-key-based-replacements "C-c &" "yasnippet")
   (which-key-add-key-based-replacements "C-c @" "hideshow")
-  (which-key-add-key-based-replacements "C-c t" "gotest")
+  (which-key-add-key-based-replacements "C-c t" "gotest & tag")
   (which-key-add-key-based-replacements "C-c l" "lsp")
   (which-key-add-key-based-replacements "C-c s" "smerge")
   (which-key-add-key-based-replacements "C-x 8" "unicode")

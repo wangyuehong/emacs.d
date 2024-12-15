@@ -20,7 +20,13 @@
   :hook ((go-mode  . eglot-ensure)
           (go-mode . my/set-go-project-find-functions)))
 
-(use-package go-tag :after go-mode)
+(use-package go-tag
+  :after go-mode
+  :bind (:map go-mode-map
+          ("C-c t a" . go-tag-add)
+          ("C-c t x" . go-tag-remove)
+          ("C-c t r" . go-tag-refresh)))
+
 (use-package go-gen-test :after go-mode)
 (use-package gotest
   :after go-mode
