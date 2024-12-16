@@ -33,8 +33,7 @@
   :custom
   (company-backends '((company-capf company-yasnippet company-dabbrev :separate)
                        (company-keywords company-dabbrev-code)))
-  (company-dabbrev-downcase t)
-  (company-dabbrev-ignore-case t)
+  (company-dabbrev-downcase nil)
   (company-dabbrev-other-buffers t)
   (company-dabbrev-code-everywhere t)
   (company-dabbrev-code-ignore-case nil)
