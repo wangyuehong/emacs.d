@@ -58,8 +58,9 @@
   :vc (:url "https://github.com/jdtsmith/eglot-booster"
         :branch "main"
         :rev :newest)
-	:after eglot
-	:config (eglot-booster-mode))
+  :after eglot
+  :if (executable-find "emacs-lsp-booster")
+  :config (eglot-booster-mode))
 
 (provide 'init-lsp)
 ;;; init-lsp.el ends here
