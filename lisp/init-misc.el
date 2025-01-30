@@ -60,7 +60,7 @@
   (evil-replace-state-tag (propertize "[Replace")))
 
 
-(defun open-file-in-vscode ()
+(defun my/open-file-in-vscode ()
   "Open the current file in Visual Studio Code and jump to the current position.
 If the current buffer is not associated with a file,
 open a new Visual Studio Code window."
