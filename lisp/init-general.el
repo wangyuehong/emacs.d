@@ -20,6 +20,7 @@
     "A" 'rg
     "a" 'rg-project
     "c" '(evilnc-comment-or-uncomment-lines :wk "comment-or-uncomment")
+    "C" '(copilot-chat-transient-code       :wk "copilot-chat-code")
     "e" '(evil-iedit-state/iedit-mode       :wk "iedit")
     "g" 'magit-status
     "h" 'symbol-overlay-put
