@@ -6,12 +6,19 @@
   :commands (xclip-set-selection)
   :bind (("C-x C-x" . my/copy-to-clipboard))
   :preface
-  (defun my/copy-buffer-fullpath ()
-    "Copy full path into the yank ring and OS clipboard"
+  (defun my/copy-buffer-path ()
+    "Copy the buffer's file path to the clipboard.
+If the file is part of a project (managed by `project.el`), copy the relative path;
+otherwise, copy the full absolute path."
     (interactive)
     (when buffer-file-name
-      (xclip-set-selection 'clipboard (file-truename buffer-file-name))
-      (message "copied to clipboard!")))
+      (let* ((proj (project-current))
+              (proj-root (when proj (project-root proj)))
+              (path (if proj-root
+                      (file-relative-name buffer-file-name proj-root)
+                      (file-truename buffer-file-name))))
+        (xclip-set-selection 'clipboard path)
+        (message "Copied to clipboard: %s" path))))
 
   (defun my/copy-to-clipboard ()
     "Copy selected-string-or-current-line to clipboard."
