@@ -32,7 +32,7 @@
           ("C-x c t"  . copilot-chat-transient))
   :custom
   (copilot-chat-frontend 'markdown)
-  (copilot-chat-prompt-suffix "Respond in Chinese.")
+  (copilot-chat-prompt-suffix "Reply in Chinese.")
   (copilot-chat-prompt-optimize "Optimize and refactor the following code:")
   (copilot-chat-prompt-explain "Write an explanation in detail for the following code without including the code itself to shorten the response length:"))
 
