@@ -80,6 +80,11 @@
                (abbreviate-file-name (buffer-file-name))
                "%b")))))
 
+(use-package quail
+  :ensure nil
+  :config
+  (setq quail-japanese-use-double-n t))
+
 (use-package bookmark
   :ensure nil
   :bind (("C-x j j" . bookmark-jump)
