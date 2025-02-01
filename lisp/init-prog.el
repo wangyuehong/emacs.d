@@ -27,7 +27,7 @@
 (use-package xref
   :ensure nil
   :bind
-  (("C-\\" . xref-find-references))
+  (("M-]" . xref-find-references))
   :hook
   ((xref-after-return xref-after-jump) . recenter)
   :custom
