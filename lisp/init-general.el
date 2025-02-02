@@ -37,6 +37,7 @@
     "tm" '(xterm-mouse-mode          :wk "xterm-mouse-mode")
     "tn" '(display-line-numbers-mode :wk "display-line-numbers")
     "tp" '(electric-pair-mode        :wk "electric-pair-mode")
+    "tr" '(read-only-mode            :wk "read-only-mode")
     "tt" '(git-timemachine-toggle    :wk "git-timemachine")
     ))
 
