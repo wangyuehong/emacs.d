@@ -51,6 +51,7 @@ or active region using evil ex mode."
     ("o" . other-window)
     ("u" . winner-undo)
     ("C-r" . winner-redo)
+    ("C-]" . xref-find-definitions-other-window)
     ("C-h" . nil)
     :map evil-normal-state-map
     ("q" . quit-window)
