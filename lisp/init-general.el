@@ -12,7 +12,11 @@
     :keymaps 'override
     :prefix "SPC"
 
-    "SPC"  '(:wk "ai")
+    "SPC"   '(:wk "ai")
+    "SPC b" '(copilot-chat-transient-buffers :wk "copilot-chat-buffers")
+    "SPC c" '(copilot-chat-transient-code    :wk "copilot-chat-code")
+    "SPC t" '(copilot-chat-transient         :wk "copilot-chat")
+
     "SPC g" '(gptel         :wk "gptel")
     "SPC m" '(gptel-menu    :wk "gptel-menu")
     "SPC r" '(gptel-rewrite :wk "gptel-rewrite")
@@ -20,7 +24,6 @@
     "A" 'rg
     "a" 'rg-project
     "c" '(evilnc-comment-or-uncomment-lines :wk "comment-or-uncomment")
-    "C" '(copilot-chat-transient-code       :wk "copilot-chat-code")
     "e" '(evil-iedit-state/iedit-mode       :wk "iedit")
     "g" 'magit-status
     "h" 'symbol-overlay-put
