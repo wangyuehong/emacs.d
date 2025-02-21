@@ -3,7 +3,7 @@
 ;;; Code:
 
 (use-package copilot
-  :vc (:url "https://github.com/wangyuehong/copilot.el"
+  :vc (:url "https://github.com/copilot-emacs/copilot.el.git"
         :branch "main"
         :rev :newest)
   :defines (copilot-completion-map copilot-disable-display-predicates)
@@ -23,7 +23,6 @@
   (with-eval-after-load 'company
     (add-to-list 'copilot-disable-display-predicates 'company-tooltip-visible-p t))
   :custom
-  (copilot-version "1.41.0")
   (copilot-idle-delay 0)
   (copilot-log-max 0))
 
