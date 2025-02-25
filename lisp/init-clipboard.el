@@ -29,7 +29,7 @@ otherwise, copy the full absolute path."
                     (thing-at-point 'line))))
       (xclip-set-selection 'clipboard thing)
       (if in-region (deactivate-mark)))
-    (message "copied to clipboard!")))
+    (message "Copied to clipboard!")))
 
 (provide 'init-clipboard)
 ;;; init-clipboard.el ends here
