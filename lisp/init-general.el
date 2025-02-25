@@ -2,6 +2,16 @@
 ;;; Commentary:
 ;;; Code:
 
+(transient-define-prefix my/current-buffer-actions ()
+  "Current buffer actions."
+  [["Copy Path"
+     ("c" "Copy buffer path" my/copy-buffer-path)]
+    ["Open in External Program"
+      ("v" "Open in VS Code" my/open-file-in-vscode)
+      ("t" "Open in Typora" my/open-file-in-typora)]
+    ["Misc"
+      ("q" "Quit" transient-quit-one)]])
+
 (use-package general
   :functions (general-evil-setup general-define-key)
   :demand t
@@ -23,6 +33,7 @@
 
     "A" 'rg
     "a" 'rg-project
+    "b" '(my/current-buffer-actions         :wk "buffer-actions")
     "c" '(evilnc-comment-or-uncomment-lines :wk "comment-or-uncomment")
     "e" '(evil-iedit-state/iedit-mode       :wk "iedit")
     "g" 'magit-status
