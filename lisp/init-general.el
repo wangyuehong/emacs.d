@@ -2,6 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
+(require 'transient)
 (transient-define-prefix my/current-buffer-actions ()
   "Current buffer actions."
   [["Copy Path"
