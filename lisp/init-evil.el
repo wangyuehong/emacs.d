@@ -12,26 +12,6 @@ or active region using evil ex mode."
                   (buffer-substring-no-properties (region-beginning) (region-end))
                   (thing-at-point 'symbol t))))
       (evil-ex (concat "%s/" (regexp-quote text) "/"))))
-
-  (make-variable-buffer-local
-    (defvar my/last-input-method-in-buffer nil "input method to restore."))
-
-  (defun my/get-current-input-method ()
-    (string-trim-right (shell-command-to-string "im-select")))
-
-  (defun my/save-current-input-method ()
-    (setq my/last-input-method-in-buffer (my/get-current-input-method)))
-
-  (defun my/restore-input-method ()
-    (let ((current-input-method (my/get-current-input-method)))
-      (if (and my/last-input-method-in-buffer
-            (not (string= current-input-method my/last-input-method-in-buffer)))
-        (start-process "set-input-source" nil "im-select" my/last-input-method-in-buffer))))
-
-  (defun my/set-english-input-method ()
-    (let ((current-input-method (my/get-current-input-method)))
-      (unless (string= current-input-method "com.apple.keylayout.ABC")
-        (start-process "set-input-source" nil "im-select" "com.apple.keylayout.ABC"))))
   :functions
   (evil-ex evil-set-initial-state)
   :defines
@@ -101,16 +81,6 @@ or active region using evil ex mode."
   (evil-want-integration t)
   (evil-want-keybinding nil)
   :config
-  (if (executable-find "im-select")
-    (progn
-      (add-hook 'evil-insert-state-exit-hook
-        (lambda ()
-          (my/save-current-input-method)
-          (my/set-english-input-method)))
-      (add-hook 'evil-insert-state-entry-hook
-        (lambda ()
-          (my/restore-input-method)))))
-
   ;; modes to map to different default states
   (dolist (p '((Info-mode . motion)
                 (calculator-mode . emacs)
