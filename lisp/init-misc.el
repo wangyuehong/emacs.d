@@ -86,6 +86,12 @@
           ("C-h k" . helpful-key)
           ("C-h x" . helpful-command)))
 
+(use-package mozc
+  :if (executable-find "mozc_emacs_helper")
+  :custom
+  (mozc-candidate-style 'echo-area)
+  (default-input-method "japanese-mozc"))
+
 (defun my/open-file-in-vscode ()
   "Open the current file in Visual Studio Code and jump to the current position."
   (interactive)
