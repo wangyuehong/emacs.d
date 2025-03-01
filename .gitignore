@@ -28,3 +28,4 @@ cookies
 /.last-package-update-day
 /.cache
 /.env
+/request
