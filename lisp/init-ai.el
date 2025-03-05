@@ -31,6 +31,8 @@
           ("C-x c t"  . copilot-chat-transient))
   :custom
   (copilot-chat-frontend 'markdown)
+  (copilot-chat-follow t)
+  (copilot-chat-markdown-prompt "Respone in Chinese:\n")
   (copilot-chat-prompt-test "Write unit tests for the following code:\n")
   (copilot-chat-prompt-optimize "Optimize and refactor the following code:\n")
   (copilot-chat-prompt-explain "Explain in detail for the following code without including the code itself to shorten the response length:\n"))
