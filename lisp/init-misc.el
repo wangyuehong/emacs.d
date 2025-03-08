@@ -109,5 +109,9 @@
     (shell-command (format "open -a Typora %s" (shell-quote-argument file-path)))
     (message "Buffer is not visiting a file.")))
 
+(use-package vterm
+  :custom
+  (vterm-max-scrollback 999999))
+
 (provide 'init-misc)
 ;;; init-misc.el ends here
