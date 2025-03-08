@@ -58,5 +58,15 @@
                           :endpoint (getenv "GPTEL_AZURE_ENDPOINT")
                           :models '(gpt-4o-mini)))))
 
+(use-package aidermacs
+  :vc (:url "https://github.com/MatthewZMD/aidermacs"
+        :rev :newest)
+  :bind (("C-c p" . aidermacs-transient-menu))
+  :config
+  (aidermacs-setup-minor-mode)
+  :custom
+  (aidermacs-subtree-only t)
+  (aidermacs-default-model "sonnet"))
+
 (provide 'init-ai)
 ;;; init-ai.el ends here
