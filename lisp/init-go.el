@@ -6,10 +6,12 @@
   :defines (go-mode-map)
   :preface
   (defun project-find-go-mod (dir)
+    "Find Go module root containing DIR by locating go.mod file."
     (when-let ((root (locate-dominating-file dir "go.mod")))
       (cons 'go-module root)))
 
   (cl-defmethod project-root ((project (head go-module)))
+    "Return root directory of the Go module PROJECT."
     (cdr project))
 
   (defun my/set-go-project-find-functions ()
