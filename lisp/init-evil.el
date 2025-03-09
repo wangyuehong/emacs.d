@@ -34,7 +34,7 @@ or active region using evil ex mode."
     ("C-]" . xref-find-definitions-other-window)
     ("C-h" . nil)
     :map evil-normal-state-map
-    ("q" . quit-window)
+    ("q" . my/quit-window-dwim)
     ("s" . evil-avy-goto-word-or-subword-1)
     ("f" . evil-avy-goto-char-in-line)
     ("u" . undo-fu-only-undo)
@@ -44,7 +44,7 @@ or active region using evil ex mode."
     ("s" . evil-avy-goto-word-or-subword-1)
     ("f" . evil-avy-goto-char-in-line)
     :map evil-motion-state-map
-    ("q" . quit-window)
+    ("q" . my/quit-window-dwim)
     ("s" . evil-avy-goto-word-or-subword-1)
     ("f" . evil-avy-goto-char-in-line)
     :map evil-visual-state-map
