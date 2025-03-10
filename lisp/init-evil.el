@@ -86,7 +86,8 @@ or active region using evil ex mode."
                 (calculator-mode . emacs)
                 (dashboard-mode . motion)
                 (help-mode . motion)
-                (messages-buffer-mode . motion)))
+                (messages-buffer-mode . motion)
+                (vterm-mode . emacs)))
     (evil-set-initial-state (car p) (cdr p))))
 
 (use-package evil-collection
