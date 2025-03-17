@@ -59,8 +59,6 @@
                           :models '(gpt-4o-mini)))))
 
 (use-package aidermacs
-  :vc (:url "https://github.com/MatthewZMD/aidermacs"
-        :rev :newest)
   :bind (("C-c p" . aidermacs-transient-menu))
   :config
   (aidermacs-setup-minor-mode)
