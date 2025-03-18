@@ -94,7 +94,9 @@ or active region using evil ex mode."
   :after evil
   :hook (evil-mode . evil-collection-init)
   :custom
-  (evil-collection-want-unimpaired-p nil))
+  (evil-collection-want-unimpaired-p nil)
+  :config
+  (setq evil-collection-mode-list (remove 'vterm evil-collection-mode-list)))
 
 (use-package evil-surround
   :after evil
