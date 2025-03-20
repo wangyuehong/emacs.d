@@ -38,6 +38,9 @@ The DWIM behaviour of this command is as follows:
 - When the region is active, disable it.
 - When a minibuffer is open, but not focused, close the minibuffer.
 - When the Completions buffer is selected, close it.
+- When in `vterm-copy-mode', close it.
+- When in `vterm-mode', call `vterm-reset-cursor-point'.
+- When in `copilot-mode', call function `copilot-chat-goto-input'.
 - In every other case use the regular `keyboard-quit'."
   (interactive)
   (cond
@@ -47,6 +50,12 @@ The DWIM behaviour of this command is as follows:
     (delete-completion-window))
    ((> (minibuffer-depth) 0)
     (abort-recursive-edit))
+   ((bound-and-true-p vterm-copy-mode)
+    (vterm-copy-mode -1))
+   ((derived-mode-p 'vterm-mode)
+    (vterm-reset-cursor-point))
+   ((bound-and-true-p copilot-mode)
+    (copilot-chat-goto-input))
    (t
     (keyboard-quit))))
 
