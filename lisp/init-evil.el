@@ -87,16 +87,14 @@ or active region using evil ex mode."
                 (dashboard-mode . motion)
                 (help-mode . motion)
                 (messages-buffer-mode . motion)
-                (vterm-mode . emacs)))
+                (vterm-mode . normal)))
     (evil-set-initial-state (car p) (cdr p))))
 
 (use-package evil-collection
   :after evil
   :hook (evil-mode . evil-collection-init)
   :custom
-  (evil-collection-want-unimpaired-p nil)
-  :config
-  (setq evil-collection-mode-list (remove 'vterm evil-collection-mode-list)))
+  (evil-collection-want-unimpaired-p nil))
 
 (use-package evil-surround
   :after evil
