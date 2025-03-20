@@ -8,6 +8,7 @@
   [["Copy Path"
      ("c" "Copy buffer path" my/copy-buffer-path)]
     ["Open in External Program"
+      ("o" "Open in Finder" my/open-in-finder)
       ("v" "Open in VS Code" my/open-file-in-vscode)
       ("t" "Open in Typora" my/open-file-in-typora)]
     ["Misc"

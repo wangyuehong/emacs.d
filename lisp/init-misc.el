@@ -109,6 +109,15 @@
     (shell-command (format "open -a Typora %s" (shell-quote-argument file-path)))
     (message "Buffer is not visiting a file.")))
 
+(defun my/open-in-finder ()
+  "Open the current directory in Finder."
+  (interactive)
+  (when-let ((dir (cond
+                    ((eq major-mode 'dired-mode) (expand-file-name default-directory))
+                    ((buffer-file-name) (file-name-directory (buffer-file-name)))
+                    (t (expand-file-name default-directory)))))
+    (shell-command (format "open %s" (shell-quote-argument dir)))))
+
 (use-package vterm
   :custom
   (vterm-max-scrollback 999999))
