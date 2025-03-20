@@ -65,6 +65,7 @@
   :custom
   (aidermacs-backend 'vterm)
   (aidermacs-default-model "sonnet")
+  (aidermacs-use-architect-mode t)
   (aidermacs-subtree-only t))
 
 (provide 'init-ai)
