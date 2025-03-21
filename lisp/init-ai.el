@@ -15,6 +15,7 @@
     ("C-n" . copilot-next-completion)
     ("C-p" . copilot-previous-completion)
     ("C-g" . copilot-clear-overlay)
+    ("<tab>" . copilot-accept-completion)
     ("C-f" . copilot-accept-completion)
     ("M-f" . copilot-accept-completion-by-word))
   :custom-face
