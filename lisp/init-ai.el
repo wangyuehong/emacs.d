@@ -64,10 +64,7 @@
   :config
   (aidermacs-setup-minor-mode)
   :custom
-  (aidermacs-backend 'vterm)
-  (aidermacs-default-model "sonnet")
-  (aidermacs-use-architect-mode t)
-  (aidermacs-subtree-only t))
+  (aidermacs-backend 'vterm))
 
 (provide 'init-ai)
 ;;; init-ai.el ends here
