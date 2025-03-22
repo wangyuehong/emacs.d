@@ -60,7 +60,7 @@
                           :models '(gpt-4o-mini)))))
 
 (use-package aidermacs
-  :bind (("C-c p" . aidermacs-transient-menu))
+  :bind (("C-c a" . aidermacs-transient-menu))
   :config
   (aidermacs-setup-minor-mode)
   :custom
