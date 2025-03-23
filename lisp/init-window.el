@@ -37,8 +37,8 @@
 
 The DWIM behaviour of this command is as follows:
 
-- When only one window, call `quit-window` to close it.
-- When more than one windows, call `delete-windows-on` to select a window to delete."
+- When only one window, call `quit-window' to close it.
+- When more than one windows, call `delete-windows-on' to select a window to delete."
   (interactive)
   (if (= (length (window-list)) 1)
     (quit-window)
