@@ -28,8 +28,7 @@
   (copilot-log-max 0))
 
 (use-package copilot-chat
-  :bind (("C-x c c"  . copilot-chat-transient-code)
-          ("C-x c t"  . copilot-chat-transient))
+  :bind (("C-c c" . copilot-chat-transient))
   :custom
   (copilot-chat-frontend 'markdown)
   (copilot-chat-follow t)
@@ -43,22 +42,17 @@ the code itself to shorten the response length:\n"))
   :defines (gptel-mode-map gptel-backend)
   :functions (gptel-make-anthropic gptel-make-azure gptel-make-ollama gptel-api-key)
   :bind
-  (:map gptel-mode-map
-        ("C-c m" . gptel-menu))
+  :bind (("C-c C-g" . gptel)
+          ("C-c C-r" . gptel-rewrite)
+          :map gptel-mode-map
+          ("C-c C-m" . gptel-menu))
   :custom
   (gptel-log-level 'debug)
   (gptel-post-stream-hook #'gptel-auto-scroll)
   (gptel-post-response-functions #'gptel-end-of-response)
   (gptel-rewrite-default-action #'gptel--rewrite-diff)
   :config
-  (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key)
-  (when (string-equal (getenv "GPTEL_AZURE_ENABLED") "true")
-    (setq gptel-backend (gptel-make-azure "Azure"
-                          :stream t
-                          :key #'gptel-api-key
-                          :host (getenv "GPTEL_AZURE_HOST")
-                          :endpoint (getenv "GPTEL_AZURE_ENDPOINT")
-                          :models '(gpt-4o-mini)))))
+  (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key))
 
 (use-package aidermacs
   :bind (("C-c a" . aidermacs-transient-menu))

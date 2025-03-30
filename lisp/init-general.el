@@ -24,15 +24,6 @@
     :keymaps 'override
     :prefix "SPC"
 
-    "SPC"   '(:wk "ai")
-    "SPC b" '(copilot-chat-transient-buffers :wk "copilot-chat-buffers")
-    "SPC c" '(copilot-chat-transient-code    :wk "copilot-chat-code")
-    "SPC t" '(copilot-chat-transient         :wk "copilot-chat")
-
-    "SPC g" '(gptel         :wk "gptel")
-    "SPC m" '(gptel-menu    :wk "gptel-menu")
-    "SPC r" '(gptel-rewrite :wk "gptel-rewrite")
-
     "A" 'rg
     "a" 'rg-project
     "b" '(my/current-buffer-actions         :wk "buffer-actions")
