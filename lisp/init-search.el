@@ -21,10 +21,11 @@
 
 (use-package avy
   :custom
-  (avy-all-windows t)
+  (avy-all-windows 'all-frames)
   (avy-background t)
   (avy-highlight-first t)
   (avy-keys (string-to-list "asdfghjklqweruiop"))
+  (avy-indent-line-overlay t)
   (avy-timeout-seconds 0.4))
 
 (provide 'init-search)
