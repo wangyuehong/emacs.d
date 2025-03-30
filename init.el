@@ -26,6 +26,7 @@
 ;;----------------------------------------------------------------------------
 ;; Load configs for specific features and modes
 ;;----------------------------------------------------------------------------
+(require 'init-env)
 (require 'init-basic)
 (require 'init-clipboard)
 (require 'init-theme)

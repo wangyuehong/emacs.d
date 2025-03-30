@@ -103,10 +103,6 @@
           ("\\.zshrc.local\\'"  . sh-mode)
           ("crontab.*\\'"       . sh-mode)))
 
-(use-package envrc
-  :hook (after-init . envrc-global-mode)
-  :if (executable-find "direnv"))
-
 (use-package ansi-color
   :ensure nil
   :hook (compilation-filter . ansi-color-compilation-filter))

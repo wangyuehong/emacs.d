@@ -2,10 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-(use-package exec-path-from-shell
-  :if (display-graphic-p)
-  :hook (after-init . exec-path-from-shell-initialize))
-
 (use-package csv-mode
   :hook (csv-mode . csv-align-mode)
   :custom
