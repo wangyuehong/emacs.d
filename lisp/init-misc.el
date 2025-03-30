@@ -42,11 +42,11 @@
   :hook (after-init . doom-modeline-mode)
   :custom
   (doom-modeline-buffer-encoding 'nondefault)
-  (doom-modeline-buffer-file-name-style 'truncate-with-project)
+  (doom-modeline-buffer-file-name-style 'relative-to-project)
   (doom-modeline-project-detection 'project)
   (doom-modeline-enable-word-count t)
   (doom-modeline-vcs-max-length 36)
-  (doom-modeline-modal-icon nil)
+  (doom-modeline-modal-icon t)
   (evil-normal-state-tag (propertize "[Normal]"))
   (evil-emacs-state-tag (propertize "[Emacs]"))
   (evil-insert-state-tag (propertize "[Insert]"))
