@@ -24,7 +24,7 @@
   (avy-all-windows 'all-frames)
   (avy-background t)
   (avy-highlight-first t)
-  (avy-keys (string-to-list "asdfghjklqweruiop"))
+  (avy-keys (string-to-list "asdfghjklqweruiopcvbnm"))
   (avy-indent-line-overlay t)
   (avy-timeout-seconds 0.4))
 
