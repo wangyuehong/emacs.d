@@ -54,12 +54,5 @@ the code itself to shorten the response length:\n"))
   :config
   (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key))
 
-(use-package aidermacs
-  :bind (("C-c a" . aidermacs-transient-menu))
-  :config
-  (aidermacs-setup-minor-mode)
-  :custom
-  (aidermacs-backend 'vterm))
-
 (provide 'init-ai)
 ;;; init-ai.el ends here
