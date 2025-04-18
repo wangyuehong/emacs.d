@@ -3,9 +3,6 @@
 ;;; Code:
 
 (use-package copilot
-  :vc (:url "https://github.com/copilot-emacs/copilot.el.git"
-        :branch "main"
-        :rev :newest)
   :defines (copilot-completion-map copilot-disable-display-predicates)
   :hook
   ((prog-mode git-commit-setup yaml-mode markdown-mode) . copilot-mode)
