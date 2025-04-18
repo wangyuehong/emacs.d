@@ -114,17 +114,16 @@
 
 ;; brew tap laishulu/homebrew && brew install macism
 (use-package sis
+  :bind (("C-\\" . sis-switch))
   :if (executable-find "macism")
   :hook
   (((text-mode prog-mode) . sis-context-mode)
-   ((text-mode prog-mode) . sis-inline-mode))
+    ((text-mode prog-mode) . sis-inline-mode))
   :config
+  (setq sis-other-cursor-color "red")
   (sis-ism-lazyman-config "com.apple.keylayout.ABC" "com.google.inputmethod.Japanese.base")
   (sis-global-cursor-color-mode t)
-  (sis-global-respect-mode t)
-  (sis-global-context-mode t)
-  (sis-global-inline-mode t)
-  (global-set-key (kbd "C-\\") 'sis-switch))
+  (sis-global-respect-mode t))
 
 (provide 'init-misc)
 ;;; init-misc.el ends here
