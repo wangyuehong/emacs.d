@@ -82,12 +82,6 @@
           ("C-h k" . helpful-key)
           ("C-h x" . helpful-command)))
 
-(use-package mozc
-  :if (executable-find "mozc_emacs_helper")
-  :custom
-  (mozc-candidate-style 'echo-area)
-  (default-input-method "japanese-mozc"))
-
 (defun my/open-file-in-vscode ()
   "Open the current file in Visual Studio Code and jump to the current position."
   (interactive)
@@ -117,6 +111,20 @@
 (use-package vterm
   :custom
   (vterm-max-scrollback 999999))
+
+;; brew tap laishulu/homebrew && brew install macism
+(use-package sis
+  :if (executable-find "macism")
+  :hook
+  (((text-mode prog-mode) . sis-context-mode)
+   ((text-mode prog-mode) . sis-inline-mode))
+  :config
+  (sis-ism-lazyman-config "com.apple.keylayout.ABC" "com.google.inputmethod.Japanese.base")
+  (sis-global-cursor-color-mode t)
+  (sis-global-respect-mode t)
+  (sis-global-context-mode t)
+  (sis-global-inline-mode t)
+  (global-set-key (kbd "C-\\") 'sis-switch))
 
 (provide 'init-misc)
 ;;; init-misc.el ends here
