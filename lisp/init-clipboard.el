@@ -20,6 +20,22 @@ otherwise, copy the full absolute path."
         (xclip-set-selection 'clipboard path)
         (message "Copied to clipboard: %s" path))))
 
+  (defun my/copy-buffer-absolute-path ()
+    "Copy the buffer's absolute file path to the clipboard."
+    (interactive)
+    (when buffer-file-name
+      (let* ((path (file-truename buffer-file-name)))
+        (xclip-set-selection 'clipboard path)
+        (message "Copied absolute path to clipboard: %s" path))))
+
+  (defun my/copy-buffer-file-name ()
+    "Copy the buffer's file name (without directory) to the clipboard."
+    (interactive)
+    (when buffer-file-name
+      (let* ((filename (file-name-nondirectory buffer-file-name)))
+        (xclip-set-selection 'clipboard filename)
+        (message "Copied file name to clipboard: %s" filename))))
+
   (defun my/copy-to-clipboard ()
     "Copy selected-string-or-current-line to clipboard."
     (interactive)

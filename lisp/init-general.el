@@ -5,8 +5,10 @@
 (require 'transient)
 (transient-define-prefix my/current-buffer-actions ()
   "Current buffer actions."
-  [["Copy Path"
-     ("c" "Copy buffer path" my/copy-buffer-path)]
+  [["Copy"
+     ("c" "Copy relative/abs path" my/copy-buffer-path)
+     ("C" "Copy absolute path" my/copy-buffer-absolute-path)
+     ("n" "Copy file name" my/copy-buffer-file-name)]
     ["Open in External Program"
       ("o" "Open in Finder" my/open-in-finder)
       ("v" "Open in VS Code" my/open-file-in-vscode)
