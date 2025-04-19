@@ -144,6 +144,9 @@ selected region as initial input."
   :after (embark consult))
 
 (use-package consult-ls-git
+  :vc (:url "https://github.com/wangyuehong/consult-ls-git"
+         :branch "main"
+         :rev :newest)
   :after (consult))
 
 (use-package minibuffer
