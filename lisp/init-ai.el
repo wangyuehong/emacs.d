@@ -38,7 +38,6 @@ the code itself to shorten the response length:\n"))
 (use-package gptel
   :defines (gptel-mode-map gptel-backend)
   :functions (gptel-make-anthropic gptel-make-azure gptel-make-ollama gptel-api-key)
-  :bind
   :bind (("C-c C-g" . gptel)
           ("C-c C-r" . gptel-rewrite)
           :map gptel-mode-map
@@ -50,6 +49,9 @@ the code itself to shorten the response length:\n"))
   (gptel-rewrite-default-action #'gptel--rewrite-diff)
   :config
   (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key))
+
+(use-package aider
+  :bind (("C-c a" . aider-transient-menu)))
 
 (provide 'init-ai)
 ;;; init-ai.el ends here
