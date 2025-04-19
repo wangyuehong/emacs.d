@@ -84,6 +84,7 @@ or active region using evil ex mode."
   ;; modes to map to different default states
   (dolist (p '((Info-mode . motion)
                 (calculator-mode . emacs)
+                (comint-mode . emacs)
                 (dashboard-mode . motion)
                 (help-mode . motion)
                 (messages-buffer-mode . motion)
