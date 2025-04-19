@@ -41,6 +41,7 @@ The DWIM behaviour of this command is as follows:
 - When in `vterm-copy-mode', close it.
 - When in `vterm-mode', call `vterm-reset-cursor-point'.
 - When in `copilot-mode', call function `copilot-chat-goto-input'.
+- When in `comint-mode', call `comint-goto-process-mark'.
 - In every other case use the regular `keyboard-quit'."
   (interactive)
   (cond
@@ -56,6 +57,8 @@ The DWIM behaviour of this command is as follows:
     (vterm-reset-cursor-point))
    ((bound-and-true-p copilot-mode)
     (copilot-chat-goto-input))
+   ((derived-mode-p 'comint-mode)
+    (comint-goto-process-mark))
    (t
     (keyboard-quit))))
 
