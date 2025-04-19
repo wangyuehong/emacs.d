@@ -156,5 +156,21 @@ selected region as initial input."
          ([backtab] . minibuffer-previous-completion)
          ("RET" . minibuffer-choose-completion)))
 
+(defun consult-ls-git-ignored ()
+  "Use completing-read to select and open a file ignored by git."
+  (interactive)
+  (let ((git-root (locate-dominating-file default-directory ".git")))
+    (unless git-root
+      (user-error "Not inside a Git repository."))
+    (let* ((default-directory git-root) ; Ensure git command runs at repo root
+           (command "git ls-files --others --ignored --exclude-standard")
+           (ignored-files-str (shell-command-to-string command))
+           (files (split-string ignored-files-str "\n" t)))
+      (if (not files)
+          (message "No ignored files found in %s" git-root)
+        (let ((file (completing-read "Ignored file: " files nil t)))
+          (when file
+            (find-file (expand-file-name file git-root))))))))
+
 (provide 'init-completion)
 ;;; init-completion.el ends here
