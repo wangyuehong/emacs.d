@@ -112,17 +112,19 @@
   :custom
   (vterm-max-scrollback 999999))
 
-;; brew tap laishulu/homebrew && brew install macism
+(use-package mozc
+  :if (executable-find "mozc_emacs_helper")
+  :custom
+  (mozc-candidate-style 'echo-area)
+  (default-input-method "japanese-mozc"))
+
 (use-package sis
-  :disabled
-  :bind (("C-\\" . sis-switch))
-  :if (executable-find "macism")
   :hook
   (((text-mode prog-mode) . sis-context-mode)
     ((text-mode prog-mode) . sis-inline-mode))
   :config
   (setq sis-other-cursor-color "red")
-  (sis-ism-lazyman-config "com.apple.keylayout.ABC" "com.google.inputmethod.Japanese.base")
+  (sis-ism-lazyman-config nil "japanese-mozc" 'native)
   (sis-global-cursor-color-mode t)
   (sis-global-respect-mode t))
 
