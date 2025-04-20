@@ -114,6 +114,7 @@
 
 ;; brew tap laishulu/homebrew && brew install macism
 (use-package sis
+  :disabled
   :bind (("C-\\" . sis-switch))
   :if (executable-find "macism")
   :hook
