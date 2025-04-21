@@ -128,11 +128,5 @@
   (sis-global-cursor-color-mode t)
   (sis-global-respect-mode t))
 
-(use-package rime
-  :disabled
-  :custom
-  (rime-emacs-module-header-root "/opt/homebrew/include")
-  (rime-librime-root "/opt/homebrew/opt/librime"))
-
 (provide 'init-misc)
 ;;; init-misc.el ends here
