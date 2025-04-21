@@ -29,4 +29,6 @@ cookies
 /.cache
 /.env
 /request
+/rime
+
 .aider*
