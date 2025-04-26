@@ -7,7 +7,6 @@
   :preface
   (defun my/eglot-organize-imports ()
     "Check if `source.organizeImports` is available and execute it if possible."
-    (interactive)
     (let* ((actions (eglot-code-actions nil nil nil nil))
             (organize-imports-action
               (seq-find (lambda (action)
@@ -16,7 +15,7 @@
       (if organize-imports-action
         (eglot-code-actions nil nil "source.organizeImports" t))))
 
-  (defun my/eglot-setup-hooks () (interactive)
+  (defun my/eglot-setup-hooks ()
     (add-hook 'before-save-hook 'my/eglot-organize-imports nil t)
     (when (eglot-server-capable :documentFormattingProvider)
       (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
