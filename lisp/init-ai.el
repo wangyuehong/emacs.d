@@ -37,7 +37,6 @@ the code itself to shorten the response length:\n"))
 
 (use-package gptel
   :defines (gptel-mode-map gptel-backend)
-  :functions (gptel-make-anthropic gptel-make-azure gptel-make-ollama gptel-api-key)
   :bind (("C-c C-g" . gptel)
           ("C-c C-r" . gptel-rewrite)
           :map gptel-mode-map
@@ -48,6 +47,13 @@ the code itself to shorten the response length:\n"))
   (gptel-post-response-functions #'gptel-end-of-response)
   (gptel-rewrite-default-action #'gptel--rewrite-diff)
   :config
+  (setq gptel-model 'gpt-4o
+      gptel-backend (gptel-make-gh-copilot "Copilot"))
+  (gptel-make-openai "litellm"
+    :stream t
+    :protocol "http"
+    :host "localhost:4000"
+    :models '(gemini-2.5-pro))
   (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key))
 
 (provide 'init-ai)
