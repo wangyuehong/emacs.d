@@ -27,8 +27,6 @@
               ("C-c l r" . eglot-reconnect))
   :hook ((eglot-managed-mode . my/eglot-setup-hooks))
   :config
-  (setq completion-category-overrides '((eglot (styles orderless))
-                                         (eglot-capf (styles orderless))))
   (setq-default eglot-workspace-configuration
     '((:gopls . ((completeUnimported . t)
                   (gofumpt     . t)

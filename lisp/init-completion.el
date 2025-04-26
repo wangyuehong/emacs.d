@@ -85,7 +85,8 @@
 (use-package orderless
   :custom
   (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles basic partial-completion))))
+  (completion-category-overrides '((file (styles basic partial-completion))
+                                   (eglot-capf (styles orderless))))
   (orderless-component-separator #'orderless-escapable-split-on-space))
 
 (use-package vertico
