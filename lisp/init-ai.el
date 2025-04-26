@@ -18,9 +18,9 @@
   (copilot-overlay-face ((t (:inherit shadow :foreground "#7ec0ee"))))
   :config
   (with-eval-after-load 'company
-    (add-to-list 'copilot-disable-display-predicates 'company-tooltip-visible-p t))
+    (add-to-list 'copilot-disable-display-predicates 'company-tooltip-visible-p))
   :custom
-  (copilot-idle-delay 0)
+  (copilot-idle-delay 0.2)
   (copilot-log-max 0))
 
 (use-package copilot-chat

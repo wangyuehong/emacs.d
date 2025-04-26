@@ -39,7 +39,7 @@
   (company-dabbrev-code-ignore-case nil)
   (company-files-exclusions '(".git/" ".DS_Store"))
   (company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend))
-  (company-idle-delay 0.3)
+  (company-idle-delay 0.1)
   (company-minimum-prefix-length 2)
   (company-show-quick-access t)
   (company-tooltip-align-annotations t)
