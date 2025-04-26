@@ -30,8 +30,11 @@
     "SPC k" '(avy-goto-line-above :wk "avy-goto-line-above")
     "SPC j" '(avy-goto-line-below :wk "avy-goto-line-below")
 
-    "A" 'rg
-    "a" 'rg-project
+    "a"  '(:wk "ai")
+    "aa" '(gptel         :wk "gptel")
+    "am" '(gptel-menu    :wk "gptel-menu")
+    "ar" '(gptel-rewrite :wk "gptel-rewrite")
+
     "b" '(my/current-buffer-actions         :wk "buffer-actions")
     "c" '(evilnc-comment-or-uncomment-lines :wk "comment-or-uncomment")
     "e" '(evil-iedit-state/iedit-mode       :wk "iedit")
@@ -40,11 +43,11 @@
     "i" 'imenu
     "l" '(consult-ls-git              :wk "ls-git")
     "L" '(consult-ls-git-ls-ignored   :wk "ls-git-ignored")
+
     "o" '(my/consult-line             :wk "occur")
     "q" 'quickrun
-    "r" '(consult-yank-from-kill-ring :wk "yank-from-kill-ring")
-    "w" 'save-buffer
-    "x" '(execute-extended-command    :wk "M-x")
+    "r" 'rg-project
+    "R" 'rg
 
     "t"  '(:wk "toggles")
     "tl" '(toggle-truncate-lines     :wk "truncate-lines")
@@ -53,6 +56,10 @@
     "tp" '(electric-pair-mode        :wk "electric-pair-mode")
     "tr" '(read-only-mode            :wk "read-only-mode")
     "tt" '(git-timemachine-toggle    :wk "git-timemachine")
+
+    "w" 'save-buffer
+    "x" '(execute-extended-command    :wk "M-x")
+    "y" '(consult-yank-from-kill-ring :wk "yank-from-kill-ring")
     ))
 
 (provide 'init-general)
