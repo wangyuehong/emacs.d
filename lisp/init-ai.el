@@ -50,8 +50,5 @@ the code itself to shorten the response length:\n"))
   :config
   (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key))
 
-(use-package aider
-  :bind (("C-c a" . aider-transient-menu)))
-
 (provide 'init-ai)
 ;;; init-ai.el ends here
