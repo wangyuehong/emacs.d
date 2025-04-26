@@ -16,6 +16,8 @@
   :hook ((prog-mode yaml-mode) . company-mode)
   :bind (:map company-mode-map
           ([remap completion-at-point] . company-complete)
+          ("TAB" . company-complete)
+          ([tab] . company-complete)
           ("C-c y" . company-yasnippet)
           :map company-active-map
           ("C-b"     . company-previous-page)
