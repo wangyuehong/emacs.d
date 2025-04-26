@@ -9,11 +9,12 @@
   :bind
   (("C-x c g" . copilot-diagnose)
     :map copilot-completion-map
+    ("TAB" . copilot-accept-completion)
+    ([tab] . copilot-accept-completion)
+    ("C-f" . copilot-accept-completion-by-line)
     ("C-n" . copilot-next-completion)
     ("C-p" . copilot-previous-completion)
-    ("C-g" . copilot-clear-overlay)
-    ("C-f" . copilot-accept-completion)
-    ("M-f" . copilot-accept-completion-by-word))
+    ("C-g" . copilot-clear-overlay))
   :custom-face
   (copilot-overlay-face ((t (:inherit shadow :foreground "#7ec0ee"))))
   :config
