@@ -54,8 +54,8 @@ The DWIM behaviour of this command is as follows:
   :ensure nil
   :bind ("C-x C-b" . ibuffer))
 
-(defun kill-other-buffers ()
-  "Kill all other buffers."
+(defun my/kill-other-buffers ()
+  "Kill all other buffers except the current one."
   (interactive)
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 

@@ -44,6 +44,7 @@
     "g" 'magit-status
     "h" 'symbol-overlay-put
     "i" 'imenu
+    "K" '(my/kill-other-buffers       :wk "kill-other-buffers")
     "l" '(consult-ls-git              :wk "ls-git")
     "L" '(consult-ls-git-ls-ignored   :wk "ls-git-ignored")
 
