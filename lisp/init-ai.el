@@ -292,6 +292,12 @@ the code itself to shorten the response length:\n"))
 ;;                :required t)))
   )
 
+(use-package aidermacs
+  :bind (("C-c a" . aidermacs-transient-menu))
+  :config
+  (aidermacs-setup-minor-mode)
+  :custom
+  (aidermacs-backend 'vterm))
 
 (provide 'init-ai)
 ;;; init-ai.el ends here
