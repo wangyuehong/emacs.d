@@ -37,10 +37,6 @@ the code itself to shorten the response length:\n"))
 
 (use-package gptel
   :defines (gptel-mode-map gptel-backend)
-  :bind (("C-c C-g" . gptel)
-          ("C-c C-r" . gptel-rewrite)
-          :map gptel-mode-map
-          ("C-c C-m" . gptel-menu))
   :custom
   (gptel-log-level 'info)
   (gptel-post-stream-hook #'gptel-auto-scroll)
