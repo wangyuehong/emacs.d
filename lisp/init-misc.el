@@ -118,15 +118,5 @@
   (mozc-candidate-style 'echo-area)
   (default-input-method "japanese-mozc"))
 
-(use-package sis
-  :hook
-  (((text-mode prog-mode) . sis-context-mode)
-    ((text-mode prog-mode) . sis-inline-mode))
-  :config
-  (setq sis-other-cursor-color "red")
-  (sis-ism-lazyman-config nil "japanese-mozc" 'native)
-  (sis-global-cursor-color-mode t)
-  (sis-global-respect-mode t))
-
 (provide 'init-misc)
 ;;; init-misc.el ends here

@@ -4,6 +4,30 @@
 
 (use-package evil
   :preface
+  (defvar-local my/last-input-method-in-buffer nil "Input method to restore.")
+
+  (defun my/get-current-input-method ()
+    "Get the current input method using `im-select`."
+    (let ((result (string-trim-right (shell-command-to-string "im-select"))))
+      (if (string-empty-p result)
+        (error "Failed to get current input method")
+        result)))
+
+  (defun my/set-english-input-method ()
+    "Switch to English input method and save the current input method."
+    (setq my/last-input-method-in-buffer (my/get-current-input-method))
+    (unless (string= my/last-input-method-in-buffer "com.apple.keylayout.ABC")
+      (message "Switching input method to English (com.apple.keylayout.ABC)")
+      (call-process "im-select" nil nil nil "com.apple.keylayout.ABC")))
+
+  (defun my/restore-input-method ()
+    "Restore the previously saved input method."
+    (let ((current-input-method (my/get-current-input-method)))
+      (when (and my/last-input-method-in-buffer
+              (not (string= current-input-method my/last-input-method-in-buffer)))
+        (message "Restoring input method to %s" my/last-input-method-in-buffer)
+        (call-process "im-select" nil nil nil my/last-input-method-in-buffer))))
+
   (defun my/replace-at-point-or-region ()
     "Setup buffer replace string for symbol at point
 or active region using evil ex mode."
@@ -17,7 +41,9 @@ or active region using evil ex mode."
   :defines
   (evil-window-map evil-normal-state-map evil-motion-state-map evil-visual-state-map
     evil-operator-state-map evil-disable-insert-state-bindings evil-want-Y-yank-to-eol)
-  :hook (after-init . evil-mode)
+  :hook ((after-init . evil-mode)
+          (evil-insert-state-exit . my/set-english-input-method)
+          (evil-insert-state-entry . my/restore-input-method))
   :bind
   (("C-x -" . evil-window-split)
     ("C-x |" . evil-window-vsplit)
