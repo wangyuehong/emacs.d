@@ -41,6 +41,7 @@ The DWIM behaviour of this command is as follows:
 - When in `vterm-copy-mode', close it.
 - When in `vterm-mode', call `vterm-reset-cursor-point'.
 - When in `copilot-mode', call function `copilot-chat-goto-input'.
+- When in `gptel-mode', call `gptel-end-of-response'.
 - When in `comint-mode', call `comint-goto-process-mark'.
 - In every other case use the regular `keyboard-quit'."
   (interactive)
@@ -55,8 +56,10 @@ The DWIM behaviour of this command is as follows:
     (vterm-copy-mode -1))
    ((derived-mode-p 'vterm-mode)
     (vterm-reset-cursor-point))
-   ((bound-and-true-p copilot-mode)
+   ((and (boundp 'copilot-mode) copilot-mode)
     (copilot-chat-goto-input))
+   ((and (boundp 'gptel-mode) gptel-mode)
+    (gptel-end-of-response))
    ((derived-mode-p 'comint-mode)
     (comint-goto-process-mark))
    (t
