@@ -75,7 +75,6 @@ or active region using evil ex mode."
   (evil-undo-system 'undo-redo)
   (evil-vsplit-window-right t)
   (evil-want-C-i-jump nil)
-  (evil-want-C-u-scroll t)
   (evil-want-abbrev-expand-on-insert-exit nil)
   (evil-want-fine-undo t)
   (evil-want-integration t)
