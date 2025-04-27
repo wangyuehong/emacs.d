@@ -77,9 +77,8 @@ and formats the output as a Markdown code block, adjusting backtick fence length
         (let* ((start (region-beginning))
                (end (region-end))
                (selected-text (buffer-substring-no-properties start end))
-               ;; buffer-file-name is used directly below
                (location-prefix (my/get-buffer-display-path))
-              (start-line (line-number-at-pos start)) ; Directly use position
+              (start-line (line-number-at-pos start))
               (saved-message "")
               ;; --- Calculate fence ---
               (max-inner-ticks (my/find-max-backtick-sequence selected-text))
