@@ -141,7 +141,10 @@ selected region as initial input."
           ("C-c C-c" . embark-collect)
           ("C-c C-e" . embark-export))
   :init
-  (setq prefix-help-command #'embark-prefix-help-command))
+  (setq prefix-help-command #'embark-prefix-help-command)
+  :config
+  (keymap-set embark-region-map "x r" #'my/copy-region-with-location)
+  (keymap-set embark-region-map "x x" #'my/copy-to-clipboard))
 
 (use-package embark-consult
   :after (embark consult))
