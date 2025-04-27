@@ -35,6 +35,7 @@
     "aa" '(gptel         :wk "gptel")
     "am" '(gptel-menu    :wk "gptel-menu")
     "ar" '(gptel-rewrite :wk "gptel-rewrite")
+    "as" '(gptel-send    :wk "gptel-send")
     "at" '(gptel-tools   :wk "gptel-tools")
 
     "b" '(my/current-buffer-actions         :wk "buffer-actions")
