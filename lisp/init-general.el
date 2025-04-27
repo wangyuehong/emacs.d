@@ -8,7 +8,8 @@
   [["Copy"
      ("c" "Copy relative/abs path" my/copy-buffer-path)
      ("C" "Copy absolute path" my/copy-buffer-absolute-path)
-     ("n" "Copy file name" my/copy-buffer-file-name)]
+     ("n" "Copy file name" my/copy-buffer-file-name)
+     ("r" "Copy region with location" my/copy-region-with-location)]
     ["Open in External Program"
       ("o" "Open in Finder" my/open-in-finder)
       ("v" "Open in VS Code" my/open-file-in-vscode)
