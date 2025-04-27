@@ -42,18 +42,26 @@ the code itself to shorten the response length:\n"))
           :map gptel-mode-map
           ("C-c C-m" . gptel-menu))
   :custom
-  (gptel-log-level 'debug)
+  (gptel-log-level 'info)
   (gptel-post-stream-hook #'gptel-auto-scroll)
   (gptel-post-response-functions #'gptel-end-of-response)
   (gptel-rewrite-default-action #'gptel--rewrite-diff)
   :config
   (setq gptel-model 'gpt-4o
-      gptel-backend (gptel-make-gh-copilot "Copilot"))
-  (gptel-make-openai "litellm"
+    gptel-backend (gptel-make-gh-copilot "Copilot"
+                    :models '(gpt-4o)))
+  (gptel-make-openai "GeminiPro"
     :stream t
     :protocol "http"
     :host "localhost:4000"
     :models '(gemini-2.5-pro))
+  ;; (gptel-make-openai "Claude-3.7"
+  ;;   :stream t
+  ;;   :protocol "http"
+  ;;   :host "localhost:4000"
+  ;;   :models '(claude-3.7)
+  ;;   :request-params '(:thinking (:type "enabled" :budget_tokens 4096) :max_tokens 64000))
+
   (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key)
 
   (use-package codel
