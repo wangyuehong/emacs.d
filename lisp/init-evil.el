@@ -4,36 +4,61 @@
 
 (use-package evil
   :preface
-  (defvar-local my/last-input-method-in-buffer nil "Input method to restore.")
+  (defconst my/default-english-system-im "com.apple.keylayout.ABC"
+    "Default English input method ID for the system (macOS).")
 
-  (defun my/get-current-input-method ()
-    "Get the current input method using `im-select`."
+  (defvar-local my/last-system-im-in-buffer nil
+    "Saved non-English system input method id from last insert exit.")
+  (defvar-local my/last-emacs-im-in-buffer nil
+    "Saved Emacs input method name from last insert exit.")
+
+  (defun my/get-current-system-input-method ()
+    "Get the current system input method using `im-select'."
     (let ((result (string-trim-right (shell-command-to-string "im-select"))))
       (if (string-empty-p result)
         (error "Failed to get current input method")
         result)))
 
   (defun my/set-english-input-method ()
-    "Switch to English input method and save the current input method."
-    (setq my/last-input-method-in-buffer (my/get-current-input-method))
-    (unless (string= my/last-input-method-in-buffer "com.apple.keylayout.ABC")
-      (call-process "im-select" nil nil nil "com.apple.keylayout.ABC")))
+    "Save non-English system-im and active emacs-im, then switch/disable them.
+1. Save non-English system-im to `my/last-system-im-in-buffer' and switch system to English.
+2. Save active emacs-im to `my/last-emacs-im-in-buffer' and disable it."
+    (let ((system-im (my/get-current-system-input-method)))
+      (unless (string= system-im my/default-english-system-im)
+        (setq my/last-system-im-in-buffer system-im)
+        (call-process "im-select" nil nil nil my/default-english-system-im)))
+
+    (when current-input-method
+      (setq my/last-emacs-im-in-buffer current-input-method)
+      (set-input-method nil)))
 
   (defun my/restore-input-method ()
-    "Restore the previously saved input method."
-    (let ((current-input-method (my/get-current-input-method)))
-      (when (and my/last-input-method-in-buffer
-              (not (string= current-input-method my/last-input-method-in-buffer)))
-        (call-process "im-select" nil nil nil my/last-input-method-in-buffer))))
+    "Restore input methods upon entering insert state.
+Prioritizes restoring emacs-im. If restored, ensures system-im is English.
+Otherwise, restores the saved system-im if applicable."
+    (let ((emacs-im-restored nil))
+      (when my/last-emacs-im-in-buffer
+        (set-input-method my/last-emacs-im-in-buffer)
+        (setq emacs-im-restored t)
+        (setq my/last-emacs-im-in-buffer nil)) ; Reset Emacs input method state
+
+      (let ((current-system-im (my/get-current-system-input-method)))
+        (if emacs-im-restored
+          (unless (string= current-system-im my/default-english-system-im)
+            (call-process "im-select" nil nil nil my/default-english-system-im))
+          (when my/last-system-im-in-buffer
+            (unless (string= current-system-im my/last-system-im-in-buffer)
+              (call-process "im-select" nil nil nil my/last-system-im-in-buffer))))
+      (setq my/last-system-im-in-buffer nil))))
 
   (defun my/replace-at-point-or-region ()
-    "Setup buffer replace string for symbol at point
-or active region using evil ex mode."
+    "Setup buffer replace string for symbol at point or active region using evil ex mode."
     (interactive)
     (let ((text (if (region-active-p)
                   (buffer-substring-no-properties (region-beginning) (region-end))
                   (thing-at-point 'symbol t))))
       (evil-ex (concat "%s/" (regexp-quote text) "/"))))
+
   :functions
   (evil-ex evil-set-initial-state)
   :defines
