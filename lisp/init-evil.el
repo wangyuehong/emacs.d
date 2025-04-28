@@ -17,7 +17,6 @@
     "Switch to English input method and save the current input method."
     (setq my/last-input-method-in-buffer (my/get-current-input-method))
     (unless (string= my/last-input-method-in-buffer "com.apple.keylayout.ABC")
-      (message "Switching input method to English (com.apple.keylayout.ABC)")
       (call-process "im-select" nil nil nil "com.apple.keylayout.ABC")))
 
   (defun my/restore-input-method ()
@@ -25,7 +24,6 @@
     (let ((current-input-method (my/get-current-input-method)))
       (when (and my/last-input-method-in-buffer
               (not (string= current-input-method my/last-input-method-in-buffer)))
-        (message "Restoring input method to %s" my/last-input-method-in-buffer)
         (call-process "im-select" nil nil nil my/last-input-method-in-buffer))))
 
   (defun my/replace-at-point-or-region ()
