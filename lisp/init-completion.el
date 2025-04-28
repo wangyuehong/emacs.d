@@ -16,10 +16,9 @@
   :hook ((prog-mode yaml-mode) . company-mode)
   :bind (:map company-mode-map
           ([remap completion-at-point] . company-complete)
-          ("TAB" . company-complete)
-          ([tab] . company-complete)
           ("C-c y" . company-yasnippet)
           :map company-active-map
+          ("ESC"     . company-abort)
           ("C-b"     . company-previous-page)
           ("C-f"     . company-next-page)
           ("C-s"     . company-filter-candidates)
