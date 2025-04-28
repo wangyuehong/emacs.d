@@ -18,7 +18,7 @@
           ([remap completion-at-point] . company-complete)
           ("C-c y" . company-yasnippet)
           :map company-active-map
-          ("ESC"     . company-abort)
+          ([escape]  . company-abort)
           ("C-b"     . company-previous-page)
           ("C-f"     . company-next-page)
           ("C-s"     . company-filter-candidates)
