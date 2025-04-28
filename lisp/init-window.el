@@ -37,18 +37,13 @@
 
 The DWIM behaviour of this command is as follows:
 
-- When in `vterm-mode', send `q' to vterm.
 - When only one window, call `quit-window' to close it.
 - When more than one windows, call `delete-windows-on' to select a window to delete."
   (interactive)
-  (cond
-   ((derived-mode-p 'vterm-mode)
-    (vterm-send-string "q"))
-   ((= (length (window-list)) 1)
-    (quit-window))
-   (t
+  (if (= (length (window-list)) 1)
+    (quit-window)
     (let ((buffer (read-buffer "Delete windows on buffer: " (current-buffer) t)))
-      (delete-windows-on buffer)))))
+      (delete-windows-on buffer))))
 
 (use-package ibuffer
   :ensure nil
