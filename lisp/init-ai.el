@@ -291,11 +291,12 @@
   :vc (:url "https://github.com/karthink/gptel-quick" :branch "main" :rev :newest)
   :after gptel
   :init
-  (setq gptel-quick-word-count 24)
+  (setq gptel-quick-word-count 48)
   :config
   (setq gptel-quick-system-message
     (lambda (count)
-      (format "Use less than %d Chinese characters to explain." count))))
+      (format "Provide a most detailed explanation using fewer than %d Chinese characters. \
+Prioritize completeness within the character limit." count))))
 
 (use-package aidermacs
   :bind (("C-c a" . aidermacs-transient-menu))
