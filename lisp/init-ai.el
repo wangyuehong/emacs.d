@@ -32,8 +32,7 @@
   (copilot-chat-markdown-prompt "Respone in 中文:\n")
   (copilot-chat-prompt-test "Write unit tests for the following code:\n")
   (copilot-chat-prompt-optimize "Optimize and refactor the following code:\n")
-  (copilot-chat-prompt-explain "Explain in detail for the following code without including
-the code itself to shorten the response length:\n"))
+  (copilot-chat-prompt-explain "Explain the following code:\n"))
 
 (use-package gptel
   :defines (gptel-mode-map gptel-backend)
@@ -287,6 +286,16 @@ the code itself to shorten the response length:\n"))
 ;;                :description "Text to replace old_string with"
 ;;                :required t)))
   )
+
+(use-package gptel-quick
+  :vc (:url "https://github.com/karthink/gptel-quick" :branch "main" :rev :newest)
+  :after gptel
+  :init
+  (setq gptel-quick-word-count 24)
+  :config
+  (setq gptel-quick-system-message
+    (lambda (count)
+      (format "Use less than %d Chinese characters to explain." count))))
 
 (use-package aidermacs
   :bind (("C-c a" . aidermacs-transient-menu))
