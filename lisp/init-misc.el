@@ -130,6 +130,7 @@ and switch to `evil-emacs-state` otherwise."
 
 (use-package popup)
 (use-package pyim
+  :after popup
   :bind (("M-i" . pyim-toggle-input-ascii)
           :map pyim-mode-map
           ("C-f" . pyim-next-page)
