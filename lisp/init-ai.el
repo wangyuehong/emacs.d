@@ -303,7 +303,9 @@ Prioritize completeness within the character limit." count))))
   :config
   (aidermacs-setup-minor-mode)
   :custom
+  ;; ai: only set this in tty emacs
   (aidermacs-extra-args '("--editor" "emacsclient"))
+  ;; ai!
   (aidermacs-backend 'vterm))
 
 (provide 'init-ai)
