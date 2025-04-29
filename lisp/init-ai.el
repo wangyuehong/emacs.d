@@ -305,6 +305,7 @@ Prioritize completeness within the character limit." count))))
   (unless (display-graphic-p)
     (setq aidermacs-extra-args '("--editor" "emacsclient")))
   :custom
+  (aidermacs-vterm-use-theme-colors nil)
   (aidermacs-backend 'vterm))
 
 (provide 'init-ai)
