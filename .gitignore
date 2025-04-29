@@ -30,3 +30,4 @@ cookies
 /.env
 /request
 .aider*
+/pyim

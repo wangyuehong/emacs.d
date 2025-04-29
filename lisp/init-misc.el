@@ -128,10 +128,42 @@ and switch to `evil-emacs-state` otherwise."
   (mozc-candidate-style 'echo-area)
   (default-input-method "japanese-mozc"))
 
+(use-package popup)
+(use-package pyim
+  :custom
+  (default-input-method "pyim")
+  (pyim-default-scheme 'quanpin)
+  (pyim-page-length 6)
+  (pyim-page-tooltip 'popup)
+  :config
+  (require 'popup)
+  (pyim-basedict-enable))
+
+(use-package pyim-basedict
+  :after pyim)
+
 (use-package im-bridge
   :ensure nil ;; site-lisp/im-bridge
   :hook
   ((after-init . imb-evil-mode)))
+
+;; Input method switching functions and keybindings
+(defun my/set-input-method-pyim ()
+  "Set default input method to pyim and activate it."
+  (interactive)
+  (setq default-input-method "pyim")
+  (set-input-method "pyim")
+  (message "Input method set to: pyim"))
+
+(defun my/set-input-method-mozc ()
+  "Set default input method to japanese-mozc and activate it."
+  (interactive)
+  (setq default-input-method "japanese-mozc")
+  (set-input-method "japanese-mozc")
+  (message "Input method set to: japanese-mozc"))
+
+(global-set-key (kbd "C-c i j") #'my/set-input-method-mozc)
+(global-set-key (kbd "C-c i c") #'my/set-input-method-pyim)
 
 (provide 'init-misc)
 ;;; init-misc.el ends here
