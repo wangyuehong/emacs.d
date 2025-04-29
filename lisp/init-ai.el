@@ -302,10 +302,9 @@ Prioritize completeness within the character limit." count))))
   :bind (("C-c a" . aidermacs-transient-menu))
   :config
   (aidermacs-setup-minor-mode)
+  (when (not (display-graphic-p))
+    (setq aidermacs-extra-args '("--editor" "emacsclient")))
   :custom
-  ;; ai: only set this in tty emacs
-  (aidermacs-extra-args '("--editor" "emacsclient"))
-  ;; ai!
   (aidermacs-backend 'vterm))
 
 (provide 'init-ai)
