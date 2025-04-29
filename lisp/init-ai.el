@@ -302,7 +302,7 @@ Prioritize completeness within the character limit." count))))
   :bind (("C-c a" . aidermacs-transient-menu))
   :config
   (aidermacs-setup-minor-mode)
-  (when (not (display-graphic-p))
+  (unless (display-graphic-p)
     (setq aidermacs-extra-args '("--editor" "emacsclient")))
   :custom
   (aidermacs-backend 'vterm))
