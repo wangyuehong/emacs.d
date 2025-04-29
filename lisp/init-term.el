@@ -13,6 +13,10 @@ and switch to `evil-emacs-state` otherwise."
         (evil-motion-state)
       (evil-emacs-state)))
   :hook (vterm-copy-mode . my/vterm-copy-mode-evil-setup)
+  :bind (:map vterm-mode-map
+          ("ESC" . vterm-copy-mode)
+          :map vterm-copy-mode-map
+          ("ESC" . vterm-copy-mode-done))
   :custom
   (vterm-max-scrollback 100000))
 
