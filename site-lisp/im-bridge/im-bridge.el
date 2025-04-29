@@ -6,7 +6,7 @@
 ;; Version: 0.1
 ;;
 ;;; Commentary:
-;; Loads the core, prefix, and evil bridge components.
+;; Loads the core and evil bridge components.
 ;;
 ;;; Code:
 
