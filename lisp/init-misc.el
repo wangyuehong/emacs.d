@@ -130,6 +130,10 @@ and switch to `evil-emacs-state` otherwise."
 
 (use-package popup)
 (use-package pyim
+  :bind (("M-i" . pyim-toggle-input-ascii)
+          :map pyim-mode-map
+          ("C-f" . pyim-next-page)
+          ("C-b" . pyim-previous-page))
   :custom
   (default-input-method "pyim")
   (pyim-default-scheme 'quanpin)
@@ -163,7 +167,7 @@ and switch to `evil-emacs-state` otherwise."
   (message "Input method set to: japanese-mozc"))
 
 (global-set-key (kbd "C-c i j") #'my/set-input-method-mozc)
-(global-set-key (kbd "C-c i c") #'my/set-input-method-pyim)
+(global-set-key (kbd "C-c i p") #'my/set-input-method-pyim)
 
 (provide 'init-misc)
 ;;; init-misc.el ends here
