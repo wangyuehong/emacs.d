@@ -62,6 +62,12 @@
 (when (file-exists-p custom-file)
   (load custom-file))
 
+(add-hook 'after-init-hook
+          (lambda ()
+            (require 'server)
+            (unless (server-running-p)
+              (server-start))))
+
 (setq debug-on-error nil)
 
 (provide 'init)
