@@ -35,7 +35,7 @@
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
   (dashboard-set-init-info t)
-  (dashboard-items '((recents . 5))))
+  (dashboard-items '((recents . 15))))
 
 (provide 'init-ui)
 ;;; init-ui.el ends here
