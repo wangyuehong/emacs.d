@@ -91,5 +91,18 @@
 
 (use-package undo-fu)
 
+(use-package flyspell
+  :ensure nil
+  :if (executable-find "aspell")
+  :hook
+  ((text-mode  . flyspell-mode)
+    (prog-mode . flyspell-prog-mode))
+  :config
+  (unbind-key "C-;" flyspell-mode-map)
+  :custom
+  (flyspell-issue-message-flag nil)
+  (ispell-program-name "aspell")
+  (ispell-extra-args '("--sug-mode=ultra" "--lang=en_US" "--run-together")))
+
 (provide 'init-edit)
 ;;; init-edit.el ends here

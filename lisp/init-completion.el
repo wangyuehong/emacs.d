@@ -159,5 +159,10 @@ selected region as initial input."
          ([backtab] . minibuffer-previous-completion)
          ("RET" . minibuffer-choose-completion)))
 
+(use-package nerd-icons-completion
+  :after (marginalia nerd-icons)
+  :hook ((marginalia-mode . nerd-icons-completion-marginalia-setup)
+          (after-init . nerd-icons-completion-mode)))
+
 (provide 'init-completion)
 ;;; init-completion.el ends here

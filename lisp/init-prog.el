@@ -113,5 +113,10 @@
   :custom
   (hs-hide-comments-when-hiding-all t))
 
+(use-package csv-mode
+  :hook (csv-mode . csv-align-mode)
+  :custom
+  (csv-invisibility-default nil))
+
 (provide 'init-prog)
 ;;; init-prog.el ends here

@@ -104,5 +104,16 @@
   :hook (imenu-after-jump . recenter)
   :custom (imenu-max-item-length 108))
 
+(use-package repeat-help
+  :hook (repeat-mode . repeat-help-mode)
+  :custom
+  (repeat-help-auto t))
+
+(use-package helpful
+  :bind (("C-h f" . helpful-callable)
+          ("C-h v" . helpful-variable)
+          ("C-h k" . helpful-key)
+          ("C-h x" . helpful-command)))
+
 (provide 'init-basic)
 ;;; init-basic.el ends here

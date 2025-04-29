@@ -32,29 +32,59 @@
 ;;----------------------------------------------------------------------------
 ;; Load configs for specific features and modes
 ;;----------------------------------------------------------------------------
+;; Core Basics
 (require 'init-env)
 (require 'init-basic)
 (require 'init-clipboard)
+
+;; Core UI & Editing Fundamentals
 (require 'init-theme)
-(require 'init-window)
-(require 'init-keybind)
-(require 'init-edit)
-(require 'init-evil)
-(require 'init-general)
 (require 'init-highlight)
+(require 'init-edit)
+
+;; Major Mode System (Evil)
+(require 'init-evil)
+
+;; Keybindings (Depends on commands and Evil state)
+(require 'init-keybind)
+(require 'init-general) ; uses Evil
+
+;; UI Components (Depends on icons, theme, evil state tags)
+(require 'init-ui)
+
+;; Window Management (May use icons)
+(require 'init-window)
+
+;; Search, Completion, Navigation Tools
 (require 'init-search)
-(require 'init-dired)
-(require 'init-session)
 (require 'init-completion)
 (require 'init-yasnippet)
-(require 'init-git)
+
+;; File & Session Management
+(require 'init-dired)
+(require 'init-session)
+
+;; Programming Core Support
 (require 'init-prog)
+
+;; Language Specific / LSP
 (require 'init-lsp)
 (require 'init-go)
 (require 'init-python)
-(require 'init-misc)
+
+;; Integrations & External Tools
+(require 'init-git)
+(require 'init-term)
+(require 'init-im)
 (require 'init-ai)
 
+;; Custom Utilities
+(require 'init-utils)
+
+;; Miscellaneous
+(require 'init-misc)
+
+;; Local Overrides (Must be last)
 (require 'init-local nil t)
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))

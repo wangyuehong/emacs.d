@@ -47,5 +47,10 @@
   :custom
   (dired-subtree-use-backgrounds nil))
 
+(use-package nerd-icons-dired
+  :after nerd-icons
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
+
 (provide 'init-dired)
 ;;; init-dired.el ends here

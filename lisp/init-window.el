@@ -54,5 +54,9 @@ The DWIM behaviour of this command is as follows:
   (interactive)
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
+(use-package nerd-icons-ibuffer
+  :after nerd-icons
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+
 (provide 'init-window)
 ;;; init-window.el ends here
