@@ -32,5 +32,16 @@
                     (t (expand-file-name default-directory)))))
     (shell-command (format "open %s" (shell-quote-argument dir)))))
 
+(defun my/popup-visible-p ()
+  "Return non-nil if any popup.el instance is currently visible."
+  (when (and (boundp 'popup-instances)
+             (fboundp 'popup-live-p)
+             (fboundp 'popup-hidden-p))
+    (cl-some (lambda (popup)
+               (and popup
+                    (popup-live-p popup)
+                    (not (popup-hidden-p popup))))
+             popup-instances)))
+
 (provide 'init-utils)
 ;;; init-utils.el ends here

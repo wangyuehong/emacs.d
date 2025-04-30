@@ -3,7 +3,6 @@
 ;;; Code:
 
 (use-package copilot
-  :defines (copilot-completion-map copilot-disable-display-predicates)
   :hook
   ((prog-mode git-commit-setup yaml-mode markdown-mode) . copilot-mode)
   :bind
@@ -19,7 +18,9 @@
   (copilot-overlay-face ((t (:inherit shadow :foreground "#7ec0ee"))))
   :config
   (with-eval-after-load 'company
-    (add-to-list 'copilot-disable-display-predicates 'company-tooltip-visible-p))
+    (add-to-list 'copilot-disable-display-predicates #'company-tooltip-visible-p))
+  (with-eval-after-load 'popup
+    (add-to-list 'copilot-disable-display-predicates #'my/popup-visible-p))
   :custom
   (copilot-idle-delay 0.2)
   (copilot-log-max 0))
