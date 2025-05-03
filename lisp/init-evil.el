@@ -14,9 +14,6 @@
 
   :functions
   (evil-ex evil-set-initial-state)
-  :defines
-  (evil-window-map evil-normal-state-map evil-motion-state-map evil-visual-state-map
-    evil-operator-state-map evil-disable-insert-state-bindings evil-want-Y-yank-to-eol)
   :hook ((after-init . evil-mode))
   :bind
   (("C-x -" . evil-window-split)
@@ -88,7 +85,18 @@
                 (help-mode . motion)
                 (messages-buffer-mode . motion)
                 (vterm-mode . emacs)))
-    (evil-set-initial-state (car p) (cdr p))))
+    (evil-set-initial-state (car p) (cdr p)))
+
+  (defun my/evil-set-tab-for-completion ()
+    "Set `tab-always-indent' to 'complete for edit mode."
+    (setq-local tab-always-indent 'complete))
+
+  (defun my/evil-set-tab-for-indent ()
+    "Set `tab-always-indent' back to t when leaving edit mode."
+    (setq-local tab-always-indent t))
+
+  (add-hook 'evil-insert-state-entry-hook #'my/evil-set-tab-for-completion)
+  (add-hook 'evil-insert-state-exit-hook #'my/evil-set-tab-for-indent))
 
 (use-package evil-collection
   :after evil
