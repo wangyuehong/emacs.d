@@ -43,7 +43,8 @@
   (advice-add #'markdown--command-map-prompt :override #'ignore)
   (advice-add #'markdown--style-map-prompt   :override #'ignore)
   :mode ("README\\(?:\\.md\\)?\\'" . gfm-mode)
-  :hook (markdown-mode . visual-line-mode)
+  :hook ((markdown-mode . visual-line-mode)
+          (markdown-mode . display-line-numbers-mode))
   :custom
   (markdown-enable-wiki-links t)
   (markdown-italic-underscore t)
