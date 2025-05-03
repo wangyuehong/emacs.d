@@ -43,19 +43,19 @@
   (gptel-rewrite-default-action #'gptel--rewrite-diff)
   :config
   (setq gptel-model 'gpt-4o
-    gptel-backend (gptel-make-gh-copilot "Copilot"
+    gptel-backend (gptel-make-gh-copilot "GHCopilot"
                     :models '(gpt-4o)))
-  (gptel-make-openai "GeminiPro"
+  (gptel-make-openai "LiteLLMGemini"
     :stream t
     :protocol "http"
     :host "localhost:4000"
     :models '(gemini-2.5-pro))
-  ;; (gptel-make-openai "Claude-3.7"
-  ;;   :stream t
-  ;;   :protocol "http"
-  ;;   :host "localhost:4000"
-  ;;   :models '(claude-3.7)
-  ;;   :request-params '(:thinking (:type "enabled" :budget_tokens 4096) :max_tokens 64000))
+  (gptel-make-openai "LiteLLMClaude"
+    :stream t
+    :protocol "http"
+    :host "localhost:4000"
+    :models '(claude-3.7)
+    :request-params '(:thinking (:type "enabled" :budget_tokens 2048) :max_tokens 64000))
 
   (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key)
 
