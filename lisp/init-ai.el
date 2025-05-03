@@ -29,7 +29,6 @@
   :bind (("C-c c" . copilot-chat-transient))
   :custom
   (copilot-chat-frontend 'markdown)
-  (copilot-chat-follow t)
   (copilot-chat-markdown-prompt "Respone in 中文:\n")
   (copilot-chat-prompt-test "Write unit tests for the following code:\n")
   (copilot-chat-prompt-optimize "Optimize and refactor the following code:\n")
