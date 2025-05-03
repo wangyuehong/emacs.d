@@ -109,8 +109,27 @@
 
 (use-package hideshow
   :ensure nil
+  :preface
+  (defun hs-display-code-line-counts (ov)
+    "Display line counts when hiding codes."
+    (when (eq 'code (overlay-get ov 'hs))
+      (overlay-put ov 'display
+        (concat
+          " "
+          (propertize "..." 'face 'shadow)
+          (propertize
+            (format " %d lines"
+              (count-lines (overlay-start ov)
+                (overlay-end ov)))
+            'face '(:inherit shadow :height 0.8))
+          " "))))
   :hook (prog-mode . hs-minor-mode)
+  :bind (:map hs-minor-mode-map
+          ("C-c TAB" . hs-toggle-hiding)
+          ("C-c h h" . hs-hide-all)
+          ("C-c h s" . hs-show-all))
   :custom
+  (hs-set-up-overlay #'hs-display-code-line-counts)
   (hs-hide-comments-when-hiding-all t))
 
 (use-package csv-mode
