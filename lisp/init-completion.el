@@ -143,8 +143,7 @@ selected region as initial input."
   (setq prefix-help-command #'embark-prefix-help-command)
   :config
   (keymap-set embark-region-map "x r" #'my/copy-region-with-location)
-  (keymap-set embark-region-map "x x" #'my/copy-to-clipboard)
-  (keymap-set embark-region-map "?"  #'gptel-quick))
+  (keymap-set embark-region-map "x x" #'my/copy-to-clipboard))
 
 (use-package embark-consult
   :after (embark consult))
