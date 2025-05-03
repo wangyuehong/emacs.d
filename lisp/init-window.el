@@ -32,19 +32,6 @@
                     (rg-mode           :select t :align t)
                     ("*quickrun*"      :select t :align t))))
 
-(defun my/quit-window-dwim ()
-  "Do-What-I-Mean behaviour for a general `quit-window'.
-
-The DWIM behaviour of this command is as follows:
-
-- When only one window, call `quit-window' to close it.
-- When more than one windows, call `delete-windows-on' to select a window to delete."
-  (interactive)
-  (if (= (length (window-list)) 1)
-    (quit-window)
-    (let ((buffer (read-buffer "Delete windows on buffer: " (current-buffer) t)))
-      (delete-windows-on buffer))))
-
 (use-package ibuffer
   :ensure nil
   :bind ("C-x C-b" . ibuffer))
