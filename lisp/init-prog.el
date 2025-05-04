@@ -136,7 +136,8 @@
   :hook ((python-mode yaml-mode) . indent-bars-mode)
   :custom
   (indent-bars-color '(highlight :face-bg t :blend 0.3))
-  (indent-bars-highlight-current-depth '(:pattern "." :blend 0.6)))
+  (indent-bars-highlight-current-depth '(:pattern "." :blend 0.6))
+  (indent-bars-no-descend-lists t))
 
 (use-package csv-mode
   :hook (csv-mode . csv-align-mode)
