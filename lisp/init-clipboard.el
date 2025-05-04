@@ -36,9 +36,9 @@ otherwise, copy the full absolute path."
     "Copy the active region or the current line to the clipboard."
     (interactive)
     (let ((text-to-copy
-           (if (use-region-p)
-               (buffer-substring-no-properties (region-beginning) (region-end))
-             (buffer-substring-no-properties (line-beginning-position) (line-end-position)))))
+            (if (use-region-p)
+              (buffer-substring-no-properties (region-beginning) (region-end))
+              (buffer-substring-no-properties (line-beginning-position) (line-end-position)))))
       (xclip-set-selection 'clipboard text-to-copy)
       (message "Copied to clipboard!")
       (when (use-region-p)
@@ -49,12 +49,12 @@ otherwise, copy the full absolute path."
 Relative for project files, absolute for others, or buffer name if no file."
     (let ((proj (project-current)))
       (cond
-       ((and buffer-file-name proj) ; Project file
-        (file-relative-name buffer-file-name (project-root proj)))
-       (buffer-file-name ; Non-project file
-        (file-truename buffer-file-name))
-       (t ; Not file (e.g., *scratch*)
-        (buffer-name)))))
+        ((and buffer-file-name proj) ; Project file
+          (file-relative-name buffer-file-name (project-root proj)))
+        (buffer-file-name ; Non-project file
+          (file-truename buffer-file-name))
+        (t ; Not file (e.g., *scratch*)
+          (buffer-name)))))
 
   (defun my/find-max-backtick-sequence (text)
     "Return the length of the longest sequence of consecutive backticks in TEXT."
@@ -74,30 +74,30 @@ Uses relative path for project files, auto-saves modified files,
 and formats the output as a Markdown code block, adjusting backtick fence length as needed."
     (interactive)
     (if (and (use-region-p) (> (region-end) (region-beginning)))
-        (let* ((start (region-beginning))
-               (end (region-end))
-               (selected-text (buffer-substring-no-properties start end))
-               (location-prefix (my/get-buffer-display-path))
+      (let* ((start (region-beginning))
+              (end (region-end))
+              (selected-text (buffer-substring-no-properties start end))
+              (location-prefix (my/get-buffer-display-path))
               (start-line (line-number-at-pos start))
               (saved-message "")
               ;; --- Calculate fence ---
               (max-inner-ticks (my/find-max-backtick-sequence selected-text))
-               (fence-len (max 3 (1+ max-inner-ticks)))
-               (fence (make-string fence-len ?\`)))
+              (fence-len (max 3 (1+ max-inner-ticks)))
+              (fence (make-string fence-len ?\`)))
 
-          (when (and buffer-file-name (buffer-modified-p))
-            (save-buffer)
-            (setq saved-message "Saved buffer. "))
+        (when (and buffer-file-name (buffer-modified-p))
+          (save-buffer)
+          (setq saved-message "Saved buffer. "))
 
-          (let* ((location-string (format "@%s:%d" location-prefix start-line))
-                 (final-string (format "%s\n%s\n%s\n%s"
-                                       location-string
-                                       fence ; Opening fence
-                                       selected-text
-                                       fence))) ; Closing fence
-            (xclip-set-selection 'clipboard final-string)
-            (message "%sCopied region with location: %s" saved-message location-string)
-            (deactivate-mark))) ; Deactivate region after copy
+        (let* ((location-string (format "@%s:%d" location-prefix start-line))
+                (final-string (format "%s\n%s\n%s\n%s"
+                                location-string
+                                fence ; Opening fence
+                                selected-text
+                                fence))) ; Closing fence
+          (xclip-set-selection 'clipboard final-string)
+          (message "%sCopied region with location: %s" saved-message location-string)
+          (deactivate-mark))) ; Deactivate region after copy
       (message "No active or non-empty region selected."))))
 
 (provide 'init-clipboard)

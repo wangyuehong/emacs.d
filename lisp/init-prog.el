@@ -32,7 +32,7 @@
   ((xref-after-return xref-after-jump) . recenter)
   :custom
   (xref-search-program (cond ((executable-find "rg") 'ripgrep)
-                             (t 'grep)))
+                         (t 'grep)))
   (xref-history-storage 'xref-window-local-history))
 
 (use-package dumb-jump

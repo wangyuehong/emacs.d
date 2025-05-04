@@ -26,7 +26,7 @@
 (use-package subword
   :ensure nil
   :hook ((prog-mode . subword-mode)
-         (minibuffer-setup . subword-mode)))
+          (minibuffer-setup . subword-mode)))
 
 (use-package expand-region
   :custom
@@ -71,7 +71,7 @@
 (use-package ediff
   :ensure nil
   :hook ((ediff-before-setup . ediff-save-window-conf)
-         (ediff-quit         . ediff-restore-window-conf))
+          (ediff-quit         . ediff-restore-window-conf))
   :config
   (defvar local-ediff-saved-window-conf nil)
   (defun ediff-save-window-conf ()

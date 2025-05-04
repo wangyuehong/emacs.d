@@ -10,7 +10,7 @@
 Switch to `evil-motion-state` when `vterm-copy-mode` is enabled,
 and switch to `evil-emacs-state` otherwise."
     (if vterm-copy-mode
-        (evil-motion-state)
+      (evil-motion-state)
       (evil-emacs-state)))
   :hook (vterm-copy-mode . my/vterm-copy-mode-evil-setup)
   :bind (:map vterm-mode-map

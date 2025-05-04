@@ -30,21 +30,24 @@
   "Open the current directory in Finder."
   (interactive)
   (when-let* ((dir (cond
-                    ((eq major-mode 'dired-mode) (expand-file-name default-directory))
-                    ((buffer-file-name) (file-name-directory (buffer-file-name)))
-                    (t (expand-file-name default-directory)))))
+                     ((eq major-mode 'dired-mode)
+                       (expand-file-name default-directory))
+                     ((buffer-file-name)
+                       (file-name-directory (buffer-file-name)))
+                     (t
+                       (expand-file-name default-directory)))))
     (shell-command (format "open %s" (shell-quote-argument dir)))))
 
 (defun my/popup-visible-p ()
   "Return non-nil if any popup.el instance is currently visible."
   (when (and (boundp 'popup-instances)
-             (fboundp 'popup-live-p)
-             (fboundp 'popup-hidden-p))
+          (fboundp 'popup-live-p)
+          (fboundp 'popup-hidden-p))
     (cl-some (lambda (popup)
                (and popup
-                    (popup-live-p popup)
-                    (not (popup-hidden-p popup))))
-             popup-instances)))
+                 (popup-live-p popup)
+                 (not (popup-hidden-p popup))))
+      popup-instances)))
 
 (defun my/quit-window-dwim ()
   "DWIM `quit-window'.
@@ -58,32 +61,32 @@ is the currently selected window."
   (interactive)
   (let ((wins (window-list nil 'no-minibuffer)))
     (if (= (length wins) 1)
-        (quit-window)
+      (quit-window)
       ;; Build (display . window) pairs
       (let* ((pairs
-              (cl-loop for w in wins
-                       for idx from 1
-                       for buf   = (window-buffer w)
-                       for name  = (buffer-name buf)
-                       for disp  = (format "%s %s <%d>"
-                                           (if (eq w (selected-window)) "●" " ")
-                                           name idx)
-                       collect (cons disp w)))
-             ;; Window list that show non-file buffers
-             (nonfile-wins
-              (seq-filter (lambda (w)
-                            (not (buffer-file-name (window-buffer w))))
-                          wins))
-             ;; Choose default window: first non-file or the current one
-             (default-win (or (car nonfile-wins) (selected-window)))
-             ;; Find its display string
-             (default (car (seq-find (lambda (p) (eq (cdr p) default-win))
-                                     pairs)))
-             ;; Prompt user
-             (choice  (completing-read "Close window: "
-                                       (mapcar #'car pairs)
-                                       nil t nil nil default))
-             (target  (alist-get choice pairs nil nil #'string=)))
+               (cl-loop for w in wins
+                 for idx from 1
+                 for buf   = (window-buffer w)
+                 for name  = (buffer-name buf)
+                 for disp  = (format "%s %s <%d>"
+                               (if (eq w (selected-window)) "●" " ")
+                               name idx)
+                 collect (cons disp w)))
+              ;; Window list that show non-file buffers
+              (nonfile-wins
+                (seq-filter (lambda (w)
+                              (not (buffer-file-name (window-buffer w))))
+                  wins))
+              ;; Choose default window: first non-file or the current one
+              (default-win (or (car nonfile-wins) (selected-window)))
+              ;; Find its display string
+              (default (car (seq-find (lambda (p) (eq (cdr p) default-win))
+                              pairs)))
+              ;; Prompt user
+              (choice  (completing-read "Close window: "
+                         (mapcar #'car pairs)
+                         nil t nil nil default))
+              (target  (alist-get choice pairs nil nil #'string=)))
         (when (window-live-p target)
           (delete-window target))))))
 

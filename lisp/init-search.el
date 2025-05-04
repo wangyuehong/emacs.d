@@ -3,7 +3,7 @@
 ;;; Code:
 
 (setq-default grep-highlight-matches t
-              grep-scroll-output t)
+  grep-scroll-output t)
 
 (use-package wgrep
   :custom

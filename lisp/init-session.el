@@ -10,15 +10,15 @@
   (recentf-auto-cleanup 'never)
   (recentf-save-file (expand-file-name ".recentf" user-emacs-directory))
   (recentf-exclude '("^/private/tmp/"
-                     "^/var/folders/"
-                     "^/tmp/"
-                     "/ssh\\(x\\)?:"
-                     "/su\\(do\\)?:"
-                     "^/usr/include/"
-                     "/TAGS\\'"
-                     "/G?TAGS$"
-                     "/.bookmarks.el"
-                     "COMMIT_EDITMSG\\'")))
+                      "^/var/folders/"
+                      "^/tmp/"
+                      "/ssh\\(x\\)?:"
+                      "/su\\(do\\)?:"
+                      "^/usr/include/"
+                      "/TAGS\\'"
+                      "/G?TAGS$"
+                      "/.bookmarks.el"
+                      "COMMIT_EDITMSG\\'")))
 
 (use-package saveplace
   :ensure nil

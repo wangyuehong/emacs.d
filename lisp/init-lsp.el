@@ -20,11 +20,11 @@
     (when (eglot-server-capable :documentFormattingProvider)
       (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
   :bind (:map eglot-mode-map
-              ("C-c l t" . eglot-find-typeDefinition)
-              ("C-c l i" . eglot-find-implementation)
-              ("C-c l a" . eglot-code-actions)
-              ("C-c l e" . eglot-rename)
-              ("C-c l r" . eglot-reconnect))
+          ("C-c l t" . eglot-find-typeDefinition)
+          ("C-c l i" . eglot-find-implementation)
+          ("C-c l a" . eglot-code-actions)
+          ("C-c l e" . eglot-rename)
+          ("C-c l r" . eglot-reconnect))
   :hook ((eglot-managed-mode . my/eglot-setup-hooks))
   :config
   (setq-default eglot-workspace-configuration
@@ -49,7 +49,6 @@
           ("C-c l l" . consult-eglot-symbols))
   :custom
   (consult-eglot-show-kind-name t))
-
 
 (provide 'init-lsp)
 ;;; init-lsp.el ends here
