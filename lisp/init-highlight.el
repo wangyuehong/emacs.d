@@ -6,10 +6,10 @@
   :defines symbol-overlay-map
   :functions (turn-off-symbol-overlay turn-on-symbol-overlay)
   :bind (:map symbol-overlay-map
-        ("<escape>" . symbol-overlay-remove-all))
+          ("<escape>" . symbol-overlay-remove-all))
   :hook (((prog-mode yaml-mode) . symbol-overlay-mode)
-         (iedit-mode . turn-off-symbol-overlay)
-         (iedit-mode-end . turn-on-symbol-overlay))
+          (iedit-mode . turn-off-symbol-overlay)
+          (iedit-mode-end . turn-on-symbol-overlay))
   :config
   (unbind-key "w" symbol-overlay-map)
   (unbind-key "e" symbol-overlay-map)
@@ -57,26 +57,23 @@
   :custom
   (whitespace-line-column 120) ;; config for lines-tail style
   (whitespace-style
-   '(face spaces tabs space-before-tab newline
-          space-mark tab-mark newline-mark lines-tail))
+    '(face spaces tabs space-before-tab newline
+       space-mark tab-mark newline-mark lines-tail))
   (whitespace-space-regexp "\\(\x3000+\\)") ;; -> "　"
   (whitespace-display-mappings
-   '(
-     (space-mark ?\x3000 [9633])
-     ;; (space-mark 32 [183] [46]) ; normal space
-     (space-mark 160 [164] [95])
-     (space-mark 2208 [2212] [95])
-     (space-mark 2336 [2340] [95])
-     (space-mark 3616 [3620] [95])
-     (space-mark 3872 [3876] [95])
-     ;; (newline-mark 10 [8629 10]) ;; newlne
-     (tab-mark 9 [187 9] [92 9]) ;; tab
-     ))
+    '((space-mark ?\x3000 [9633])
+       ;; (space-mark 32 [183] [46]) ; normal space
+       (space-mark 160 [164] [95])
+       (space-mark 2208 [2212] [95])
+       (space-mark 2336 [2340] [95])
+       (space-mark 3616 [3620] [95])
+       (space-mark 3872 [3876] [95])
+       ;; (newline-mark 10 [8629 10]) ;; newlne: "↵"
+       (tab-mark 9 [187 9] [92 9])))  ;; tab:    "»"
 
   :custom-face
   (whitespace-tab ((t (:inherit font-lock-comment-face :background nil))))
   (whitespace-space ((t (:foreground "brightblue"))))) ;; -> "　"
-
 
 (provide 'init-highlight)
 ;;; init-highlight.el ends here
