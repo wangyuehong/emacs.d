@@ -73,11 +73,10 @@
      (tab-mark 9 [187 9] [92 9]) ;; tab
      ))
 
-  :config
-  ;; (set-face-foreground 'whitespace-newline "brightblack")
-  (set-face-foreground 'whitespace-space "brightblue") ;; -> "　"
-  (set-face-foreground 'whitespace-tab "brightblack")
-  (set-face-foreground 'whitespace-space-before-tab "brightmagenta"))
+  :custom-face
+  (whitespace-tab ((t (:inherit font-lock-comment-face :background nil))))
+  (whitespace-space ((t (:foreground "brightblue"))))) ;; -> "　"
+
 
 (provide 'init-highlight)
 ;;; init-highlight.el ends here
