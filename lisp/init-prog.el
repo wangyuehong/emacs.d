@@ -137,6 +137,7 @@
   :custom
   (indent-bars-color '(highlight :face-bg t :blend 0.3))
   (indent-bars-highlight-current-depth '(:pattern "." :blend 0.6))
+  (indent-bars-display-on-blank-lines 'least)
   (indent-bars-no-descend-lists t))
 
 (use-package csv-mode
