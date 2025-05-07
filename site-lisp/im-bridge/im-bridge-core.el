@@ -17,7 +17,7 @@
   :group 'convenience
   :prefix "imb-")
 
-(defcustom imb-cli-command "im-select"
+(defcustom imb-cli-command "macism"
   "CLI tool used to query / set system IME."
   :type 'string
   :safe #'stringp)
