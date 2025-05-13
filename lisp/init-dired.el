@@ -38,7 +38,7 @@
   :after dired
   :hook (dired-mode . diredfl-mode)
   :custom-face
-  (diredfl-dir-name ((t (:background nil)))))
+  (diredfl-dir-name ((t (:background unspecified)))))
 
 (use-package dired-subtree
   :after dired

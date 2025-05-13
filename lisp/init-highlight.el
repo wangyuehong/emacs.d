@@ -72,7 +72,7 @@
        (tab-mark 9 [187 9] [92 9])))  ;; tab:    "»"
 
   :custom-face
-  (whitespace-tab ((t (:inherit font-lock-comment-face :background nil))))
+  (whitespace-tab ((t (:inherit font-lock-comment-face :background unspecified))))
   (whitespace-space ((t (:foreground "brightblue"))))) ;; -> "　"
 
 (provide 'init-highlight)
