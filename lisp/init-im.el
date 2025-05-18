@@ -21,6 +21,7 @@
   :config
   (require 'popup)
   (use-package pyim-basedict)
+  (setq-default pyim-punctuation-translate-p '(no)) ;; 默认使用半角标点符号
   (pyim-basedict-enable))
 
 (use-package im-bridge
