@@ -49,7 +49,7 @@
 
 (use-package display-line-numbers
   :ensure nil
-  :hook ((prog-mode yaml-mode markdown-mode) . display-line-numbers-mode))
+  :hook ((prog-mode yaml-mode markdown-mode conf-mode) . display-line-numbers-mode))
 
 (use-package whitespace
   :ensure nil
