@@ -31,6 +31,8 @@
     "SPC k" '(avy-goto-line-above :wk "avy-goto-line-above")
     "SPC j" '(avy-goto-line-below :wk "avy-goto-line-below")
 
+    ";" 'embark-act
+
     "a"  '(:wk "ai")
     "aa" '(gptel         :wk "gptel")
     "am" '(gptel-menu    :wk "gptel-menu")
