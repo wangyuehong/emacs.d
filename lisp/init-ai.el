@@ -45,56 +45,7 @@
   (setq gptel-model 'gpt-4o
     gptel-backend (gptel-make-gh-copilot "GHCopilot"
                     :models '(gpt-4o)))
-  (gptel-make-openai "LiteLLMGemini"
-    :stream t
-    :protocol "http"
-    :host "localhost:4000"
-    :models '(gemini-2.5-pro))
-  (gptel-make-openai "LiteLLMClaude"
-    :stream t
-    :protocol "http"
-    :host "localhost:4000"
-    :models '(claude-3.7)
-    :request-params '(:thinking (:type "enabled" :budget_tokens 2048) :max_tokens 64000))
-
-  (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key)
-
-  (use-package codel
-    :vc (:url "https://github.com/skissue/llm-tool-collection"
-          :branch "main"
-          :rev :newest))
-
-  (gptel-make-tool
-    :name "run_command"
-    :description "Run a command."
-    :category "command"
-    :function (lambda (command)
-                (with-temp-message (format "Running command: %s" command)
-                  (shell-command-to-string command)))
-    :args (list
-            '(:name "command"
-               :type "string"
-               :description "Command to run.")))
-
-  (gptel-make-tool
-    :name "append_to_buffer"
-    :description "Append text to an Emacs buffer. If the buffer does not exist, it will be created."
-    :category "emacs"
-    :function (lambda (buffer text)
-                (with-current-buffer (get-buffer-create buffer)
-                  (save-excursion
-                    (goto-char (point-max))
-                    (insert text)))
-                (format "Appended text to buffer %s" buffer))
-    :args (list '(:name "buffer"
-                   :type string
-                   :description "The name of the buffer to append text to.")
-            '(:name "text"
-               :type string
-               :description "The text to append to the buffer.")))
-
-  (mapcar (apply-partially #'apply #'gptel-make-tool)
-    (llm-tool-collection-get-all)))
+  (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key))
 
 (use-package gptel-quick
   :vc (:url "https://github.com/karthink/gptel-quick" :branch "main" :rev :newest)
