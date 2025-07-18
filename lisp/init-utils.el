@@ -19,6 +19,16 @@
       (shell-command (format "code --goto %s:%s:%s" (shell-quote-argument file-path) line-num col-num)))
     (message "Buffer is not visiting a file.")))
 
+(defun my/open-file-in-cursor ()
+  "Open the current file in Cursor and jump to the current position."
+  (interactive)
+  (if (buffer-file-name)
+    (let ((file-path (buffer-file-name))
+           (line-num (number-to-string (line-number-at-pos)))
+           (col-num (number-to-string (current-column))))
+      (shell-command (format "cursor --goto %s:%s:%s" (shell-quote-argument file-path) line-num col-num)))
+    (message "Buffer is not visiting a file.")))
+
 (defun my/open-file-in-typora ()
   "Open the current file in Typora."
   (interactive)

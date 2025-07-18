@@ -11,9 +11,10 @@
      ("n" "Copy file name" my/copy-buffer-file-name)
      ("r" "Copy region with location" my/copy-region-with-location)]
     ["Open in External Program"
-      ("o" "Open in Finder" my/open-in-finder)
-      ("v" "Open in VS Code" my/open-file-in-vscode)
-      ("t" "Open in Typora" my/open-file-in-typora)]
+      ("oc" "Open in Cursor" my/open-file-in-cursor)
+      ("of" "Open in Finder" my/open-in-finder)
+      ("ov" "Open in VS Code" my/open-file-in-vscode)
+      ("ot" "Open in Typora" my/open-file-in-typora)]
     ["Misc"
       ("q" "Quit" transient-quit-one)]])
 
