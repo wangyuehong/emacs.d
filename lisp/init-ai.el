@@ -27,6 +27,12 @@
 
 (use-package copilot-chat
   :bind (("C-c c" . copilot-chat-transient))
+  :config
+  (setq copilot-chat-commit-prompt (concat copilot-chat-commit-prompt
+                                     "\n\n### LANGUAGE SELECTION\n
+Determine the commit message language based on diff content. Use English by default,
+but switch to Japanese or Chinese if the diff contains content in those languages.
+Limit English messages to 80 characters per line, and Japanese/Chinese to 40 characters per line.\n"))
   :custom
   (copilot-chat-frontend 'markdown)
   (copilot-chat-markdown-prompt "Respone in 中文:\n")
