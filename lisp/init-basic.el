@@ -7,7 +7,10 @@
   :preface
   (defun my/coding-setup ()
     (modify-syntax-entry ?_ "w")
-    (modify-syntax-entry ?- "w"))
+    (pcase major-mode
+      ('lua-mode
+        (modify-syntax-entry ?- "w 12"))
+      (_ (modify-syntax-entry ?- "w"))))
   :hook
   ((prog-mode yaml-mode) . my/coding-setup)
   (after-init . transient-mark-mode)
