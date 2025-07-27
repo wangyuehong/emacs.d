@@ -2,6 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 
+(use-package im-bridge
+  :ensure nil ;; site-lisp/im-bridge
+  :hook
+  ((after-init . imb-evil-mode)))
+
 ;; (use-package mozc
 ;;   :if (executable-find "mozc_emacs_helper")
 ;;   :custom
@@ -23,11 +28,6 @@
 ;;   (use-package pyim-basedict)
 ;;   (setq-default pyim-punctuation-translate-p '(no)) ;; 默认使用半角标点符号
 ;;   (pyim-basedict-enable))
-
-;; (use-package im-bridge
-;;   :ensure nil ;; site-lisp/im-bridge
-;;   :hook
-;;   ((after-init . imb-evil-mode)))
 
 ;; ;; Input method switching functions and keybindings
 ;; (defun my/set-input-method-pyim ()
