@@ -26,7 +26,6 @@
   (copilot-log-max 0))
 
 (use-package copilot-chat
-  :bind (("C-c c" . copilot-chat-transient))
   :config
   (setq copilot-chat-commit-prompt (concat copilot-chat-commit-prompt
                                      "\n\n### LANGUAGE SELECTION\n
@@ -73,6 +72,16 @@ Prioritize completeness within the character limit." count))))
   :custom
   (aidermacs-vterm-use-theme-colors nil)
   (aidermacs-backend 'vterm))
+
+
+(use-package claude-code
+  :ensure t
+  :vc (:url "https://github.com/stevemolitor/claude-code.el" :branch "main" :rev :newest)
+  :bind-keymap ("C-c c" . claude-code-command-map)
+  :config
+  (claude-code-mode)
+  :custom
+  (claude-code-terminal-backend 'vterm))
 
 (provide 'init-ai)
 ;;; init-ai.el ends here
