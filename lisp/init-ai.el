@@ -73,7 +73,6 @@ Prioritize completeness within the character limit." count))))
   (aidermacs-vterm-use-theme-colors nil)
   (aidermacs-backend 'vterm))
 
-
 (use-package claude-code
   :ensure t
   :vc (:url "https://github.com/stevemolitor/claude-code.el" :branch "main" :rev :newest)
@@ -81,7 +80,7 @@ Prioritize completeness within the character limit." count))))
   :config
   (claude-code-mode)
   :custom
-  (claude-code-terminal-backend 'vterm))
+  (claude-code-terminal-backend 'eat))
 
 (provide 'init-ai)
 ;;; init-ai.el ends here

@@ -28,9 +28,7 @@
     :keymaps 'override
     :prefix "SPC"
 
-    "SPC"   '(:wk "avy")
-    "SPC k" '(avy-goto-line-above :wk "avy-goto-line-above")
-    "SPC j" '(avy-goto-line-below :wk "avy-goto-line-below")
+    "SPC" 'claude-code-transient
 
     ";" 'embark-act
 
