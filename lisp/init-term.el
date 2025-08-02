@@ -20,5 +20,7 @@ and switch to `evil-emacs-state` otherwise."
   :custom
   (vterm-max-scrollback 100000))
 
+(use-package eat)
+
 (provide 'init-term)
 ;;; init-term.el ends here

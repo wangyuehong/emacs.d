@@ -84,6 +84,7 @@
                 (dashboard-mode . motion)
                 (help-mode . motion)
                 (messages-buffer-mode . motion)
+                (eat-mode . emacs)
                 (vterm-mode . emacs)))
     (evil-set-initial-state (car p) (cdr p)))
 
@@ -101,10 +102,11 @@
 (use-package evil-collection
   :after evil
   :hook (evil-mode . evil-collection-init)
-  :custom
-  (evil-collection-want-unimpaired-p nil)
   :config
-  (setq evil-collection-mode-list (remove 'vterm evil-collection-mode-list)))
+  (setq evil-collection-mode-list
+    (cl-set-difference evil-collection-mode-list '(vterm eat)))
+  :custom
+  (evil-collection-want-unimpaired-p nil))
 
 (use-package evil-surround
   :after evil
