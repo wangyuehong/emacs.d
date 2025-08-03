@@ -52,26 +52,12 @@ Limit English messages to 80 characters per line, and Japanese/Chinese to 40 cha
                     :models '(gpt-4o)))
   (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key))
 
-(use-package gptel-quick
-  :vc (:url "https://github.com/karthink/gptel-quick" :branch "main" :rev :newest)
-  :after gptel
-  :init
-  (setq gptel-quick-word-count 48)
-  :config
-  (setq gptel-quick-system-message
-    (lambda (count)
-      (format "Provide a most detailed explanation using fewer than %d Chinese characters. \
-Prioritize completeness within the character limit." count))))
-
 (use-package aidermacs
   :bind (("C-c a" . aidermacs-transient-menu))
   :config
   (aidermacs-setup-minor-mode)
   (unless (display-graphic-p)
-    (setq aidermacs-extra-args '("--editor" "emacsclient")))
-  :custom
-  (aidermacs-vterm-use-theme-colors nil)
-  (aidermacs-backend 'vterm))
+    (setq aidermacs-extra-args '("--editor" "emacsclient"))))
 
 (use-package claude-code
   :ensure t
