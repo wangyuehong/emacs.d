@@ -52,13 +52,6 @@ Limit English messages to 80 characters per line, and Japanese/Chinese to 40 cha
                     :models '(gpt-4o)))
   (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key))
 
-(use-package aidermacs
-  :bind (("C-c a" . aidermacs-transient-menu))
-  :config
-  (aidermacs-setup-minor-mode)
-  (unless (display-graphic-p)
-    (setq aidermacs-extra-args '("--editor" "emacsclient"))))
-
 (use-package claude-code
   :ensure t
   :vc (:url "https://github.com/stevemolitor/claude-code.el" :branch "main" :rev :newest)
