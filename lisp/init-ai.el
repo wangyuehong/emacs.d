@@ -53,9 +53,7 @@ Limit English messages to 80 characters per line, and Japanese/Chinese to 40 cha
   (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key))
 
 (use-package claude-code
-  :ensure t
   :vc (:url "https://github.com/stevemolitor/claude-code.el" :branch "main" :rev :newest)
-  :bind-keymap ("C-c c" . claude-code-command-map)
   :config
   (claude-code-mode)
   :custom
