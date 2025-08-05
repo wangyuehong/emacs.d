@@ -7,11 +7,21 @@
   :hook
   ((after-init . imb-evil-mode)))
 
-;; (use-package mozc
-;;   :if (executable-find "mozc_emacs_helper")
-;;   :custom
-;;   (mozc-candidate-style 'echo-area)
-;;   (default-input-method "japanese-mozc"))
+(use-package mozc
+  :if (executable-find "mozc_emacs_helper")
+  :custom
+  (mozc-candidate-style 'echo-area)
+  (default-input-method "japanese-mozc"))
+
+
+(defun my/set-input-method-mozc ()
+  "Set default input method to japanese-mozc and activate it."
+  (interactive)
+  (setq default-input-method "japanese-mozc")
+  (set-input-method "japanese-mozc")
+  (message "Input method set to: japanese-mozc"))
+
+(global-set-key (kbd "C-c i j") #'my/set-input-method-mozc)
 
 ;; (use-package popup)
 ;; (use-package pyim
@@ -36,15 +46,6 @@
 ;;   (setq default-input-method "pyim")
 ;;   (set-input-method "pyim")
 ;;   (message "Input method set to: pyim"))
-
-;; (defun my/set-input-method-mozc ()
-;;   "Set default input method to japanese-mozc and activate it."
-;;   (interactive)
-;;   (setq default-input-method "japanese-mozc")
-;;   (set-input-method "japanese-mozc")
-;;   (message "Input method set to: japanese-mozc"))
-
-;; (global-set-key (kbd "C-c i j") #'my/set-input-method-mozc)
 ;; (global-set-key (kbd "C-c i i") #'my/set-input-method-pyim)
 
 (provide 'init-im)
