@@ -59,7 +59,10 @@ Limit English messages to 80 characters per line, and Japanese/Chinese to 40 cha
   :config
   (claude-code-mode)
   :custom
-  (claude-code-terminal-backend 'eat))
+  (claude-code-newline-keybinding-style 'newline-on-shift-return)
+  (claude-code-terminal-backend 'eat)
+  (claude-code-eat-read-only-mode-cursor-type '(bar nil nil))
+  (eat-term-scrollback-size 500000))
 
 (provide 'init-ai)
 ;;; init-ai.el ends here
