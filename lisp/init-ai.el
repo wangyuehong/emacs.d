@@ -57,8 +57,8 @@ Limit English messages to 80 characters per line, and Japanese/Chinese to 40 cha
 
 (use-package claude-code
   :vc (:url "https://github.com/stevemolitor/claude-code.el" :branch "main" :rev :newest)
-  :hook (claude-code-process-environment-functions . monet-start-server-function)
   :config
+  (add-hook 'claude-code-process-environment-functions #'monet-start-server-function)
   (monet-mode 1)
   (claude-code-mode)
   :custom
