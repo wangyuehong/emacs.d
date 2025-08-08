@@ -52,9 +52,14 @@ Limit English messages to 80 characters per line, and Japanese/Chinese to 40 cha
                     :models '(gpt-4o)))
   (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key))
 
+(use-package monet
+  :vc (:url "https://github.com/stevemolitor/monet" :branch "main" :rev :newest))
+
 (use-package claude-code
   :vc (:url "https://github.com/stevemolitor/claude-code.el" :branch "main" :rev :newest)
+  :hook (claude-code-process-environment-functions . monet-start-server-function)
   :config
+  (monet-mode 1)
   (claude-code-mode)
   :custom
   (claude-code-newline-keybinding-style 'newline-on-shift-return)
