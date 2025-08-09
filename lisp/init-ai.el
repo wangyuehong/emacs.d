@@ -57,15 +57,14 @@ Determine the commit message language based on the diff content.\n
 
 (use-package claude-code
   :vc (:url "https://github.com/stevemolitor/claude-code.el" :branch "main" :rev :newest)
+  :bind
+  ("C-c c" . claude-code-transient)
   :config
   (add-hook 'claude-code-process-environment-functions #'monet-start-server-function)
   (monet-mode 1)
   (claude-code-mode)
   :custom
-  (claude-code-newline-keybinding-style 'newline-on-shift-return)
-  (claude-code-terminal-backend 'eat)
-  (claude-code-eat-read-only-mode-cursor-type '(bar nil nil))
-  (eat-term-scrollback-size 500000))
+  (claude-code-terminal-backend 'eat))
 
 (provide 'init-ai)
 ;;; init-ai.el ends here
