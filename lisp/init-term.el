@@ -20,7 +20,10 @@ and switch to `evil-emacs-state` otherwise."
   :custom
   (vterm-max-scrollback 100000))
 
-(use-package eat)
+(use-package eat
+  :custom
+  (eat-kill-buffer-on-exit t)
+  (eat-term-scrollback-size 524288)) ;; 512K
 
 (provide 'init-term)
 ;;; init-term.el ends here
