@@ -4,8 +4,11 @@
 
 (use-package magit
   :defines (git-commit-mode-map)
-  :bind(:map git-commit-mode-map
-         ("C-c i" . copilot-chat-insert-commit-message))
+  :bind(:map magit-status-mode-map
+         ("RET" . magit-diff-visit-worktree-file)
+         :map git-commit-mode-map
+         ("C-c i" . copilot-chat-insert-commit-message)
+         ("C-c I" . copilot-chat-regenerate-commit-message))
   :custom
   (magit-bury-buffer-function #'magit-restore-window-configuration)
   (magit-commit-show-diff nil)
