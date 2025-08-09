@@ -3,13 +3,38 @@
 ;;; Code:
 
 (require 'transient)
+
+(transient-define-prefix my/copy-path-menu ()
+  "Copy file path in various formats."
+  [["Path Formats"
+    ("a" "Absolute path" my/copy-buffer-absolute-path)
+    ("p" "Project relative" my/copy-buffer-project-path)
+    ("P" "Project relative with project name" (lambda () (interactive) (my/copy-buffer-project-path t)))
+    ("g" "Git relative" my/copy-buffer-git-path)
+    ("G" "Git relative with repo name" (lambda () (interactive) (my/copy-buffer-git-path t)))
+    ("n" "File name only" my/copy-buffer-file-name)]
+   ["Quick Actions"
+    ("q" "Quit" transient-quit-one)]])
+
+(transient-define-prefix my/copy-region-menu ()
+  "Copy region with location in various formats."
+  [["Location Formats"
+    ("a" "Absolute path" my/copy-region-with-absolute-location)
+    ("p" "Project relative" my/copy-region-with-project-location)
+    ("P" "Project relative with project name" (lambda () (interactive) (my/copy-region-with-project-location t)))
+    ("g" "Git relative" my/copy-region-with-git-location)
+    ("G" "Git relative with repo name" (lambda () (interactive) (my/copy-region-with-git-location t)))
+    ("n" "File name only" my/copy-region-with-filename-location)]
+   ["Quick Actions"
+    ("q" "Quit" transient-quit-one)]])
+
 (transient-define-prefix my/current-buffer-actions ()
   "Current buffer actions."
   [["Copy"
-     ("c" "Copy relative/abs path" my/copy-buffer-path)
+     ("c" "Copy path ..." my/copy-path-menu)
      ("C" "Copy absolute path" my/copy-buffer-absolute-path)
-     ("n" "Copy file name" my/copy-buffer-file-name)
-     ("r" "Copy region with location" my/copy-region-with-location)]
+     ("r" "Copy region ..." my/copy-region-menu)
+     ("R" "Copy region smart" my/copy-region-with-location)]
     ["Open in External Program"
       ("oc" "Open in Cursor" my/open-file-in-cursor)
       ("of" "Open in Finder" my/open-in-finder)
