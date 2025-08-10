@@ -173,9 +173,12 @@ LOCATION-PATH is the formatted file path to use."
            (end (cadr bounds))
            (selected-text (buffer-substring-no-properties start end))
            (start-line (line-number-at-pos start))
+           (end-line (line-number-at-pos end))
            (saved-message (my/save-buffer-if-modified))
            (fence (my/format-region-with-fence selected-text))
-           (location-string (format "@%s:%d" location-path start-line))
+           (location-string (if (= start-line end-line)
+                               (format "@%s#L%d" location-path start-line)
+                             (format "@%s#L%d-L%d" location-path start-line end-line)))
            (final-string (format "%s\n%s\n%s\n%s"
                                 location-string
                                 fence
