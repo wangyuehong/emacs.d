@@ -59,6 +59,12 @@ Determine the commit message language based on the diff content.\n
   :vc (:url "https://github.com/stevemolitor/claude-code.el" :branch "main" :rev :newest)
   :bind
   ("C-c c" . claude-code-transient)
+  :init
+  (add-to-list 'display-buffer-alist
+    '("^\\*claude"
+       (display-buffer-in-side-window)
+       (window-width . 0.4)
+       (side . right)))
   :config
   (add-hook 'claude-code-process-environment-functions #'monet-start-server-function)
   (monet-mode 1)
