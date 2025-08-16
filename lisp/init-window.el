@@ -41,6 +41,16 @@
   (interactive)
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
+(defun my/scroll-other-window-smooth-down ()
+  "Scroll other window down by a few lines smoothly."
+  (interactive)
+  (scroll-other-window 5))
+
+(defun my/scroll-other-window-smooth-up ()
+  "Scroll other window up by a few lines smoothly."
+  (interactive)
+  (scroll-other-window -5))
+
 (use-package nerd-icons-ibuffer
   :after nerd-icons
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))

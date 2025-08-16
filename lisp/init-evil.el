@@ -36,6 +36,8 @@
     ("f" . evil-avy-goto-char-in-line)
     ("u" . undo-fu-only-undo)
     ("C-r" . undo-fu-only-redo)
+    ("C-n" . my/scroll-other-window-smooth-down)
+    ("C-p" . my/scroll-other-window-smooth-up)
     ("M-r" . my/replace-at-point-or-region)
     ("Y" . my/copy-to-clipboard)
     :map evil-operator-state-map
@@ -45,6 +47,8 @@
     ("q" . my/quit-window-dwim)
     ("s" . evil-avy-goto-word-or-subword-1)
     ("f" . evil-avy-goto-char-in-line)
+    ("C-n" . my/scroll-other-window-smooth-down)
+    ("C-p" . my/scroll-other-window-smooth-up)
     ("Y" . my/copy-to-clipboard)
     :map evil-visual-state-map
     ("v" . er/expand-region)
