@@ -30,7 +30,8 @@
                     (magit-status-mode :select t :same  t)
                     (occur-mode        :select t :align t)
                     (rg-mode           :select t :align t)
-                    ("*quickrun*"      :select t :align t))))
+                    ("*quickrun*"      :select t :align t)
+                    ("^\\*claude"      :regexp t :align right :size 0.4))))
 
 (use-package ibuffer
   :ensure nil
