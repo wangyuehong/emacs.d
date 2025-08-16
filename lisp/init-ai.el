@@ -64,6 +64,7 @@ Determine the commit message language based on the diff content.\n
   (monet-mode 1)
   (claude-code-mode)
   :custom
+  (claude-code-no-delete-other-windows t)
   (claude-code-terminal-backend 'eat))
 
 (provide 'init-ai)
