@@ -27,7 +27,7 @@ MESSAGE-PREFIX customizes the message shown."
 
   (defun my/copy-buffer-path ()
     "Copy the buffer's file path to the clipboard.
-If the file is part of a project (managed by `project.el`), copy the relative path;
+If the file is part of a Git repository, copy the relative path;
 otherwise, copy the full absolute path."
     (interactive)
     (my/copy-buffer-path-generic 'display))
@@ -42,11 +42,6 @@ otherwise, copy the full absolute path."
     (interactive)
     (my/copy-buffer-path-generic 'filename nil "Copied file name to clipboard"))
 
-  (defun my/copy-buffer-project-path (&optional with-prefix)
-    "Copy the buffer's project-relative path to the clipboard.
-With prefix argument or WITH-PREFIX non-nil, include project name."
-    (interactive "P")
-    (my/copy-buffer-path-generic 'project with-prefix))
 
   (defun my/copy-buffer-git-path (&optional with-prefix)
     "Copy the buffer's Git-relative path to the clipboard.
@@ -74,11 +69,6 @@ Returns nil if not in a Git repository."
         (when git-root
           (expand-file-name git-root)))))
 
-  (defun my/get-project-name ()
-    "Get the name of the current project."
-    (when-let ((proj (project-current)))
-      (file-name-nondirectory
-        (directory-file-name (project-root proj)))))
 
   (defun my/get-git-repo-name ()
     "Get the name of the Git repository."
@@ -90,7 +80,6 @@ Returns nil if not in a Git repository."
     "Format the current buffer's file path according to STYLE.
 STYLE can be:
   'absolute - Full absolute path
-  'project - Relative to project root
   'git - Relative to Git root
   'filename - Just the filename
 WITH-PREFIX adds the parent folder name when non-nil."
@@ -101,14 +90,6 @@ WITH-PREFIX adds the parent folder name when non-nil."
       (pcase style
         ('absolute absolute-path)
         ('filename (file-name-nondirectory absolute-path))
-        ('project
-         (let ((proj (project-current)))
-           (if proj
-               (let ((rel-path (file-relative-name absolute-path (project-root proj))))
-                 (if with-prefix
-                     (concat (my/get-project-name) "/" rel-path)
-                     rel-path))
-             absolute-path)))
         ('git
          (let ((git-root (my/get-git-root)))
            (if git-root
@@ -121,12 +102,12 @@ WITH-PREFIX adds the parent folder name when non-nil."
 
   (defun my/get-buffer-display-path ()
     "Return the buffer's display path.
-Relative for project files, absolute for others, or buffer name if no file."
-    (let ((proj (project-current)))
+Relative for Git repository files, absolute for others, or buffer name if no file."
+    (let ((git-root (my/get-git-root)))
       (cond
-        ((and buffer-file-name proj) ; Project file
-          (file-relative-name buffer-file-name (project-root proj)))
-        (buffer-file-name ; Non-project file
+        ((and buffer-file-name git-root) ; Git repository file
+          (file-relative-name buffer-file-name git-root))
+        (buffer-file-name ; Non-Git file
           (file-truename buffer-file-name))
         (t ; Not file (e.g., *scratch*)
           (buffer-name)))))
@@ -147,7 +128,13 @@ Relative for project files, absolute for others, or buffer name if no file."
     "Get the active region boundaries or current line if no region.
 Returns a list of (start end) positions."
     (if (and (use-region-p) (> (region-end) (region-beginning)))
-        (list (region-beginning) (region-end))
+        (let ((start (region-beginning))
+              (end (region-end)))
+          ;; Move end to end of previous line to avoid including extra line
+          (save-excursion
+            (goto-char end)
+            (setq end (line-end-position 0))) ; 0 means previous line
+          (list start end))
       (list (line-beginning-position) (line-end-position))))
 
   (defun my/save-buffer-if-modified ()
@@ -194,7 +181,7 @@ LOCATION-PATH is the formatted file path to use."
 
   (defun my/copy-region-with-formatted-location (style &optional with-prefix)
     "Copy the selected region with formatted location to clipboard.
-STYLE can be 'absolute, 'project, 'git, or 'filename.
+STYLE can be 'absolute, 'git, or 'filename.
 WITH-PREFIX adds parent folder name when non-nil."
     (let ((location-path (condition-case err
                             (my/format-file-path style with-prefix)
@@ -203,7 +190,7 @@ WITH-PREFIX adds parent folder name when non-nil."
 
   (defun my/copy-region-with-location ()
     "Copy the selected region text and its start location to clipboard.
-Uses relative path for project files, auto-saves modified files,
+Uses relative path for Git repository files, auto-saves modified files,
 and formats the output as a Markdown code block, adjusting backtick fence length as needed."
     (interactive)
     (my/copy-region-with-location-internal (my/get-buffer-display-path)))
@@ -212,12 +199,6 @@ and formats the output as a Markdown code block, adjusting backtick fence length
     "Copy region with absolute file path location."
     (interactive)
     (my/copy-region-with-formatted-location 'absolute))
-
-  (defun my/copy-region-with-project-location (&optional with-prefix)
-    "Copy region with project-relative path location.
-With prefix argument or WITH-PREFIX non-nil, include project name."
-    (interactive "P")
-    (my/copy-region-with-formatted-location 'project with-prefix))
 
   (defun my/copy-region-with-git-location (&optional with-prefix)
     "Copy region with Git-relative path location.
