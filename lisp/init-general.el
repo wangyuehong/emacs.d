@@ -28,7 +28,7 @@
   "Current buffer actions."
   [["Copy"
      ("c" "Copy path smart" my/copy-buffer-git-path)
-     ("R" "Copy path ..." my/copy-path-menu)
+     ("C" "Copy path ..." my/copy-path-menu)
      ("r" "Copy region smart" my/copy-region-with-git-location)
      ("R" "Copy region ..." my/copy-region-menu)]
     ["Open in External Program"
