@@ -71,7 +71,7 @@ Determine the commit message language based on the diff content.\n
   (claude-code-mode)
   :custom
   (claude-code-no-delete-other-windows t)
-  (claude-code-terminal-backend 'eat))
+  (claude-code-terminal-backend 'vterm))
 
 (provide 'init-ai)
 ;;; init-ai.el ends here
