@@ -52,6 +52,17 @@ Determine the commit message language based on the diff content.\n
                     :models '(gpt-4o)))
   (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key))
 
+(use-package gptel-quick
+  :vc (:url "https://github.com/karthink/gptel-quick" :branch "main" :rev :newest)
+  :after gptel
+  :init
+  (setq gptel-quick-word-count 96)
+  :config
+  (setq gptel-quick-system-message
+    (lambda (count)
+      (format "Provide a most detailed explanation using fewer than %d Chinese characters. \
+Prioritize completeness within the character limit." count))))
+
 (use-package monet
   :vc (:url "https://github.com/stevemolitor/monet" :branch "main" :rev :newest))
 
