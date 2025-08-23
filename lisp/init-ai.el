@@ -47,10 +47,8 @@ Determine the commit message language based on the diff content.\n
   (gptel-post-response-functions #'gptel-end-of-response)
   (gptel-rewrite-default-action #'gptel--rewrite-diff)
   :config
-  (setq gptel-model 'gpt-4o
-    gptel-backend (gptel-make-gh-copilot "GHCopilot"
-                    :models '(gpt-4o)))
-  (gptel-make-anthropic "Claude" :stream t :key #'gptel-api-key))
+  (setq gptel-model 'gpt-5
+    gptel-backend (gptel-make-gh-copilot "GHCopilot" :models '(gpt-5))))
 
 (use-package gptel-quick
   :vc (:url "https://github.com/karthink/gptel-quick" :branch "main" :rev :newest)
