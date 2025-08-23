@@ -56,12 +56,14 @@ Determine the commit message language based on the diff content.\n
   :vc (:url "https://github.com/karthink/gptel-quick" :branch "main" :rev :newest)
   :after gptel
   :init
-  (setq gptel-quick-word-count 96)
+  (setq gptel-quick-word-count 48)
   :config
   (setq gptel-quick-system-message
     (lambda (count)
-      (format "Provide a most detailed explanation using fewer than %d Chinese characters. \
-Prioritize completeness within the character limit." count))))
+      (format "If the selected text is a single English word, \
+provide its Chinese translation, English IPA phonetic transcription, and meaning explanation in Chinese. \
+For other content, provide a most detailed explanation. \
+Use fewer than %d Chinese characters and prioritize completeness within the character limit." count))))
 
 (use-package monet
   :vc (:url "https://github.com/stevemolitor/monet" :branch "main" :rev :newest))
