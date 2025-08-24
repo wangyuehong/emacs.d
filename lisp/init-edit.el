@@ -37,13 +37,28 @@
 
 (use-package iedit)
 
+(defun my/autocorrect-format ()
+  "Format current buffer with autocorrect \"--fix\"."
+  (when (buffer-file-name)
+    (let ((exit-code (call-process "autocorrect" nil nil nil "--fix" (buffer-file-name))))
+      (if (zerop exit-code)
+          (revert-buffer t t t)
+        (message "AutoCorrect failed with exit code %d" exit-code)))))
+
+(defun my/setup-autocorrect ()
+  "Setup autocorrect hook."
+  (add-hook 'after-save-hook 'my/autocorrect-format nil t))
+
 (use-package markdown-mode
   :functions (markdown--command-map-prompt markdown--style-map-prompt)
   :init
   (advice-add #'markdown--command-map-prompt :override #'ignore)
   (advice-add #'markdown--style-map-prompt   :override #'ignore)
   :mode ("README\\(?:\\.md\\)?\\'" . gfm-mode)
-  :hook ((markdown-mode . visual-line-mode))
+  :hook ((markdown-mode . visual-line-mode)
+         (gfm-mode . visual-line-mode)
+         (markdown-mode . my/setup-autocorrect)
+         (gfm-mode . my/setup-autocorrect))
   :custom
   (markdown-enable-wiki-links t)
   (markdown-italic-underscore t)
