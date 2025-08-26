@@ -29,7 +29,10 @@
   :config
   (setq-default eglot-workspace-configuration
     '((:gopls . ((completeUnimported . t)
-                  (gofumpt     . t)
+                  (gofumpt . t)
+                  (analyses . ((ST1000 . :json-false)
+                                (ST1020 . :json-false)
+                                (ST1021 . :json-false)))
                   (staticcheck . t)))))
 
   :init
