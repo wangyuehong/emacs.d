@@ -39,7 +39,6 @@
     ("C-n" . my/scroll-other-window-smooth-down)
     ("C-p" . my/scroll-other-window-smooth-up)
     ("M-r" . my/replace-at-point-or-region)
-    ("Y" . my/copy-to-clipboard)
     :map evil-operator-state-map
     ("s" . evil-avy-goto-word-or-subword-1)
     ("f" . evil-avy-goto-char-in-line)
@@ -49,13 +48,11 @@
     ("f" . evil-avy-goto-char-in-line)
     ("C-n" . my/scroll-other-window-smooth-down)
     ("C-p" . my/scroll-other-window-smooth-up)
-    ("Y" . my/copy-to-clipboard)
     :map evil-visual-state-map
     ("v" . er/expand-region)
     ("s" . evil-avy-goto-word-or-subword-1)
     ("f" . evil-avy-goto-char-in-line)
-    ("TAB" . evil-indent)
-    ("Y" . my/copy-to-clipboard))
+    ("TAB" . evil-indent))
   :init
   ;; https://github.com/emacs-evil/evil/issues/1486
   (setq evil-disable-insert-state-bindings t
