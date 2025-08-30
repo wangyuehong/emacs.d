@@ -10,7 +10,9 @@
 
 (use-package autorevert
   :ensure nil
-  :hook (after-init . global-auto-revert-mode))
+  :hook (after-init . global-auto-revert-mode)
+  :custom
+  (auto-revert-interval 3))
 
 (use-package uniquify
   :ensure nil
