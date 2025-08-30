@@ -6,7 +6,7 @@
   :hook
   ((prog-mode git-commit-setup yaml-mode markdown-mode) . copilot-mode)
   :bind
-  (("C-x c g" . copilot-diagnose)
+  (("C-c x" . copilot-diagnose)
     :map copilot-completion-map
     ("TAB" . copilot-accept-completion)
     ([tab] . copilot-accept-completion)
@@ -26,6 +26,8 @@
   (copilot-log-max 0))
 
 (use-package copilot-chat
+  :bind
+  ("C-c C-c" . copilot-chat-transient)
   :config
   (let ((my/original-commit-prompt copilot-chat-commit-prompt))
     (setopt copilot-chat-commit-prompt (concat my/original-commit-prompt
@@ -47,8 +49,8 @@ Determine the commit message language based on the diff content.\n
   (gptel-post-response-functions #'gptel-end-of-response)
   (gptel-rewrite-default-action #'gptel--rewrite-diff)
   :config
-  (setq gptel-model 'gpt-5
-    gptel-backend (gptel-make-gh-copilot "GHCopilot" :models '(gpt-5 claude-opus-4 gemini-2.5-pro))))
+  (setq gptel-model 'gpt-4o
+    gptel-backend (gptel-make-gh-copilot "gh-copilot")))
 
 (use-package gptel-quick
   :vc (:url "https://github.com/karthink/gptel-quick" :branch "main" :rev :newest)
