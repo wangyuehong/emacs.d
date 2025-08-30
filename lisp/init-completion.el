@@ -134,16 +134,13 @@ selected region as initial input."
 
 (use-package embark
   :functions embark-prefix-help-command
-  :bind (("C-;" . embark-act)
+  :bind (("M-;" . embark-act)
           ([remap describe-bindings] . embark-bindings)
           :map minibuffer-local-map
           ("C-c C-c" . embark-collect)
-          ("C-c C-e" . embark-export))
+          ("C-c C-o" . embark-export))
   :init
-  (setq prefix-help-command #'embark-prefix-help-command)
-  :config
-  (keymap-set embark-region-map "x r" #'my/copy-region-with-location)
-  (keymap-set embark-region-map "x x" #'my/copy-to-clipboard))
+  (setq prefix-help-command #'embark-prefix-help-command))
 
 (use-package embark-consult
   :after (embark consult))
