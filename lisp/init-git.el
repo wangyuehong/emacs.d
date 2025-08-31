@@ -27,7 +27,6 @@
 
 (use-package diff-hl
   :defines (diff-hl-command-map)
-  :functions (diff-hl-magit-pre-refresh diff-hl-magit-post-refresh)
   :hook ((after-init . global-diff-hl-mode)
           (dired-mode . diff-hl-dired-mode))
   :custom
