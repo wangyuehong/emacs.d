@@ -63,6 +63,7 @@
 
     "b" '(my/current-buffer-actions         :wk "buffer-actions")
     "c" '(evilnc-comment-or-uncomment-lines :wk "comment-or-uncomment")
+    "d" '(diff-hl-command-map               :wk "diff-hl")
     "e" '(evil-iedit-state/iedit-mode       :wk "iedit")
     "g" 'magit-status
     "h" 'symbol-overlay-put

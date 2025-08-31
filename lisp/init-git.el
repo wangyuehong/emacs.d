@@ -30,16 +30,19 @@
   :functions (diff-hl-magit-pre-refresh diff-hl-magit-post-refresh)
   :hook ((after-init . global-diff-hl-mode)
           (dired-mode . diff-hl-dired-mode))
-  :bind (:map diff-hl-command-map
-          ("k" . diff-hl-previous-hunk)
-          ("j" . diff-hl-next-hunk)
-          ("x" . diff-hl-revert-hunk)
-          ("s" . diff-hl-show-hunk)
-          ("S" . diff-hl-stage-current-hunk)
-          ("U" . diff-hl-unstage-file))
+  :custom
+  (diff-hl-command-prefix (kbd "C-c v"))
   :config
   (setq-default fringes-outside-margins t)
   (unless (display-graphic-p) (diff-hl-margin-mode))
+
+  ;; clear map and set my key bindings
+  (setcdr diff-hl-command-map nil)
+  (define-key diff-hl-command-map (kbd "k") 'diff-hl-previous-hunk)
+  (define-key diff-hl-command-map (kbd "j") 'diff-hl-next-hunk)
+  (define-key diff-hl-command-map (kbd "r") 'diff-hl-revert-hunk)
+  (define-key diff-hl-command-map (kbd "s") 'diff-hl-show-hunk)
+  (define-key diff-hl-command-map (kbd "S") 'diff-hl-stage-dwim)
 
   (with-eval-after-load 'magit
     (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)))
