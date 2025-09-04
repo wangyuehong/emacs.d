@@ -24,6 +24,8 @@
           ("M-p" . flymake-goto-prev-error))
   :hook (prog-mode . flymake-mode))
 
+(use-package flymake-easy)
+
 (use-package xref
   :ensure nil
   :bind
