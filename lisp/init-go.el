@@ -32,7 +32,6 @@
 (use-package flymake-golangci-lint
   :ensure nil ;; site-lisp/flymake-golangci-lint
   :if (executable-find "golangci-lint")
-  :after (go-mode flymake-easy)
   :hook (go-mode . flymake-golangci-lint-load))
 
 (use-package go-gen-test :after go-mode)
