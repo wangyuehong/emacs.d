@@ -79,16 +79,167 @@
   (should (flymake-golangci-lint--validate-environment nil))
   (should-not (flymake-golangci-lint--validate-environment "/tmp/test.go")))
 
+;;; Safe Reporting Tests
+
+(ert-deftest test-safe-report-with-valid-state ()
+  "Test safe report function with valid flymake state."
+  (with-temp-go-buffer "package main\n\nfunc main() {}\n"
+    (flymake-mode 1)
+    (add-hook 'flymake-diagnostic-functions #'flymake-golangci-lint-backend nil t)
+    (setq flymake-golangci-lint--reported nil)
+    
+    (let ((report-called nil)
+          (diagnostics nil))
+      (flymake-golangci-lint--safe-report 
+       (current-buffer)
+       (lambda (diags &rest _args)
+         (setq report-called t diagnostics diags))
+       '())
+      
+      (should report-called)
+      (should (listp diagnostics))
+      (should flymake-golangci-lint--reported))))
+
+(ert-deftest test-safe-report-prevents-duplicate-calls ()
+  "Test safe report prevents duplicate calls."
+  (with-temp-go-buffer "package main\n\nfunc main() {}\n"
+    (flymake-mode 1)
+    (add-hook 'flymake-diagnostic-functions #'flymake-golangci-lint-backend nil t)
+    (setq flymake-golangci-lint--reported nil)
+    
+    (let ((call-count 0))
+      (flymake-golangci-lint--safe-report 
+       (current-buffer)
+       (lambda (_diags &rest _args) (cl-incf call-count))
+       '())
+      
+      ;; Second call should be ignored
+      (flymake-golangci-lint--safe-report 
+       (current-buffer)
+       (lambda (_diags &rest _args) (cl-incf call-count))
+       '())
+      
+      (should (= call-count 1))
+      (should flymake-golangci-lint--reported))))
+
+(ert-deftest test-safe-report-invalid-buffer ()
+  "Test safe report with killed buffer."
+  (let ((dead-buffer (generate-new-buffer "*test-dead*")))
+    (kill-buffer dead-buffer)
+    
+    (let ((report-called nil))
+      (flymake-golangci-lint--safe-report 
+       dead-buffer
+       (lambda (_diags &rest _args) (setq report-called t))
+       '())
+      
+      (should-not report-called))))
+
+(ert-deftest test-safe-report-without-flymake-mode ()
+  "Test safe report when flymake-mode is disabled."
+  (with-temp-go-buffer "package main\n\nfunc main() {}\n"
+    (flymake-mode -1) ; Disable flymake-mode
+    (add-hook 'flymake-diagnostic-functions #'flymake-golangci-lint-backend nil t)
+    (setq flymake-golangci-lint--reported nil)
+    
+    (let ((report-called nil))
+      (flymake-golangci-lint--safe-report 
+       (current-buffer)
+       (lambda (_diags &rest _args) (setq report-called t))
+       '())
+      
+      (should-not report-called)
+      (should-not flymake-golangci-lint--reported))))
+
+(ert-deftest test-safe-report-without-backend-hook ()
+  "Test safe report when backend not in flymake hooks."
+  (with-temp-go-buffer "package main\n\nfunc main() {}\n"
+    (flymake-mode 1)
+    ;; Don't add the backend hook
+    (setq flymake-golangci-lint--reported nil)
+    
+    (let ((report-called nil))
+      (flymake-golangci-lint--safe-report 
+       (current-buffer)
+       (lambda (_diags &rest _args) (setq report-called t))
+       '())
+      
+      (should-not report-called)
+      (should-not flymake-golangci-lint--reported))))
+
+(ert-deftest test-safe-report-handles-error ()
+  "Test safe report handles errors in report function."
+  (with-temp-go-buffer "package main\n\nfunc main() {}\n"
+    (flymake-mode 1)
+    (add-hook 'flymake-diagnostic-functions #'flymake-golangci-lint-backend nil t)
+    (setq flymake-golangci-lint--reported nil)
+    
+    ;; This should not crash even if report-fn throws error
+    ;; The function should handle the error gracefully and still set the flag
+    (flymake-golangci-lint--safe-report 
+     (current-buffer)
+     (lambda (_diags &rest _args) (error "Test error in report-fn"))
+     '())
+    
+    (should flymake-golangci-lint--reported)))
+
+(ert-deftest test-cleanup-process-state ()
+  "Test cleanup function resets process state variables."
+  (with-temp-go-buffer "package main\n\nfunc main() {}\n"
+    ;; Set up initial state
+    (setq flymake-golangci-lint--process (make-process :name "test" :command '("true"))
+          flymake-golangci-lint--report-fn (lambda (&rest _args))
+          flymake-golangci-lint--reported t)
+    
+    ;; Cleanup should reset all state
+    (let ((proc-buffer (generate-new-buffer "*test-proc*")))
+      (flymake-golangci-lint--cleanup-process flymake-golangci-lint--process proc-buffer)
+      
+      (should-not flymake-golangci-lint--process)
+      (should-not flymake-golangci-lint--report-fn) 
+      (should-not flymake-golangci-lint--reported)
+      (should-not (buffer-live-p proc-buffer)))))
+
+(ert-deftest test-cancel-process-state ()
+  "Test cancel function resets process state variables."
+  (with-temp-go-buffer "package main\n\nfunc main() {}\n"
+    ;; Set up initial state
+    (setq flymake-golangci-lint--process (make-process :name "test" :command '("sleep" "10"))
+          flymake-golangci-lint--report-fn (lambda (&rest _args))
+          flymake-golangci-lint--reported t)
+    
+    ;; Cancel should reset all state
+    (flymake-golangci-lint--cancel-process)
+    
+    (should-not flymake-golangci-lint--process)
+    (should-not flymake-golangci-lint--report-fn) 
+    (should-not flymake-golangci-lint--reported)))
+
 (ert-deftest test-backend-error-handling ()
   "Test backend handles missing file correctly."
   (with-temp-buffer
+    ;; Simulate flymake-mode enabled for safe reporting
+    (flymake-mode 1)
+    (add-hook 'flymake-diagnostic-functions #'flymake-golangci-lint-backend nil t)
+    
     (let ((report-called nil)
           (report-type nil))
       (flymake-golangci-lint-backend 
        (lambda (_diagnostics &optional type &rest _args)
          (setq report-called t report-type type)))
       (should report-called)
-      (should (eq report-type :panic)))))
+      (should (eq report-type :panic))
+      (should flymake-golangci-lint--reported))))
+
+(ert-deftest test-backend-uses-safe-report-for-errors ()
+  "Test backend uses safe report mechanism even for validation errors."
+  (with-temp-buffer
+    ;; Test without flymake-mode - should not call report-fn
+    (let ((report-called nil))
+      (flymake-golangci-lint-backend 
+       (lambda (&rest _args) (setq report-called t)))
+      (should-not report-called)
+      (should-not flymake-golangci-lint--reported))))
 
 ;;; Integration Tests
 

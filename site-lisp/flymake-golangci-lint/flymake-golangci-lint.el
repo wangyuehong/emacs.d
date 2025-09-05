@@ -235,6 +235,12 @@ Returns plist with :line and :message, or nil if no match."
 (defvar-local flymake-golangci-lint--process nil
   "The current golangci-lint process for this buffer.")
 
+(defvar-local flymake-golangci-lint--report-fn nil
+  "The current report function.")
+
+(defvar-local flymake-golangci-lint--reported nil
+  "Whether the report function has been called for current check.")
+
 ;; Backend helpers
 (defun flymake-golangci-lint--validate-environment (source-file)
   "Validate environment for SOURCE-FILE.  Return error message or nil."
@@ -248,7 +254,9 @@ Returns plist with :line and :message, or nil if no match."
   (when (and flymake-golangci-lint--process
              (process-live-p flymake-golangci-lint--process))
     (kill-process flymake-golangci-lint--process)
-    (setq flymake-golangci-lint--process nil)))
+    (setq flymake-golangci-lint--process nil
+          flymake-golangci-lint--report-fn nil
+          flymake-golangci-lint--reported nil)))
 
 (defun flymake-golangci-lint--cleanup-process (proc buffer)
   "Clean up process PROC and its BUFFER."
@@ -256,7 +264,24 @@ Returns plist with :line and :message, or nil if no match."
     (kill-buffer buffer))
   (when (and (buffer-live-p (current-buffer))
              (eq proc flymake-golangci-lint--process))
-    (setq flymake-golangci-lint--process nil)))
+    (setq flymake-golangci-lint--process nil
+          flymake-golangci-lint--report-fn nil
+          flymake-golangci-lint--reported nil)))
+
+(defun flymake-golangci-lint--safe-report (source-buffer report-fn &rest args)
+  "Safely call REPORT-FN with ARGS in SOURCE-BUFFER context.
+This function includes all necessary safety checks to prevent state errors."
+  (when (and (buffer-live-p source-buffer)
+             (with-current-buffer source-buffer
+               (and flymake-mode
+                    (memq #'flymake-golangci-lint-backend flymake-diagnostic-functions)
+                    (not flymake-golangci-lint--reported))))
+    (with-current-buffer source-buffer
+      (setq flymake-golangci-lint--reported t)
+      (condition-case err
+          (apply report-fn args)
+        (error
+         (flymake-log :warning "Error in flymake-golangci-lint report: %s" err))))))
 
 (defun flymake-golangci-lint--handle-process-result (proc source-buffer report-fn)
   "Handle process PROC result for SOURCE-BUFFER, calling REPORT-FN."
@@ -266,16 +291,16 @@ Returns plist with :line and :message, or nil if no match."
     (cond
      ;; Success: no issues
      ((eq exit-status 0)
-      (funcall report-fn nil))
+      (flymake-golangci-lint--safe-report source-buffer report-fn nil))
      ;; Issues found
      ((eq exit-status 1)
-      (funcall report-fn
-               (flymake-golangci-lint--make-diagnostics source-buffer output)))
+      (flymake-golangci-lint--safe-report source-buffer report-fn
+                                         (flymake-golangci-lint--make-diagnostics source-buffer output)))
      ;; Error
      (t
-      (funcall report-fn nil :panic
-               :explanation (format "golangci-lint failed (exit %d): %s"
-                                   exit-status output))))))
+      (flymake-golangci-lint--safe-report source-buffer report-fn nil :panic
+                                         :explanation (format "golangci-lint failed (exit %d): %s"
+                                                             exit-status output))))))
 
 (defun flymake-golangci-lint--create-process-sentinel (source-buffer report-fn)
   "Create process sentinel for SOURCE-BUFFER that will call REPORT-FN."
@@ -284,7 +309,9 @@ Returns plist with :line and :message, or nil if no match."
       (unwind-protect
           (when (and (buffer-live-p source-buffer)
                      (with-current-buffer source-buffer
-                       (eq proc flymake-golangci-lint--process)))
+                       (and (eq proc flymake-golangci-lint--process)
+                            flymake-mode
+                            (memq #'flymake-golangci-lint-backend flymake-diagnostic-functions))))
             (flymake-golangci-lint--handle-process-result proc source-buffer report-fn))
         (flymake-golangci-lint--cleanup-process proc (process-buffer proc))))))
 
@@ -302,7 +329,9 @@ Call REPORT-FN when process completes."
            :noquery t
            :connection-type 'pipe
            :sentinel (flymake-golangci-lint--create-process-sentinel
-                     source-buffer report-fn)))
+                     source-buffer report-fn))
+          flymake-golangci-lint--report-fn report-fn
+          flymake-golangci-lint--reported nil)
     flymake-golangci-lint--process))
 
 (defun flymake-golangci-lint-backend (report-fn &rest _args)
@@ -310,8 +339,12 @@ Call REPORT-FN when process completes."
   (let* ((source-buffer (current-buffer))
          (source-file (buffer-file-name)))
     
+    ;; Initialize state for this check
+    (setq flymake-golangci-lint--report-fn report-fn
+          flymake-golangci-lint--reported nil)
+    
     (if-let ((error-msg (flymake-golangci-lint--validate-environment source-file)))
-        (funcall report-fn nil :panic :explanation error-msg)
+        (flymake-golangci-lint--safe-report source-buffer report-fn nil :panic :explanation error-msg)
       (flymake-golangci-lint--start-process source-buffer source-file report-fn))))
 
 ;;;###autoload
