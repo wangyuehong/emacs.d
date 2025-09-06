@@ -5,18 +5,19 @@
 (use-package go-mode
   :defines (go-mode-map)
   :preface
-  (defun project-find-go-mod (dir)
-    "Find Go module root containing DIR by locating go.mod file."
-    (when-let ((root (locate-dominating-file dir "go.mod")))
-      (cons 'go-module root)))
+  (defun my/project-find-go-root (dir)
+    "Find Go workspace root for DIR preferring go.work over go.mod."
+    (when-let ((root (or (locate-dominating-file dir "go.work")
+                         (locate-dominating-file dir "go.mod"))))
+      (cons 'go root)))
 
-  (cl-defmethod project-root ((project (head go-module)))
-    "Return root directory of the Go module PROJECT."
+  (cl-defmethod project-root ((project (head go)))
+    "Return root directory for a Go project."
     (cdr project))
 
   (defun my/set-go-project-find-functions ()
-    "Add project-find-go-mod to project-find-functions in go-mode."
-    (add-to-list 'project-find-functions #'project-find-go-mod))
+    "Add Go project finder to `project-find-functions` in `go-mode`."
+    (add-to-list 'project-find-functions #'my/project-find-go-root))
   :bind (:map go-mode-map
           ("C-c i" . go-import-add))
   :hook ((go-mode  . eglot-ensure)
