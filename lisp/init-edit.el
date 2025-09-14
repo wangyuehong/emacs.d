@@ -52,6 +52,10 @@
   (markdown-asymmetric-header t)
   (markdown-fontify-code-blocks-natively t))
 
+(use-package mermaid-mode
+  :custom
+  (mermaid-indentation-level 2))
+
 (use-package editorconfig
   :hook (after-init . editorconfig-mode))
 
