@@ -32,11 +32,15 @@
   (let ((my/original-commit-prompt copilot-chat-commit-prompt))
     (setopt copilot-chat-commit-prompt (concat my/original-commit-prompt
                                          "\n\n### LANGUAGE RULE\n
-Determine the commit message language based on the diff content.\n
-**You must** use 日本語 or 中文 to write commit message if the diff contains 日本語 or 中文 characters.")))
+Determine commit message language by analyzing diff content:\n
+- Japanese text (with kana): Write in Japanese\n
+- Simplified Chinese text: Write in Simplified Chinese\n
+- Both present: Use Simplified Chinese\n
+- Otherwise: Use English\n
+Note: Analyze beyond individual characters - consider vocabulary, grammar, and context.")))
   :custom
   (copilot-chat-frontend 'markdown)
-  (copilot-chat-markdown-prompt "Respone in 中文:\n")
+  (copilot-chat-markdown-prompt "Respone in 简体中文:\n")
   (copilot-chat-prompt-test "Write unit tests for the following code:\n")
   (copilot-chat-prompt-optimize "Optimize and refactor the following code:\n")
   (copilot-chat-prompt-explain "Explain the following code:\n"))
