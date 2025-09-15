@@ -72,17 +72,18 @@ Use fewer than %d Chinese characters and prioritize completeness within the char
   :vc (:url "https://github.com/stevemolitor/claude-code.el" :branch "main" :rev :newest)
   :bind
   ("C-c c" . claude-code-transient)
-  :init
-  (add-to-list 'display-buffer-alist
-    '("^\\*claude"
-       (display-buffer-in-side-window)
-       (window-width . 0.4)
-       (side . right)))
+  :preface
+  (defun my/claude-display-right (buffer)
+    "Display Claude buffer in right side window."
+    (display-buffer buffer '((display-buffer-in-side-window)
+                              (side . right)
+                              (window-width . 0.4))))
   :config
   (add-hook 'claude-code-process-environment-functions #'monet-start-server-function)
   (monet-mode 1)
   (claude-code-mode)
   :custom
+  (claude-code-display-window-fn #'my/claude-display-right)
   (claude-code-no-delete-other-windows t)
   (claude-code-terminal-backend 'vterm))
 
