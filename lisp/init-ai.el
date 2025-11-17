@@ -3,9 +3,6 @@
 ;;; Code:
 
 (use-package copilot
-  :vc (:url "https://github.com/copilot-emacs/copilot.el"
-        :branch "main"
-        :rev "952fc7a8ae06091a46995d32ebde4380e0c71142")
   :hook
   ((prog-mode git-commit-setup yaml-mode markdown-mode) . copilot-mode)
   :bind
