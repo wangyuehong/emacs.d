@@ -28,16 +28,32 @@
 (use-package copilot-chat
   :bind
   ("C-c C-c" . copilot-chat-transient)
+  :preface
+  ;; Project language setting, used for commit message generation, etc.
+  ;; Configure per-project via .dir-locals.el in project root:
+  ;;   ((nil . ((my/project-language . "ja"))))  ; Japanese
+  ;;   ((nil . ((my/project-language . "zh"))))  ; Chinese
+  (defvar-local my/project-language "en"
+    "Project documentation language. Values: \"zh\", \"ja\", \"en\".")
+  (put 'my/project-language 'safe-local-variable #'stringp)
+  (defvar my/copilot-chat-original-commit-prompt nil
+    "Original commit prompt from copilot-chat.")
+  (defun my/copilot-chat-set-language-prompt (&rest _)
+    "Set commit prompt language based on project setting."
+    (unless my/copilot-chat-original-commit-prompt
+      (setq my/copilot-chat-original-commit-prompt copilot-chat-commit-prompt))
+    (let ((lang-rule (pcase my/project-language
+                       ("ja" "Write commit message in Japanese.")
+                       ("zh" "Write commit message in Simplified Chinese.")
+                       (_ "Write commit message in English."))))
+      (setq copilot-chat-commit-prompt
+            (concat my/copilot-chat-original-commit-prompt
+                    "\n\n### LANGUAGE RULE\n" lang-rule))))
   :config
-  (let ((my/original-commit-prompt copilot-chat-commit-prompt))
-    (setopt copilot-chat-commit-prompt (concat my/original-commit-prompt
-                                         "\n\n### LANGUAGE RULE\n
-Determine commit message language by analyzing diff content:\n
-- Japanese text (with kana): Write in Japanese\n
-- Simplified Chinese text: Write in Simplified Chinese\n
-- Both present: Use Simplified Chinese\n
-- Otherwise: Use English\n
-Note: Analyze beyond individual characters - consider vocabulary, grammar, and context.")))
+  (advice-add 'copilot-chat-insert-commit-message :before
+              #'my/copilot-chat-set-language-prompt)
+  (advice-add 'copilot-chat-regenerate-commit-message :before
+              #'my/copilot-chat-set-language-prompt)
   :custom
   (copilot-chat-frontend 'markdown)
   (copilot-chat-markdown-prompt "Respone in 简体中文:\n")
