@@ -19,9 +19,12 @@
   "Generic function to copy buffer path based on STYLE.
 STYLE determines the path format.
 MESSAGE-PREFIX customizes the message shown."
-  (let ((path (cref--get-path-by-style style)))
-    (cref--copy-to-clipboard path)
-    (message "%s: %s" (or message-prefix "Copied") path)))
+  (let* ((path (cref--get-path-by-style style))
+         (to-clipboard (cref--copy-to-clipboard path)))
+    (message "%s%s: %s"
+             (or message-prefix "Copied")
+             (if to-clipboard "" " to kill-ring")
+             path)))
 
 ;;;###autoload
 (defun cref-copy-buffer-path ()
@@ -63,13 +66,14 @@ WITH-CONTENT: if non-nil, include region content as Markdown code block."
          (final-string (if with-content
                            (format "%s\n%s" location-string
                                    (cref--get-region-content-with-fence bounds))
-                         location-string)))
-    (cref--copy-to-clipboard final-string)
-    (message "%sCopied %s: %s"
+                         location-string))
+         (to-clipboard (cref--copy-to-clipboard final-string)))
+    (message "%sCopied %s%s: %s"
              (if saved "Saved. " "")
              (if with-content
                  (if is-region "region" "line")
                "location")
+             (if to-clipboard "" " to kill-ring")
              location-string)
     (when is-region
       (deactivate-mark))))

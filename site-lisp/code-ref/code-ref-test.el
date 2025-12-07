@@ -12,6 +12,27 @@
 (require 'code-ref-core)
 (require 'code-ref)
 
+;;; Mock xclip for testing
+(defvar cref-test--clipboard-content nil
+  "Content captured by mock xclip-set-selection.")
+
+(defmacro cref-test-with-xclip-mock (&rest body)
+  "Execute BODY with xclip-set-selection mocked."
+  (declare (indent 0))
+  `(cl-letf (((symbol-function 'xclip-set-selection)
+              (lambda (_type data)
+                (setq cref-test--clipboard-content data))))
+     ,@body))
+
+(defmacro cref-test-without-xclip (&rest body)
+  "Execute BODY with xclip-set-selection undefined."
+  (declare (indent 0))
+  `(cl-letf (((symbol-function 'xclip-set-selection) nil))
+     (fmakunbound 'xclip-set-selection)
+     (unwind-protect
+         (progn ,@body)
+       (fset 'xclip-set-selection #'ignore))))
+
 ;;; Test Utilities
 
 (defmacro cref-test-with-temp-buffer (content &rest body)
@@ -199,38 +220,64 @@
 
 ;;; Clipboard Tests
 
-(ert-deftest cref-test-copy-to-clipboard ()
-  "Test copying to clipboard."
-  (let ((test-text "test clipboard content"))
-    (cref--copy-to-clipboard test-text)
-    (should (string= (car kill-ring) test-text))))
+(ert-deftest cref-test-copy-to-clipboard-with-xclip ()
+  "Test copying to clipboard when xclip is available."
+  (let* ((test-text "test clipboard content")
+         (xclip-called nil)
+         (xclip-args nil)
+         (kill-ring (list "sentinel")))
+    (cl-letf (((symbol-function 'xclip-set-selection)
+               (lambda (type text)
+                 (setq xclip-called t)
+                 (setq xclip-args (list type text)))))
+      (let ((result (cref--copy-to-clipboard test-text)))
+        (should result)
+        (should xclip-called)
+        (should (eq (car xclip-args) 'clipboard))
+        (should (string= (cadr xclip-args) test-text))
+        (should (equal kill-ring '("sentinel")))))))
+
+(ert-deftest cref-test-copy-to-clipboard-without-xclip ()
+  "Test copying to kill-ring when xclip is not available."
+  (let ((test-text "test kill-ring content")
+        (kill-ring nil))
+    (cref-test-without-xclip
+      (let ((result (cref--copy-to-clipboard test-text)))
+        (should-not result)
+        (should (string= (car kill-ring) test-text))))))
 
 ;;; Integration Tests
 
 (ert-deftest cref-test-copy-buffer-path ()
   "Test copying buffer path."
   (cref-test-with-temp-file "test content"
-    (cref-copy-buffer-path)
-    (should (stringp (car kill-ring)))))
+    (setq cref-test--clipboard-content nil)
+    (cref-test-with-xclip-mock
+      (cref-copy-buffer-path)
+      (should (stringp cref-test--clipboard-content)))))
 
 (ert-deftest cref-test-copy-region-location ()
   "Test copying region location."
   (cref-test-with-temp-file "line 1\nline 2\nline 3"
+    (setq cref-test--clipboard-content nil)
     (goto-char (point-min))
     (forward-line 1)
-    (cref-copy-region-location)
-    (should (string-match-p "#L2$" (car kill-ring)))))
+    (cref-test-with-xclip-mock
+      (cref-copy-region-location)
+      (should (string-match-p "#L2$" cref-test--clipboard-content)))))
 
 (ert-deftest cref-test-copy-region-with-location ()
   "Test copying region with content."
   (cref-test-with-temp-file "line 1\nline 2\nline 3"
+    (setq cref-test--clipboard-content nil)
     (goto-char (point-min))
     (forward-line 1)
-    (cref-copy-region-with-location)
-    (let ((result (car kill-ring)))
-      (should (string-match-p "#L2" result))
-      (should (string-match-p "```" result))
-      (should (string-match-p "line 2" result)))))
+    (cref-test-with-xclip-mock
+      (cref-copy-region-with-location)
+      (let ((result cref-test--clipboard-content))
+        (should (string-match-p "#L2" result))
+        (should (string-match-p "```" result))
+        (should (string-match-p "line 2" result))))))
 
 ;;; Test Runner
 

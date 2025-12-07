@@ -57,14 +57,15 @@ STYLE can be:
 
 (defun cref--get-buffer-display-path ()
   "Return the buffer's display path.
-Relative for Git repository files, absolute for others, or buffer name if no file."
+Relative for Git repository files, absolute for others,
+or buffer name if no file."
   (let ((git-root (cref--get-git-root))
         (file-path (when buffer-file-name (file-truename buffer-file-name))))
     (cond
-      ((and file-path git-root)
-        (file-relative-name file-path git-root))
-      (file-path file-path)
-      (t (buffer-name)))))
+     ((and file-path git-root)
+      (file-relative-name file-path git-root))
+     (file-path file-path)
+     (t (buffer-name)))))
 
 (defun cref--get-path-by-style (style)
   "Get buffer path by STYLE with fallback to display path.
@@ -127,8 +128,8 @@ Returns fence with length adjusted to avoid conflicts with backticks in TEXT."
 Returns format like @file#L10 or @file#L10-L20."
   (let* ((start (plist-get bounds :start))
          (end (plist-get bounds :end))
-         (start-line (line-number-at-pos start))
-         (end-line (line-number-at-pos end)))
+         (start-line (line-number-at-pos start t))
+         (end-line (line-number-at-pos end t)))
     (if (= start-line end-line)
         (format "%s%s#L%d" cref-location-prefix location-path start-line)
       (format "%s%s#L%d-L%d" cref-location-prefix location-path start-line end-line))))
@@ -145,10 +146,14 @@ BOUNDS is a plist with :start and :end."
 ;;; Clipboard
 
 (defun cref--copy-to-clipboard (text)
-  "Copy TEXT to system clipboard."
-  (kill-new text)
-  (when (fboundp 'gui-set-selection)
-    (gui-set-selection 'CLIPBOARD text)))
+  "Copy TEXT to system clipboard or kill-ring.
+Returns t if copied to system clipboard, nil if only to kill-ring."
+  (if (fboundp 'xclip-set-selection)
+      (progn
+        (xclip-set-selection 'clipboard text)
+        t)
+    (kill-new text)
+    nil))
 
 (provide 'code-ref-core)
 ;;; code-ref-core.el ends here
