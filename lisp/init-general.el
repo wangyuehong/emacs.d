@@ -3,41 +3,55 @@
 ;;; Code:
 
 (require 'transient)
+(require 'code-ref)
 
 (transient-define-prefix my/copy-path-menu ()
   "Copy file path in various formats."
   [["Path Formats"
-    ("a" "Absolute path" my/copy-buffer-absolute-path)
-    ("g" "Git relative" my/copy-buffer-git-path)
-    ("G" "Git relative with repo name" (lambda () (interactive) (my/copy-buffer-git-path t)))
-    ("n" "File name only" my/copy-buffer-file-name)]
+    ("a" "Absolute path" cref-copy-buffer-absolute-path)
+    ("c" "Git relative" cref-copy-buffer-git-path)
+    ("n" "File name only" cref-copy-buffer-file-name)]
+   ["Quick Actions"
+    ("q" "Quit" transient-quit-one)]])
+
+(transient-define-prefix my/copy-region-content-menu ()
+  "Copy region with location and content."
+  [["With Content"
+    ("a" "Absolute path" cref-copy-region-with-absolute-location)
+    ("r" "Git relative" cref-copy-region-with-git-location)
+    ("n" "File name only" cref-copy-region-with-filename-location)]
    ["Quick Actions"
     ("q" "Quit" transient-quit-one)]])
 
 (transient-define-prefix my/copy-region-menu ()
-  "Copy region with location in various formats."
-  [["Location Formats"
-    ("a" "Absolute path" my/copy-region-with-absolute-location)
-    ("g" "Git relative" my/copy-region-with-git-location)
-    ("G" "Git relative with repo name" (lambda () (interactive) (my/copy-region-with-git-location t)))
-    ("n" "File name only" my/copy-region-with-filename-location)]
+  "Copy region location in various formats."
+  [["Location Only"
+    ("a" "Absolute path" cref-copy-region-location-absolute)
+    ("r" "Git relative" cref-copy-region-location-git)
+    ("n" "File name only" cref-copy-region-location-filename)]
+   ["With Content"
+    ("w" "With content ..." my/copy-region-content-menu)]
+   ["Quick Actions"
+    ("q" "Quit" transient-quit-one)]])
+
+(transient-define-prefix my/open-external-menu ()
+  "Open file in external program."
+  [["Programs"
+    ("c" "Cursor" my/open-file-in-cursor)
+    ("f" "Finder" my/open-in-finder)
+    ("v" "VS Code" my/open-file-in-vscode)
+    ("t" "Typora" my/open-file-in-typora)]
    ["Quick Actions"
     ("q" "Quit" transient-quit-one)]])
 
 (transient-define-prefix my/current-buffer-actions ()
   "Current buffer actions."
-  [["Copy"
-     ("c" "Copy path smart" my/copy-buffer-git-path)
-     ("C" "Copy path ..." my/copy-path-menu)
-     ("r" "Copy region smart" my/copy-region-with-git-location)
-     ("R" "Copy region ..." my/copy-region-menu)]
-    ["Open in External Program"
-      ("oc" "Open in Cursor" my/open-file-in-cursor)
-      ("of" "Open in Finder" my/open-in-finder)
-      ("ov" "Open in VS Code" my/open-file-in-vscode)
-      ("ot" "Open in Typora" my/open-file-in-typora)]
-    ["Misc"
-      ("q" "Quit" transient-quit-one)]])
+  [["Actions"
+    ("c" "Copy path ..." my/copy-path-menu)
+    ("r" "Copy region ..." my/copy-region-menu)
+    ("o" "Open in ..." my/open-external-menu)]
+   ["Quick Actions"
+    ("q" "Quit" transient-quit-one)]])
 
 (use-package general
   :functions (general-evil-setup general-define-key)
