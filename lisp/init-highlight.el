@@ -3,7 +3,6 @@
 ;;; Code:
 
 (use-package symbol-overlay
-  :defines symbol-overlay-map
   :functions (turn-off-symbol-overlay turn-on-symbol-overlay)
   :bind (:map symbol-overlay-map
           ("<escape>" . symbol-overlay-remove-all))
@@ -19,7 +18,7 @@
       "Turn off symbol highlighting."
       (interactive)
       (symbol-overlay-mode -1))
-    (advice-add #'set-mark :after #'turn-off-symbol-overlay)
+    (advice-add #'activate-mark :after #'turn-off-symbol-overlay)
 
     (defun turn-on-symbol-overlay (&rest _)
       "Turn on symbol highlighting."
