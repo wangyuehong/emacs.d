@@ -35,11 +35,13 @@
   :if (executable-find "golangci-lint")
   :hook (go-mode . flymake-golangci-lint-load))
 
-(use-package go-gen-test :after go-mode)
 (use-package gotest
   :after go-mode
   :bind (:map go-mode-map
           ("C-c t t" . go-test-current-test)
+          ("C-c t f" . go-test-current-file)
+          ("C-c t b" . go-test-current-benchmark)
+          ("C-c t c" . go-test-current-coverage)
           ("C-c t p" . go-test-current-project))
   :config
   (setq go-test-args "-failfast -race")
