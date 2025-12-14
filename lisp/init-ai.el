@@ -55,7 +55,7 @@
   (advice-add 'copilot-chat-regenerate-commit-message :before
               #'my/copilot-chat-set-language-prompt)
   :custom
-  (copilot-chat-commit-model "claude-opus-4.5")
+  (copilot-chat-commit-model my/copilot-chat-commit-model)
   (copilot-chat-frontend 'markdown)
   (copilot-chat-markdown-prompt "Respone in 简体中文:\n")
   (copilot-chat-prompt-test "Write unit tests for the following code:\n")

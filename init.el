@@ -30,6 +30,11 @@
 (require 'init-package)
 
 ;;----------------------------------------------------------------------------
+;; Customizable Variables
+;;----------------------------------------------------------------------------
+(require 'init-custom)
+
+;;----------------------------------------------------------------------------
 ;; Load configs for specific features and modes
 ;;----------------------------------------------------------------------------
 ;; Core Basics
@@ -84,7 +89,7 @@
 ;; Miscellaneous
 (require 'init-misc)
 
-;; Local Overrides (Must be last)
+;; Local Overrides (must be last)
 (require 'init-local nil t)
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
