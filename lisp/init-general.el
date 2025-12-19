@@ -25,8 +25,7 @@
 
 (transient-define-prefix my/copy-region-menu ()
   "Copy region location in various formats."
-  [
-    ["With Content"
+  [["With Content"
     ("a" "Absolute path" cref-copy-region-with-absolute-location)
     ("r" "Git relative" cref-copy-region-with-git-location)
     ("n" "File name only" cref-copy-region-with-filename-location)]
