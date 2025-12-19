@@ -14,23 +14,24 @@
    ["Quick Actions"
     ("q" "Quit" transient-quit-one)]])
 
-(transient-define-prefix my/copy-region-content-menu ()
-  "Copy region with location and content."
-  [["With Content"
-    ("a" "Absolute path" cref-copy-region-with-absolute-location)
-    ("r" "Git relative" cref-copy-region-with-git-location)
-    ("n" "File name only" cref-copy-region-with-filename-location)]
+(transient-define-prefix my/copy-region-location-menu ()
+  "Copy region location."
+  [["Location Only"
+    ("a" "Absolute path" cref-copy-region-location-absolute)
+    ("r" "Git relative" cref-copy-region-location-git)
+    ("n" "File name only" cref-copy-region-location-filename)]
    ["Quick Actions"
     ("q" "Quit" transient-quit-one)]])
 
 (transient-define-prefix my/copy-region-menu ()
   "Copy region location in various formats."
-  [["Location Only"
-    ("a" "Absolute path" cref-copy-region-location-absolute)
-    ("r" "Git relative" cref-copy-region-location-git)
-    ("n" "File name only" cref-copy-region-location-filename)]
-   ["With Content"
-    ("w" "With content ..." my/copy-region-content-menu)]
+  [
+    ["With Content"
+    ("a" "Absolute path" cref-copy-region-with-absolute-location)
+    ("r" "Git relative" cref-copy-region-with-git-location)
+    ("n" "File name only" cref-copy-region-with-filename-location)]
+   ["Location Only"
+    ("l" "Location only ..." my/copy-region-location-menu)]
    ["Quick Actions"
     ("q" "Quit" transient-quit-one)]])
 
