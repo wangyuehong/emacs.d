@@ -71,7 +71,6 @@
     "a"  '(:wk "ai")
     "aa" '(gptel         :wk "gptel")
     "am" '(gptel-menu    :wk "gptel-menu")
-    "aq" '(gptel-quick   :wk "gptel-quick")
     "ar" '(gptel-rewrite :wk "gptel-rewrite")
     "as" '(gptel-send    :wk "gptel-send")
     "at" '(gptel-tools   :wk "gptel-tools")
