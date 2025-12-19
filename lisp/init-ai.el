@@ -87,8 +87,7 @@
   (claude-code-mode)
   :custom
   (claude-code-display-window-fn #'my/claude-display-right)
-  (claude-code-no-delete-other-windows t)
-  (claude-code-terminal-backend 'vterm))
+  (claude-code-no-delete-other-windows t))
 
 (provide 'init-ai)
 ;;; init-ai.el ends here
