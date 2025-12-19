@@ -73,22 +73,6 @@
   (setq gptel-model 'gpt-4o
     gptel-backend (gptel-make-gh-copilot "gh-copilot")))
 
-(use-package gptel-quick
-  :vc (:url "https://github.com/karthink/gptel-quick" :branch "main" :rev :newest)
-  :after gptel
-  :init
-  (setq gptel-quick-word-count 48)
-  :config
-  (setq gptel-quick-system-message
-    (lambda (count)
-      (format "If the selected text is a single English word, \
-provide its Chinese translation, English IPA phonetic transcription, and meaning explanation in Chinese. \
-For other content, provide a most detailed explanation. \
-Use fewer than %d Chinese characters and prioritize completeness within the character limit." count))))
-
-(use-package monet
-  :vc (:url "https://github.com/stevemolitor/monet" :branch "main" :rev :newest))
-
 (use-package claude-code
   :vc (:url "https://github.com/stevemolitor/claude-code.el" :branch "main" :rev :newest)
   :bind
@@ -100,8 +84,6 @@ Use fewer than %d Chinese characters and prioritize completeness within the char
                               (side . right)
                               (window-width . 0.4))))
   :config
-  (add-hook 'claude-code-process-environment-functions #'monet-start-server-function)
-  (monet-mode 1)
   (claude-code-mode)
   :custom
   (claude-code-display-window-fn #'my/claude-display-right)
