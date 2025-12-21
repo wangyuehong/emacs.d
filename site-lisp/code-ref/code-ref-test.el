@@ -97,6 +97,56 @@
       (should (stringp path))
       (should (string= path (buffer-name))))))
 
+;;; Project Path Tests
+
+(defmacro cref-test-with-mock-project (root &rest body)
+  "Execute BODY with `project-current' and `project-root' mocked for ROOT."
+  (declare (indent 1))
+  `(cl-letf (((symbol-function 'project-current)
+              (lambda (&optional _maybe-prompt _dir)
+                (list 'mock-project ,root)))
+             ((symbol-function 'project-root)
+              (lambda (proj) (cadr proj))))
+     ,@body))
+
+(ert-deftest cref-test-get-project-root-with-project ()
+  "Test getting project root when in a project."
+  (cref-test-with-mock-project "/tmp/myproject/"
+    (let ((root (cref--get-project-root)))
+      (should (stringp root))
+      (should (string= root "/tmp/myproject/")))))
+
+(ert-deftest cref-test-get-project-root-no-project ()
+  "Test getting project root when not in a project."
+  (cl-letf (((symbol-function 'project-current)
+             (lambda (&optional _maybe-prompt _dir) nil)))
+    (should-not (cref--get-project-root))))
+
+(ert-deftest cref-test-format-file-path-project ()
+  "Test project-relative path formatting."
+  (cref-test-with-temp-file "test content"
+    (let* ((file-dir (file-name-directory buffer-file-name))
+           (project-root (expand-file-name (file-name-directory file-dir))))
+      (cref-test-with-mock-project project-root
+        (let ((path (cref--format-file-path 'project)))
+          (should (stringp path))
+          (should-not (file-name-absolute-p path)))))))
+
+(ert-deftest cref-test-format-file-path-project-no-project ()
+  "Test error when not in a project."
+  (cref-test-with-temp-file "test content"
+    (cl-letf (((symbol-function 'project-current)
+               (lambda (&optional _maybe-prompt _dir) nil)))
+      (should-error (cref--format-file-path 'project)))))
+
+(ert-deftest cref-test-get-path-by-style-project-fallback ()
+  "Test project style falls back to display path when not in project."
+  (cref-test-with-temp-file "test content"
+    (cl-letf (((symbol-function 'project-current)
+               (lambda (&optional _maybe-prompt _dir) nil)))
+      (let ((path (cref--get-path-by-style 'project)))
+        (should (stringp path))))))
+
 ;;; Region Functions Tests
 
 (ert-deftest cref-test-get-region-or-line-no-region ()

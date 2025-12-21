@@ -145,26 +145,13 @@ If NO-ENTER is non-nil, do not send Enter after text."
 
 ;;; File context helpers
 
-(defun agentmux--get-path-by-style (style)
-  "Get buffer path by STYLE.
-STYLE: \\='git, \\='project, \\='absolute, \\='filename"
-  (unless buffer-file-name
-    (error "Current buffer is not visiting a file"))
-  (pcase style
-    ('project
-     (if-let* ((proj (project-current))
-               (root (project-root proj)))
-         (file-relative-name (file-truename buffer-file-name) root)
-       (cref--get-path-by-style 'git)))
-    (_ (cref--get-path-by-style style))))
-
 (defun agentmux--format-context-with-options (path-style include-line include-content)
   "Format context with options.
 PATH-STYLE: \\='git, \\='project, \\='absolute, \\='filename
 INCLUDE-LINE: whether to include line number
 INCLUDE-CONTENT: whether to include selected region content"
   (when buffer-file-name
-    (let* ((path (agentmux--get-path-by-style path-style))
+    (let* ((path (cref--get-path-by-style path-style))
            (bounds (cref--get-region-or-line))
            (start-line (line-number-at-pos (plist-get bounds :start) t))
            (end-line (line-number-at-pos (plist-get bounds :end) t))
@@ -374,8 +361,7 @@ Navigate with hjkl or arrow keys, confirm with y, cancel with n."
 (defun agentmux--project-differs-from-git-p ()
   "Return non-nil if Emacs project root differs from Git root."
   (when-let* ((git-root (cref--get-git-root))
-              (proj (project-current))
-              (proj-root (project-root proj)))
+              (proj-root (cref--get-project-root)))
     (not (file-equal-p git-root proj-root))))
 
 (defun agentmux--path-style-candidates ()

@@ -36,11 +36,18 @@ Returns nil if not in a Git repository."
       (when git-root
         (expand-file-name git-root)))))
 
+(defun cref--get-project-root ()
+  "Get the Emacs project root directory for the current buffer.
+Returns nil if not in a project."
+  (when-let* ((proj (project-current)))
+    (project-root proj)))
+
 (defun cref--format-file-path (style)
   "Format the current buffer's file path according to STYLE.
 STYLE can be:
   \\='absolute - Full absolute path
   \\='git - Relative to Git root
+  \\='project - Relative to Emacs project root
   \\='filename - Just the filename"
   (unless buffer-file-name
     (error "Current buffer is not visiting a file"))
@@ -49,10 +56,13 @@ STYLE can be:
       ('absolute absolute-path)
       ('filename (file-name-nondirectory absolute-path))
       ('git
-       (let ((git-root (cref--get-git-root)))
-         (if git-root
-             (file-relative-name absolute-path git-root)
-           (error "Not in a Git repository"))))
+       (if-let* ((git-root (cref--get-git-root)))
+           (file-relative-name absolute-path git-root)
+         (error "Not in a Git repository")))
+      ('project
+       (if-let* ((proj-root (cref--get-project-root)))
+           (file-relative-name absolute-path proj-root)
+         (error "Not in a project")))
       (_ (error "Invalid style: %s" style)))))
 
 (defun cref--get-buffer-display-path ()
@@ -69,7 +79,7 @@ or buffer name if no file."
 
 (defun cref--get-path-by-style (style)
   "Get buffer path by STYLE with fallback to display path.
-STYLE: \\='display, \\='absolute, \\='git, or \\='filename."
+STYLE: \\='display, \\='absolute, \\='git, \\='project, or \\='filename."
   (condition-case _
       (if (eq style 'display)
           (cref--get-buffer-display-path)
