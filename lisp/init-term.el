@@ -7,5 +7,7 @@
   (eat-kill-buffer-on-exit t)
   (eat-term-scrollback-size 524288)) ;; 512K
 
+(use-package emamux)
+
 (provide 'init-term)
 ;;; init-term.el ends here
