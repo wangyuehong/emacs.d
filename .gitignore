@@ -22,6 +22,7 @@ cookies
 /lisp/init-local.el
 /projects
 /places
+/places.eld
 /eln-cache
 /async-bytecomp.log
 /var
