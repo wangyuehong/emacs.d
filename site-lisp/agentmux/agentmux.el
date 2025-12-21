@@ -39,13 +39,13 @@
 
 ;;; Code:
 
+(require 'code-ref-core)
 (require 'emamux)
 (require 'seq)
 (require 'transient)
 
 (declare-function flymake-diagnostic-text "flymake")
 (declare-function flymake-diagnostics "flymake")
-(declare-function vc-git-root "vc-git")
 
 ;;; Customization
 
@@ -56,6 +56,29 @@
 (defcustom agentmux-agent-name "Claude Code"
   "Display name for agent in prompts and messages."
   :type 'string
+  :group 'agentmux)
+
+(defcustom agentmux-context-path-style 'git
+  "Context path format style.
+Values:
+  \\='git - Relative to Git repository root
+  \\='project - Relative to Emacs project root
+  \\='absolute - Absolute path
+  \\='filename - Filename only"
+  :type '(choice (const :tag "Git relative" git)
+                 (const :tag "Project relative" project)
+                 (const :tag "Absolute" absolute)
+                 (const :tag "Filename only" filename))
+  :group 'agentmux)
+
+(defcustom agentmux-context-include-line t
+  "Whether to include line number in context."
+  :type 'boolean
+  :group 'agentmux)
+
+(defcustom agentmux-context-include-content nil
+  "Whether to include selected region content in context."
+  :type 'boolean
   :group 'agentmux)
 
 (defvar agentmux-input-history nil
@@ -122,30 +145,45 @@ If NO-ENTER is non-nil, do not send Enter after text."
 
 ;;; File context helpers
 
-(defun agentmux--project-root ()
-  "Get project root directory."
-  (or (vc-git-root default-directory)
-      default-directory))
+(defun agentmux--get-path-by-style (style)
+  "Get buffer path by STYLE.
+STYLE: \\='git, \\='project, \\='absolute, \\='filename"
+  (unless buffer-file-name
+    (error "Current buffer is not visiting a file"))
+  (pcase style
+    ('project
+     (if-let* ((proj (project-current))
+               (root (project-root proj)))
+         (file-relative-name (file-truename buffer-file-name) root)
+       (cref--get-path-by-style 'git)))
+    (_ (cref--get-path-by-style style))))
 
-(defun agentmux--relative-path ()
-  "Get relative path of current file from project root."
+(defun agentmux--format-context-with-options (path-style include-line include-content)
+  "Format context with options.
+PATH-STYLE: \\='git, \\='project, \\='absolute, \\='filename
+INCLUDE-LINE: whether to include line number
+INCLUDE-CONTENT: whether to include selected region content"
   (when buffer-file-name
-    (file-relative-name buffer-file-name (agentmux--project-root))))
+    (let* ((path (agentmux--get-path-by-style path-style))
+           (bounds (cref--get-region-or-line))
+           (start-line (line-number-at-pos (plist-get bounds :start) t))
+           (end-line (line-number-at-pos (plist-get bounds :end) t))
+           (location (cond
+                      ((not include-line) path)
+                      ((= start-line end-line) (format "%s:%d" path start-line))
+                      (t (format "%s:%d-%d" path start-line end-line))))
+           (content (when (and include-content (plist-get bounds :is-region))
+                      (cref--get-region-content-with-fence bounds))))
+      (if content
+          (format "%s\n%s" location content)
+        location))))
 
 (defun agentmux--format-context ()
-  "Format file context as path:line or path:start-end."
-  (when-let* ((path (agentmux--relative-path)))
-    (if (use-region-p)
-        (let* ((start (line-number-at-pos (region-beginning) t))
-               (end (save-excursion
-                      (goto-char (region-end))
-                      (when (and (bolp) (not (bobp)))
-                        (backward-char))
-                      (line-number-at-pos (point) t))))
-          (if (= start end)
-              (format "%s:%d" path start)
-            (format "%s:%d-%d" path start end)))
-      (format "%s:%d" path (line-number-at-pos (point) t)))))
+  "Format file context using default configuration."
+  (agentmux--format-context-with-options
+   agentmux-context-path-style
+   agentmux-context-include-line
+   agentmux-context-include-content))
 
 ;;; Error handling
 
@@ -329,9 +367,51 @@ Navigate with hjkl or arrow keys, confirm with y, cancel with n."
 
 ;;; Transient menu
 
+(defun agentmux--path-style-description ()
+  "Return description for current path style."
+  (format "Path: %s" agentmux-context-path-style))
+
+(defun agentmux--project-differs-from-git-p ()
+  "Return non-nil if Emacs project root differs from Git root."
+  (when-let* ((git-root (cref--get-git-root))
+              (proj (project-current))
+              (proj-root (project-root proj)))
+    (not (file-equal-p git-root proj-root))))
+
+(defun agentmux--path-style-candidates ()
+  "Return available path style candidates."
+  (if (agentmux--project-differs-from-git-p)
+      '("git" "project" "absolute" "filename")
+    '("git" "absolute" "filename")))
+
+(transient-define-infix agentmux--infix-path-style ()
+  :class 'transient-lisp-variable
+  :variable 'agentmux-context-path-style
+  :description #'agentmux--path-style-description
+  :reader (lambda (&rest _)
+            (intern (completing-read "Path style: "
+                                     (agentmux--path-style-candidates)))))
+
+(transient-define-infix agentmux--infix-include-line ()
+  :class 'transient-lisp-variable
+  :variable 'agentmux-context-include-line
+  :description (lambda () (format "Line: %s" (if agentmux-context-include-line "yes" "no")))
+  :reader (lambda (&rest _) (not agentmux-context-include-line)))
+
+(transient-define-infix agentmux--infix-include-content ()
+  :class 'transient-lisp-variable
+  :variable 'agentmux-context-include-content
+  :description (lambda () (format "Content: %s" (if agentmux-context-include-content "yes" "no")))
+  :reader (lambda (&rest _) (not agentmux-context-include-content)))
+
 ;;;###autoload
 (transient-define-prefix agentmux-transient ()
   "Agent commands via tmux."
+  ["Options"
+   ("-p" agentmux--infix-path-style)
+   ("-l" agentmux--infix-include-line)
+   ("-c" agentmux--infix-include-content)]
+
   [["Send"
     ("s" "Command" agentmux-send-command)
     ("x" "Command + context" agentmux-send-command-with-context)
