@@ -63,7 +63,7 @@
     :keymaps 'override
     :prefix "SPC"
 
-    "SPC" 'claude-code-transient
+    "SPC" 'agentmux-transient
 
     ";" 'embark-act
 

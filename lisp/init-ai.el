@@ -73,21 +73,9 @@
   (setq gptel-model 'gpt-4o
     gptel-backend (gptel-make-gh-copilot "gh-copilot")))
 
-(use-package claude-code
-  :vc (:url "https://github.com/stevemolitor/claude-code.el" :branch "main" :rev :newest)
-  :bind
-  ("C-c c" . claude-code-transient)
-  :preface
-  (defun my/claude-display-right (buffer)
-    "Display Claude buffer in right side window."
-    (display-buffer buffer '((display-buffer-in-side-window)
-                              (side . right)
-                              (window-width . 0.4))))
-  :config
-  (claude-code-mode)
-  :custom
-  (claude-code-display-window-fn #'my/claude-display-right)
-  (claude-code-no-delete-other-windows t))
+(use-package agentmux
+  :ensure nil ;; site-lisp/agentmux
+  :bind ("C-c a" . agentmux-transient))
 
 (provide 'init-ai)
 ;;; init-ai.el ends here
