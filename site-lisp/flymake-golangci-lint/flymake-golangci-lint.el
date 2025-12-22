@@ -141,19 +141,19 @@ but can still be triggered manually with `flymake-golangci-lint-run'."
    (list flymake-golangci-lint-executable "run")
    
    ;; Config file
-   (when-let ((config (flymake-golangci-lint--get-option :config)))
+   (when-let* ((config (flymake-golangci-lint--get-option :config)))
      (list "-c" config))
    
    ;; Timeout
-   (when-let ((timeout (flymake-golangci-lint--get-option :timeout)))
+   (when-let* ((timeout (flymake-golangci-lint--get-option :timeout)))
      (list "--timeout" timeout))
    
    ;; Enable linters
-   (when-let ((enable (flymake-golangci-lint--get-option :enable-linters)))
+   (when-let* ((enable (flymake-golangci-lint--get-option :enable-linters)))
      (flymake-golangci-lint--build-linter-args "-E" enable))
    
    ;; Disable linters
-   (when-let ((disable (flymake-golangci-lint--get-option :disable-linters)))
+   (when-let* ((disable (flymake-golangci-lint--get-option :disable-linters)))
      (flymake-golangci-lint--build-linter-args "-D" disable))
    
    ;; Fast mode
@@ -218,7 +218,7 @@ Returns plist with :line and :message, or nil if no match."
         (issues '()))
     ;; Parse output lines
     (dolist (line (split-string output "\n" t))
-      (when-let ((issue (flymake-golangci-lint--parse-line line buffer-file)))
+      (when-let* ((issue (flymake-golangci-lint--parse-line line buffer-file)))
         (push issue issues)))
     ;; Create diagnostics
     (mapcar (lambda (issue)
@@ -343,7 +343,7 @@ Call REPORT-FN when process completes."
     (setq flymake-golangci-lint--report-fn report-fn
           flymake-golangci-lint--reported nil)
     
-    (if-let ((error-msg (flymake-golangci-lint--validate-environment source-file)))
+    (if-let* ((error-msg (flymake-golangci-lint--validate-environment source-file)))
         (flymake-golangci-lint--safe-report source-buffer report-fn nil :panic :explanation error-msg)
       (flymake-golangci-lint--start-process source-buffer source-file report-fn))))
 
