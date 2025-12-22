@@ -70,10 +70,5 @@ The DWIM behaviour of this command is as follows:
 
 (define-key global-map (kbd "C-g") #'my/keyboard-quit-dwim)
 
-;; minibuffer multiline: Shift+Return inserts newline
-(define-key minibuffer-local-map (kbd "C-j") #'newline)
-(dolist (key '("S-<return>" "<S-return>" "S-RET"))
-  (define-key minibuffer-local-map (kbd key) #'newline))
-
 (provide 'init-keybind)
 ;;; init-keybind.el ends here

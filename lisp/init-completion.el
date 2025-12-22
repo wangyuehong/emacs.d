@@ -150,10 +150,32 @@ selected region as initial input."
 
 (use-package minibuffer
   :ensure nil
-  :bind(:map completion-in-region-mode-map
-         ("TAB" . minibuffer-next-completion)
-         ([backtab] . minibuffer-previous-completion)
-         ("RET" . minibuffer-choose-completion)))
+  :bind (:map minibuffer-local-map
+          ("C-k" . kill-line)
+          ("C-j" . newline)
+          ("S-<return>" . newline)
+          ("<S-return>" . newline)
+          ("S-RET" . newline)
+          :map completion-in-region-mode-map
+          ([backtab] . minibuffer-previous-completion)
+          ("RET" . minibuffer-choose-completion)))
+
+(use-package cape
+  :preface
+  (defun my/minibuffer-free-input-p ()
+    "Heuristic: free-input minibuffer has no completion table."
+    (and (minibufferp)
+      (null minibuffer-completion-table)))
+
+  (defun my/minibuffer-autosuggest-setup ()
+    "Enable autosuggest in free-input minibuffer."
+    (when (my/minibuffer-free-input-p)
+      (setq-local completion-at-point-functions
+        (list #'cape-file #'cape-dabbrev))
+      (completion-preview-mode 1)))
+  :hook (minibuffer-setup . my/minibuffer-autosuggest-setup)
+  :custom
+  (cape-dabbrev-buffer-function #'buffer-list))
 
 (use-package nerd-icons-completion
   :after (marginalia nerd-icons)
