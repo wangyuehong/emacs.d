@@ -189,7 +189,7 @@ Signals `user-error' if tmux command fails."
 PATH-STYLE: \\='git, \\='project, \\='absolute, \\='filename.
 INCLUDE-LINE: whether to include line number.
 BOUNDS: plist with :start and :end positions.
-Returns nil if `buffer-file-name' is nil.
+Returns nil if variable `buffer-file-name' is nil.
 Return format: PATH, PATH:LINE, or PATH:START-END."
   (when buffer-file-name
     (let* ((path (cref--get-path-by-style path-style))
@@ -272,25 +272,14 @@ Returns nil if DIAGNOSTICS is empty or all texts are nil."
 
 (defun agentmux--read-multiline-string (prompt &optional history)
   "Read a string from the minibuffer with multi-line support.
-PROMPT is the prompt to display. Shift+Return or Alt+Return inserts a newline.
-HISTORY is the history list symbol to use."
-  (let ((map (copy-keymap minibuffer-local-map)))
-    ;; Terminal compatibility:
-    ;; - C-j: Ghostty/some terminals send literal newline for Shift+Enter
-    ;; GUI Emacs key variants (different Emacs versions/platforms):
-    ;; - S-<return>, <S-return>, S-RET: Shift+Return variations
-    ;; - M-<return>, <M-return>, M-RET: Alt+Return as alternative
-    (define-key map (kbd "C-j") #'newline)
-    (dolist (key '("S-<return>" "<S-return>" "S-RET"
-                    "M-<return>" "<M-return>" "M-RET"))
-      (define-key map (kbd key) #'newline))
-    (minibuffer-with-setup-hook
-      (lambda ()
-        (setq-local resize-mini-windows 'grow-only)
-        (ignore-errors
-          (window-resize (selected-window)
-            (max 0 (- agentmux-minibuffer-initial-height 1)))))
-      (read-from-minibuffer prompt nil map nil history))))
+PROMPT is the prompt to display. HISTORY is the history list symbol to use."
+  (minibuffer-with-setup-hook
+    (lambda ()
+      (setq-local resize-mini-windows 'grow-only)
+      (ignore-errors
+        (window-resize (selected-window)
+          (max 0 (- agentmux-minibuffer-initial-height 1)))))
+    (read-from-minibuffer prompt nil nil nil history)))
 
 (defun agentmux--validate-command (cmd)
   "Validate CMD is not empty, signal error if it is."
