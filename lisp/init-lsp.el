@@ -63,9 +63,5 @@ non-interactively applies it when supported by the server."
   :custom
   (consult-eglot-show-kind-name t))
 
-(use-package mason
-  :config
-  (mason-ensure))
-
 (provide 'init-lsp)
 ;;; init-lsp.el ends here
