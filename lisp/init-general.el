@@ -67,13 +67,6 @@
 
     ";" 'embark-act
 
-    "a"  '(:wk "ai")
-    "aa" '(gptel         :wk "gptel")
-    "am" '(gptel-menu    :wk "gptel-menu")
-    "ar" '(gptel-rewrite :wk "gptel-rewrite")
-    "as" '(gptel-send    :wk "gptel-send")
-    "at" '(gptel-tools   :wk "gptel-tools")
-
     "b" '(my/current-buffer-actions         :wk "buffer-actions")
     "c" '(evilnc-comment-or-uncomment-lines :wk "comment-or-uncomment")
     "d" '(diff-hl-command-map               :wk "diff-hl")

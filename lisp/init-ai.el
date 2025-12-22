@@ -62,17 +62,6 @@
   (copilot-chat-prompt-optimize "Optimize and refactor the following code:\n")
   (copilot-chat-prompt-explain "Explain the following code:\n"))
 
-(use-package gptel
-  :defines (gptel-mode-map gptel-backend)
-  :custom
-  (gptel-log-level 'info)
-  (gptel-post-stream-hook #'gptel-auto-scroll)
-  (gptel-post-response-functions #'gptel-end-of-response)
-  (gptel-rewrite-default-action #'gptel--rewrite-diff)
-  :config
-  (setq gptel-model 'gpt-4o
-    gptel-backend (gptel-make-gh-copilot "gh-copilot")))
-
 (use-package agentmux
   :ensure nil ;; site-lisp/agentmux
   :bind ("C-c a" . agentmux-transient))
