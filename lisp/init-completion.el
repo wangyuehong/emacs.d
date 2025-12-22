@@ -24,11 +24,11 @@
           ("C-s"     . company-filter-candidates)
           ("M-s"     . company-search-candidates)
           ([backtab] . company-select-previous-or-abort))
-  :init
-  (add-variable-watcher 'company-backends
-    (lambda (symbol new-value operation where)
-      (message "%s changed: where=%s, operation=%s, new-value=%s"
-        symbol where operation new-value)))
+  ;; :init
+  ;; (add-variable-watcher 'company-backends
+  ;;   (lambda (symbol new-value operation where)
+  ;;     (message "%s changed: where=%s, operation=%s, new-value=%s"
+  ;;       symbol where operation new-value)))
   :config
   (add-to-list 'company-transformers #'delete-dups)
   :custom-face
@@ -110,8 +110,7 @@
   :functions (consult-line consult-xref)
   :preface
   (defun my/consult-line ()
-    "Call `consult-line` with the current symbol at point or
-selected region as initial input."
+    "Call `consult-line' with symbol at point or region as initial input."
     (interactive)
     (let ((initial-input
             (if (use-region-p)
@@ -154,8 +153,6 @@ selected region as initial input."
           ("C-k" . kill-line)
           ("C-j" . newline)
           ("S-<return>" . newline)
-          ("<S-return>" . newline)
-          ("S-RET" . newline)
           :map completion-in-region-mode-map
           ([backtab] . minibuffer-previous-completion)
           ("RET" . minibuffer-choose-completion)))
@@ -163,7 +160,7 @@ selected region as initial input."
 (use-package cape
   :preface
   (defun my/minibuffer-free-input-p ()
-    "Heuristic: free-input minibuffer has no completion table."
+    "Return non-nil if current minibuffer is free-input (no completion table)."
     (and (minibufferp)
       (null minibuffer-completion-table)))
 
@@ -171,11 +168,12 @@ selected region as initial input."
     "Enable autosuggest in free-input minibuffer."
     (when (my/minibuffer-free-input-p)
       (setq-local completion-at-point-functions
-        (list #'cape-file #'cape-dabbrev))
+        (append (list #'cape-file #'cape-dabbrev)
+          completion-at-point-functions))
       (completion-preview-mode 1)))
   :hook (minibuffer-setup . my/minibuffer-autosuggest-setup)
   :custom
-  (cape-dabbrev-buffer-function #'buffer-list))
+  (cape-dabbrev-buffer-function #'cape-text-buffers))
 
 (use-package nerd-icons-completion
   :after (marginalia nerd-icons)
