@@ -8,7 +8,7 @@
   (setq use-package-always-ensure t
     use-package-always-defer t
     use-package-expand-minimally t
-    package-install-upgrade-built-in t
+    package-install-upgrade-built-in nil
     use-package-enable-imenu-support t)
   :config
   ;; install into separate package dirs for each emacs version
@@ -25,6 +25,10 @@
 
 ;; Update GPG keyring for GNU ELPA
 (use-package gnu-elpa-keyring-update)
+
+;; Workaround: fix transient error in terminal
+(unless (boundp 'overriding-text-conversion-style)
+  (defvar overriding-text-conversion-style nil))
 
 (provide 'init-package)
 ;;; init-package.el ends here
