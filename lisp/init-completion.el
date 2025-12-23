@@ -149,6 +149,11 @@
 
 (use-package minibuffer
   :ensure nil
+  :preface
+  (defun my/minibuffer-free-input-p ()
+    "Return non-nil if current minibuffer is free-input (no completion table)."
+    (and (minibufferp)
+      (null minibuffer-completion-table)))
   :bind (:map minibuffer-local-map
           ("C-k" . kill-line)
           ("C-j" . newline)
@@ -157,13 +162,13 @@
           ([backtab] . minibuffer-previous-completion)
           ("RET" . minibuffer-choose-completion)))
 
+(use-package completion-preview
+  :ensure nil
+  :custom
+  (completion-preview-minimum-symbol-length 2))
+
 (use-package cape
   :preface
-  (defun my/minibuffer-free-input-p ()
-    "Return non-nil if current minibuffer is free-input (no completion table)."
-    (and (minibufferp)
-      (null minibuffer-completion-table)))
-
   (defun my/minibuffer-autosuggest-setup ()
     "Enable autosuggest in free-input minibuffer."
     (when (my/minibuffer-free-input-p)
@@ -173,8 +178,7 @@
       (completion-preview-mode 1)))
   :hook (minibuffer-setup . my/minibuffer-autosuggest-setup)
   :custom
-  (cape-dabbrev-buffer-function #'cape-text-buffers)
-  (completion-preview-minimum-symbol-length 2))
+  (cape-dabbrev-buffer-function #'cape-text-buffers))
 
 (use-package nerd-icons-completion
   :after (marginalia nerd-icons)
