@@ -173,7 +173,8 @@
       (completion-preview-mode 1)))
   :hook (minibuffer-setup . my/minibuffer-autosuggest-setup)
   :custom
-  (cape-dabbrev-buffer-function #'cape-text-buffers))
+  (cape-dabbrev-buffer-function #'cape-text-buffers)
+  (completion-preview-minimum-symbol-length 2))
 
 (use-package nerd-icons-completion
   :after (marginalia nerd-icons)
