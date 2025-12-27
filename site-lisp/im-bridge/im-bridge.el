@@ -12,6 +12,7 @@
 
 (require 'im-bridge-core)
 (require 'im-bridge-evil)
+(require 'im-bridge-prefix)
 
 (provide 'im-bridge)
 ;;; im-bridge.el ends here

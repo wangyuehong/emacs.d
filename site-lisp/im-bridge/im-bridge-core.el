@@ -10,8 +10,6 @@
 ;;
 ;;; Code:
 
-(require 'seq)
-
 (defgroup im-bridge nil
   "Bridge system and Emacs input methods."
   :group 'convenience
@@ -27,27 +25,26 @@
   :type 'string
   :safe #'stringp)
 
-(defvar-local imb--saved-system-im nil
-  "System IME cached on last insert exit (buffer-local).")
+(defun imb--cli-available-p ()
+  "Return non-nil if `imb-cli-command' is executable."
+  (executable-find imb-cli-command))
 
-(defvar-local imb--saved-emacs-im nil
-  "Emacs input method cached on last insert exit (buffer-local).")
+(defun imb--warn-cli-unavailable ()
+  "Warn that CLI command is not available."
+  (message "im-bridge: CLI command not found: %s" imb-cli-command))
 
 (defun imb--im-get ()
-  "Return current system IME id, or `imb-english-id' on failure."
-  (condition-case _
-    (string-trim (shell-command-to-string imb-cli-command))
-    (error imb-english-id)))
+  "Return current system IME id."
+  (string-trim (shell-command-to-string imb-cli-command)))
 
 (defun imb--im-set (id)
   "Synchronously switch system IME to ID."
   (when id (call-process imb-cli-command nil nil nil id)))
 
 (defun imb--ensure-english ()
-  "Ensure system IME is English; return t when a switch occurred."
+  "Ensure system IME is English."
   (unless (string= (imb--im-get) imb-english-id)
-    (imb--im-set imb-english-id)
-    t))
+    (imb--im-set imb-english-id)))
 
 (provide 'im-bridge-core)
 ;;; im-bridge-core.el ends here

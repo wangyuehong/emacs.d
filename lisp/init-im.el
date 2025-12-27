@@ -5,7 +5,8 @@
 (use-package im-bridge
   :ensure nil ;; site-lisp/im-bridge
   :hook
-  ((after-init . imb-evil-mode)))
+  ((after-init . imb-evil-mode)
+   (after-init . imb-prefix-mode)))
 
 (provide 'init-im)
 ;;; init-im.el ends here
