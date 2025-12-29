@@ -168,11 +168,21 @@ Signals `user-error' if user cancels the setup or parameters are invalid."
     (user-error "Tmux target not configured. Use M-x agentmux-set-target")))
 
 (defun agentmux--send-text (text &optional no-enter)
-  "Send TEXT to agent via emamux.
+  "Send TEXT to agent via tmux buffer.
 If NO-ENTER is non-nil, do not send Enter after text."
-  (agentmux--send-keys text)
-  (unless no-enter
-    (agentmux--send-keys "Enter")))
+  (agentmux--ensure-parameters)
+  (let ((target (emamux:target-session)))
+    (condition-case err
+        (progn
+          (with-temp-buffer
+            (insert text)
+            (unless (zerop (call-process-region (point-min) (point-max)
+                                                "tmux" nil nil nil "load-buffer" "-"))
+              (error "tmux load-buffer failed")))
+          (emamux:tmux-run-command nil "paste-buffer" "-d" "-t" target)
+          (unless no-enter
+            (agentmux--send-keys "Enter")))
+      (error (user-error "Failed to send to tmux: %s" (error-message-string err))))))
 
 (defun agentmux--send-keys (key)
   "Send KEY to agent pane.
@@ -349,7 +359,7 @@ LOCATION and CONTENT can be nil."
                             (format "%s\n%s" location content)
                             location))))
       (if full-context
-        (agentmux--send-text (format "File context: %s\n%s" full-context cmd))
+        (agentmux--send-text (format "%s\n%s" full-context cmd))
         (agentmux--send-text cmd)))
     (deactivate-mark)))
 
