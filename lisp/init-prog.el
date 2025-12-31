@@ -69,6 +69,7 @@
   :custom
   (quickrun-timeout-seconds 15))
 
+(use-package bats-mode)
 (use-package docker-compose-mode)
 (use-package dockerfile-mode)
 (use-package js2-mode)
