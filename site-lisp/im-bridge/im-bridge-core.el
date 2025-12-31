@@ -15,31 +15,39 @@
   :group 'convenience
   :prefix "imb-")
 
-(defcustom imb-cli-command "macism"
-  "CLI tool used to query / set system IME."
-  :type 'string
-  :safe #'stringp)
-
 (defcustom imb-english-id "com.apple.keylayout.ABC"
   "Identifier for the English system IME."
   :type 'string
   :safe #'stringp)
 
+(defcustom imb-fast-switch-ids '("com.apple.keylayout.ABC")
+  "List of IME IDs that skip macOS bug workaround when switching.
+Only pure keyboard layouts (like ABC) should be in this list.
+CJK input methods need the workaround to function correctly."
+  :type '(repeat string))
+
+(defconst imb--cli-command "macism"
+  "CLI tool used to query / set system IME.")
+
 (defun imb--cli-available-p ()
-  "Return non-nil if `imb-cli-command' is executable."
-  (executable-find imb-cli-command))
+  "Return non-nil if macism is executable."
+  (executable-find imb--cli-command))
 
 (defun imb--warn-cli-unavailable ()
-  "Warn that CLI command is not available."
-  (message "im-bridge: CLI command not found: %s" imb-cli-command))
+  "Warn that macism is not available."
+  (message "im-bridge: macism not found"))
 
 (defun imb--im-get ()
   "Return current system IME id."
-  (string-trim (shell-command-to-string imb-cli-command)))
+  (string-trim (shell-command-to-string imb--cli-command)))
 
 (defun imb--im-set (id)
-  "Synchronously switch system IME to ID."
-  (when id (call-process imb-cli-command nil nil nil id)))
+  "Switch system IME to ID.
+If ID is in `imb-fast-switch-ids', skip macOS bug workaround."
+  (when id
+    (if (member id imb-fast-switch-ids)
+        (call-process imb--cli-command nil nil nil id "0")
+      (call-process imb--cli-command nil nil nil id))))
 
 (defun imb--ensure-english ()
   "Ensure system IME is English."

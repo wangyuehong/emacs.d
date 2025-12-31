@@ -15,34 +15,18 @@
 (defvar-local imb--saved-system-im nil
   "Buffer-local cache of system IME on insert exit.")
 
-(defvar-local imb--saved-emacs-im nil
-  "Buffer-local cache of Emacs input method on insert exit.")
-
 (defun imb--evil-exit-insert ()
-  "Save IMEs and switch to English on insert exit."
-  ;; Save and switch system IM if not English
+  "Save system IME and switch to English on insert exit."
   (let ((sys (imb--im-get)))
     (unless (string= sys imb-english-id)
       (setq imb--saved-system-im sys)
-      (imb--im-set imb-english-id)))
-  ;; Save and deactivate Emacs IM if active
-  (when current-input-method
-    (setq imb--saved-emacs-im current-input-method)
-    (set-input-method nil)))
+      (imb--im-set imb-english-id))))
 
 (defun imb--evil-enter-insert ()
-  "Restore IMEs on insert entry."
-  (cond
-   ;; Priority 1: Restore Emacs IM, ensure system IM is English
-   (imb--saved-emacs-im
-    (set-input-method imb--saved-emacs-im)
-    (setq imb--saved-emacs-im nil)
-    (imb--ensure-english)
-    (setq imb--saved-system-im nil))
-   ;; Priority 2: Restore system IM
-   (imb--saved-system-im
+  "Restore system IME on insert entry."
+  (when imb--saved-system-im
     (imb--im-set imb--saved-system-im)
-    (setq imb--saved-system-im nil))))
+    (setq imb--saved-system-im nil)))
 
 (defun imb--install-evil-hooks ()
   "Attach IM-bridge hooks to Evil insert state."
