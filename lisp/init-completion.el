@@ -104,7 +104,8 @@
   (vertico-cycle t))
 
 (use-package marginalia
-  :hook (after-init . marginalia-mode))
+  :hook (vertico-mode . marginalia-mode))
+
 
 (use-package consult
   :functions (consult-line consult-xref)
@@ -181,9 +182,7 @@
   (cape-dabbrev-buffer-function #'cape-text-buffers))
 
 (use-package nerd-icons-completion
-  :after (marginalia nerd-icons)
-  :hook ((marginalia-mode . nerd-icons-completion-marginalia-setup)
-          (after-init . nerd-icons-completion-mode)))
+  :hook (marginalia-mode . nerd-icons-completion-mode))
 
 (provide 'init-completion)
 ;;; init-completion.el ends here
