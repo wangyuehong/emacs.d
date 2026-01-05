@@ -53,6 +53,9 @@
 (use-package whitespace
   :ensure nil
   :hook ((prog-mode yaml-mode markdown-mode conf-mode) . whitespace-mode)
+  :config
+  (set-face-attribute 'whitespace-tab nil :inherit 'font-lock-comment-face :background 'unspecified)
+  (set-face-attribute 'whitespace-space nil :foreground "brightred") ;; -> "　"
   :custom
   (whitespace-line-column 120) ;; config for lines-tail style
   (whitespace-style
@@ -67,12 +70,7 @@
        (space-mark 2336 [2340] [95])
        (space-mark 3616 [3620] [95])
        (space-mark 3872 [3876] [95])
-       ;; (newline-mark 10 [8629 10]) ;; newlne: "↵"
-       (tab-mark 9 [187 9] [92 9])))  ;; tab:    "»"
-
-  :custom-face
-  (whitespace-tab ((t (:inherit font-lock-comment-face :background unspecified))))
-  (whitespace-space ((t (:foreground "brightblue"))))) ;; -> "　"
+       (tab-mark 9 [187 9] [92 9])))) ;; tab: "»"
 
 (provide 'init-highlight)
 ;;; init-highlight.el ends here
