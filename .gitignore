@@ -33,4 +33,4 @@ cookies
 .aider*
 /pyim
 /forge-database.sqlite
-/mason/
+/tree-sitter/
