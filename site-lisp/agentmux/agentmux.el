@@ -364,6 +364,17 @@ LOCATION and CONTENT can be nil."
     (deactivate-mark)))
 
 ;;;###autoload
+(defun agentmux-send-file-path ()
+  "Send current file path to agent.
+Uses `agentmux-context-path-style' for path format.
+Does not include line number or content."
+  (interactive)
+  (unless buffer-file-name
+    (user-error "Buffer has no file"))
+  (let ((path (cref--get-path-by-style agentmux-context-path-style)))
+    (agentmux--send-text path t)))
+
+;;;###autoload
 (defun agentmux-fix-error-at-point ()
   "Ask agent to fix error at point."
   (interactive)
@@ -518,6 +529,7 @@ Navigate with hjkl or arrow keys, confirm with y, cancel with n."
   [["Send"
      ("s" "Command" agentmux-send-command)
      ("x" "Command + context" agentmux-send-command-with-context)
+     ("p" "File path" agentmux-send-file-path)
      ("f" "Fix error" agentmux-fix-error-at-point)]
 
     ["Digits"
