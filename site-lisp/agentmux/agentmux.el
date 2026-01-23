@@ -547,7 +547,12 @@ Navigate with hjkl or arrow keys, confirm with y, cancel with n."
       ("m" "Menu mode" agentmux-menu-mode)]
 
     ["Target"
-      ("t" "Set target pane" agentmux-set-target)]])
+      ("t" "Set target pane" agentmux-set-target)]]
+  (interactive)
+  (setq agentmux-context-path-style 'git
+        agentmux-context-include-line t
+        agentmux-context-include-content nil)
+  (transient-setup 'agentmux-transient))
 
 (provide 'agentmux)
 ;;; agentmux.el ends here
