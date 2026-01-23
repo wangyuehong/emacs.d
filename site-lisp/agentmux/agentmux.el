@@ -372,7 +372,7 @@ Does not include line number or content."
   (unless buffer-file-name
     (user-error "Buffer has no file"))
   (let ((path (cref--get-path-by-style agentmux-context-path-style)))
-    (agentmux--send-text path t)))
+    (agentmux--send-text (format "\n%s\n" path) t)))
 
 ;;;###autoload
 (defun agentmux-fix-error-at-point ()
