@@ -433,7 +433,7 @@ Does not include line number or content."
 ;;;###autoload
 (transient-define-prefix agentmux-menu-mode ()
   "Menu navigation mode for AI agent.
-Navigate with hjkl or arrow keys, confirm with y, cancel with n."
+Navigate with hjkl or arrow keys, RET to confirm, ESC to cancel."
   :transient-suffix 'transient--do-stay
   [["Navigate"
      ("k" "↑ Up" agentmux-menu-up)
@@ -446,8 +446,8 @@ Navigate with hjkl or arrow keys, confirm with y, cancel with n."
      ("<right>" "" agentmux-menu-right :if (lambda () nil))]
 
     ["Action"
-      ("y" "Confirm" agentmux-menu-confirm :transient nil)
-      ("n" "Cancel" agentmux-menu-cancel :transient nil)
+      ("RET" "Enter" agentmux-menu-confirm :transient nil)
+      ("<escape>" "Escape" agentmux-menu-cancel :transient nil)
       ("i" "Input..." agentmux-menu-input)
       ("q" "Quit" transient-quit-one)]])
 
@@ -502,22 +502,23 @@ Navigate with hjkl or arrow keys, confirm with y, cancel with n."
      ("x" "Command + context" agentmux-send-command-with-context)
      ("p" "File path" agentmux-send-file-path)]
 
-    ["Digits"
+    ["Quick"
       ("1" "1" agentmux-send-1)
       ("2" "2" agentmux-send-2)
       ("3" "3" agentmux-send-3)
       ("4" "4" agentmux-send-4)]
 
-    ["More"
+    ["Reply"
+      ("RET" "Enter" agentmux-send-return)
+      ("<escape>" "Escape" agentmux-send-escape)
       ("k" "0-9" agentmux-send-digit)]
 
-    ["Confirm"
-      ("y" "Enter" agentmux-send-return)
-      ("n" "Escape" agentmux-send-escape)
+    ["Mode"
       ("m" "Menu mode" agentmux-menu-mode)]
 
-    ["Target"
-      ("t" "Set target pane" agentmux-set-target)]]
+    ["Action"
+      ("t" "Set target" agentmux-set-target)
+      ("q" "Quit" transient-quit-one)]]
   (interactive)
   (setq agentmux-context-path-style 'git
         agentmux-context-include-line t
