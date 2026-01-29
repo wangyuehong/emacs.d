@@ -24,15 +24,15 @@
 ;;; Commentary:
 ;; Agentmux provides Emacs integration for AI agent CLIs running in tmux.
 ;;
-;; Supports any CLI-based AI agent. Default configuration is for Claude Code.
-;; Configure agent name via `agentmux-agent-name'.
+;; Supports any CLI-based AI agent (Claude Code, Gemini CLI, etc.).
+;; Configure display name via `agentmux-agent-name'.
 ;;
 ;; Features:
 ;; - Send commands with file context (path, line number, region content)
 ;; - Fix errors at point using flymake diagnostics
 ;; - Quick digit input (0-9) for menu selections
 ;; - Menu navigation mode for multi-option interactions
-;; - Multiline input with Shift+Return or Alt+Return
+;; - Stage only mode to send without executing (customizable key)
 ;;
 ;; Requirements:
 ;; - tmux must be running with an active session
@@ -64,7 +64,7 @@
   :group 'tools
   :prefix "agentmux-")
 
-(defcustom agentmux-agent-name "Claude Code"
+(defcustom agentmux-agent-name "agentmux"
   "Display name for agent in prompts and messages."
   :type 'string
   :group 'agentmux)
@@ -103,6 +103,11 @@ Valid range is 1 to 30 lines."
   "Maximum length of location string in prompt.
 Longer paths will be truncated with ellipsis. Minimum is 4 (3 for ellipsis + 1 char)."
   :type '(integer :match (lambda (_widget value) (>= value 4)))
+  :group 'agentmux)
+
+(defcustom agentmux-send-no-enter-key (kbd "C-<return>")
+  "Key binding for stage only (send without Enter) in minibuffer."
+  :type 'key-sequence
   :group 'agentmux)
 
 (defvar agentmux-input-history nil
@@ -278,34 +283,7 @@ Returns nil if DIAGNOSTICS is empty or all texts are nil."
       (when-let* ((help-text (help-at-pt-kbd-string)))
         (substring-no-properties help-text)))))
 
-;;; Multiline input
-
-(defun agentmux--read-multiline-string (prompt &optional history)
-  "Read a string from the minibuffer with multi-line support.
-PROMPT is the prompt to display. HISTORY is the history list symbol to use."
-  (minibuffer-with-setup-hook
-    (lambda ()
-      (setq-local resize-mini-windows 'grow-only)
-      (ignore-errors
-        (window-resize (selected-window)
-          (max 0 (- agentmux-minibuffer-initial-height 1)))))
-    (read-from-minibuffer prompt nil nil nil history)))
-
-(defun agentmux--validate-command (cmd)
-  "Validate CMD is not empty, signal error if it is."
-  (when (string-empty-p (string-trim cmd))
-    (user-error "Command cannot be empty")))
-
-;;; Interactive commands
-
-;;;###autoload
-(defun agentmux-set-target ()
-  "Set target tmux pane for agent."
-  (interactive)
-  (emamux:set-parameters)
-  (if (emamux:set-parameters-p)
-    (message "%s target: %s" agentmux-agent-name (emamux:target-session))
-    (message "%s target not set" agentmux-agent-name)))
+;;; Prompt formatting
 
 (defconst agentmux--ellipsis "..."
   "Ellipsis string used for truncation.")
@@ -332,35 +310,93 @@ LOCATION and CONTENT can be nil."
       (format "%s %s: " agentmux-agent-name suffix)
       (format "%s: " agentmux-agent-name))))
 
+;;; Multiline input
+
+(defun agentmux--minibuffer-submit-no-enter ()
+  "Exit minibuffer with stage-only flag via throw.
+Also adds input to history before exiting."
+  (interactive)
+  (let ((input (minibuffer-contents)))
+    (when (and minibuffer-history-variable
+            (not (string-empty-p input)))
+      (add-to-history minibuffer-history-variable input))
+    (throw 'agentmux-stage-only (cons input t))))
+
+(defun agentmux--make-minibuffer-map ()
+  "Create minibuffer keymap with current `agentmux-send-no-enter-key'."
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map minibuffer-local-map)
+    (define-key map agentmux-send-no-enter-key #'agentmux--minibuffer-submit-no-enter)
+    map))
+
+(defun agentmux--format-key-description (key)
+  "Format KEY description in short form.
+Replaces <return> with RET for brevity."
+  (string-replace "<return>" "RET" (key-description key)))
+
+(defun agentmux--read-multiline-string (prompt &optional history)
+  "Read a string from the minibuffer with multi-line support.
+PROMPT is the prompt to display. HISTORY is the history list symbol to use.
+Returns (TEXT . NO-ENTER-P) cons cell.
+NO-ENTER-P is t if user pressed `agentmux-send-no-enter-key'."
+  (let* ((key-hint (format "(%s: stage only)"
+                     (agentmux--format-key-description agentmux-send-no-enter-key)))
+          (full-prompt (concat prompt key-hint " ")))
+    (catch 'agentmux-stage-only
+      (cons (minibuffer-with-setup-hook
+              (lambda ()
+                (setq-local resize-mini-windows 'grow-only)
+                (ignore-errors
+                  (window-resize (selected-window)
+                    (max 0 (- agentmux-minibuffer-initial-height 1)))))
+              (read-from-minibuffer full-prompt nil
+                (agentmux--make-minibuffer-map) nil history))
+        nil))))
+
+(defun agentmux--validate-command (cmd)
+  "Validate CMD is not empty, signal error if it is."
+  (when (string-empty-p (string-trim cmd))
+    (user-error "Command cannot be empty")))
+
+;;; Interactive commands
+
+;;;###autoload
+(defun agentmux-set-target ()
+  "Set target tmux pane for agent."
+  (interactive)
+  (emamux:set-parameters)
+  (if (emamux:set-parameters-p)
+    (message "%s target: %s" agentmux-agent-name (emamux:target-session))
+    (message "%s target not set" agentmux-agent-name)))
+
 ;;;###autoload
 (defun agentmux-send-command ()
   "Send command to agent (without context)."
   (interactive)
-  (let ((cmd (agentmux--read-multiline-string
-               (format "%s: " agentmux-agent-name)
-               'agentmux-input-history)))
+  (pcase-let* ((`(,cmd . ,no-enter)
+                 (agentmux--read-multiline-string
+                   (format "%s: " agentmux-agent-name)
+                   'agentmux-input-history)))
     (agentmux--validate-command cmd)
-    (agentmux--send-text cmd)
+    (agentmux--send-text cmd no-enter)
     (deactivate-mark)))
 
 ;;;###autoload
 (defun agentmux-send-command-with-context ()
   "Send command with file:line context."
   (interactive)
-  (let* ((parts (agentmux--context-parts))
-          (location (and parts (car parts)))
-          (content (and parts (cdr parts)))
-          (prompt (agentmux--make-prompt location content))
-          (cmd (agentmux--read-multiline-string prompt 'agentmux-input-history)))
+  (pcase-let* ((`(,location . ,content) (agentmux--context-parts))
+                (prompt (agentmux--make-prompt location content))
+                (`(,cmd . ,no-enter)
+                  (agentmux--read-multiline-string prompt 'agentmux-input-history)))
     (agentmux--validate-command cmd)
-    ;; Use already-computed parts instead of calling agentmux--format-context again
     (let ((full-context (when location
                           (if content
                             (format "%s\n%s" location content)
                             location))))
       (if full-context
-        (agentmux--send-text (format "%s\n%s" full-context cmd))
-        (agentmux--send-text cmd)))
+        (agentmux--send-text (format "%s\n%s" full-context cmd) no-enter)
+        (agentmux--send-text cmd no-enter)))
     (deactivate-mark)))
 
 ;;;###autoload
@@ -529,8 +565,10 @@ Navigate with hjkl or arrow keys, confirm with y, cancel with n."
   [["Send"
      ("s" "Command" agentmux-send-command)
      ("x" "Command + context" agentmux-send-command-with-context)
-     ("p" "File path" agentmux-send-file-path)
-     ("f" "Fix error" agentmux-fix-error-at-point)]
+     ("p" "File path" agentmux-send-file-path)]
+
+    ["Fix"
+     ("f" "Fix error at point" agentmux-fix-error-at-point)]
 
     ["Digits"
       ("1" "1" agentmux-send-1)
