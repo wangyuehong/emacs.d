@@ -29,7 +29,6 @@
 ;;
 ;; Features:
 ;; - Send commands with file context (path, line number, region content)
-;; - Fix errors at point using flymake diagnostics
 ;; - Quick digit input (0-9) for menu selections
 ;; - Menu navigation mode for multi-option interactions
 ;; - Stage only mode to send without executing (customizable key)
@@ -52,10 +51,6 @@
 (require 'emamux)
 (require 'seq)
 (require 'transient)
-
-(declare-function flymake-diagnostic-text "flymake")
-(declare-function flymake-diagnostics "flymake")
-(declare-function help-at-pt-kbd-string "help-at-pt")
 
 ;;; Customization
 
@@ -237,52 +232,6 @@ Content is only included when `agentmux-context-include-content' is non-nil."
       (when location
         (cons location content)))))
 
-(defun agentmux--format-context ()
-  "Format full context (location + content if enabled)."
-  (when-let* ((parts (agentmux--context-parts)))
-    (let ((location (car parts))
-           (content (cdr parts)))
-      (if content
-        (format "%s\n%s" location content)
-        location))))
-
-;;; Error handling
-
-(defun agentmux--get-flymake-diagnostics-on-line ()
-  "Get all flymake diagnostics on the current line."
-  (when (and (bound-and-true-p flymake-mode)
-          (fboundp 'flymake-diagnostics))
-    (flymake-diagnostics (line-beginning-position) (line-end-position))))
-
-(defun agentmux--format-flymake-diagnostics (diagnostics)
-  "Format flymake DIAGNOSTICS for display to agent.
-Returns nil if DIAGNOSTICS is empty or all texts are nil."
-  (let* (;; Filter out nil/empty diagnostic texts
-          (texts (seq-remove #'string-empty-p
-                   (seq-map (lambda (d)
-                              (or (flymake-diagnostic-text d) ""))
-                     diagnostics)))
-          (n (length texts)))
-    (cond
-      ((= n 0) nil)
-      ((= n 1) (car texts))
-      ;; Show all if 3 or fewer errors for complete context
-      ((<= n 3)
-        (format "(%d errors: %s)" n (string-join texts "; ")))
-      ;; Show first 2 with count if more than 3 to avoid overwhelming output
-      (t
-        (format "(%d errors including: %s; ...)"
-          n (string-join (take 2 texts) "; "))))))
-
-(defun agentmux--format-errors-at-point ()
-  "Format errors at point for agent."
-  (cond
-    ((bound-and-true-p flymake-mode)
-      (agentmux--format-flymake-diagnostics (agentmux--get-flymake-diagnostics-on-line)))
-    (t
-      (when-let* ((help-text (help-at-pt-kbd-string)))
-        (substring-no-properties help-text)))))
-
 ;;; Prompt formatting
 
 (defconst agentmux--ellipsis "..."
@@ -409,20 +358,6 @@ Does not include line number or content."
     (user-error "Buffer has no file"))
   (let ((path (cref--get-path-by-style agentmux-context-path-style)))
     (agentmux--send-text (format "\n%s\n" path) t)))
-
-;;;###autoload
-(defun agentmux-fix-error-at-point ()
-  "Ask agent to fix error at point."
-  (interactive)
-  (let* ((context (agentmux--format-context))
-          (errors (agentmux--format-errors-at-point)))
-    (unless errors
-      (user-error "No errors at point"))
-    (let ((cmd (if context
-                 (format "Please fix the error at %s:\n%s" context errors)
-                 (format "Please fix this error:\n%s" errors))))
-      (agentmux--send-text cmd))
-    (deactivate-mark)))
 
 ;;; Quick responses
 
@@ -566,9 +501,6 @@ Navigate with hjkl or arrow keys, confirm with y, cancel with n."
      ("s" "Command" agentmux-send-command)
      ("x" "Command + context" agentmux-send-command-with-context)
      ("p" "File path" agentmux-send-file-path)]
-
-    ["Fix"
-     ("f" "Fix error at point" agentmux-fix-error-at-point)]
 
     ["Digits"
       ("1" "1" agentmux-send-1)
