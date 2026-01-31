@@ -20,5 +20,8 @@
 (unless (display-graphic-p)
   (add-hook 'buffer-list-update-hook #'my/set-terminal-title))
 
+(unless (display-graphic-p)
+  (xterm-mouse-mode 1))
+
 (provide 'init-term)
 ;;; init-term.el ends here
