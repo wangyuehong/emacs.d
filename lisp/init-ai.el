@@ -4,7 +4,8 @@
 
 (use-package copilot
   :hook
-  ((prog-mode git-commit-setup yaml-mode markdown-mode) . copilot-mode)
+  (((prog-mode git-commit-setup yaml-mode markdown-mode) . copilot-mode)
+    (copilot-mode . copilot-nes-mode))
   :bind
   (("C-c x" . copilot-diagnose)
     :map copilot-completion-map
