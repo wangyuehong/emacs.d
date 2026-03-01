@@ -27,42 +27,28 @@
   (copilot-idle-delay 0.2)
   (copilot-log-max 0))
 
-(use-package copilot-chat
-  :bind
-  ("C-c C-c" . copilot-chat-transient)
-  :preface
-  ;; Project language setting, used for commit message generation, etc.
-  ;; Configure per-project via .dir-locals.el in project root:
-  ;;   ((nil . ((my/project-language . "ja"))))  ; Japanese
-  ;;   ((nil . ((my/project-language . "zh"))))  ; Chinese
-  (defvar-local my/project-language "en"
-    "Project documentation language. Values: \"zh\", \"ja\", \"en\".")
-  (put 'my/project-language 'safe-local-variable #'stringp)
-  (defvar my/copilot-chat-original-commit-prompt nil
-    "Original commit prompt from copilot-chat.")
-  (defun my/copilot-chat-set-language-prompt (&rest _)
-    "Set commit prompt language based on project setting."
-    (unless my/copilot-chat-original-commit-prompt
-      (setq my/copilot-chat-original-commit-prompt copilot-chat-commit-prompt))
-    (let ((lang-rule (pcase my/project-language
-                       ("ja" "Write commit message in Japanese.")
-                       ("zh" "Write commit message in Simplified Chinese.")
-                       (_ "Write commit message in English."))))
-      (setq copilot-chat-commit-prompt
-            (concat my/copilot-chat-original-commit-prompt
-                    "\n\n### LANGUAGE RULE\n" lang-rule))))
-  :config
-  (advice-add 'copilot-chat-insert-commit-message :before
-              #'my/copilot-chat-set-language-prompt)
-  (advice-add 'copilot-chat-regenerate-commit-message :before
-              #'my/copilot-chat-set-language-prompt)
+;; Project language setting, used for commit message generation, etc.
+;; Configure per-project via .dir-locals.el in project root:
+;;   ((nil . ((my/project-language . "ja"))))  ; Japanese
+;;   ((nil . ((my/project-language . "zh"))))  ; Chinese
+(defvar-local my/project-language "en"
+  "Project documentation language. Values: \"zh\", \"ja\", \"en\".")
+(put 'my/project-language 'safe-local-variable #'stringp)
+
+(use-package copilot-commit
+  :ensure nil
+  :after git-commit
+  :bind (:map git-commit-mode-map
+         ("C-c i" . copilot-commit-insert-message)
+         ("C-c I" . copilot-commit-regenerate-message))
   :custom
-  (copilot-chat-commit-model my/copilot-chat-commit-model)
-  (copilot-chat-frontend 'markdown)
-  (copilot-chat-markdown-prompt "Respone in 简体中文:\n")
-  (copilot-chat-prompt-test "Write unit tests for the following code:\n")
-  (copilot-chat-prompt-optimize "Optimize and refactor the following code:\n")
-  (copilot-chat-prompt-explain "Explain the following code:\n"))
+  (copilot-commit-model my/copilot-commit-model)
+  (copilot-commit-prompt-suffix
+   (lambda ()
+     (pcase my/project-language
+       ("ja" "\n\nWrite commit message in Japanese.")
+       ("zh" "\n\nWrite commit message in Simplified Chinese.")
+       (_ "")))))
 
 (use-package agentmux
   :ensure nil ;; site-lisp/agentmux

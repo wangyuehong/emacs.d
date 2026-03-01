@@ -14,7 +14,6 @@
   (which-key-add-key-based-replacements "C-x 8 e" "emoji")
   (which-key-add-key-based-replacements "C-x a" "abbrev")
   (which-key-add-key-based-replacements "C-x c" "copilot")
-  (which-key-add-key-based-replacements "C-x c b" "copilot-chat-buffer")
   (which-key-add-key-based-replacements "C-x n" "narrow")
   (which-key-add-key-based-replacements "C-x p" "project")
   (which-key-add-key-based-replacements "C-x j" "bookmark")
@@ -40,8 +39,8 @@ The DWIM behaviour of this command is as follows:
 - When the Completions buffer is selected, close it.
 - When in `vterm-copy-mode', close it.
 - When in `vterm-mode', call `vterm-reset-cursor-point'.
-- When in `copilot-chat-prompt-mode', call `copilot-chat-goto-input'.
 - When in `gptel-mode', call `gptel-end-of-response'.
+- When `copilot-commit' is streaming, cancel the generation.
 - When in `comint-mode', call `comint-goto-process-mark'.
 - In every other case use the regular `keyboard-quit'."
   (interactive)
@@ -56,13 +55,10 @@ The DWIM behaviour of this command is as follows:
       (vterm-copy-mode -1))
     ((derived-mode-p 'vterm-mode)
       (vterm-reset-cursor-point))
-    ((bound-and-true-p copilot-chat-prompt-mode)
-      (copilot-chat-goto-input))
-    ((and (bound-and-true-p copilot-chat-markdown-poly-mode)
-       (eq major-mode 'markdown-view-mode))
-      (copilot-chat-goto-input))
     ((and (boundp 'gptel-mode) gptel-mode)
       (gptel-end-of-response))
+    ((and (fboundp 'copilot-commit-streaming-p) (copilot-commit-streaming-p))
+      (copilot-commit-cancel))
     ((derived-mode-p 'comint-mode)
       (comint-goto-process-mark))
     (t
