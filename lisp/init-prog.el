@@ -17,7 +17,8 @@
       (yaml . ("https://github.com/tree-sitter-grammars/tree-sitter-yaml"))
       (bash . ("https://github.com/tree-sitter/tree-sitter-bash"))
       (json . ("https://github.com/tree-sitter/tree-sitter-json"))
-      (html . ("https://github.com/tree-sitter/tree-sitter-html"))))
+      (html . ("https://github.com/tree-sitter/tree-sitter-html"))
+      (python . ("https://github.com/tree-sitter/tree-sitter-python"))))
   (dolist (entry '(("\\.toml\\'" . toml-ts-mode)
                    ("\\(?:Dockerfile\\(?:\\..*\\)?\\|\\.[Dd]ockerfile\\)\\'" . dockerfile-ts-mode)
                    ("\\.lua\\'" . lua-ts-mode)
@@ -29,7 +30,8 @@
     (add-to-list 'auto-mode-alist entry))
   (dolist (entry '((ruby-mode . ruby-ts-mode)
                    (css-mode . css-ts-mode)
-                   (js-json-mode . json-ts-mode)))
+                   (js-json-mode . json-ts-mode)
+                   (python-mode . python-ts-mode)))
     (add-to-list 'major-mode-remap-alist entry)))
 
 (use-package breadcrumb
@@ -132,7 +134,7 @@
   (hs-hide-comments-when-hiding-all t))
 
 (use-package indent-bars
-  :hook ((python-mode yaml-ts-mode) . indent-bars-mode)
+  :hook ((python-ts-mode yaml-ts-mode) . indent-bars-mode)
   :custom
   (indent-bars-color '(highlight :face-bg t :blend 0.3))
   (indent-bars-highlight-current-depth '(:pattern "." :blend 0.6))

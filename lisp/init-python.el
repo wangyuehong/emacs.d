@@ -2,14 +2,14 @@
 ;;; Commentary:
 ;;; Code:
 
-(use-package python-mode
+(use-package python
   :ensure nil
-  :hook (python-mode . eglot-ensure))
+  :hook (python-ts-mode . eglot-ensure))
 
 (use-package lazy-ruff
   :defines lazy-ruff-only-format-buffer
   :if (executable-find "ruff")
-  :hook (python-mode . lazy-ruff-mode)
+  :hook (python-ts-mode . lazy-ruff-mode)
   :config
   (setq lazy-ruff-only-format-buffer t))
 

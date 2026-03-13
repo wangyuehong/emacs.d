@@ -2,6 +2,14 @@
 ;;; Commentary:
 ;;; Code:
 
+;; Python LSP server setting, used for eglot server selection.
+;; Configure per-project via .dir-locals.el in project root:
+;;   ((python-ts-mode . ((my/python-lsp-server . ty))))
+(defvar-local my/python-lsp-server 'basedpyright
+  "Python LSP server. Values: `basedpyright', `ty'.")
+(put 'my/python-lsp-server 'safe-local-variable
+     (lambda (v) (memq v '(basedpyright ty))))
+
 (use-package eglot
   :functions eglot-server-capable
   :preface
@@ -16,6 +24,12 @@ non-interactively applies it when supported by the server."
     (add-hook 'before-save-hook 'my/eglot-organize-imports nil t)
     (when (eglot-server-capable :documentFormattingProvider)
       (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
+
+  (defun my/python-lsp-contact (_interactive)
+    "Return eglot contact for Python based on `my/python-lsp-server'."
+    (pcase my/python-lsp-server
+      ('basedpyright '("basedpyright-langserver" "--stdio"))
+      ('ty '("ty" "server"))))
   :bind (:map eglot-mode-map
               ("C-c l t" . eglot-find-typeDefinition)
               ("C-c l i" . eglot-find-implementation)
@@ -35,9 +49,13 @@ non-interactively applies it when supported by the server."
         eglot-events-buffer-size 0
         eglot-extend-to-xref t
         eglot-report-progress nil
-        eglot-sync-connect nil)
+        eglot-sync-connect nil
+        eglot-watch-files-outside-project-root nil)
 
   :config
+  (add-to-list 'eglot-server-programs
+    '((python-mode python-ts-mode) . my/python-lsp-contact))
+
   ;; gopls configuration per upstream recommendations
   ;; See: https://tip.golang.org/gopls/editor/emacs
   (setq-default eglot-workspace-configuration
