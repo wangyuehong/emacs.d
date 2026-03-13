@@ -52,6 +52,7 @@
 (use-package mermaid-mode)
 
 (use-package editorconfig
+  :ensure nil
   :hook (after-init . editorconfig-mode))
 
 (use-package simple
