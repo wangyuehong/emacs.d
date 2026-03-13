@@ -23,7 +23,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 补全：`init-search`（avy, ripgrep）, `init-completion`（vertico, consult, embark, company, orderless）, `init-yasnippet`
 - 窗口/文件/会话：`init-window`, `init-dired`, `init-session`
 - 编程：`init-prog`（多语言 mode, flymake, breadcrumb）, `init-lsp`（eglot）, `init-go`, `init-python`
-- 集成：`init-git`（magit, forge, diff-hl）, `init-term`, `init-im`, `init-ai`（copilot, copilot-commit, agentmux）
+- 集成：`init-git`（magit, diff-hl）, `init-term`, `init-im`, `init-ai`（copilot, copilot-commit, agentmux）
 - 工具：`init-utils`, `init-misc`
 - 覆盖：`init-local`（机器级配置，最后加载，可选）
 

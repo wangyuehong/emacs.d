@@ -2,16 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-(use-package display-fill-column-indicator
-  :disabled t
-  :ensure nil
-  :hook ((prog-mode yaml-mode) . display-fill-column-indicator-mode)
-  :init
-  (setq-default fill-column 120)
-  (setq-default display-fill-column-indicator-character ?\N{U+2506})
-  :custom-face
-  (fill-column-indicator ((t (:inherit shadow :foreground "dimgray")))))
-
 (use-package breadcrumb
   :hook ((prog-mode yaml-mode) . breadcrumb-mode))
 
@@ -23,8 +13,6 @@
           ("M-n" . flymake-goto-next-error)
           ("M-p" . flymake-goto-prev-error))
   :hook (prog-mode . flymake-mode))
-
-(use-package flymake-easy)
 
 (use-package xref
   :ensure nil
@@ -46,23 +34,6 @@
   (dumb-jump-aggressive t)
   (dumb-jump-force-searcher 'rg)
   (dumb-jump-selector 'completing-read))
-
-(use-package citre
-  :disabled t
-  :defines (citre-peek-keymap)
-  :init
-  (require 'citre-config)
-  :bind (:map prog-mode-map
-          ("C-c c j" . citre-jump)
-          ("C-c c p" . citre-peek)
-          ("C-c c u" . citre-update-this-tags-file)
-          :map citre-peek-keymap
-          ("C-g" . citre-peek-abort)
-          ("C-n" . citre-peek-next-tag)
-          ("C-p" . citre-peek-prev-tag))
-  :custom
-  (citre-auto-enable-citre-mode-modes '(prog-mode))
-  (citre-enable-capf-integration nil))
 
 (use-package quickrun
   :commands quickrun

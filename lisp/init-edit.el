@@ -22,9 +22,6 @@
   (uniquify-after-kill-buffer-p t)
   (uniquify-ignore-buffers-re "^\\*"))
 
-(use-package mode-line-bell
-  :hook (after-init . mode-line-bell-mode))
-
 (use-package subword
   :ensure nil
   :hook ((prog-mode . subword-mode)
@@ -92,8 +89,6 @@
 (use-package delsel
   :ensure nil
   :hook (after-init . delete-selection-mode))
-
-(use-package undo-fu)
 
 (use-package flyspell
   :ensure nil
