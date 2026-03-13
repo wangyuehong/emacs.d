@@ -24,11 +24,6 @@
           ("C-s"     . company-filter-candidates)
           ("M-s"     . company-search-candidates)
           ([backtab] . company-select-previous-or-abort))
-  ;; :init
-  ;; (add-variable-watcher 'company-backends
-  ;;   (lambda (symbol new-value operation where)
-  ;;     (message "%s changed: where=%s, operation=%s, new-value=%s"
-  ;;       symbol where operation new-value)))
   :config
   (add-to-list 'company-transformers #'delete-dups)
   :custom-face

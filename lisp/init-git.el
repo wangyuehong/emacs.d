@@ -22,7 +22,6 @@
   (vc-handled-backends '(Git)))
 
 (use-package diff-hl
-  :defines (diff-hl-command-map)
   :hook ((after-init . global-diff-hl-mode)
           (dired-mode . diff-hl-dired-mode))
   :custom
@@ -51,7 +50,6 @@
   (git-link-open-in-browser t))
 
 (use-package git-timemachine
-  :defines (git-timemachine-mode-map)
   :bind (("C-x v t" . git-timemachine)))
 
 (use-package smerge-mode

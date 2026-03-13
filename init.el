@@ -86,9 +86,6 @@
 ;; Custom Utilities
 (require 'init-utils)
 
-;; Miscellaneous
-(require 'init-misc)
-
 ;; Local Overrides (must be last)
 (require 'init-local nil t)
 

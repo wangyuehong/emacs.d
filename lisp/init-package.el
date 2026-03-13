@@ -8,8 +8,7 @@
   (setq use-package-always-ensure t
     use-package-always-defer t
     use-package-expand-minimally t
-    package-install-upgrade-built-in nil
-    use-package-enable-imenu-support t)
+    package-install-upgrade-built-in nil)
   :config
   ;; install into separate package dirs for each emacs version
   (let ((versioned-package-dir

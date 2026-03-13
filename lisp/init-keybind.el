@@ -13,7 +13,6 @@
   (which-key-add-key-based-replacements "C-x 8" "unicode")
   (which-key-add-key-based-replacements "C-x 8 e" "emoji")
   (which-key-add-key-based-replacements "C-x a" "abbrev")
-  (which-key-add-key-based-replacements "C-x c" "copilot")
   (which-key-add-key-based-replacements "C-x n" "narrow")
   (which-key-add-key-based-replacements "C-x p" "project")
   (which-key-add-key-based-replacements "C-x j" "bookmark")
