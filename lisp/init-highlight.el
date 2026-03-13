@@ -6,7 +6,7 @@
   :functions (turn-off-symbol-overlay turn-on-symbol-overlay)
   :bind (:map symbol-overlay-map
           ("<escape>" . symbol-overlay-remove-all))
-  :hook (((prog-mode yaml-mode) . symbol-overlay-mode)
+  :hook (((prog-mode yaml-ts-mode) . symbol-overlay-mode)
           (iedit-mode . turn-off-symbol-overlay)
           (iedit-mode-end . turn-on-symbol-overlay))
   :config
@@ -23,7 +23,7 @@
     (defun turn-on-symbol-overlay (&rest _)
       "Turn on symbol highlighting."
       (interactive)
-      (when (derived-mode-p 'prog-mode 'yaml-mode)
+      (when (derived-mode-p 'prog-mode 'yaml-ts-mode)
         (symbol-overlay-mode 1)))
     (advice-add #'deactivate-mark :after #'turn-on-symbol-overlay))
   :custom
@@ -48,11 +48,11 @@
 
 (use-package display-line-numbers
   :ensure nil
-  :hook ((prog-mode yaml-mode markdown-mode conf-mode) . display-line-numbers-mode))
+  :hook ((prog-mode yaml-ts-mode markdown-mode conf-mode toml-ts-mode) . display-line-numbers-mode))
 
 (use-package whitespace
   :ensure nil
-  :hook ((prog-mode yaml-mode markdown-mode conf-mode) . whitespace-mode)
+  :hook ((prog-mode yaml-ts-mode markdown-mode conf-mode toml-ts-mode) . whitespace-mode)
   :config
   (set-face-attribute 'whitespace-tab nil :inherit 'font-lock-comment-face :background 'unspecified)
   (set-face-attribute 'whitespace-space nil :foreground "brightred") ;; -> "　"

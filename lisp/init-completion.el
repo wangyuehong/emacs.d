@@ -13,7 +13,7 @@
 (use-package company
   :defines (company-mode-map company-active-map)
   :ensure t
-  :hook ((prog-mode yaml-mode) . company-mode)
+  :hook ((prog-mode yaml-ts-mode) . company-mode)
   :bind (:map company-mode-map
           ([remap completion-at-point] . company-complete)
           ("C-c y" . company-yasnippet)

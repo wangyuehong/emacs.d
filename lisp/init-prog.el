@@ -2,8 +2,33 @@
 ;;; Commentary:
 ;;; Code:
 
+(use-package treesit
+  :ensure nil
+  :init
+  (setopt treesit-language-source-alist
+    '((toml . ("https://github.com/tree-sitter/tree-sitter-toml"))
+      (dockerfile . ("https://github.com/camdencheek/tree-sitter-dockerfile"))
+      (lua . ("https://github.com/tree-sitter-grammars/tree-sitter-lua"))
+      (ruby . ("https://github.com/tree-sitter/tree-sitter-ruby"))
+      (css . ("https://github.com/tree-sitter/tree-sitter-css"))
+      (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript"))
+      (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src"))
+      (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" nil "tsx/src"))
+      (yaml . ("https://github.com/tree-sitter-grammars/tree-sitter-yaml"))))
+  (dolist (entry '(("\\.toml\\'" . toml-ts-mode)
+                   ("\\(?:Dockerfile\\(?:\\..*\\)?\\|\\.[Dd]ockerfile\\)\\'" . dockerfile-ts-mode)
+                   ("\\.lua\\'" . lua-ts-mode)
+                   ("\\.ts\\'" . typescript-ts-mode)
+                   ("\\.tsx\\'" . tsx-ts-mode)
+                   ("\\.ya?ml\\'" . yaml-ts-mode)
+                   ("\\.jsx?\\'" . js-ts-mode)))
+    (add-to-list 'auto-mode-alist entry))
+  (dolist (entry '((ruby-mode . ruby-ts-mode)
+                   (css-mode . css-ts-mode)))
+    (add-to-list 'major-mode-remap-alist entry)))
+
 (use-package breadcrumb
-  :hook ((prog-mode yaml-mode) . breadcrumb-mode))
+  :hook ((prog-mode yaml-ts-mode) . breadcrumb-mode))
 
 (use-package flymake
   :ensure nil
@@ -42,17 +67,8 @@
 
 (use-package bats-mode)
 (use-package docker-compose-mode)
-(use-package dockerfile-mode)
-(use-package js2-mode)
-(use-package lua-mode)
 (use-package protobuf-mode)
-(use-package ruby-mode :ensure nil)
 (use-package terraform-mode)
-(use-package toml-mode)
-(use-package typescript-mode :mode ("\\.ts[x]\\'" . typescript-mode))
-(use-package yaml-mode)
-
-(use-package css-mode :ensure nil)
 
 (use-package web-mode
   :mode "\\.\\(php\\|jsp\\|as[cp]x\\|erb\\|djhtml\\|html?\\|hbs\\|ejs\\|vue\\)$")
@@ -107,7 +123,7 @@
   (hs-hide-comments-when-hiding-all t))
 
 (use-package indent-bars
-  :hook ((python-mode yaml-mode) . indent-bars-mode)
+  :hook ((python-mode yaml-ts-mode) . indent-bars-mode)
   :custom
   (indent-bars-color '(highlight :face-bg t :blend 0.3))
   (indent-bars-highlight-current-depth '(:pattern "." :blend 0.6))

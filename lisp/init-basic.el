@@ -8,11 +8,11 @@
   (defun my/coding-setup ()
     (modify-syntax-entry ?_ "w")
     (pcase major-mode
-      ('lua-mode
+      ('lua-ts-mode
         (modify-syntax-entry ?- "w 12"))
       (_ (modify-syntax-entry ?- "w"))))
   :hook
-  ((prog-mode yaml-mode) . my/coding-setup)
+  ((prog-mode yaml-ts-mode) . my/coding-setup)
   (after-init . transient-mark-mode)
   (after-init . repeat-mode)
   :init
