@@ -14,9 +14,6 @@
   (magit-ediff-dwim-show-on-hunks t)
   (magit-process-popup-time 10))
 
-(use-package forge
-  :after magit)
-
 (use-package vc
   :ensure nil
   :custom
