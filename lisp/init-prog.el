@@ -14,17 +14,22 @@
       (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript"))
       (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src"))
       (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" nil "tsx/src"))
-      (yaml . ("https://github.com/tree-sitter-grammars/tree-sitter-yaml"))))
+      (yaml . ("https://github.com/tree-sitter-grammars/tree-sitter-yaml"))
+      (bash . ("https://github.com/tree-sitter/tree-sitter-bash"))
+      (json . ("https://github.com/tree-sitter/tree-sitter-json"))
+      (html . ("https://github.com/tree-sitter/tree-sitter-html"))))
   (dolist (entry '(("\\.toml\\'" . toml-ts-mode)
                    ("\\(?:Dockerfile\\(?:\\..*\\)?\\|\\.[Dd]ockerfile\\)\\'" . dockerfile-ts-mode)
                    ("\\.lua\\'" . lua-ts-mode)
                    ("\\.ts\\'" . typescript-ts-mode)
                    ("\\.tsx\\'" . tsx-ts-mode)
                    ("\\.ya?ml\\'" . yaml-ts-mode)
-                   ("\\.jsx?\\'" . js-ts-mode)))
+                   ("\\.jsx?\\'" . js-ts-mode)
+                   ("\\.html?\\'" . html-ts-mode)))
     (add-to-list 'auto-mode-alist entry))
   (dolist (entry '((ruby-mode . ruby-ts-mode)
-                   (css-mode . css-ts-mode)))
+                   (css-mode . css-ts-mode)
+                   (js-json-mode . json-ts-mode)))
     (add-to-list 'major-mode-remap-alist entry)))
 
 (use-package breadcrumb
@@ -71,18 +76,13 @@
 (use-package terraform-mode)
 
 (use-package web-mode
-  :mode "\\.\\(php\\|jsp\\|as[cp]x\\|erb\\|djhtml\\|html?\\|hbs\\|ejs\\|vue\\)$")
+  :mode "\\.\\(php\\|jsp\\|as[cp]x\\|erb\\|djhtml\\|hbs\\|ejs\\|vue\\)$")
 
 (use-package sh-script
   :ensure nil
   :mode (("\\.aliases\\'"      . sh-mode)
           ("\\.env\\.example\\'" . sh-mode)
           ("\\.[a-zA-Z]+rc\\'"  . sh-mode)
-          ("\\.bash\\'"         . sh-mode)
-          ("\\.bash_history\\'" . sh-mode)
-          ("\\.bash_profile\\'" . sh-mode)
-          ("\\.bashrc.local\\'" . sh-mode)
-          ("\\.bashrc\\'"       . sh-mode)
           ("\\.c*sh\\'"         . sh-mode)
           ("\\.cfg\\'"          . sh-mode)
           ("\\.env\\'"          . sh-mode)
@@ -92,6 +92,15 @@
           ("\\.zsh\\'"          . sh-mode)
           ("\\.zshrc.local\\'"  . sh-mode)
           ("crontab.*\\'"       . sh-mode)))
+
+;; bash-ts-mode entries must follow sh-script to take priority over
+;; the broad \\.[a-zA-Z]+rc pattern in auto-mode-alist.
+(dolist (entry '(("\\.bash\\'" . bash-ts-mode)
+                ("\\.bash_history\\'" . bash-ts-mode)
+                ("\\.bash_profile\\'" . bash-ts-mode)
+                ("\\.bashrc\\.local\\'" . bash-ts-mode)
+                ("\\.bashrc\\'" . bash-ts-mode)))
+  (add-to-list 'auto-mode-alist entry))
 
 (use-package ansi-color
   :ensure nil

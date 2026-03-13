@@ -48,11 +48,11 @@
 
 (use-package display-line-numbers
   :ensure nil
-  :hook ((prog-mode yaml-ts-mode markdown-mode conf-mode toml-ts-mode) . display-line-numbers-mode))
+  :hook ((prog-mode yaml-ts-mode markdown-mode conf-mode toml-ts-mode html-ts-mode) . display-line-numbers-mode))
 
 (use-package whitespace
   :ensure nil
-  :hook ((prog-mode yaml-ts-mode markdown-mode conf-mode toml-ts-mode) . whitespace-mode)
+  :hook ((prog-mode yaml-ts-mode markdown-mode conf-mode toml-ts-mode html-ts-mode) . whitespace-mode)
   :config
   (set-face-attribute 'whitespace-tab nil :inherit 'font-lock-comment-face :background 'unspecified)
   (set-face-attribute 'whitespace-space nil :foreground "brightred") ;; -> "　"
