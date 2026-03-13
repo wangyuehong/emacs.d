@@ -37,8 +37,6 @@ The DWIM behaviour of this command is as follows:
 - When the region is active, disable it.
 - When a minibuffer is open, but not focused, close the minibuffer.
 - When the Completions buffer is selected, close it.
-- When in `vterm-copy-mode', close it.
-- When in `vterm-mode', call `vterm-reset-cursor-point'.
 - When in `gptel-mode', call `gptel-end-of-response'.
 - When `copilot-commit' is streaming, cancel the generation.
 - When in `comint-mode', call `comint-goto-process-mark'.
@@ -51,10 +49,6 @@ The DWIM behaviour of this command is as follows:
       (delete-completion-window))
     ((minibufferp)
       (abort-recursive-edit))
-    ((bound-and-true-p vterm-copy-mode)
-      (vterm-copy-mode -1))
-    ((derived-mode-p 'vterm-mode)
-      (vterm-reset-cursor-point))
     ((and (boundp 'gptel-mode) gptel-mode)
       (gptel-end-of-response))
     ((and (fboundp 'copilot-commit-streaming-p) (copilot-commit-streaming-p))

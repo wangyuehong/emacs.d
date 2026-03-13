@@ -21,8 +21,6 @@
   :config
   (with-eval-after-load 'company
     (add-to-list 'copilot-disable-display-predicates #'company-tooltip-visible-p))
-  (with-eval-after-load 'popup
-    (add-to-list 'copilot-disable-display-predicates #'my/popup-visible-p))
   :custom
   (copilot-idle-delay 0.2)
   (copilot-log-max 0))

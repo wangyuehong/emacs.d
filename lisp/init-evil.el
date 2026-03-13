@@ -87,9 +87,7 @@
                 (comint-mode . emacs)
                 (dashboard-mode . motion)
                 (help-mode . motion)
-                (messages-buffer-mode . motion)
-                (eat-mode . emacs)
-                (vterm-mode . emacs)))
+                (messages-buffer-mode . motion)))
     (evil-set-initial-state (car p) (cdr p)))
 
   (defun my/evil-set-tab-for-completion ()
@@ -106,9 +104,6 @@
 (use-package evil-collection
   :after evil
   :hook (evil-mode . evil-collection-init)
-  :config
-  (setq evil-collection-mode-list
-    (cl-set-difference evil-collection-mode-list '(vterm eat)))
   :custom
   (evil-collection-want-unimpaired-p nil))
 

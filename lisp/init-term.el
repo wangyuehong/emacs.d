@@ -2,11 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-(use-package eat
-  :custom
-  (eat-kill-buffer-on-exit t)
-  (eat-term-scrollback-size 524288)) ;; 512K
-
 (use-package emamux)
 
 (defun my/set-terminal-title ()
