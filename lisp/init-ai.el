@@ -19,6 +19,11 @@
   :custom-face
   (copilot-overlay-face ((t (:inherit shadow :foreground "#7ec0ee"))))
   :config
+  ;; Workaround: Copilot Language Server crashes when receiving {"settings": null} in
+  ;; workspace/didChangeConfiguration because it accesses null.copilot
+  ;; without null check.  Return empty hash-table (serialized as {}) instead.
+  (define-advice copilot--effective-lsp-settings (:filter-return (settings) ensure-non-null)
+    (or settings (make-hash-table)))
   (with-eval-after-load 'company
     (add-to-list 'copilot-disable-display-predicates #'company-tooltip-visible-p))
   :custom
