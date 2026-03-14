@@ -33,7 +33,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `agentmux` - 通过 tmux 向 AI agent CLI（Claude Code 等）发送文件上下文。快捷键：`C-c a`
 - `code-ref` - 以多种路径格式复制代码引用（绝对路径，git 相对路径，文件名，含/不含内容）。为 `init-general` 中的 transient 菜单提供支持
 - `im-bridge` - 输入法切换与 Evil mode 集成
-- `flymake-golangci-lint` - golangci-lint 的 Flymake 后端
 
 ### 自定义变量系统
 
@@ -44,12 +43,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 测试
 
-`copilot-commit`, `code-ref`, `flymake-golangci-lint` 三个 site-lisp 包有独立的 `Makefile`，在对应包目录下运行：
+`copilot-commit`, `code-ref` 两个 site-lisp 包有独立的 `Makefile`，在对应包目录下运行：
 
 ```sh
 cd site-lisp/copilot-commit && make test
 cd site-lisp/code-ref && make test
-cd site-lisp/flymake-golangci-lint && make test
 
 # 字节编译和文档检查（在各包目录下运行）
 cd site-lisp/copilot-commit && make compile

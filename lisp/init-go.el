@@ -33,11 +33,6 @@
           ("C-c t x" . go-tag-remove)
           ("C-c t r" . go-tag-refresh)))
 
-(use-package flymake-golangci-lint
-  :ensure nil
-  :if (executable-find "golangci-lint")
-  :hook (go-ts-mode . flymake-golangci-lint-load))
-
 (use-package gotest
   :after go-ts-mode
   :bind (:map go-ts-mode-map
