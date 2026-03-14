@@ -32,14 +32,14 @@
 
   ;; clear map and set my key bindings
   (setcdr diff-hl-command-map nil)
-  (define-key diff-hl-command-map (kbd "k") 'diff-hl-previous-hunk)
-  (define-key diff-hl-command-map (kbd "j") 'diff-hl-next-hunk)
-  (define-key diff-hl-command-map (kbd "r") 'diff-hl-revert-hunk)
-  (define-key diff-hl-command-map (kbd "s") 'diff-hl-show-hunk)
-  (define-key diff-hl-command-map (kbd "S") 'diff-hl-stage-dwim)
+  (define-key diff-hl-command-map (kbd "k") #'diff-hl-previous-hunk)
+  (define-key diff-hl-command-map (kbd "j") #'diff-hl-next-hunk)
+  (define-key diff-hl-command-map (kbd "r") #'diff-hl-revert-hunk)
+  (define-key diff-hl-command-map (kbd "s") #'diff-hl-show-hunk)
+  (define-key diff-hl-command-map (kbd "S") #'diff-hl-stage-dwim)
 
   (with-eval-after-load 'magit
-    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)))
+    (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)))
 
 (use-package git-modes
   :mode (("\\.gitconfig.local\\'" . gitconfig-mode)))

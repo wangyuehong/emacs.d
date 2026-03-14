@@ -23,7 +23,7 @@
   (evil-motion-state-tag (propertize "[Motion]"))
   (evil-visual-state-tag (propertize "[Visual]"))
   (evil-operator-state-tag (propertize "[Operator]"))
-  (evil-replace-state-tag (propertize "[Replace")))
+  (evil-replace-state-tag (propertize "[Replace]")))
 
 (use-package dashboard
   :hook ((after-init . dashboard-setup-startup-hook))

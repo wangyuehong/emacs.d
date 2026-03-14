@@ -21,9 +21,9 @@ non-interactively applies it when supported by the server."
     (eglot-code-actions nil nil "source.organizeImports" t))
 
   (defun my/eglot-setup-hooks ()
-    (add-hook 'before-save-hook 'my/eglot-organize-imports nil t)
+    (add-hook 'before-save-hook #'my/eglot-organize-imports nil t)
     (when (eglot-server-capable :documentFormattingProvider)
-      (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
+      (add-hook 'before-save-hook #'eglot-format-buffer nil t)))
 
   (defun my/python-lsp-contact (_interactive)
     "Return eglot contact for Python based on `my/python-lsp-server'."

@@ -26,13 +26,8 @@
   (set-selection-coding-system 'utf-8)
   (modify-coding-system-alist 'process "*" 'utf-8)
 
-  (fset 'yes-or-no-p 'y-or-n-p)
+  (setopt use-short-answers t)
   (put 'other-window 'repeat-map nil)
-  (put 'narrow-to-defun  'disabled nil)
-  (put 'narrow-to-region 'disabled nil)
-
-  (setq load-prefer-newer t)
-
   (setq-default
     case-fold-search t
     history-length 100
@@ -44,7 +39,7 @@
     truncate-lines nil
     xref-prompt-for-identifier nil
     scroll-conservatively 10000
-    ring-bell-function 'ignore
+    ring-bell-function #'ignore
     display-warning-minimum-level :error
     warning-minimum-level :error
     truncate-partial-width-windows nil)
@@ -54,15 +49,12 @@
     tab-width 4
     indent-tabs-mode nil)
 
-  (setq visible-bell t
-    inhibit-compacting-font-caches t  ; Don’t compact font caches during GC.
+  (setq inhibit-compacting-font-caches t  ; Don’t compact font caches during GC.
     delete-by-moving-to-trash t       ; Deleting files go to OS's trash folder
     make-backup-files nil             ; Forbid making backup files
     auto-save-default nil             ; Disable auto save
     create-lockfiles nil              ; No lockfiles
 
-    adaptive-fill-regexp "[ t]+|[ t]*([0-9]+.|*+)[ t]*"
-    adaptive-fill-first-line-regexp "^* *$"
     sentence-end "\\([。！？]\\|……\\|[.?!][]\"')}]*\\($\\|[ \t]\\)\\)[ \t\n]*"
     sentence-end-double-space nil)
 

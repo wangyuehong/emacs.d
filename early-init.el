@@ -28,6 +28,8 @@
 (when (featurep 'ns)
   (push '(ns-transparent-titlebar . t) default-frame-alist))
 
+(setq load-prefer-newer t)
+
 (setq-default mode-line-format nil)
 
 ;;; early-init.el ends here

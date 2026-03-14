@@ -39,7 +39,7 @@
 (defun my/kill-other-buffers ()
   "Kill all other buffers except the current one."
   (interactive)
-  (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+  (mapc #'kill-buffer (delq (current-buffer) (buffer-list))))
 
 (defun my/scroll-other-window-smooth-down ()
   "Scroll other window down by a few lines smoothly."

@@ -6,7 +6,7 @@
   :ensure nil
   :hook (after-init . electric-pair-mode)
   :custom
-  (electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit))
+  (electric-pair-inhibit-predicate #'electric-pair-conservative-inhibit))
 
 (use-package autorevert
   :ensure nil
@@ -57,7 +57,6 @@
   :ensure nil
   :custom
   (column-number-mode t)
-  (line-number-mode t)
   (size-indication-mode t)
   (line-move-visual nil)
   (column-number-indicator-zero-based nil)
@@ -83,9 +82,9 @@
       (set-window-configuration my/ediff-saved-window-conf)))
   :custom
   (ediff-highlight-all-diffs t)
-  (ediff-window-setup-function 'ediff-setup-windows-plain)
-  (ediff-split-window-function 'split-window-horizontally)
-  (ediff-merge-split-window-function 'split-window-horizontally))
+  (ediff-window-setup-function #'ediff-setup-windows-plain)
+  (ediff-split-window-function #'split-window-horizontally)
+  (ediff-merge-split-window-function #'split-window-horizontally))
 
 (use-package delsel
   :ensure nil
