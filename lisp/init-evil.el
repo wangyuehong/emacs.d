@@ -49,7 +49,8 @@
     ("C-n" . my/scroll-other-window-smooth-down)
     ("C-p" . my/scroll-other-window-smooth-up)
     :map evil-visual-state-map
-    ("v" . er/expand-region)
+    ("v" . expreg-expand)
+    ("z" . expreg-contract)
     ("s" . evil-avy-goto-word-or-subword-1)
     ("f" . evil-avy-goto-char-in-line)
     ("TAB" . evil-indent))

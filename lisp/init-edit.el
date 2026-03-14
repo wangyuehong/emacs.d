@@ -27,9 +27,7 @@
   :hook ((prog-mode . subword-mode)
           (minibuffer-setup . subword-mode)))
 
-(use-package expand-region
-  :custom
-  (expand-region-contract-fast-key "z"))
+(use-package expreg)
 
 (use-package highlight-escape-sequences
   :hook (after-init . hes-mode))
