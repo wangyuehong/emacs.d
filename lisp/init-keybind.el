@@ -3,6 +3,7 @@
 ;;; Code:
 
 (use-package which-key
+  :ensure nil
   :hook (after-init . which-key-mode)
   :config
   (which-key-add-key-based-replacements "C-c &" "yasnippet")
