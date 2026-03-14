@@ -34,16 +34,15 @@ Based on: This project is based on [flymake-golangci.el](https://gitlab.com/shac
 Configuration in init-go.el:
 ```elisp
 (use-package flymake-golangci-lint
-  :ensure nil ;; site-lisp/flymake-golangci-lint
+  :ensure nil
   :if (executable-find "golangci-lint")
-  :after go-mode
-  :hook (go-mode . flymake-golangci-lint-load))
+  :hook (go-ts-mode . flymake-golangci-lint-load))
 ```
 
 Simplified configuration (if using site-lisp autoload):
 ```elisp
 ;; Automatically loads when golangci-lint is available
-(add-hook 'go-mode-hook 'flymake-golangci-lint-load)
+(add-hook 'go-ts-mode-hook 'flymake-golangci-lint-load)
 ```
 
 ## Configuration
@@ -78,7 +77,7 @@ Simplified configuration (if using site-lisp autoload):
 | `flymake-golangci-lint-disable-linters` | `nil` | List of linters to disable |
 | `flymake-golangci-lint-tests` | `t` | Whether to analyze test files |
 | `flymake-golangci-lint-fast` | `nil` | Run only fast linters |
-| `flymake-golangci-lint-auto-enable` | `t` | Auto-enable in go-mode |
+| `flymake-golangci-lint-auto-enable` | `t` | Auto-enable in go-ts-mode |
 
 ### Manual Usage
 

@@ -18,7 +18,9 @@
       (bash . ("https://github.com/tree-sitter/tree-sitter-bash"))
       (json . ("https://github.com/tree-sitter/tree-sitter-json"))
       (html . ("https://github.com/tree-sitter/tree-sitter-html"))
-      (python . ("https://github.com/tree-sitter/tree-sitter-python"))))
+      (python . ("https://github.com/tree-sitter/tree-sitter-python"))
+      (go . ("https://github.com/tree-sitter/tree-sitter-go"))
+      (gomod . ("https://github.com/camdencheek/tree-sitter-go-mod"))))
   (dolist (entry '(("\\.toml\\'" . toml-ts-mode)
                    ("\\(?:Dockerfile\\(?:\\..*\\)?\\|\\.[Dd]ockerfile\\)\\'" . dockerfile-ts-mode)
                    ("\\.lua\\'" . lua-ts-mode)
@@ -31,7 +33,9 @@
   (dolist (entry '((ruby-mode . ruby-ts-mode)
                    (css-mode . css-ts-mode)
                    (js-json-mode . json-ts-mode)
-                   (python-mode . python-ts-mode)))
+                   (python-mode . python-ts-mode)
+                   (go-mode . go-ts-mode)
+                   (go-dot-mod-mode . go-mod-ts-mode)))
     (add-to-list 'major-mode-remap-alist entry)))
 
 (use-package breadcrumb

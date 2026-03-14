@@ -35,7 +35,7 @@
 ;;
 ;; Usage:
 ;;   (require 'flymake-golangci-lint)
-;;   (add-hook 'go-mode-hook 'flymake-golangci-lint-load)
+;;   (add-hook 'go-ts-mode-hook 'flymake-golangci-lint-load)
 ;;
 ;; Configuration:
 ;;   ;; New plist-based config (recommended)
@@ -96,7 +96,7 @@
   :group 'flymake-golangci-lint)
 
 (defcustom flymake-golangci-lint-auto-enable t
-  "Whether to automatically enable flymake-golangci-lint in `go-mode'.
+  "Whether to automatically enable flymake-golangci-lint in `go-ts-mode'.
 When nil, flymake-golangci-lint won't be automatically enabled,
 but can still be triggered manually with `flymake-golangci-lint-run'."
   :type 'boolean

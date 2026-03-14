@@ -12,10 +12,10 @@
 (require 'flymake-golangci-lint)
 (require 'cl-lib)
 
-;; Mock go-mode for testing
-(defun go-mode ()
-  "Mock `go-mode'."
-  (setq major-mode 'go-mode))
+;; Mock go-ts-mode for testing
+(defun go-ts-mode ()
+  "Mock `go-ts-mode'."
+  (setq major-mode 'go-ts-mode))
 
 (defmacro with-temp-go-buffer (content &rest body)
   "Execute BODY with a temp buffer containing Go CONTENT."
@@ -23,7 +23,7 @@
   `(with-temp-buffer
      (insert ,content)
      (setq buffer-file-name "/tmp/test.go")
-     (go-mode)
+     (go-ts-mode)
      ,@body))
 
 ;;; Basic Functionality Tests

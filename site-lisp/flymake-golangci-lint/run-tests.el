@@ -12,11 +12,11 @@
 ;; Load dependencies
 (require 'ert)
 
-;; Mock go-mode if not available
-(unless (fboundp 'go-mode)
-  (defun go-mode ()
-    "Mock go-mode for testing."
-    (setq major-mode 'go-mode)))
+;; Mock go-ts-mode if not available
+(unless (fboundp 'go-ts-mode)
+  (defun go-ts-mode ()
+    "Mock go-ts-mode for testing."
+    (setq major-mode 'go-ts-mode)))
 
 ;; Load the module and tests
 (load "flymake-golangci-lint.el")
