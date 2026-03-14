@@ -71,6 +71,12 @@ cd site-lisp/code-ref && make checkdoc
 - 自定义变量用 `defcustom` 定义在 `init-custom.el` 中
 - 项目级语言设置通过 `my/project-language` 变量（在 `.dir-locals.el` 中设置）
 
+## 错误处理规则
+
+- `error`: 程序逻辑错误或不可恢复的异常，触发 `debug-on-error` debugger
+- `user-error`: 环境、配置、用户操作导致的预期错误，不触发 debugger，适用于 hook 和交互命令中的 fail-fast
+- `message`: 仅用于非阻断的信息通知，不中断执行流程
+
 ## Elisp 编辑须知
 
 - 新增 `init-*.el` 模块时，必须在 `init.el` 中按正确位置添加 `require`

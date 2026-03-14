@@ -364,15 +364,20 @@ CALLBACK is called with the conversation ID on success."
                 (when (and final (not (string-empty-p final)))
                   (setq copilot-commit--accumulated final)))
               (setq copilot-commit--streaming-p nil)
-              (push (cons prompt (or copilot-commit--accumulated ""))
-                    copilot-commit--history)
-              (copilot-commit--update-input-region
-               buf (or copilot-commit--accumulated ""))
-              (when (eq phase 'finalizing)
-                (setq copilot-commit--phase nil
-                      copilot-commit--chunks nil
-                      copilot-commit--chunk-index 0))
-              (message nil))))
+              (if (or (null copilot-commit--accumulated)
+                      (string-empty-p copilot-commit--accumulated))
+                  (progn
+                    (copilot-commit--update-input-region buf "")
+                    (user-error "Copilot commit: server returned empty response"))
+                (push (cons prompt copilot-commit--accumulated)
+                      copilot-commit--history)
+                (copilot-commit--update-input-region
+                 buf copilot-commit--accumulated)
+                (when (eq phase 'finalizing)
+                  (setq copilot-commit--phase nil
+                        copilot-commit--chunks nil
+                        copilot-commit--chunk-index 0))
+                (message nil)))))
           (copilot-commit--cleanup-request token)))))))
 
 (defun copilot-commit--handle-progress (msg)

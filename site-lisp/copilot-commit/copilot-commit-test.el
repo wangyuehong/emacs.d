@@ -567,6 +567,22 @@
       ;; Token should be cleaned up
       (should (null (assoc token copilot-commit--active-requests))))))
 
+(ert-deftest cc-test-handle-progress-1/end-empty-response-signals-error ()
+  "AC-0010-0070: server returns end with no content."
+  (cc-test--with-progress-buf
+    (with-current-buffer buf
+      (setq copilot-commit--accumulated nil))
+    (let* ((token "tok1")
+           (copilot-commit--active-requests
+            (list (list token buf "the prompt" nil nil))))
+      (should-error
+       (copilot-commit--handle-progress-1
+        token (list :kind "end"))
+       :type 'user-error)
+      (with-current-buffer buf
+        (should (null copilot-commit--streaming-p))
+        (should (null copilot-commit--history))))))
+
 (ert-deftest cc-test-handle-progress-1/end-summarize-dispatches-more ()
   (cc-test--with-progress-buf
     (with-current-buffer buf

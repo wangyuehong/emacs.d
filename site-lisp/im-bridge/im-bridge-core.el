@@ -39,7 +39,11 @@ CJK input methods need the workaround to function correctly."
 
 (defun imb--im-get ()
   "Return current system IME id."
-  (string-trim (shell-command-to-string imb--cli-command)))
+  (with-temp-buffer
+    (let ((status (call-process imb--cli-command nil t)))
+      (unless (zerop status)
+        (user-error "im-bridge: %s failed (exit %d)" imb--cli-command status))
+      (string-trim (buffer-string)))))
 
 (defun imb--im-set (id)
   "Switch system IME to ID.
