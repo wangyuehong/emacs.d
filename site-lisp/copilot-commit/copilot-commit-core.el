@@ -45,6 +45,7 @@ Breaking changes: append ! before : or add BREAKING CHANGE: footer.
 Rules:
 - Summary line: imperative, present tense, <=72 chars, no trailing period
 - Body (optional): one blank line after summary, wrap at 72 chars, use bullet list with -
+- Describe ONLY what changed factually; do NOT speculate on intent unless supported by code documentation or comments
 - Output ONLY the commit message text, no code fences or commentary
 "
   "System prompt for commit message generation."
