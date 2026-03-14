@@ -5,9 +5,14 @@
 (require 'cl-lib)
 (require 'seq)
 
-(use-package open-junk-file
-  :custom
-  (open-junk-file-format "~/junk/%Y-%m-%dT%H-%M-%S.md"))
+(defun my/open-junk-file ()
+  "Open a new junk file with a timestamp-based name.
+Prompts for the file name with a default, allowing modification before opening."
+  (interactive)
+  (let* ((default (format-time-string "~/junk/%Y-%m-%dT%H-%M-%S.md"))
+         (file (read-string "Junk file: " default)))
+    (make-directory (file-name-directory file) t)
+    (find-file file)))
 
 (defun my/open-file-in-vscode ()
   "Open the current file in Visual Studio Code and jump to the current position."
