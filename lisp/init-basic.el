@@ -75,6 +75,14 @@
                (abbreviate-file-name (buffer-file-name))
                "%b")))))
 
+;; Workaround: disable auto-composition-mode in TUI to prevent emoji
+;; rendering artifacts (cursor misalignment, screen corruption on redraw).
+;; Terminals cannot compose characters (ligatures, ZWJ emoji) anyway.
+(use-package emacs
+  :unless (display-graphic-p)
+  :config
+  (setq-default auto-composition-mode nil))
+
 (use-package quail
   :ensure nil
   :config
