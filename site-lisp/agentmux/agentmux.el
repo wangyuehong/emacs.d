@@ -29,6 +29,7 @@
 ;;
 ;; Features:
 ;; - Send commands with file context (path, line number, region content)
+;; - Send file reference (path:line or path:start-end) directly
 ;; - Quick digit input (0-9) for menu selections
 ;; - Menu navigation mode for multi-option interactions
 ;; - Stage only mode to send without executing (customizable key)
@@ -349,7 +350,21 @@ NO-ENTER-P is t if user pressed `agentmux-send-no-enter-key'."
     (deactivate-mark)))
 
 ;;;###autoload
-(defun agentmux-send-file-path ()
+(defun agentmux-send-file-ref ()
+  "Send current file location (path:line) to agent.
+Uses `agentmux-context-path-style' for path format.
+With active region, sends path:start-end."
+  (interactive)
+  (unless buffer-file-name
+    (user-error "Buffer has no file"))
+  (let ((location (agentmux--format-location-with-bounds
+                    agentmux-context-path-style t
+                    (cref--get-region-or-line))))
+    (agentmux--send-text (format "\n%s\n" location) t)
+    (deactivate-mark)))
+
+;;;###autoload
+(defun agentmux-send-file-path-only ()
   "Send current file path to agent.
 Uses `agentmux-context-path-style' for path format.
 Does not include line number or content."
@@ -500,7 +515,8 @@ Navigate with hjkl or arrow keys, RET to confirm, ESC to cancel."
   [["Send"
      ("s" "Command" agentmux-send-command)
      ("x" "Command + context" agentmux-send-command-with-context)
-     ("p" "File path" agentmux-send-file-path)]
+     ("p" "File:line" agentmux-send-file-ref)
+     ("P" "File path" agentmux-send-file-path-only)]
 
     ["Quick"
       ("1" "1" agentmux-send-1)
