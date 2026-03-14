@@ -17,14 +17,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 每个 `init-*.el` 是独立模块，通过 `require` 加载。`init.el` 中的加载顺序有依赖关系（例如 `init-general` 依赖 `init-evil`）。
 
 模块分组：
-- 核心：`init-package`, `init-custom`, `init-env`, `init-basic`, `init-clipboard`
-- 界面：`init-theme`（srcery）, `init-highlight`, `init-edit`, `init-ui`（doom-modeline, dashboard, nerd-icons）
-- Evil：`init-evil`（vim 键绑定 + evil-collection）, `init-keybind`（which-key）, `init-general`（SPC leader via general.el + transient 菜单）
+- 核心：`init-package`, `init-custom`, `init-env`, `init-basic`（repeat-echo 内置）, `init-clipboard`
+- 界面：`init-theme`（srcery）, `init-highlight`, `init-ui`（doom-modeline, dashboard, nerd-icons）
+- Evil：`init-evil`（vim 键绑定 + evil-collection）, `init-keybind`（which-key，Emacs 30+ 内置）, `init-general`（SPC leader via general.el + transient 菜单）
 - 补全：`init-search`（avy, ripgrep）, `init-completion`（vertico, consult, embark, company, orderless）, `init-yasnippet`
 - 窗口/文件/会话：`init-window`, `init-dired`, `init-session`
+- 编辑增强：`init-edit`（expreg, iedit, markdown-mode）
 - 编程：`init-prog`（多语言 mode, flymake, breadcrumb）, `init-lsp`（eglot）, `init-go`, `init-python`
 - 集成：`init-git`（magit, diff-hl）, `init-term`, `init-im`, `init-ai`（copilot, copilot-commit, agentmux）
-- 工具：`init-utils`
+- 工具：`init-utils`（`my/open-junk-file` 等自定义命令）
 - 覆盖：`init-local`（机器级配置，最后加载，可选）
 
 ### 自定义包（`site-lisp/`）
@@ -55,6 +56,11 @@ cd site-lisp/code-ref && make checkdoc
 ```
 
 无顶层测试命令，各包独立测试。
+
+## 包选型原则
+
+- 优先使用 Emacs 内置功能，仅在内置无法满足或体验明显不足时引入第三方包
+- 当前基于 Emacs 31，每次 Emacs 大版本更新后需根据新增内置功能重新筛查第三方包的必要性
 
 ## 代码约定
 
