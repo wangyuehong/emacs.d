@@ -51,9 +51,5 @@
   (interactive)
   (scroll-other-window -5))
 
-(use-package nerd-icons-ibuffer
-  :after nerd-icons
-  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
-
 (provide 'init-window)
 ;;; init-window.el ends here
