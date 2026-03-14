@@ -107,10 +107,10 @@
   :hook (imenu-after-jump . recenter)
   :custom (imenu-max-item-length 108))
 
-(use-package repeat-help
-  :hook (repeat-mode . repeat-help-mode)
+(use-package repeat
+  :ensure nil
   :custom
-  (repeat-help-auto t))
+  (repeat-echo-function #'repeat-echo-message))
 
 (use-package helpful
   :bind (("C-h f" . helpful-callable)
