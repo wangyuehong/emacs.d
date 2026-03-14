@@ -8,7 +8,7 @@
 (defvar-local my/python-lsp-server 'basedpyright
   "Python LSP server. Values: `basedpyright', `ty'.")
 (put 'my/python-lsp-server 'safe-local-variable
-     (lambda (v) (memq v '(basedpyright ty))))
+  (lambda (v) (memq v '(basedpyright ty))))
 
 (use-package eglot
   :functions eglot-server-capable
@@ -31,26 +31,26 @@ non-interactively applies it when supported by the server."
       ('basedpyright '("basedpyright-langserver" "--stdio"))
       ('ty '("ty" "server"))))
   :bind (:map eglot-mode-map
-              ("C-c l t" . eglot-find-typeDefinition)
-              ("C-c l i" . eglot-find-implementation)
-              ("C-c l a" . eglot-code-actions)
-              ("C-c l e" . eglot-rename)
-              ("C-c l r" . eglot-reconnect))
+          ("C-c l t" . eglot-find-typeDefinition)
+          ("C-c l i" . eglot-find-implementation)
+          ("C-c l a" . eglot-code-actions)
+          ("C-c l e" . eglot-rename)
+          ("C-c l r" . eglot-reconnect))
 
   :hook ((eglot-managed-mode . my/eglot-setup-hooks)
-         (eglot-managed-mode . eglot-inlay-hints-mode))
+          (eglot-managed-mode . eglot-inlay-hints-mode))
 
   :init
   (setq eglot-stay-out-of '(company))
   (setq read-process-output-max (* 1024 1024)) ; 1MB
   ;; Set Eglot user options explicitly for robustness
   (setq eglot-autoshutdown t
-        eglot-confirm-server-initiated-edits nil
-        eglot-events-buffer-size 0
-        eglot-extend-to-xref t
-        eglot-report-progress nil
-        eglot-sync-connect nil
-        eglot-watch-files-outside-project-root nil)
+    eglot-confirm-server-edits nil
+    eglot-events-buffer-config '(:size 0)
+    eglot-extend-to-xref t
+    eglot-report-progress nil
+    eglot-sync-connect nil
+    eglot-watch-files-outside-project-root nil)
 
   :config
   (add-to-list 'eglot-server-programs
@@ -59,20 +59,18 @@ non-interactively applies it when supported by the server."
   ;; gopls configuration per upstream recommendations
   ;; See: https://tip.golang.org/gopls/editor/emacs
   (setq-default eglot-workspace-configuration
-                '((:gopls
-                   . ((completeUnimported . t)
-                      (gofumpt           . t)
-                      (staticcheck       . t)
-                      (analyses . ((unusedparams . t)
-                                   (unusedwrite  . t)
-                                   (nilness      . t)
-                                   (shadow       . t)
-                                   ;; Suppress selected Staticcheck style checks
-                                   (ST1000       . :json-false)
-                                   (ST1020       . :json-false)
-                                   (ST1021       . :json-false))))))
-
-  ))
+    '((:gopls
+        . ((completeUnimported . t)
+            (gofumpt           . t)
+            (staticcheck       . t)
+            (analyses . ((unusedparams . t)
+                          (unusedwrite  . t)
+                          (nilness      . t)
+                          (shadow       . t)
+                          ;; Suppress selected Staticcheck style checks
+                          (ST1000       . :json-false)
+                          (ST1020       . :json-false)
+                          (ST1021       . :json-false))))))))
 
 (use-package consult-eglot
   :after (consult eglot)

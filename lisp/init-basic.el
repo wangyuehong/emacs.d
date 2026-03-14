@@ -57,7 +57,7 @@
   (setq visible-bell t
     inhibit-compacting-font-caches t  ; Don’t compact font caches during GC.
     delete-by-moving-to-trash t       ; Deleting files go to OS's trash folder
-    make-backup-files nil             ; Forbide to make backup files
+    make-backup-files nil             ; Forbid making backup files
     auto-save-default nil             ; Disable auto save
     create-lockfiles nil              ; No lockfiles
 

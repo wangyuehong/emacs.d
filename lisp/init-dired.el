@@ -6,10 +6,9 @@
   :ensure nil
   :hook
   (dired-mode . dired-hide-details-mode)
-  (dired-mode . auto-revert-mode)
   :config
   (unbind-key "j" dired-jump-map)
-  (when (string= system-type "darwin")
+  (when (eq system-type 'darwin)
     (setq dired-use-ls-dired nil))
   :custom
   (dired-recursive-deletes 'always)

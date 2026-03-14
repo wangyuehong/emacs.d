@@ -115,7 +115,7 @@
 (use-package hideshow
   :ensure nil
   :preface
-  (defun hs-display-code-line-counts (ov)
+  (defun my/hs-display-code-line-counts (ov)
     "Display line counts when hiding codes."
     (when (eq 'code (overlay-get ov 'hs))
       (overlay-put ov 'display
@@ -134,7 +134,7 @@
           ("C-c h h" . hs-hide-all)
           ("C-c h s" . hs-show-all))
   :custom
-  (hs-set-up-overlay #'hs-display-code-line-counts)
+  (hs-set-up-overlay #'my/hs-display-code-line-counts)
   (hs-hide-comments-when-hiding-all t))
 
 (use-package indent-bars

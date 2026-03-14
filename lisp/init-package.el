@@ -25,9 +25,5 @@
 ;; Update GPG keyring for GNU ELPA
 (use-package gnu-elpa-keyring-update)
 
-;; Workaround: fix transient error in terminal
-(unless (boundp 'overriding-text-conversion-style)
-  (defvar overriding-text-conversion-style nil))
-
 (provide 'init-package)
 ;;; init-package.el ends here

@@ -1,4 +1,4 @@
-;;; init-edit.el --- edit config . -*- lexical-binding: t; -*-
+;;; init-edit.el --- edit config. -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 
@@ -68,19 +68,21 @@
   (kill-do-not-save-duplicates t)
   (set-mark-command-repeat-pop t)
   :init
-  (setq-default show-trailing-whitespace nil)); Don't show trailing whitespace by default
+  (setq-default show-trailing-whitespace nil)) ; Don't show trailing whitespace by default
 
 (use-package ediff
   :ensure nil
-  :hook ((ediff-before-setup . ediff-save-window-conf)
-          (ediff-quit         . ediff-restore-window-conf))
+  :hook ((ediff-before-setup . my/ediff-save-window-conf)
+          (ediff-quit         . my/ediff-restore-window-conf))
   :config
-  (defvar local-ediff-saved-window-conf nil)
-  (defun ediff-save-window-conf ()
-    (setq local-ediff-saved-window-conf (current-window-configuration)))
-  (defun ediff-restore-window-conf ()
-    (when (window-configuration-p local-ediff-saved-window-conf)
-      (set-window-configuration local-ediff-saved-window-conf)))
+  (defvar my/ediff-saved-window-conf nil)
+  (defun my/ediff-save-window-conf ()
+    "Save current window configuration before starting ediff."
+    (setq my/ediff-saved-window-conf (current-window-configuration)))
+  (defun my/ediff-restore-window-conf ()
+    "Restore window configuration saved before ediff."
+    (when (window-configuration-p my/ediff-saved-window-conf)
+      (set-window-configuration my/ediff-saved-window-conf)))
   :custom
   (ediff-highlight-all-diffs t)
   (ediff-window-setup-function 'ediff-setup-windows-plain)

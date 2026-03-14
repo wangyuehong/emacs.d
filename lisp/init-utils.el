@@ -17,7 +17,7 @@
            (line-num (number-to-string (line-number-at-pos)))
            (col-num (number-to-string (current-column))))
       (shell-command (format "code --goto %s:%s:%s" (shell-quote-argument file-path) line-num col-num)))
-    (message "Buffer is not visiting a file.")))
+    (user-error "Buffer is not visiting a file")))
 
 (defun my/open-file-in-cursor ()
   "Open the current file in Cursor and jump to the current position."
@@ -27,18 +27,22 @@
            (line-num (number-to-string (line-number-at-pos)))
            (col-num (number-to-string (current-column))))
       (shell-command (format "cursor --goto %s:%s:%s" (shell-quote-argument file-path) line-num col-num)))
-    (message "Buffer is not visiting a file.")))
+    (user-error "Buffer is not visiting a file")))
 
 (defun my/open-file-in-typora ()
   "Open the current file in Typora."
   (interactive)
+  (unless (eq system-type 'darwin)
+    (user-error "This command is only available on macOS"))
   (if-let* ((file-path (buffer-file-name)))
     (shell-command (format "open -a Typora %s" (shell-quote-argument file-path)))
-    (message "Buffer is not visiting a file.")))
+    (user-error "Buffer is not visiting a file")))
 
 (defun my/open-in-finder ()
   "Open the current directory in Finder."
   (interactive)
+  (unless (eq system-type 'darwin)
+    (user-error "This command is only available on macOS"))
   (when-let* ((dir (cond
                      ((eq major-mode 'dired-mode)
                        (expand-file-name default-directory))

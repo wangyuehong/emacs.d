@@ -7,7 +7,7 @@
   :preface
   (defun my/project-find-go-root (dir)
     "Find Go workspace root for DIR preferring go.work over go.mod."
-    (when-let ((root (or (locate-dominating-file dir "go.work")
+    (when-let* ((root (or (locate-dominating-file dir "go.work")
                          (locate-dominating-file dir "go.mod"))))
       (cons 'go root)))
 
@@ -16,11 +16,11 @@
     (cdr project))
 
   (defun my/set-go-project-find-functions ()
-    "Add Go project finder to `project-find-functions`."
+    "Add Go project finder to `project-find-functions'."
     (add-to-list 'project-find-functions #'my/project-find-go-root))
 
   (defun my/go-ts-mode-enhance-font-lock ()
-    "Enable extra font-lock features for `go-ts-mode`."
+    "Enable extra font-lock features for `go-ts-mode'."
     (treesit-font-lock-recompute-features '(function property) nil))
   :hook ((go-ts-mode . eglot-ensure)
          (go-ts-mode . my/set-go-project-find-functions)
