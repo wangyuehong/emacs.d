@@ -12,7 +12,9 @@
   (magit-diff-paint-whitespace nil)
   (magit-diff-refine-hunk t)
   (magit-ediff-dwim-show-on-hunks t)
-  (magit-process-popup-time 10))
+  (magit-process-popup-time 10)
+  :config
+  (remove-hook 'git-commit-setup-hook #'git-commit-collapse-diff))
 
 (use-package vc
   :ensure nil
