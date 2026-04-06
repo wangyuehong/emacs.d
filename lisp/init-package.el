@@ -8,7 +8,7 @@
   (setq use-package-always-ensure t
     use-package-always-defer t
     use-package-expand-minimally t
-    package-install-upgrade-built-in nil)
+    package-install-upgrade-built-in t)
   :config
   ;; install into separate package dirs for each emacs version
   (let ((versioned-package-dir
