@@ -146,7 +146,66 @@
 
 (use-package vbnet-mode
   :ensure nil
-  :mode "\\.\\(frm\\|bas\\|cls\\|vb\\)\\'")
+  :mode "\\.\\(frm\\|bas\\|cls\\|vb\\)\\'"
+  :custom
+  (vbnet-capitalize-keywords-p nil)
+  :init
+  (with-eval-after-load 'dumb-jump
+    ;; file extensions
+    (dolist (ext '("vb" "bas" "cls" "frm"))
+      (add-to-list 'dumb-jump-language-file-exts
+                   `(:language "vbnet" :ext ,ext :agtype nil :rgtype nil)))
+    ;; case-insensitive (defconst -- intentional override, re-apply on upgrade)
+    (add-to-list 'dumb-jump--case-insensitive-languages "vbnet")
+    ;; find rules
+    (dolist (rule
+             '((:language "vbnet" :type "function"
+                :supports ("ag" "grep" "rg" "git-grep")
+                :regex "^\\s*(?:[A-Za-z]+\\s+)*(?:Function|Sub)\\s+JJJ\\s*\\("
+                :tests ("Public Function test()"
+                        "Private Sub test(param)"
+                        "Public Async Function test()"
+                        "Protected Friend Overridable Sub test()"
+                        "Function test()")
+                :not ("test()" "testOther()" "call test()"))
+               (:language "vbnet" :type "type"
+                :supports ("ag" "grep" "rg" "git-grep")
+                :regex "^\\s*(?:[A-Za-z]+\\s+)*(?:Class|Structure|Interface|Module|Enum)\\s+JJJ\\b"
+                :tests ("Public Class test"
+                        "Public Partial Class test"
+                        "Interface test"
+                        "Module test"
+                        "Public Enum test")
+                :not ("testOther" "End Class"))
+               (:language "vbnet" :type "type"
+                :supports ("ag" "grep" "rg" "git-grep")
+                :regex "^\\s*(?:[A-Za-z]+\\s+)*Delegate\\s+(?:Function|Sub)\\s+JJJ\\s*\\("
+                :tests ("Public Delegate Function test()"
+                        "Public Shadows Delegate Sub test()")
+                :not ("testOther"))
+               (:language "vbnet" :type "variable"
+                :supports ("ag" "grep" "rg" "git-grep")
+                :regex "^\\s*(?:[A-Za-z]+\\s+)*Property\\s+JJJ\\b"
+                :tests ("Public Property test As String"
+                        "Public Overloads Property test As String"
+                        "ReadOnly Property test As Integer"
+                        "Property test As Boolean")
+                :not ("testOther" "End Property"))
+               (:language "vbnet" :type "variable"
+                :supports ("ag" "grep" "rg" "git-grep")
+                :regex "^\\s*(?:[A-Za-z]+\\s+)*(?:Dim|Const)\\s+JJJ\\b"
+                :tests ("Dim test As String"
+                        "Private Const test As Integer = 1"
+                        "Const test = 42")
+                :not ("testOther" "ReDim test("))
+               (:language "vbnet" :type "variable"
+                :supports ("ag" "grep" "rg" "git-grep")
+                :regex "^\\s*(?:(?:Public|Private|Protected|Friend)\\s+)+(?:[A-Za-z]+\\s+)*JJJ\\s+As\\b"
+                :tests ("Public test As String"
+                        "Private Shared test As Integer"
+                        "Protected Friend Shared test As Boolean")
+                :not ("testOther" "Dim test As"))))
+      (add-to-list 'dumb-jump-find-rules rule))))
 
 (use-package csv-mode
   :hook (csv-mode . csv-align-mode)
