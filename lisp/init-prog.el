@@ -144,6 +144,10 @@
   (indent-bars-display-on-blank-lines 'least)
   (indent-bars-no-descend-lists t))
 
+(use-package vbnet-mode
+  :ensure nil
+  :mode "\\.\\(frm\\|bas\\|cls\\|vb\\)\\'")
+
 (use-package csv-mode
   :hook (csv-mode . csv-align-mode)
   :custom
