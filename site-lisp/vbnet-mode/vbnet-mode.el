@@ -1634,8 +1634,9 @@ in VB.NET buffers.")
       (define-abbrev-table 'vbnet-mode-abbrev-table list))))
 
 
-;; Would like to do this at compile-time.
-(vbnet-construct-keyword-abbrev-table)
+;; Build the abbrev table only when keyword capitalization is enabled.
+(when vbnet-capitalize-keywords-p
+  (vbnet-construct-keyword-abbrev-table))
 
 
 (defun vbnet-in-code-context-p ()
@@ -2897,8 +2898,8 @@ Here's a summary of the key bindings:
 
   (add-hook 'before-save-hook #'vbnet-untabify nil t)
 
-  (setq local-abbrev-table vbnet-mode-abbrev-table)
   (when vbnet-capitalize-keywords-p
+    (setq local-abbrev-table vbnet-mode-abbrev-table)
     (setq-local abbrev-expand-function
                 (lambda (expand)
                   (setq local-abbrev-table

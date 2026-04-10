@@ -147,6 +147,7 @@
 (use-package vbnet-mode
   :ensure nil
   :mode "\\.\\(frm\\|bas\\|cls\\|vb\\)\\'"
+  :hook (vbnet-mode . display-line-numbers-mode)
   :custom
   (vbnet-capitalize-keywords-p nil)
   :init
