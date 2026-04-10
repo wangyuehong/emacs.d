@@ -1587,6 +1587,10 @@ in VB.NET buffers.")
      ;; String-valued cases get font-lock-string-face regardless.
      (list "^[[:blank:]]*case[[:blank:]]+\\([^'\n]+\\)" 1 'font-lock-keyword-face t)
 
+     ;; Preprocessor directives
+     (list "^[[:blank:]]*\\(#\\(?:Region\\|End Region\\|If\\|ElseIf\\|Else\\|End If\\|Const\\|ExternalSource\\|End ExternalSource\\|ExternalChecksum\\|Enable\\|Disable\\)\\b.*\\)"
+           1 'font-lock-preprocessor-face t)
+
      )))
 
 
