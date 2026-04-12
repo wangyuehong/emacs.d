@@ -1079,5 +1079,80 @@
     (let ((entry (cdr (assoc "default" copilot-commit--model-token-limits))))
       (should (= (car entry) 64000)))))
 
+;; ---------------------------------------------------------------------------
+;;; handle-context tests
+;; ---------------------------------------------------------------------------
+
+(ert-deftest cc-test-handle-context/returns-doc-with-active-request ()
+  "Context handler returns editor doc when a copilot-commit request is active."
+  (with-temp-buffer
+    (insert "existing content\n# Please enter the commit message")
+    (let* ((buf (current-buffer))
+           (copilot-commit--active-requests
+            (list (list "tok1" buf "prompt" nil nil))))
+      (let ((result (copilot-commit--handle-context
+                     (list :skillId "current-editor"))))
+        (should (listp result))
+        (should (equal (plist-get result :languageId) "git-commit"))
+        (should (equal (plist-get result :version) 0))
+        (should (stringp (plist-get result :source)))
+        (should (string-match-p "existing content" (plist-get result :source)))))))
+
+(ert-deftest cc-test-handle-context/delegates-without-active-request ()
+  "Context handler delegates to previous handler when no active request."
+  (let* ((copilot-commit--active-requests nil)
+         (delegate-called nil)
+         (copilot-commit--prev-context-handler
+          (lambda (_msg) (setq delegate-called t) 'delegated)))
+    (let ((result (copilot-commit--handle-context
+                   (list :skillId "current-editor"))))
+      (should delegate-called)
+      (should (eq result 'delegated)))))
+
+(ert-deftest cc-test-handle-context/nil-for-unknown-skill ()
+  "Context handler returns nil for non-current-editor skills without prev handler."
+  (let ((copilot-commit--active-requests
+         (list (list "tok1" (current-buffer) "prompt" nil nil)))
+        (copilot-commit--prev-context-handler nil))
+    (should (null (copilot-commit--handle-context
+                   (list :skillId "unknown-skill"))))))
+
+(ert-deftest cc-test-handle-context/delegates-unknown-skill-to-prev ()
+  "Context handler delegates unknown skills to previous handler."
+  (let* ((delegate-called nil)
+         (copilot-commit--active-requests
+          (list (list "tok1" (current-buffer) "prompt" nil nil)))
+         (copilot-commit--prev-context-handler
+          (lambda (_msg) (setq delegate-called t) 'delegated)))
+    (let ((result (copilot-commit--handle-context
+                   (list :skillId "unknown-skill"))))
+      (should delegate-called)
+      (should (eq result 'delegated)))))
+
+(ert-deftest cc-test-handle-context/nil-without-prev-handler ()
+  "Context handler returns nil when no active request and no prev handler."
+  (let ((copilot-commit--active-requests nil)
+        (copilot-commit--prev-context-handler nil))
+    (should (null (copilot-commit--handle-context
+                   (list :skillId "current-editor"))))))
+
+(ert-deftest cc-test-handle-context/dead-buffer ()
+  "Context handler returns nil when active request buffer is dead."
+  (let* ((buf (generate-new-buffer " *test-dead*"))
+         (copilot-commit--active-requests
+          (list (list "tok1" buf "prompt" nil nil)))
+         (copilot-commit--prev-context-handler nil))
+    (kill-buffer buf)
+    (should (null (copilot-commit--handle-context
+                   (list :skillId "current-editor"))))))
+
+;; ---------------------------------------------------------------------------
+;;; workspace-folders tests
+;; ---------------------------------------------------------------------------
+
+(ert-deftest cc-test-workspace-folders/returns-vector ()
+  "workspace-folders returns a vector."
+  (should (vectorp (copilot-commit--workspace-folders))))
+
 (provide 'copilot-commit-test)
 ;;; copilot-commit-test.el ends here

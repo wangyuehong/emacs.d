@@ -55,6 +55,16 @@ When nil, the server decides which model to use."
                  (string :tag "Model ID"))
   :group 'copilot-commit)
 
+;;; Helpers
+
+(defun copilot-commit--workspace-folders ()
+  "Return a vector of workspace folder objects for the current project."
+  (vconcat
+   (when-let* ((root (or (vc-root-dir) default-directory)))
+     (list (list :uri (concat "file://" root)
+                 :name (file-name-nondirectory
+                        (directory-file-name root)))))))
+
 ;;; Internal state
 
 (defvar copilot-commit--model-token-limits nil
@@ -180,7 +190,8 @@ The result is cached for future use via the progress begin handler."
                          :turns turns
                          :capabilities (list :skills (vector "current-editor")
                                              :allSkills t)
-                         :source "panel")))
+                         :source "panel"
+                         :workspaceFolders (copilot-commit--workspace-folders))))
       (when copilot-commit-model
         (setq params (plist-put params :model copilot-commit-model)))
       (copilot-commit--log "probe-token-limit: token=%s" token)
@@ -234,7 +245,8 @@ CALLBACK is called with the conversation ID on success."
                       :turns turns
                       :capabilities (list :skills (vector "current-editor")
                                           :allSkills t)
-                      :source "panel")))
+                      :source "panel"
+                      :workspaceFolders (copilot-commit--workspace-folders))))
     (when copilot-commit-model
       (setq params (plist-put params :model copilot-commit-model)))
     (copilot--async-request
@@ -391,15 +403,43 @@ CALLBACK is called with the conversation ID on success."
 
 ;;; Context request handler
 
-(defun copilot-commit--handle-context (msg)
-  "Handle `conversation/context' request.
-Returns nil for all skills since commit buffer has no editor context."
-  (copilot-commit--log "context requested: %S" msg)
-  nil)
+(defvar copilot-commit--prev-context-handler nil
+  "Previous `conversation/context' handler, saved for delegation.")
 
-;; Only register if no handler exists yet (avoid overriding copilot-lsp-chat)
-(when (and copilot-commit--available
-           (not (gethash 'conversation/context copilot--request-handlers)))
+(defun copilot-commit--handle-context (msg)
+  "Handle `conversation/context' request MSG.
+Return a minimal editor context doc for the active commit buffer.
+Delegates to the previous handler when no copilot-commit request is active."
+  (copilot-commit--log "context requested: %S" msg)
+  (let ((skill-id (plist-get msg :skillId)))
+    (if-let* (((equal skill-id "current-editor"))
+              (entry (cl-find-if (lambda (e) (nth 1 e))
+                                 copilot-commit--active-requests))
+              (buf (nth 1 entry))
+              ((buffer-live-p buf)))
+        (with-current-buffer buf
+          (let ((fname (buffer-file-name)))
+            (list :version 0
+                  :tabSize 2
+                  :indentSize 2
+                  :insertSpaces t
+                  :path (or fname "")
+                  :uri (if fname (concat "file://" fname) "")
+                  :relativePath (if fname
+                                    (file-name-nondirectory fname)
+                                  "COMMIT_EDITMSG")
+                  :languageId "git-commit"
+                  :position (list :line 0 :character 0)
+                  :source (buffer-substring-no-properties
+                           (point-min) (point-max)))))
+      ;; No active copilot-commit request: delegate to previous handler
+      (when copilot-commit--prev-context-handler
+        (funcall copilot-commit--prev-context-handler msg)))))
+
+(when copilot-commit--available
+  (let ((prev (gethash 'conversation/context copilot--request-handlers)))
+    (when (and prev (not (eq prev #'copilot-commit--handle-context)))
+      (setq copilot-commit--prev-context-handler prev)))
   (copilot-on-request 'conversation/context #'copilot-commit--handle-context))
 
 ;;; Chunked generation
