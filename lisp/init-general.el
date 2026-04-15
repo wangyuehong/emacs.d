@@ -90,6 +90,7 @@
     "tp" '(electric-pair-mode        :wk "electric-pair-mode")
     "tr" '(read-only-mode            :wk "read-only-mode")
     "tt" '(git-timemachine-toggle    :wk "git-timemachine")
+    "tv" '(my/toggle-respect-visual-line-mode :wk "respect-visual-line")
 
     "w" 'save-buffer
     "x" '(execute-extended-command    :wk "M-x")

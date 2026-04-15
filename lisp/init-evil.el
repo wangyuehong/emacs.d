@@ -70,7 +70,7 @@
   (evil-insert-skip-empty-lines t)
   (evil-kill-on-visual-paste nil)
   (evil-move-cursor-back nil)
-  (evil-respect-visual-line-mode t)
+  (evil-respect-visual-line-mode nil)
   (evil-search-module 'evil-search)
   (evil-split-window-below t)
   (evil-symbol-word-search t)
@@ -100,7 +100,22 @@
     (setq-local tab-always-indent t))
 
   (add-hook 'evil-insert-state-entry-hook #'my/evil-set-tab-for-completion)
-  (add-hook 'evil-insert-state-exit-hook #'my/evil-set-tab-for-indent))
+  (add-hook 'evil-insert-state-exit-hook #'my/evil-set-tab-for-indent)
+
+  ;; V in visual-line-mode: dynamically respects evil-respect-visual-line-mode
+  (evil-define-minor-mode-key 'motion 'visual-line-mode
+    "V" 'evil-visual-screen-line)
+
+  (defun my/toggle-respect-visual-line-mode ()
+    "Toggle j/k/V between physical and visual lines globally."
+    (interactive)
+    (setopt evil-respect-visual-line-mode (not evil-respect-visual-line-mode))
+    (evil-define-minor-mode-key 'motion 'visual-line-mode
+      "j" (when evil-respect-visual-line-mode 'evil-next-visual-line)
+      "k" (when evil-respect-visual-line-mode 'evil-previous-visual-line))
+    (evil-normalize-keymaps)
+    (message "respect-visual-line-mode: %s"
+             (if evil-respect-visual-line-mode "on" "off"))))
 
 (use-package evil-collection
   :after evil
