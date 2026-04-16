@@ -180,7 +180,7 @@ If NO-ENTER is non-nil, do not send Enter after text."
             (unless (zerop (call-process-region (point-min) (point-max)
                                                 "tmux" nil nil nil "load-buffer" "-"))
               (error "tmux load-buffer failed")))
-          (emamux:tmux-run-command nil "paste-buffer" "-d" "-t" target)
+          (emamux:tmux-run-command nil "paste-buffer" "-d" "-p" "-t" target)
           (unless no-enter
             (agentmux--send-keys "Enter")))
       (error (user-error "Failed to send to tmux: %s" (error-message-string err))))))
