@@ -57,11 +57,15 @@ otherwise, copy the full absolute path."
 (defun cref--copy-region-location-core (style &optional with-content)
   "Copy region location to clipboard.
 STYLE: \\='display, \\='absolute, \\='git, or \\='filename.
-WITH-CONTENT: if non-nil, include region content as Markdown code block."
+WITH-CONTENT: if non-nil, include region content as Markdown code block.
+Signals `user-error' when the current buffer is not visiting a file;
+region references require a real file-line coordinate."
+  (unless buffer-file-name
+    (user-error "Region references require a file-visiting buffer"))
   (let* ((bounds (cref--get-region-or-line))
          (is-region (plist-get bounds :is-region))
-         (saved (cref--save-buffer-if-modified))
          (location-path (cref--get-path-by-style style))
+         (saved (cref--save-buffer-if-modified))
          (location-string (cref--get-region-location-string location-path bounds))
          (final-string (if with-content
                            (format "%s\n%s" location-string

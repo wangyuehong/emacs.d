@@ -9,6 +9,7 @@
 ;;; Code:
 
 (require 'ert)
+(require 'dired)
 (require 'code-ref-core)
 (require 'code-ref)
 
@@ -25,13 +26,14 @@
      ,@body))
 
 (defmacro cref-test-without-xclip (&rest body)
-  "Execute BODY with xclip-set-selection undefined."
+  "Execute BODY with `xclip-set-selection' appearing unbound.
+`cl-letf' on the `symbol-function' place saves the original binding
+\(including the unbound state), sets the function slot to nil for the
+duration of BODY so that `fboundp' returns nil, and restores the
+original binding on exit."
   (declare (indent 0))
   `(cl-letf (((symbol-function 'xclip-set-selection) nil))
-     (fmakunbound 'xclip-set-selection)
-     (unwind-protect
-         (progn ,@body)
-       (fset 'xclip-set-selection #'ignore))))
+     ,@body))
 
 ;;; Test Utilities
 
@@ -57,6 +59,23 @@
                (kill-buffer))))
        (delete-file temp-file))))
 
+(defmacro cref-test-with-dired (filename &rest body)
+  "Execute BODY inside a dired buffer containing a file named FILENAME.
+Inside BODY, `temp-dir' is bound to the dired directory and `temp-file'
+to the absolute path of the sample file."
+  (declare (indent 1))
+  `(let* ((temp-dir (file-name-as-directory
+                     (make-temp-file "code-ref-dired-" t)))
+          (temp-file (expand-file-name ,filename temp-dir)))
+     (unwind-protect
+         (progn
+           (with-temp-file temp-file (insert "sample\n"))
+           (with-current-buffer (dired-noselect temp-dir)
+             (unwind-protect
+                 (progn ,@body)
+               (kill-buffer))))
+       (delete-directory temp-dir t))))
+
 ;;; Path Functions Tests
 
 (ert-deftest cref-test-format-file-path-absolute ()
@@ -74,9 +93,9 @@
       (should-not (string-match-p "/" path)))))
 
 (ert-deftest cref-test-format-file-path-no-file ()
-  "Test error when buffer has no file."
+  "Test `user-error' when buffer has no file and is not dired."
   (cref-test-with-temp-buffer "test content"
-    (should-error (cref--format-file-path 'absolute))))
+    (should-error (cref--format-file-path 'absolute) :type 'user-error)))
 
 (ert-deftest cref-test-format-file-path-invalid-style ()
   "Test error with invalid style."
@@ -84,18 +103,32 @@
     (should-error (cref--format-file-path 'invalid))))
 
 (ert-deftest cref-test-get-buffer-display-path-no-file ()
-  "Test display path for buffer without file."
+  "Display path signals `user-error' when the buffer has no source file."
   (cref-test-with-temp-buffer "test content"
-    (let ((path (cref--get-buffer-display-path)))
-      (should (stringp path))
-      (should (string= path (buffer-name))))))
+    (should-error (cref--get-buffer-display-path) :type 'user-error)))
 
-(ert-deftest cref-test-get-path-by-style-fallback ()
-  "Test fallback to display path on error."
+(ert-deftest cref-test-get-path-by-style-no-file ()
+  "Path resolution signals `user-error' when the buffer has no source file."
   (cref-test-with-temp-buffer "test content"
-    (let ((path (cref--get-path-by-style 'absolute)))
-      (should (stringp path))
-      (should (string= path (buffer-name))))))
+    (should-error (cref--get-path-by-style 'absolute) :type 'user-error)
+    (should-error (cref--get-path-by-style 'display) :type 'user-error)
+    (should-error (cref--get-path-by-style 'filename) :type 'user-error)))
+
+(ert-deftest cref-test-copy-buffer-commands-no-file-are-silent ()
+  "AC-0010-0060: on non-file non-dired buffers, every copy-buffer-* command
+errors with `user-error' and leaves both clipboard and kill-ring untouched."
+  (cref-test-with-temp-buffer "test content"
+    (dolist (cmd '(cref-copy-buffer-path
+                   cref-copy-buffer-absolute-path
+                   cref-copy-buffer-file-name
+                   cref-copy-buffer-git-path))
+      (ert-info ((format "command=%s" cmd))
+        (let ((cref-test--clipboard-content 'sentinel)
+              (kill-ring (list "kr-sentinel")))
+          (cref-test-with-xclip-mock
+            (should-error (funcall cmd) :type 'user-error))
+          (should (eq cref-test--clipboard-content 'sentinel))
+          (should (equal kill-ring '("kr-sentinel"))))))))
 
 ;;; Project Path Tests
 
@@ -139,13 +172,150 @@
                (lambda (&optional _maybe-prompt _dir) nil)))
       (should-error (cref--format-file-path 'project)))))
 
-(ert-deftest cref-test-get-path-by-style-project-fallback ()
-  "Test project style falls back to display path when not in project."
+(ert-deftest cref-test-get-path-by-style-project-error ()
+  "Project style signals `user-error' when not in a project."
   (cref-test-with-temp-file "test content"
     (cl-letf (((symbol-function 'project-current)
                (lambda (&optional _maybe-prompt _dir) nil)))
-      (let ((path (cref--get-path-by-style 'project)))
-        (should (stringp path))))))
+      (should-error (cref--get-path-by-style 'project) :type 'user-error))))
+
+(ert-deftest cref-test-format-file-path-git-no-repo ()
+  "Git style signals `user-error' when the source file is not in a repo."
+  (cref-test-with-temp-file "test content"
+    (cl-letf (((symbol-function 'locate-dominating-file)
+               (lambda (&rest _) nil)))
+      (should-not (cref--get-git-root))
+      (should-error (cref--format-file-path 'git) :type 'user-error))))
+
+(ert-deftest cref-test-copy-buffer-git-path-no-repo-is-silent ()
+  "AC-0010-0070: git style outside a repo neither writes clipboard nor kill-ring."
+  (cref-test-with-temp-file "test content"
+    (cl-letf (((symbol-function 'locate-dominating-file)
+               (lambda (&rest _) nil)))
+      (let ((cref-test--clipboard-content 'sentinel)
+            (kill-ring (list "kr-sentinel")))
+        (cref-test-with-xclip-mock
+          (should-error (cref-copy-buffer-git-path) :type 'user-error))
+        (should (eq cref-test--clipboard-content 'sentinel))
+        (should (equal kill-ring '("kr-sentinel")))))))
+
+(ert-deftest cref-test-get-path-by-style-display-no-repo ()
+  "Display style outside a git repo returns the absolute source path."
+  (cref-test-with-temp-file "test content"
+    (cl-letf (((symbol-function 'locate-dominating-file)
+               (lambda (&rest _) nil)))
+      (let ((path (cref--get-path-by-style 'display)))
+        (should (stringp path))
+        (should (file-name-absolute-p path))
+        (should (string= path (file-truename buffer-file-name)))))))
+
+(ert-deftest cref-test-copy-buffer-path-no-repo-copies-absolute ()
+  "AC-0010-0080: display style outside a repo puts absolute path on clipboard."
+  (cref-test-with-temp-file "test content"
+    (cl-letf (((symbol-function 'locate-dominating-file)
+               (lambda (&rest _) nil)))
+      (let ((cref-test--clipboard-content nil)
+            (expected (file-truename buffer-file-name)))
+        (cref-test-with-xclip-mock
+          (cref-copy-buffer-path))
+        (should (string= cref-test--clipboard-content expected))
+        (should-not (string= cref-test--clipboard-content (buffer-name)))))))
+
+;;; Dired Tests
+
+(ert-deftest cref-test-current-source-file-dired-on-entry ()
+  "In dired, point on a file entry resolves to that file."
+  (cref-test-with-dired "sample.txt"
+    (goto-char (point-min))
+    (dired-goto-file temp-file)
+    (let ((source (cref--current-source-file)))
+      (should (stringp source))
+      (should (string= source (file-truename temp-file))))))
+
+(ert-deftest cref-test-current-source-file-dired-off-entry ()
+  "In dired, point off any entry resolves to the dired directory itself."
+  (cref-test-with-dired "sample.txt"
+    (goto-char (point-min))
+    (let ((source (cref--current-source-file))
+          (expected (file-truename
+                     (directory-file-name temp-dir))))
+      (should (stringp source))
+      (should (string= source expected)))))
+
+(ert-deftest cref-test-format-file-path-dired-absolute ()
+  "Absolute style works inside dired."
+  (cref-test-with-dired "sample.txt"
+    (dired-goto-file temp-file)
+    (let ((path (cref--format-file-path 'absolute)))
+      (should (string= path (file-truename temp-file))))))
+
+(ert-deftest cref-test-format-file-path-dired-filename ()
+  "Filename style returns just the entry's file name inside dired."
+  (cref-test-with-dired "sample.txt"
+    (dired-goto-file temp-file)
+    (let ((path (cref--format-file-path 'filename)))
+      (should (string= path "sample.txt")))))
+
+(ert-deftest cref-test-get-path-by-style-dired-display ()
+  "Display style inside dired returns the entry path, not the buffer name."
+  (cref-test-with-dired "sample.txt"
+    (dired-goto-file temp-file)
+    (let ((path (cref--get-path-by-style 'display)))
+      (should (stringp path))
+      (should-not (string= path (buffer-name)))
+      (should (string-match-p "sample\\.txt\\'" path)))))
+
+(ert-deftest cref-test-copy-buffer-absolute-path-dired ()
+  "End-to-end: `cref-copy-buffer-absolute-path' in dired copies the entry path."
+  (cref-test-with-dired "sample.txt"
+    (dired-goto-file temp-file)
+    (setq cref-test--clipboard-content nil)
+    (cref-test-with-xclip-mock
+      (cref-copy-buffer-absolute-path)
+      (should (string= cref-test--clipboard-content
+                       (file-truename temp-file))))))
+
+(defconst cref-test--region-commands
+  '(cref-copy-region-location
+    cref-copy-region-location-absolute
+    cref-copy-region-location-git
+    cref-copy-region-location-filename
+    cref-copy-region-with-location
+    cref-copy-region-with-absolute-location
+    cref-copy-region-with-git-location
+    cref-copy-region-with-filename-location)
+  "All public region copy commands subject to AC-0020-0060.")
+
+(defun cref-test--assert-region-commands-silent ()
+  "Invoke each region command and assert silence semantics.
+Each command must signal `user-error' and leave both
+`cref-test--clipboard-content' and `kill-ring' untouched from their
+pre-call sentinel values.
+Caller is responsible for establishing the target buffer context
+\(e.g. dired buffer or non-file-visiting temp buffer); this helper does
+not create one."
+  (dolist (cmd cref-test--region-commands)
+    (ert-info ((format "command=%s" cmd))
+      (let ((cref-test--clipboard-content 'sentinel)
+            (kill-ring (list "kr-sentinel")))
+        (cref-test-with-xclip-mock
+          (should-error (funcall cmd) :type 'user-error))
+        (should (eq cref-test--clipboard-content 'sentinel))
+        (should (equal kill-ring '("kr-sentinel")))))))
+
+(ert-deftest cref-test-copy-region-location-dired-is-silent ()
+  "AC-0020-0060 (dired branch): region copy commands inside a dired buffer
+error with `user-error' and leave clipboard and `kill-ring' untouched."
+  (cref-test-with-dired "sample.txt"
+    (dired-goto-file temp-file)
+    (cref-test--assert-region-commands-silent)))
+
+(ert-deftest cref-test-copy-region-location-temp-buffer-is-silent ()
+  "AC-0020-0060 (non-file non-dired branch): region copy commands in a
+buffer not visiting any file error with `user-error' and leave both
+clipboard and `kill-ring' untouched."
+  (cref-test-with-temp-buffer "line 1\nline 2\nline 3"
+    (cref-test--assert-region-commands-silent)))
 
 ;;; Region Functions Tests
 

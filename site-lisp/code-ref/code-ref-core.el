@@ -11,6 +11,9 @@
 ;;
 ;;; Code:
 
+(declare-function dired-get-filename "dired" (&optional localp no-error-if-not-filep))
+(declare-function dired-current-directory "dired" (&optional localp))
+
 (defgroup code-ref nil
   "Copy code references and snippets to clipboard."
   :group 'convenience
@@ -28,13 +31,32 @@
 
 ;;; Path Functions
 
+(defun cref--current-source-file ()
+  "Return the absolute source file path associated with the current buffer.
+Handles file-visiting buffers and Dired buffers:
+- In a file-visiting buffer, returns variable `buffer-file-name' (truename).
+- In a Dired buffer, returns the entry at point, falling back to the
+  current Dired subdirectory when point is not on a file entry.
+Returns nil when no source file can be determined."
+  (cond
+   (buffer-file-name
+    (file-truename buffer-file-name))
+   ((derived-mode-p 'dired-mode)
+    (file-truename
+     (or (dired-get-filename nil t)
+         (directory-file-name (dired-current-directory)))))))
+
+(defun cref--require-source-file ()
+  "Return `cref--current-source-file' or signal a `user-error'."
+  (or (cref--current-source-file)
+      (user-error "Current buffer is not visiting a file")))
+
 (defun cref--get-git-root ()
-  "Get the Git repository root directory for the current buffer.
-Returns nil if not in a Git repository."
-  (when buffer-file-name
-    (let ((git-root (locate-dominating-file buffer-file-name ".git")))
-      (when git-root
-        (expand-file-name git-root)))))
+  "Get the Git repository root directory for the current source file.
+Returns nil if the source file is not inside a Git repository."
+  (when-let* ((source (cref--current-source-file))
+              (git-root (locate-dominating-file source ".git")))
+    (expand-file-name git-root)))
 
 (defun cref--get-project-root ()
   "Get the Emacs project root directory for the current buffer.
@@ -43,48 +65,47 @@ Returns nil if not in a project."
     (project-root proj)))
 
 (defun cref--format-file-path (style)
-  "Format the current buffer's file path according to STYLE.
+  "Format the current source file path according to STYLE.
 STYLE can be:
   \\='absolute - Full absolute path
   \\='git - Relative to Git root
   \\='project - Relative to Emacs project root
-  \\='filename - Just the filename"
-  (unless buffer-file-name
-    (error "Current buffer is not visiting a file"))
-  (let ((absolute-path (file-truename buffer-file-name)))
+  \\='filename - Just the filename
+Signals `user-error' when no source file is available, or when the
+requested style cannot be satisfied (e.g. Git style outside a repo)."
+  (let ((absolute-path (cref--require-source-file)))
     (pcase style
       ('absolute absolute-path)
       ('filename (file-name-nondirectory absolute-path))
       ('git
        (if-let* ((git-root (cref--get-git-root)))
            (file-relative-name absolute-path git-root)
-         (error "Not in a Git repository")))
+         (user-error "Not in a Git repository")))
       ('project
        (if-let* ((proj-root (cref--get-project-root)))
            (file-relative-name absolute-path proj-root)
-         (error "Not in a project")))
+         (user-error "Not in a project")))
       (_ (error "Invalid style: %s" style)))))
 
 (defun cref--get-buffer-display-path ()
   "Return the buffer's display path.
-Relative for Git repository files, absolute for others,
-or buffer name if no file."
-  (let ((git-root (cref--get-git-root))
-        (file-path (when buffer-file-name (file-truename buffer-file-name))))
-    (cond
-     ((and file-path git-root)
-      (file-relative-name file-path git-root))
-     (file-path file-path)
-     (t (buffer-name)))))
+Git-relative when the source file is inside a Git repository,
+otherwise the absolute source path.
+Signals `user-error' when no source file can be determined."
+  (let* ((file-path (cref--require-source-file))
+         (git-root (cref--get-git-root)))
+    (if git-root
+        (file-relative-name file-path git-root)
+      file-path)))
 
 (defun cref--get-path-by-style (style)
-  "Get buffer path by STYLE with fallback to display path.
-STYLE: \\='display, \\='absolute, \\='git, \\='project, or \\='filename."
-  (condition-case _
-      (if (eq style 'display)
-          (cref--get-buffer-display-path)
-        (cref--format-file-path style))
-    (error (cref--get-buffer-display-path))))
+  "Get buffer path by STYLE.
+STYLE: \\='display, \\='absolute, \\='git, \\='project, or \\='filename.
+Errors propagate; callers are expected to handle `user-error' raised by
+the underlying path resolution (e.g. buffers without an associated file)."
+  (if (eq style 'display)
+      (cref--get-buffer-display-path)
+    (cref--format-file-path style)))
 
 ;;; Region Functions
 
