@@ -49,7 +49,7 @@
 
 - Given：任意文本长度或系统负载
 - When：调用发送
-- Then：实现不含 sleep 或等待；正确性不受 TUI render 时序或负载影响。此处「时序依赖」指 `sleep` / `sit-for` / `accept-process-output` 等显式等待，**不**包括 AC-0010-0100 要求的两次独立 tmux 调用之间天然存在的进程边界（OS / runtime 层面的事实，无须 sleep）
+- Then：实现不含 sleep 或等待；正确性不受 TUI render 时序或负载影响。此处「时序依赖」指 `sleep` / `sit-for` / `accept-process-output` 等显式等待，不包括 AC-0010-0100 要求的两次独立 tmux 调用之间天然存在的进程边界（OS / runtime 层面的事实，无须 sleep）
 
 ### AC-0010-0060：不污染共享粘贴状态
 
@@ -79,7 +79,7 @@
 
 - Given：非空文本 + 非暂存
 - When：调用发送
-- Then：触发恰好 2 次 tmux 命令调用——1 次写入内容（paste），1 次提交（Enter）；行数不影响调用次数；两次调用**不得 chain 在同一次 tmux 进程内**（详见历史决策「为什么写入与提交必须分两次调用」）
+- Then：触发恰好 2 次 tmux 命令调用——1 次写入内容（paste），1 次提交（Enter）；行数不影响调用次数；两次调用不得 chain 在同一次 tmux 进程内（详见历史决策「为什么写入与提交必须分两次调用」）
 - 暂存模式：仅 1 次写入调用，无提交调用
 - 空输入：按 AC-0010-0070 / 0080 缩减为 0 或 1 次
 
@@ -270,8 +270,14 @@
 ### AC-0080-0020：可切换选项
 
 - Given：入口菜单显示
-- When：切换路径风格、是否含行号、是否含内容
-- Then：下次发送使用新的选项
+- When：切换路径风格、是否含行号、内容模式（`no` / `auto` / `full` 三态循环）
+- Then：下次发送使用新的选项；内容模式 `no` 不含内容，`auto` 按阈值自动缩略，`full` 发送完整内容
+
+### AC-0080-0025：内容模式默认 auto
+
+- Given：调用入口菜单
+- When：菜单打开重置选项默认值
+- Then：内容模式默认重置为 `auto`（含内容且自动缩略）；持久 defcustom `agentmux-context-include-content` 默认仍为 `nil`（非菜单的程序级调用默认不含内容），二者分层互不依赖
 
 ### AC-0080-0030：路径风格候选依赖项目结构
 
@@ -330,7 +336,7 @@
 - Decision:
   - 写入：`set-buffer -b agentmux-private DATA ; paste-buffer -p -d -b agentmux-private -t T` 在同一次 `process-file` 内 chain；命名 buffer 用 `-d` 即时删除
   - 提交：单独一次 `process-file` 跑 `send-keys -t T Enter`
-  - 写入与提交**不得 chain 在同一次 tmux 调用**
+  - 写入与提交不得 chain 在同一次 tmux 调用
 - Consequences:
   - 每次发送恰好 2 次 `process-file`（暂存 1 次，空输入 0 或 1 次），与行数无关
   - bracketed paste（`-p`）让 agent 把整段当 in-input 字节，多行映射为输入框换行而非多消息

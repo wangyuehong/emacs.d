@@ -54,22 +54,24 @@ otherwise, copy the full absolute path."
 
 ;;; Region Location Core
 
-(defun cref--copy-region-location-core (style &optional with-content)
+(defun cref--copy-region-location-core (style &optional content)
   "Copy region location to clipboard.
 STYLE: \\='display, \\='absolute, \\='git, or \\='filename.
-WITH-CONTENT: if non-nil, include region content as Markdown code block.
+CONTENT: nil or \\='no copies the location only; \\='auto or \\='full also
+appends the region content as a Markdown code block in that format.
 Signals `user-error' when the current buffer is not visiting a file;
 region references require a real file-line coordinate."
   (unless buffer-file-name
     (user-error "Region references require a file-visiting buffer"))
-  (let* ((saved (cref--save-buffer-if-modified))
+  (let* ((with-content (memq content '(auto full)))
+         (saved (cref--save-buffer-if-modified))
          (bounds (cref--get-region-or-line))
          (is-region (plist-get bounds :is-region))
          (location-path (cref--get-path-by-style style))
          (location-string (cref--get-region-location-string location-path bounds))
          (final-string (if with-content
                            (format "%s\n%s" location-string
-                                   (cref--get-region-content-with-fence bounds))
+                                   (cref--get-region-content-with-fence bounds content))
                          location-string))
          (to-clipboard (cref--copy-to-clipboard final-string)))
     (message "%sCopied %s%s: %s"
@@ -88,25 +90,25 @@ region references require a real file-line coordinate."
 (defun cref-copy-region-with-location ()
   "Copy region with location and content as Markdown code block."
   (interactive)
-  (cref--copy-region-location-core 'display t))
+  (cref--copy-region-location-core 'display cref-content-format))
 
 ;;;###autoload
 (defun cref-copy-region-with-absolute-location ()
   "Copy region with absolute file path location."
   (interactive)
-  (cref--copy-region-location-core 'absolute t))
+  (cref--copy-region-location-core 'absolute cref-content-format))
 
 ;;;###autoload
 (defun cref-copy-region-with-git-location ()
   "Copy region with Git-relative path location."
   (interactive)
-  (cref--copy-region-location-core 'git t))
+  (cref--copy-region-location-core 'git cref-content-format))
 
 ;;;###autoload
 (defun cref-copy-region-with-filename-location ()
   "Copy region with filename-only location."
   (interactive)
-  (cref--copy-region-location-core 'filename t))
+  (cref--copy-region-location-core 'filename cref-content-format))
 
 ;;; Copy Region Location Only
 
@@ -133,6 +135,16 @@ region references require a real file-line coordinate."
   "Copy region location with filename only."
   (interactive)
   (cref--copy-region-location-core 'filename))
+
+;;; Unified Content-Mode Entry
+
+(defun cref-copy-region (style content)
+  "Copy region with path STYLE and CONTENT mode.
+STYLE is \\='display, \\='absolute, \\='git, or \\='filename.
+CONTENT is \\='no (location only), \\='auto (auto-compacted content), or
+\\='full (complete content).  This is the single entry point used by
+menu front-ends that expose the no/auto/full choice."
+  (cref--copy-region-location-core style content))
 
 (provide 'code-ref)
 ;;; code-ref.el ends here

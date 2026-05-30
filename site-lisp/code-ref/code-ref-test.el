@@ -559,6 +559,29 @@ clipboard and `kill-ring' untouched."
           (should (string-match-p "one\n\\[\\.\\.\\. omitted 2 lines \\.\\.\\.\\]\nfour" result))
           (should-not (string-match-p "two\nthree" result)))))))
 
+(ert-deftest cref-test-copy-region-content-mode-no-auto-full ()
+  "AC-0020-0039: `cref-copy-region' selects location-only / auto / full content."
+  (let ((cref-content-auto-compact-threshold 3))
+    (cref-test-with-temp-file "one\ntwo\nthree\nfour"
+      (transient-mark-mode 1)
+      (cl-flet ((copy-region-content (mode)
+                  (setq cref-test--clipboard-content nil)
+                  (goto-char (point-min))
+                  (push-mark (point) t t)
+                  (goto-char (point-max))
+                  (cref-test-with-xclip-mock
+                    (cref-copy-region 'display mode))
+                  cref-test--clipboard-content))
+        (let ((out (copy-region-content 'no)))
+          (should (string-match-p "#L1-L4" out))
+          (should-not (string-match-p "```" out)))
+        (let ((out (copy-region-content 'auto)))
+          (should (string-match-p "one\n\\[\\.\\.\\. omitted 2 lines \\.\\.\\.\\]\nfour" out))
+          (should-not (string-match-p "two\nthree" out)))
+        (let ((out (copy-region-content 'full)))
+          (should (string-match-p "one\ntwo\nthree\nfour" out))
+          (should-not (string-match-p "omitted" out)))))))
+
 (ert-deftest cref-test-copy-region-location-saves-before-generating-line-number ()
   "AC-0020-0050: save happens before bounds and location are generated."
   (let ((cref-save-before-copy t))

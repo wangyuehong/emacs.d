@@ -9,30 +9,57 @@
   "Copy file path in various formats."
   [["Path Formats"
     ("a" "Absolute path" cref-copy-buffer-absolute-path)
-    ("c" "Git relative" cref-copy-buffer-git-path)
+    ("r" "Git relative" cref-copy-buffer-git-path)
     ("n" "File name only" cref-copy-buffer-file-name)]
    ["Quick Actions"
     ("q" "Quit" transient-quit-one)]])
 
-(transient-define-prefix my/copy-region-location-menu ()
-  "Copy region location."
-  [["Location Only"
-    ("a" "Absolute path" cref-copy-region-location-absolute)
-    ("r" "Git relative" cref-copy-region-location-git)
-    ("n" "File name only" cref-copy-region-location-filename)]
-   ["Quick Actions"
-    ("q" "Quit" transient-quit-one)]])
+(defvar my/copy-region-content-mode 'auto
+  "Content mode for `my/copy-region-menu': `no', `auto', or `full'.")
+
+(defun my/copy-region--cycle-content (&rest _)
+  "Cycle `my/copy-region-content-mode' no -> auto -> full -> no."
+  (setq my/copy-region-content-mode
+        (pcase my/copy-region-content-mode
+          ('no 'auto)
+          ('auto 'full)
+          (_ 'no))))
+
+(transient-define-infix my/copy-region--infix-content ()
+  "Toggle the region content mode between no, auto and full."
+  :class 'transient-lisp-variable
+  :variable 'my/copy-region-content-mode
+  :description (lambda () (format "Content: %s" my/copy-region-content-mode))
+  :reader #'my/copy-region--cycle-content)
+
+(defun my/copy-region-absolute ()
+  "Copy region with absolute path and current content mode."
+  (interactive)
+  (cref-copy-region 'absolute my/copy-region-content-mode))
+
+(defun my/copy-region-git ()
+  "Copy region with Git-relative path and current content mode."
+  (interactive)
+  (cref-copy-region 'git my/copy-region-content-mode))
+
+(defun my/copy-region-filename ()
+  "Copy region with file-name-only path and current content mode."
+  (interactive)
+  (cref-copy-region 'filename my/copy-region-content-mode))
 
 (transient-define-prefix my/copy-region-menu ()
-  "Copy region location in various formats."
-  [["With Content"
-    ("a" "Absolute path" cref-copy-region-with-absolute-location)
-    ("r" "Git relative" cref-copy-region-with-git-location)
-    ("n" "File name only" cref-copy-region-with-filename-location)]
-   ["Location Only"
-    ("l" "Location only ..." my/copy-region-location-menu)]
+  "Copy region location with a selectable content mode."
+  ["Content"
+   ("-c" my/copy-region--infix-content)]
+  [["Path Style"
+    ("a" "Absolute path" my/copy-region-absolute)
+    ("r" "Git relative" my/copy-region-git)
+    ("n" "File name only" my/copy-region-filename)]
    ["Quick Actions"
-    ("q" "Quit" transient-quit-one)]])
+    ("q" "Quit" transient-quit-one)]]
+  (interactive)
+  (setq my/copy-region-content-mode 'auto)
+  (transient-setup 'my/copy-region-menu))
 
 (transient-define-prefix my/open-external-menu ()
   "Open file in external program."

@@ -115,6 +115,12 @@
 - When：调用
 - Then：位置串仍覆盖原始完整 region 的起止行，不因内容缩略改变
 
+### AC-0020-0039：统一含内容模式入口（no/auto/full）
+
+- Given：调用 `cref-copy-region`，给定 content 模式
+- When：content 为 `no` / `auto` / `full`
+- Then：`no` 仅复制位置串；`auto` 按阈值自动缩略内容；`full` 复制完整内容不缩略
+
 ### AC-0020-0040：围栏长度自适应
 
 - Given：选中内容含反引号序列

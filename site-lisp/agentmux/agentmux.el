@@ -719,11 +719,44 @@ Navigate with hjkl or arrow keys, RET to confirm, ESC to cancel."
   :description (lambda () (format "Line: %s" (if agentmux-context-include-line "yes" "no")))
   :reader (lambda (&rest _) (not agentmux-context-include-line)))
 
-(transient-define-infix agentmux--infix-include-content ()
+(defun agentmux--content-mode-string ()
+  "Return the current content mode label: \"no\", \"auto\", or \"full\"."
+  (if agentmux-context-include-content
+      (symbol-name agentmux-context-content-format)
+    "no"))
+
+(defun agentmux--content-cycle (&rest _)
+  "Cycle content mode no -> auto -> full -> no.
+Update `agentmux-context-include-content' and
+`agentmux-context-content-format'; return the new include-content value."
+  (cond
+    ((not agentmux-context-include-content)
+      (setq agentmux-context-content-format 'auto
+        agentmux-context-include-content t))
+    ((eq agentmux-context-content-format 'auto)
+      (setq agentmux-context-content-format 'full))
+    (t
+      (setq agentmux-context-include-content nil)))
+  agentmux-context-include-content)
+
+(transient-define-infix agentmux--infix-content-mode ()
+  ;; The tri-state spans two variables: `agentmux-context-include-content'
+  ;; (off vs on) and `agentmux-context-content-format' (auto vs full).
+  ;; `:variable' binds the former for transient's bookkeeping; the reader
+  ;; `agentmux--content-cycle' keeps both in sync, and the description reads
+  ;; the composite via `agentmux--content-mode-string'.
   :class 'transient-lisp-variable
   :variable 'agentmux-context-include-content
-  :description (lambda () (format "Content: %s" (if agentmux-context-include-content "yes" "no")))
-  :reader (lambda (&rest _) (not agentmux-context-include-content)))
+  :description (lambda () (format "Content: %s" (agentmux--content-mode-string)))
+  :reader #'agentmux--content-cycle)
+
+(defun agentmux--reset-transient-options ()
+  "Reset `agentmux-transient' send options to defaults on each menu open.
+Content mode resets to auto (content included and auto-compacted)."
+  (setq agentmux-context-path-style 'git
+        agentmux-context-include-line t
+        agentmux-context-include-content t
+        agentmux-context-content-format 'auto))
 
 ;;;###autoload
 (transient-define-prefix agentmux-transient ()
@@ -731,7 +764,7 @@ Navigate with hjkl or arrow keys, RET to confirm, ESC to cancel."
   ["Options"
     ("-p" agentmux--infix-path-style)
     ("-l" agentmux--infix-include-line)
-    ("-c" agentmux--infix-include-content)]
+    ("-c" agentmux--infix-content-mode)]
 
   [["Send"
      ("s" "Command" agentmux-send-command)
@@ -757,9 +790,7 @@ Navigate with hjkl or arrow keys, RET to confirm, ESC to cancel."
       ("t" "Set target" agentmux-set-target)
       ("q" "Quit" transient-quit-one)]]
   (interactive)
-  (setq agentmux-context-path-style 'git
-        agentmux-context-include-line t
-        agentmux-context-include-content nil)
+  (agentmux--reset-transient-options)
   (transient-setup 'agentmux-transient))
 
 (provide 'agentmux)

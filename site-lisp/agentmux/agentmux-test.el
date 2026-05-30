@@ -184,6 +184,52 @@ Each ROW is (PID PPID COMM)."
         (should (string-match-p ":1\\'" location))
         (should-not content)))))
 
+(ert-deftest agentmux-test-context-parts/include-content-full-keeps-complete ()
+  "AC-0080-0020: full mode sends complete content without compaction."
+  (let ((agentmux-context-path-style 'absolute)
+        (agentmux-context-include-line t)
+        (agentmux-context-include-content t)
+        (agentmux-context-content-format 'full)
+        (cref-save-before-copy nil))
+    (agentmux-test-with-temp-file "one\ntwo\nthree\nfour"
+      (transient-mark-mode 1)
+      (goto-char (point-min))
+      (push-mark (point) t t)
+      (goto-char (point-max))
+      (pcase-let ((`(,location . ,content) (agentmux--context-parts)))
+        (should (string-match-p ":1-4\\'" location))
+        (should (string-match-p "one\ntwo\nthree\nfour" content))
+        (should-not (string-match-p "omitted" content))))))
+
+(ert-deftest agentmux-test-content-cycle/no-auto-full-no ()
+  "AC-0080-0020: content mode cycles no -> auto -> full -> no."
+  (let ((agentmux-context-include-content nil)
+        (agentmux-context-content-format 'auto))
+    (should (string= (agentmux--content-mode-string) "no"))
+    (should (eq (agentmux--content-cycle) t))
+    (should agentmux-context-include-content)
+    (should (eq agentmux-context-content-format 'auto))
+    (should (string= (agentmux--content-mode-string) "auto"))
+    (should (eq (agentmux--content-cycle) t))
+    (should (eq agentmux-context-content-format 'full))
+    (should (string= (agentmux--content-mode-string) "full"))
+    (should (eq (agentmux--content-cycle) nil))
+    (should-not agentmux-context-include-content)
+    (should (string= (agentmux--content-mode-string) "no"))))
+
+(ert-deftest agentmux-test-reset-transient-options/defaults-to-auto ()
+  "AC-0080-0025: menu open resets content mode to auto."
+  (let ((agentmux-context-path-style 'absolute)
+        (agentmux-context-include-line nil)
+        (agentmux-context-include-content nil)
+        (agentmux-context-content-format 'full))
+    (agentmux--reset-transient-options)
+    (should (eq agentmux-context-path-style 'git))
+    (should (eq agentmux-context-include-line t))
+    (should (eq agentmux-context-include-content t))
+    (should (eq agentmux-context-content-format 'auto))
+    (should (string= (agentmux--content-mode-string) "auto"))))
+
 (ert-deftest agentmux-test-context-parts/non-file-does-not-save-or-format-content ()
   "AC-0020-0040: non-file buffers do not generate or save context."
   (with-temp-buffer
