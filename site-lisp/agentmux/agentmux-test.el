@@ -60,6 +60,20 @@ Each ROW is (PID PPID COMM)."
                 0)))
      ,@body))
 
+(defmacro agentmux-test-with-temp-file (content &rest body)
+  "Execute BODY in a file-visiting buffer containing CONTENT."
+  (declare (indent 1))
+  `(let ((temp-file (make-temp-file "agentmux-test-")))
+     (unwind-protect
+         (progn
+           (with-temp-file temp-file
+             (insert ,content))
+           (with-current-buffer (find-file-noselect temp-file)
+             (unwind-protect
+                 (progn ,@body)
+               (kill-buffer))))
+       (delete-file temp-file))))
+
 (defun agentmux-test--all-args (calls)
   "Flatten all argv tokens across CALLS."
   (apply #'append (mapcar #'cdr calls)))
@@ -136,6 +150,73 @@ Each ROW is (PID PPID COMM)."
 
 (ert-deftest agentmux-test-validate-command/non-empty-silent ()
   (should (null (agentmux--validate-command "do something"))))
+
+;; ---------------------------------------------------------------------------
+;;; context helpers (US-0020)
+;; ---------------------------------------------------------------------------
+
+(ert-deftest agentmux-test-context-parts/include-content-auto-compacts ()
+  "AC-0020-0035: context content follows code-ref automatic compaction."
+  (let ((agentmux-context-path-style 'absolute)
+        (agentmux-context-include-line t)
+        (agentmux-context-include-content t)
+        (agentmux-context-content-format 'auto)
+        (cref-save-before-copy nil))
+    (agentmux-test-with-temp-file "one\ntwo\nthree\nfour"
+      (transient-mark-mode 1)
+      (goto-char (point-min))
+      (push-mark (point) t t)
+      (goto-char (point-max))
+      (pcase-let ((`(,location . ,content) (agentmux--context-parts)))
+        (should (string-match-p ":1-4\\'" location))
+        (should (string-match-p "one\n\\[\\.\\.\\. omitted 2 lines \\.\\.\\.\\]\nfour" content))
+        (should-not (string-match-p "two\nthree" content))))))
+
+(ert-deftest agentmux-test-context-parts/include-content-off-keeps-location-only ()
+  "AC-0020-0020: disabling content leaves location behavior unchanged."
+  (let ((agentmux-context-path-style 'absolute)
+        (agentmux-context-include-line t)
+        (agentmux-context-include-content nil)
+        (cref-save-before-copy nil))
+    (agentmux-test-with-temp-file "one\ntwo"
+      (goto-char (point-min))
+      (pcase-let ((`(,location . ,content) (agentmux--context-parts)))
+        (should (string-match-p ":1\\'" location))
+        (should-not content)))))
+
+(ert-deftest agentmux-test-context-parts/non-file-does-not-save-or-format-content ()
+  "AC-0020-0040: non-file buffers do not generate or save context."
+  (with-temp-buffer
+    (insert "one\ntwo")
+    (let ((agentmux-context-include-content t)
+          (saved nil)
+          (formatted nil))
+      (cl-letf (((symbol-function 'cref--save-buffer-if-modified)
+                 (lambda () (setq saved t)))
+                ((symbol-function 'agentmux--format-content-with-bounds)
+                 (lambda (_bounds) (setq formatted t))))
+        (should-not (agentmux--context-parts))
+        (should-not saved)
+        (should-not formatted)))))
+
+(ert-deftest agentmux-test-context-parts/saves-before-generating-line-number ()
+  "AC-0020-0036: context line numbers are generated after saving."
+  (let ((agentmux-context-path-style 'absolute)
+        (agentmux-context-include-line t)
+        (agentmux-context-include-content nil)
+        (cref-save-before-copy t))
+    (agentmux-test-with-temp-file "one\ntarget"
+      (goto-char (point-min))
+      (forward-line 1)
+      (insert "!")
+      (add-hook 'before-save-hook
+                (lambda ()
+                  (save-excursion
+                    (goto-char (point-min))
+                    (insert "prefix\n")))
+                nil t)
+      (pcase-let ((`(,location . ,_content) (agentmux--context-parts)))
+        (should (string-match-p ":3\\'" location))))))
 
 ;; ---------------------------------------------------------------------------
 ;;; ensure-parameters (US-0060)
@@ -296,7 +377,7 @@ no bare CR ever reaches the agent."
     (cl-letf (((symbol-function 'emamux:tmux-run-command)
                (lambda (&rest _) (error "tmux exploded"))))
       (let ((err (should-error (agentmux--send-text "hi") :type 'user-error)))
-        (should (string-match-p "Failed to paste to tmux"
+        (should (string-match-p "Paste to tmux failed"
                                 (error-message-string err)))
         (should (string-match-p "tmux exploded"
                                 (error-message-string err)))))))
@@ -309,7 +390,7 @@ no bare CR ever reaches the agent."
       (let ((err (should-error (agentmux--send-text "hi") :type 'user-error)))
         (let ((msg (error-message-string err)))
           (should (string-match-p "no tmux session" msg))
-          (should-not (string-match-p "Failed to paste" msg)))))))
+          (should-not (string-match-p "Paste to tmux failed" msg)))))))
 
 ;; ---------------------------------------------------------------------------
 ;;; send-keys (US-0040)

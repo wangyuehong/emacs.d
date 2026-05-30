@@ -29,6 +29,19 @@
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom cref-content-format 'auto
+  "How to include copied code content.
+Value `auto' keeps short content intact and compacts longer content.
+Value `full' always keeps the complete content."
+  :type '(choice (const :tag "Auto compact long content" auto)
+                 (const :tag "Full content" full))
+  :safe (lambda (value) (memq value '(auto full))))
+
+(defcustom cref-content-auto-compact-threshold 3
+  "Maximum line count kept intact when `cref-content-format' is `auto'."
+  :type '(integer :match (lambda (_widget value) (>= value 3)))
+  :safe (lambda (value) (and (integerp value) (>= value 3))))
+
 ;;; Path Functions
 
 (defun cref--current-source-file ()
@@ -126,7 +139,8 @@ Returns plist (:start START :end END :is-region BOOL)."
             :is-region nil))))
 
 (defun cref--save-buffer-if-modified ()
-  "Save buffer if modified. Returns t if saved, nil otherwise."
+  "Save buffer if modified.
+Returns t if saved, nil otherwise."
   (when (and cref-save-before-copy buffer-file-name (buffer-modified-p))
     (save-buffer)
     t))
@@ -152,6 +166,23 @@ Returns fence with length adjusted to avoid conflicts with backticks in TEXT."
          (fence-len (max 3 (1+ max-inner-ticks))))
     (make-string fence-len ?\`)))
 
+(defun cref--format-content-text (text &optional format)
+  "Format code content TEXT according to FORMAT.
+FORMAT may be `auto' or `full'.  Nil means `cref-content-format'."
+  (let ((format (or format cref-content-format)))
+    (pcase format
+      ('full text)
+      ('auto
+       (let ((lines (split-string text "\n"))
+             (threshold (max 3 cref-content-auto-compact-threshold)))
+         (if (<= (length lines) threshold)
+             text
+           (format "%s\n[... omitted %d lines ...]\n%s"
+                   (car lines)
+                   (- (length lines) 2)
+                   (car (last lines))))))
+      (_ (error "Invalid content format: %s" format)))))
+
 ;;; Location String
 
 (defun cref--get-region-location-string (location-path bounds)
@@ -165,20 +196,22 @@ Returns format like @file#L10 or @file#L10-L20."
         (format "%s%s#L%d" cref-location-prefix location-path start-line)
       (format "%s%s#L%d-L%d" cref-location-prefix location-path start-line end-line))))
 
-(defun cref--get-region-content-with-fence (bounds)
+(defun cref--get-region-content-with-fence (bounds &optional format)
   "Get region content wrapped with Markdown code fence.
-BOUNDS is a plist with :start and :end."
+BOUNDS is a plist with :start and :end.
+FORMAT may be `auto' or `full'.  Nil means `cref-content-format'."
   (let* ((start (plist-get bounds :start))
          (end (plist-get bounds :end))
          (selected-text (buffer-substring-no-properties start end))
-         (fence (cref--make-code-fence selected-text)))
-    (format "%s\n%s\n%s" fence selected-text fence)))
+         (formatted-text (cref--format-content-text selected-text format))
+         (fence (cref--make-code-fence formatted-text)))
+    (format "%s\n%s\n%s" fence formatted-text fence)))
 
 ;;; Clipboard
 
 (defun cref--copy-to-clipboard (text)
-  "Copy TEXT to system clipboard or kill-ring.
-Returns t if copied to system clipboard, nil if only to kill-ring."
+  "Copy TEXT to system clipboard or `kill-ring'.
+Returns t if copied to system clipboard, nil if only to `kill-ring'."
   (if (fboundp 'xclip-set-selection)
       (progn
         (xclip-set-selection 'clipboard text)

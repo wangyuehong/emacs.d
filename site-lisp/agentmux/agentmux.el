@@ -44,7 +44,7 @@
 ;;   ;; First use: M-x agentmux-set-target to select tmux pane
 ;;
 ;; Note: This package overrides some emamux functions via advice to improve
-;; pane/window selection display. Use `unload-feature' to remove cleanly.
+;; pane/window selection display.  Use `unload-feature' to remove cleanly.
 
 ;;; Code:
 
@@ -89,6 +89,14 @@ When non-nil, includes the selected region or current line as a code block."
   :type 'boolean
   :group 'agentmux)
 
+(defcustom agentmux-context-content-format 'auto
+  "How to include code content in context.
+Value `auto' follows code-ref's automatic compaction rule.
+Value `full' always keeps the complete content."
+  :type '(choice (const :tag "Auto compact long content" auto)
+                 (const :tag "Full content" full))
+  :group 'agentmux)
+
 (defcustom agentmux-minibuffer-initial-height 3
   "Initial height of minibuffer for multiline input.
 Valid range is 1 to 30 lines."
@@ -111,7 +119,7 @@ Minimum is 4 (3 for ellipsis + 1 char)."
   '("claude" "codex")
   "Executable basenames identifying an Agent CLI.
 Matched against the kernel `p_comm' (the exec basename, immutable after
-exec) of each process in a pane's descendant tree. Claude Code and
+exec) of each process in a pane's descendant tree.  Claude Code and
 similar Node apps rewrite their `process.title' to a version string, so
 tmux `pane_current_command' and `process-attributes' `comm' report the
 rewritten value; kernel `p_comm' preserves the real executable name.
@@ -150,7 +158,7 @@ issue tmux queries against a phantom pane."
 (defun agentmux--emacs-window-id ()
   "Return the tmux window ID (e.g., `@8') containing Emacs, or nil.
 Returns nil only when Emacs is not running inside tmux (`TMUX_PANE'
-unset or empty). Signals `user-error' when `TMUX_PANE' is set but the
+unset or empty).  Signals `user-error' when `TMUX_PANE' is set but the
 lookup fails (e.g., the originating pane has been killed) — never falls
 back silently to a guessed window."
   (when-let* ((pane (agentmux--emacs-pane-id)))
@@ -195,6 +203,8 @@ silent fallback that would mis-classify every pane as non-agent."
 
 (defun agentmux--pid-tree-has-agent-p (root children-map comm-map)
   "Return non-nil if ROOT or any descendant is an Agent CLI.
+CHILDREN-MAP maps a PID to child PIDs.
+COMM-MAP maps a PID to its executable basename.
 The visited set guards against pathological ps snapshots with cycles."
   (let ((stack   (list root))
          (visited (make-hash-table :test 'eql)))
@@ -212,7 +222,7 @@ The visited set guards against pathological ps snapshots with cycles."
 
 (defun agentmux--compute-agent-panes (entries)
   "Return hash set of pane-ids from ENTRIES whose tree contains an Agent CLI.
-Each ENTRY is a plist with `:pane-id' and `:pane-pid'. Precomputing the
+Each ENTRY is a plist with `:pane-id' and `:pane-pid'.  Precomputing the
 set before sort keeps the priority function pure and avoids repeated
 BFS walks inside the sort comparator."
   (let* ((maps     (agentmux--process-maps))
@@ -251,7 +261,7 @@ then the tmux-active window, then the rest in their tmux-reported order."
 (defun agentmux--emamux-get-pane ()
   "Get tmux panes ordered for target selection.
 Excludes Emacs's own pane entirely (preventing self-send and avoiding
-visual noise). Sort priority among the remainder: panes whose process
+visual noise).  Sort priority among the remainder: panes whose process
 tree runs an Agent CLI first, then the tmux-active pane, then others."
   (with-temp-buffer
     (emamux:tmux-run-command t "list-panes"
@@ -284,7 +294,8 @@ tree runs an Agent CLI first, then the tmux-active pane, then others."
           :lessp #'<)))))
 
 (defun agentmux--emamux-read-parameter-window ()
-  "Read window preserving agentmux's candidate order. Return the window index."
+  "Read window preserving agentmux's candidate order.
+Return the window index."
   (let ((candidates (emamux:get-window)))
     (unless candidates
       (user-error "No tmux windows available"))
@@ -297,7 +308,8 @@ tree runs an Agent CLI first, then the tmux-active pane, then others."
       (car (split-string selected ":")))))
 
 (defun agentmux--emamux-read-parameter-pane ()
-  "Read pane preserving agentmux's candidate order. Return the pane index."
+  "Read pane preserving agentmux's candidate order.
+Return the pane index."
   (let ((candidates (emamux:get-pane)))
     (unless candidates
       (user-error "No tmux panes available"))
@@ -337,7 +349,7 @@ not double-wrapped."
   (condition-case err
     (apply #'emamux:tmux-run-command nil argv)
     (user-error (signal (car err) (cdr err)))
-    (error (user-error "Failed to %s: %s"
+    (error (user-error "%s failed: %s"
              label (error-message-string err)))))
 
 (defun agentmux--ensure-parameters ()
@@ -346,14 +358,15 @@ Signals `user-error' if user cancels the setup or parameters are invalid."
   (unless (emamux:set-parameters-p)
     (emamux:set-parameters))
   (unless (emamux:set-parameters-p)
-    (user-error "Tmux target not configured. Use M-x agentmux-set-target")))
+    (user-error "Tmux target not configured.  Use M-x agentmux-set-target")))
 
 (defun agentmux--send-text (text &optional no-enter)
-  "Send TEXT to agent. Submit with Enter unless NO-ENTER is non-nil.
+  "Send TEXT to agent.
+Submit with Enter unless NO-ENTER is non-nil.
 
 Issues at most two tmux calls regardless of TEXT length: one bracketed
 paste (`set-buffer' + `paste-buffer -p -d' chained inside a single tmux
-invocation) and one separate `send-keys Enter' for submission. Empty
+invocation) and one separate `send-keys Enter' for submission.  Empty
 TEXT skips the paste call.
 
 The named buffer `agentmux--paste-buffer-name' is always coupled with
@@ -362,29 +375,29 @@ remains untouched.
 
 Bracketed paste (`-p') makes the agent treat the entire payload as in-
 input bytes — multi-line text lands as in-input newlines, not as
-separate submitted messages. CRLF and bare CR are normalised to LF
-before paste. The pattern `\\r\\n\\|\\r' must list `\\r\\n' first so a
+separate submitted messages.  CRLF and bare CR are normalised to LF
+before paste.  The pattern `\\r\\n\\|\\r' must list `\\r\\n' first so a
 bare `\\r' branch does not steal the match and split a CRLF into two
 replacements."
   (agentmux--ensure-parameters)
   (let* ((target     (emamux:target-session))
           (normalized (replace-regexp-in-string "\r\n\\|\r" "\n" text t t)))
     (unless (string-empty-p normalized)
-      (agentmux--tmux-call-or-error "paste to tmux"
+      (agentmux--tmux-call-or-error "Paste to tmux"
         "set-buffer" "-b" agentmux--paste-buffer-name normalized
         ";"
         "paste-buffer" "-p" "-d"
         "-b" agentmux--paste-buffer-name
         "-t" target))
     (unless no-enter
-      (agentmux--tmux-call-or-error "submit to tmux"
+      (agentmux--tmux-call-or-error "Submit to tmux"
         "send-keys" "-t" target "Enter"))))
 
 (defun agentmux--send-keys (key)
   "Send KEY to agent pane.
 Signals `user-error' if tmux command fails."
   (agentmux--ensure-parameters)
-  (agentmux--tmux-call-or-error "send key to tmux"
+  (agentmux--tmux-call-or-error "Send key to tmux"
     "send-keys" "-t" (emamux:target-session) key))
 
 ;;; File context helpers
@@ -410,13 +423,14 @@ Return format: PATH, PATH:LINE, or PATH:START-END."
 BOUNDS: plist with :start and :end positions.
 Returns region or current line wrapped in Markdown code fence."
   (when buffer-file-name
-    (cref--get-region-content-with-fence bounds)))
+    (cref--get-region-content-with-fence bounds agentmux-context-content-format)))
 
 (defun agentmux--context-parts ()
   "Return context parts as (location . content) cons or nil.
 Both location and content come from the same bounds to ensure consistency.
 Content is only included when `agentmux-context-include-content' is non-nil."
   (when buffer-file-name
+    (cref--save-buffer-if-modified)
     (let* ((bounds (cref--get-region-or-line))
             (location (agentmux--format-location-with-bounds
                         agentmux-context-path-style
@@ -480,7 +494,8 @@ Replaces <return> with RET for brevity."
 
 (defun agentmux--read-multiline-string (prompt &optional history)
   "Read a string from the minibuffer with multi-line support.
-PROMPT is the prompt to display. HISTORY is the history list symbol to use.
+PROMPT is the prompt to display.
+HISTORY is the history list symbol to use.
 Returns (TEXT . NO-ENTER-P) cons cell.
 NO-ENTER-P is t if user pressed `agentmux-send-no-enter-key'."
   (let* ((key-hint (format "(%s: stage only)"

@@ -438,6 +438,49 @@ clipboard and `kill-ring' untouched."
       (should (string-prefix-p "````" content))
       (should (string-suffix-p "````" content)))))
 
+(ert-deftest cref-test-format-content-auto-keeps-one-two-three-lines ()
+  "AC-0020-0035: auto format keeps content at or below the threshold."
+  (let ((cref-content-format 'auto)
+        (cref-content-auto-compact-threshold 3))
+    (dolist (text '("one"
+                    "one\ntwo"
+                    "one\ntwo\nthree"))
+      (ert-info ((format "text=%S" text))
+        (should (string= (cref--format-content-text text) text))))))
+
+(ert-deftest cref-test-content-auto-compact-threshold-minimum-is-three ()
+  "AC-0020-0036: customize validation rejects thresholds below three."
+  (let ((type (get 'cref-content-auto-compact-threshold 'custom-type))
+        (safe (get 'cref-content-auto-compact-threshold 'safe-local-variable)))
+    (should (widget-apply (widget-convert type) :match 3))
+    (should-not (widget-apply (widget-convert type) :match 2))
+    (should (funcall safe 3))
+    (should-not (funcall safe 2))))
+
+(ert-deftest cref-test-format-content-threshold-runtime-minimum-is-three ()
+  "AC-0020-0036: runtime formatting clamps the threshold to at least three."
+  (let ((cref-content-format 'auto)
+        (cref-content-auto-compact-threshold 2))
+    (should (string= (cref--format-content-text "one\ntwo\nthree")
+                     "one\ntwo\nthree"))
+    (should (string= (cref--format-content-text "one\ntwo\nthree\nfour")
+                     "one\n[... omitted 2 lines ...]\nfour"))))
+
+(ert-deftest cref-test-format-content-auto-compacts-four-lines ()
+  "AC-0020-0037: auto format compacts content above the threshold."
+  (let ((cref-content-format 'auto)
+        (cref-content-auto-compact-threshold 3))
+    (should (string= (cref--format-content-text "one\ntwo\nthree\nfour")
+                     "one\n[... omitted 2 lines ...]\nfour"))))
+
+(ert-deftest cref-test-get-region-content-with-fence-full-format ()
+  "Full format keeps long content intact."
+  (cref-test-with-temp-buffer "one\ntwo\nthree\nfour"
+    (let* ((bounds (list :start (point-min) :end (point-max)))
+           (content (cref--get-region-content-with-fence bounds 'full)))
+      (should (string-match-p "one\ntwo\nthree\nfour" content))
+      (should-not (string-match-p "omitted" content)))))
+
 ;;; Clipboard Tests
 
 (ert-deftest cref-test-copy-to-clipboard-with-xclip ()
@@ -498,6 +541,41 @@ clipboard and `kill-ring' untouched."
         (should (string-match-p "#L2" result))
         (should (string-match-p "```" result))
         (should (string-match-p "line 2" result))))))
+
+(ert-deftest cref-test-copy-region-with-location-compacts-but-keeps-original-range ()
+  "AC-0020-0038: compacted content keeps the original region location."
+  (let ((cref-content-format 'auto)
+        (cref-content-auto-compact-threshold 3))
+    (cref-test-with-temp-file "one\ntwo\nthree\nfour"
+      (setq cref-test--clipboard-content nil)
+      (transient-mark-mode 1)
+      (goto-char (point-min))
+      (push-mark (point) t t)
+      (goto-char (point-max))
+      (cref-test-with-xclip-mock
+        (cref-copy-region-with-location)
+        (let ((result cref-test--clipboard-content))
+          (should (string-match-p "#L1-L4" result))
+          (should (string-match-p "one\n\\[\\.\\.\\. omitted 2 lines \\.\\.\\.\\]\nfour" result))
+          (should-not (string-match-p "two\nthree" result)))))))
+
+(ert-deftest cref-test-copy-region-location-saves-before-generating-line-number ()
+  "AC-0020-0050: save happens before bounds and location are generated."
+  (let ((cref-save-before-copy t))
+    (cref-test-with-temp-file "one\ntarget"
+      (setq cref-test--clipboard-content nil)
+      (goto-char (point-min))
+      (forward-line 1)
+      (insert "!")
+      (add-hook 'before-save-hook
+                (lambda ()
+                  (save-excursion
+                    (goto-char (point-min))
+                    (insert "prefix\n")))
+                nil t)
+      (cref-test-with-xclip-mock
+        (cref-copy-region-location-absolute)
+        (should (string-match-p "#L3$" cref-test--clipboard-content))))))
 
 ;;; Test Runner
 
