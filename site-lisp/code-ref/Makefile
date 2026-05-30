@@ -1,43 +1,43 @@
-# Makefile for code-ref
+SHELL := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+MAKEFLAGS += --warn-undefined-variables
+MAKEFLAGS += --no-builtin-rules
+MAKEFLAGS += --no-print-directory
 
 EMACS ?= emacs
-ELISP_FILES = code-ref-core.el code-ref.el
-TEST_FILES = code-ref-test.el
+EMACS_BATCH := $(EMACS) --batch --eval '(setq load-prefer-newer t)'
+ELISP_FILES := code-ref-core.el code-ref.el
+ELC_FILES := $(ELISP_FILES:.el=.elc)
 
-.PHONY: all test compile clean help
+.DEFAULT_GOAL := help
 
-all: compile test
+.PHONY: help
+help: ## 列出所有可用目标
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "%-30s %s\n", $$1, $$2}'
 
-# Run all tests
-test:
-	@echo "Running code-ref test suite..."
-	@$(EMACS) --batch \
-		-L . \
-		-l code-ref-test \
-		-f ert-run-tests-batch-and-exit
+.PHONY: all
+all: compile test checkdoc ## 跑完整检查
 
-# Compile elisp files
-compile:
-	@echo "Compiling elisp files..."
-	@$(EMACS) --batch -L . -f batch-byte-compile $(ELISP_FILES)
+.PHONY: test
+test: ## 跑测试
+	$(EMACS_BATCH) \
+	  -L . \
+	  -l code-ref-test \
+	  -f ert-run-tests-batch-and-exit
 
-# Clean compiled files
-clean:
-	@echo "Cleaning compiled files..."
-	@rm -f *.elc
+.PHONY: compile
+compile: ## 字节编译
+	$(EMACS_BATCH) -L . -f batch-byte-compile $(ELISP_FILES)
 
-# Check documentation
-checkdoc:
-	@echo "Checking documentation..."
-	@for f in $(ELISP_FILES); do \
-		$(EMACS) --batch --eval "(checkdoc-file \"$$f\")"; \
+.PHONY: checkdoc
+checkdoc: ## 检查文档字符串
+	for f in $(ELISP_FILES); do \
+	  $(EMACS_BATCH) --eval "(checkdoc-file \"$$f\")"; \
 	done
 
-help:
-	@echo "Available targets:"
-	@echo "  all      - Compile and test"
-	@echo "  test     - Run all tests"
-	@echo "  compile  - Compile elisp files"
-	@echo "  clean    - Remove compiled files"
-	@echo "  checkdoc - Check documentation"
-	@echo "  help     - Show this help message"
+.PHONY: clean
+clean: ## 清理字节编译产物
+	@for f in $(ELC_FILES); do \
+	  [ ! -e "$$f" ] || trash "$$f"; \
+	done
