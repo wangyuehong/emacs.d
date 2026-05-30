@@ -526,7 +526,7 @@ must propagate verbatim — no double-wrapping by the outer handler."
     (agentmux-test-with-tmux (lambda (_) "\n")
       (let ((err (should-error (agentmux--emacs-window-id) :type 'user-error)))
         (let ((msg (error-message-string err)))
-          (should (string-match-p "tmux returned empty window id" msg))
+          (should (string-match-p "Empty window id returned by tmux" msg))
           ;; Must NOT carry the outer "Failed to query…" wrapper prefix.
           (should-not (string-match-p "Failed to query Emacs window id"
                                       msg)))))))

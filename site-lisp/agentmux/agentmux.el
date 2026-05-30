@@ -169,7 +169,7 @@ back silently to a guessed window."
             "-F" "#{window_id}")
           (let ((out (string-trim (buffer-string))))
             (when (string-empty-p out)
-              (user-error "tmux returned empty window id for pane %s" pane))
+              (user-error "Empty window id returned by tmux for pane %s" pane))
             out))
         ;; Let upstream user-errors (including the empty-output branch
         ;; above) propagate verbatim so we don't double-wrap their text.
@@ -190,7 +190,7 @@ silent fallback that would mis-classify every pane as non-agent."
     (with-temp-buffer
       (let ((rc (process-file "ps" nil t nil "-axo" "pid=,ppid=,comm=")))
         (unless (zerop rc)
-          (user-error "ps exited with status %d while detecting agent panes" rc)))
+          (user-error "Failed to detect agent panes: ps exited with status %d" rc)))
       (dolist (line (split-string (buffer-string) "\n" t))
         (let* ((fields (split-string (string-trim line) nil t))
                 (pid   (string-to-number (nth 0 fields)))
