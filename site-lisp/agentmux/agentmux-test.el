@@ -333,6 +333,10 @@ no bare CR ever reaches the agent."
 ;;; pid-tree-has-agent-p
 ;; ---------------------------------------------------------------------------
 
+(ert-deftest agentmux-test-agent-cli-commands/default-includes-codex ()
+  "Codex CLI is recognized by default as an Agent CLI."
+  (should (member "codex" agentmux-agent-cli-commands)))
+
 (defun agentmux-test--build-maps (rows)
   "Build (CHILDREN-MAP . COMM-MAP) from ROWS of (PID PPID COMM)."
   (let ((children (make-hash-table :test 'eql))
@@ -352,6 +356,12 @@ no bare CR ever reaches the agent."
   (let* ((agentmux-agent-cli-commands '("claude"))
          (m (agentmux-test--build-maps
              '((100 1 "zsh") (200 100 "node") (300 200 "claude")))))
+    (should (agentmux--pid-tree-has-agent-p 100 (car m) (cdr m)))))
+
+(ert-deftest agentmux-test-pid-tree/codex-descendant-is-agent ()
+  (let* ((agentmux-agent-cli-commands '("claude" "codex"))
+         (m (agentmux-test--build-maps
+             '((100 1 "zsh") (200 100 "node") (300 200 "codex")))))
     (should (agentmux--pid-tree-has-agent-p 100 (car m) (cdr m)))))
 
 (ert-deftest agentmux-test-pid-tree/no-agent ()
@@ -570,6 +580,25 @@ still applies to all candidate panes (it has no Emacs-pane dependency)."
               ;; Agent CLI wins over the tmux-active marker.
               (should (string-match-p "claude" (car result)))
               (should (string-match-p "zsh" (cadr result))))))))))
+
+(ert-deftest agentmux-test-get-pane/codex-promoted-among-visible ()
+  "AC-0070-0030: Codex CLI panes are promoted by the default agent list."
+  (cl-letf (((symbol-function 'agentmux--emacs-pane-id) (lambda () "%19")))
+    (agentmux-test-with-target "sess:1.0"
+      (agentmux-test-with-ps '((100 1 "emacs")
+                               (200 1 "zsh")
+                               (300 1 "node")
+                               (400 300 "codex"))
+        (agentmux-test-with-tmux
+            (lambda (_)
+              (agentmux-test--list-panes-output
+               '(("%19" 100 0 "emacs" t)
+                 ("%20" 200 1 "zsh" nil)
+                 ("%21" 300 2 "node" nil))))
+          (let ((result (agentmux--emamux-get-pane)))
+            (should (= (length result) 2))
+            (should (string-match-p "node" (car result)))
+            (should (string-match-p "zsh" (cadr result)))))))))
 
 ;; ---------------------------------------------------------------------------
 ;;; completion-table-preserving-order (US-0070 AC-0070-0070)

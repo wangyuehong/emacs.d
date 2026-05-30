@@ -4,7 +4,7 @@
 
 ## 术语
 
-- Agent pane：tmux 中运行 AI CLI（Claude Code / Gemini CLI 等）的目标 pane
+- Agent pane：tmux 中运行 AI CLI（Claude Code / Codex CLI / Gemini CLI 等）的目标 pane
 - 目标：由 `emamux:target-session` 解析出的 session/window/pane 三元组
 - 提交：Agent 接收到一条完整消息并开始处理
 - 暂存：内容进入 Agent 输入框但未提交，用户可继续编辑
@@ -219,7 +219,7 @@
 
 - Given：同一 window 排除 Emacs 自身后仍有两个或更多 pane
 - When：生成默认 pane 候选
-- Then：优先选中运行 Agent CLI（如 Claude Code）的 pane 作为默认；其余 pane 退居其后
+- Then：优先选中运行 Agent CLI（如 Claude Code / Codex CLI）的 pane 作为默认；其余 pane 退居其后
 
 ### AC-0070-0040：Emacs 不在 tmux 中时的回退
 
@@ -282,6 +282,7 @@
 - Context: 需要从 tmux pane 识别其内运行的 agent CLI，作为目标选择的智能默认依据。
 - Decision: 以 tmux `pane_pid` 为根，调用 `ps -axo pid=,ppid=,comm=` 取全量进程表，BFS 后裔，匹配 `comm` basename 与 `agentmux-agent-cli-commands`。
 - Consequences:
+  - 默认识别 `claude` 与 `codex` 等已知 Agent CLI；新增 Agent CLI 只需扩展 `agentmux-agent-cli-commands`
   - 读 kernel `p_comm`（`exec` 后不可变），不受 `process.title` 改写影响
   - 自动穿透 shell / wrapper / supervisor 中间进程
   - macOS 与 Linux `ps` 调用签名一致
