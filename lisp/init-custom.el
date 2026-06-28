@@ -16,7 +16,7 @@
 
 ;;; AI
 
-(defcustom my/copilot-commit-model "gpt-4.1"
+(defcustom my/copilot-commit-model "auto"
   "Model for copilot-commit message generation."
   :type 'string
   :group 'my)

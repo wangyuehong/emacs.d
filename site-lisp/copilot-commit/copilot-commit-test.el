@@ -581,7 +581,27 @@
        :type 'user-error)
       (with-current-buffer buf
         (should (null copilot-commit--streaming-p))
-        (should (null copilot-commit--history))))))
+        (should (null copilot-commit--history)))
+      (should (null (assoc token copilot-commit--active-requests))))))
+
+(ert-deftest cc-test-handle-progress-1/end-server-error-signals-message ()
+  "Server-reported end errors are surfaced instead of empty-response text."
+  (cc-test--with-progress-buf
+    (with-current-buffer buf
+      (setq copilot-commit--accumulated nil))
+    (let* ((token "tok1")
+           (copilot-commit--active-requests
+            (list (list token buf "the prompt" nil nil))))
+      (should-error
+       (copilot-commit--handle-progress-1
+        token (list :kind "end"
+                    :result (list :error
+                                  (list :message "A model id is required"))))
+       :type 'user-error)
+      (with-current-buffer buf
+        (should (null copilot-commit--streaming-p))
+        (should (null copilot-commit--history)))
+      (should (null (assoc token copilot-commit--active-requests))))))
 
 (ert-deftest cc-test-handle-progress-1/end-summarize-dispatches-more ()
   (cc-test--with-progress-buf
@@ -708,6 +728,158 @@
           (should (null (aref copilot-commit--summaries 1)))
           (should (= copilot-commit--chunks-completed 1))
           (should (= copilot-commit--chunks-inflight 2)))))))
+
+;; ---------------------------------------------------------------------------
+;;; model payload tests
+;; ---------------------------------------------------------------------------
+
+(ert-deftest cc-test-model-payload/explicit-model ()
+  "An explicit model is sent as modelInfo.id."
+  (let ((copilot-commit-model "gpt-4.1")
+        (copilot-commit--model-resolved nil)
+        (copilot-commit--resolved-model nil))
+    (should (equal (copilot-commit--model-payload)
+                   '(:modelInfo (:id "gpt-4.1")
+                     :model "gpt-4.1")))))
+
+(ert-deftest cc-test-model-payload/default-prefers-chat-default ()
+  "The default model is resolved from Copilot server models."
+  (let ((copilot-commit-model nil)
+        (copilot-commit--model-resolved nil)
+        (copilot-commit--resolved-model nil))
+    (cl-letf (((symbol-function 'copilot-commit--request-models)
+               (lambda ()
+                 (list (list :id "first" :scopes ["chat-panel"])
+                       (list :id "chat-default"
+                             :scopes ["chat-panel"]
+                             :isChatDefault t)))))
+      (should (equal (copilot-commit--model-payload)
+                     '(:modelInfo (:id "chat-default")
+                       :model "chat-default"))))))
+
+(ert-deftest cc-test-model-payload/default-is-cached ()
+  "The default model resolver is called once per session."
+  (let ((copilot-commit-model nil)
+        (copilot-commit--model-resolved nil)
+        (copilot-commit--resolved-model nil)
+        (calls 0))
+    (cl-letf (((symbol-function 'copilot-commit--request-models)
+               (lambda ()
+                 (cl-incf calls)
+                 (list (list :id "chat-default"
+                             :scopes ["chat-panel"]
+                             :isChatDefault t)))))
+      (should (equal (copilot-commit--model-payload)
+                     '(:modelInfo (:id "chat-default")
+                       :model "chat-default")))
+      (should (equal (copilot-commit--model-payload)
+                     '(:modelInfo (:id "chat-default")
+                       :model "chat-default")))
+      (should (= calls 1)))))
+
+(ert-deftest cc-test-model-payload/default-falls-back-to-auto ()
+  "The server's auto router is used when no chat default is marked."
+  (let ((copilot-commit-model nil)
+        (copilot-commit--model-resolved nil)
+        (copilot-commit--resolved-model nil))
+    (cl-letf (((symbol-function 'copilot-commit--request-models)
+               (lambda ()
+                 (list (list :id "first" :scopes ["chat-panel"])
+                       (list :id "auto" :scopes ["chat-panel"])))))
+      (should (equal (copilot-commit--model-payload)
+                     '(:modelInfo (:id "auto") :model "auto"))))))
+
+(ert-deftest cc-test-model-payload/default-errors-when-no-chat-model ()
+  "A missing default model fails before sending an invalid payload."
+  (let ((copilot-commit-model nil)
+        (copilot-commit--model-resolved nil)
+        (copilot-commit--resolved-model nil))
+    (cl-letf (((symbol-function 'copilot-commit--request-models)
+               (lambda () nil)))
+      (should-error (copilot-commit--model-payload) :type 'user-error))))
+
+(ert-deftest cc-test-create-conversation/sends-model-info ()
+  "conversation/create payload includes modelInfo.id."
+  (cc-test--with-progress-buf
+    (let ((copilot-commit-model "gpt-4.1")
+          (captured-params nil))
+      (cl-letf (((symbol-function 'cc-test--async-request)
+                 (lambda (method params &rest args)
+                   (setq captured-params params)
+                   (funcall (plist-get args :success-fn)
+                            (list :conversationId "conv-1"))
+                   method))
+                ((symbol-function 'copilot-commit--workspace-folders)
+                 (lambda () [])))
+        (copilot-commit--create-conversation [] "token" buf #'ignore)
+        (should (equal (plist-get (plist-get captured-params :modelInfo) :id)
+                       "gpt-4.1"))
+        (should (equal (plist-get captured-params :model) "gpt-4.1"))))))
+
+(ert-deftest cc-test-create-conversation/error-cleans-up-and-signals ()
+  "conversation/create async errors clean state and surface user-error."
+  (cc-test--with-progress-buf
+    (with-current-buffer buf
+      (setq copilot-commit--streaming-p t))
+    (let ((other-buf (generate-new-buffer " *cc-other*")))
+      (unwind-protect
+          (let* ((copilot-commit-model "auto")
+                 (token "token")
+                 (sibling-token "sibling")
+                 (other-token "other")
+                 (copilot-commit--active-requests
+                  (list (list token buf "prompt" nil nil)
+                        (list sibling-token buf "chunk" 1 (cons nil ""))
+                        (list other-token other-buf "other" nil nil))))
+            (cl-letf (((symbol-function 'cc-test--async-request)
+                       (lambda (_method _params &rest args)
+                         (funcall (plist-get args :error-fn)
+                                  (list :message "model rejected"))))
+                      ((symbol-function 'copilot-commit--workspace-folders)
+                       (lambda () [])))
+              (should-error
+               (copilot-commit--create-conversation [] token buf #'ignore)
+               :type 'user-error)
+              (should (null (assoc token copilot-commit--active-requests)))
+              (should (null (assoc sibling-token copilot-commit--active-requests)))
+              (should (assoc other-token copilot-commit--active-requests))
+              (with-current-buffer buf
+                (should-not copilot-commit--streaming-p))))
+        (kill-buffer other-buf)))))
+
+(ert-deftest cc-test-conversation-create-error/ignores-stale-token ()
+  "A late conversation/create error for an inactive token is ignored."
+  (cc-test--with-progress-buf
+    (with-current-buffer buf
+      (setq copilot-commit--streaming-p t
+            copilot-commit--phase 'summarizing
+            copilot-commit--chunks '("chunk")))
+    (let ((copilot-commit--active-requests nil))
+      (copilot-commit--conversation-create-error
+       "stale-token" buf (list :message "late error"))
+      (with-current-buffer buf
+        (should copilot-commit--streaming-p)
+        (should (eq copilot-commit--phase 'summarizing))
+        (should (equal copilot-commit--chunks '("chunk")))))))
+
+(ert-deftest cc-test-probe-token-limit/sends-model-info ()
+  "The token-limit probe uses the same model payload as generation."
+  (let ((copilot-commit-model "gpt-4.1")
+        (copilot-commit--available t)
+        (copilot-commit--active-requests nil)
+        (captured-params nil))
+    (cl-letf (((symbol-function 'copilot--connection-alivep)
+               (lambda () t))
+              ((symbol-function 'cc-test--async-request)
+               (lambda (method params &rest _args)
+                 (setq captured-params params)
+                 method))
+              ((symbol-function 'copilot-commit--workspace-folders)
+               (lambda () [])))
+      (copilot-commit--probe-token-limit)
+      (should (equal (plist-get (plist-get captured-params :modelInfo) :id)
+                     "gpt-4.1"))
+      (should (equal (plist-get captured-params :model) "gpt-4.1")))))
 
 ;; ---------------------------------------------------------------------------
 ;;; update-input-region tests

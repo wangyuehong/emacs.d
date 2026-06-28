@@ -9,6 +9,7 @@ EMACS ?= emacs
 EMACS_BATCH := $(EMACS) --batch --eval '(setq load-prefer-newer t)'
 ELISP_FILES := copilot-commit-core.el copilot-commit.el
 ELC_FILES := $(ELISP_FILES:.el=.elc)
+COPILOT_DIR := $(firstword $(wildcard ../../elpa-31.0/copilot-* ../../elpa-*/copilot-* ../../elpa/copilot-*))
 
 .DEFAULT_GOAL := help
 
@@ -26,8 +27,9 @@ test: ## 跑测试
 .PHONY: compile
 compile: ## 字节编译
 	$(EMACS_BATCH) \
-	  --eval '(setq copilot-commit-test-load-only t)' \
-	  -l run-tests.el \
+	  --eval '(package-initialize)' \
+	  -L . \
+	  -L $(COPILOT_DIR) \
 	  -f batch-byte-compile $(ELISP_FILES)
 
 .PHONY: checkdoc

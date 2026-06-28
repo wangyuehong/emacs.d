@@ -26,9 +26,22 @@
   "Stub: always return t."
   t)
 
-(defun copilot--async-request (_method _params &rest _args)
-  "Stub: no-op."
+(defun cc-test--request (_method _params &rest _args)
+  "Stub: no-op synchronous request."
   nil)
+
+(defmacro copilot--request (method &optional params &rest args)
+  "Stub for `copilot--request'."
+  `(cc-test--request ,method ,params ,@args))
+
+(defun cc-test--async-request (_method _params &rest _args)
+  "Stub: no-op asynchronous request."
+  nil)
+
+(cl-defmacro copilot--async-request (method params &rest args
+                                            &key &allow-other-keys)
+  "Stub for `copilot--async-request'."
+  `(cc-test--async-request ,method ,params ,@args))
 
 (defun copilot-on-notification (_method _handler)
   "Stub: no-op."
@@ -51,9 +64,9 @@
 
 (let ((default-directory (file-name-directory
                           (or load-file-name buffer-file-name))))
-  (load (expand-file-name "copilot-commit-core") nil t)
-  (load (expand-file-name "copilot-commit") nil t)
-  (load (expand-file-name "copilot-commit-test") nil t))
+  (load (expand-file-name "copilot-commit-core.el") nil t)
+  (load (expand-file-name "copilot-commit.el") nil t)
+  (load (expand-file-name "copilot-commit-test.el") nil t))
 
 ;;; Run tests
 

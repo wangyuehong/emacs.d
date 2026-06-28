@@ -45,8 +45,26 @@
 #### AC-0010-0070: 服务端返回空响应
 
 - Given: copilot LSP 连接正常，生成已触发
-- When: 服务端返回 "end" 事件但无生成内容（如配额耗尽、API 错误）
+- When: 服务端返回 "end" 事件但无生成内容且无错误详情
 - Then: 清除 buffer 中的进度文字，通过 `user-error` 提示 "server returned empty response"
+
+#### AC-0010-0080: 服务端返回错误详情
+
+- Given: copilot LSP 连接正常，生成已触发
+- When: 服务端返回 "end" 事件且包含错误详情
+- Then: 清除 buffer 中的进度文字，通过 `user-error` 提示服务端返回的错误详情
+
+#### AC-0010-0090: 创建会话失败
+
+- Given: copilot LSP 连接正常，生成已触发
+- When: `conversation/create` 返回异步错误
+- Then: 清理当前 buffer 的活跃请求和进度状态，通过 `user-error` 提示创建会话失败原因
+
+#### AC-0010-0100: 过期创建错误
+
+- Given: 当前请求已被取消或被同 buffer 的其他失败请求清理
+- When: 该请求的 `conversation/create` 错误回调延迟到达
+- Then: 忽略该过期回调，不改变 buffer 状态，不再次提示错误
 
 ## US-0020: 重新生成 commit message
 
@@ -142,13 +160,13 @@
 
 - Given: `copilot-commit-model` 配置为非 nil 的模型 ID
 - When: 执行生成命令
-- Then: `conversation/create` payload 中包含 `:model` 字段，使用指定模型生成
+- Then: `conversation/create` payload 中包含 `modelInfo.id` 字段，使用指定模型生成
 
-#### AC-0060-0020: 未指定模型
+#### AC-0060-0020: 未指定模型时解析默认模型
 
 - Given: `copilot-commit-model` 为 nil
 - When: 执行生成命令
-- Then: `conversation/create` payload 中不包含 `:model` 字段，由 copilot LSP server 决定使用的模型
+- Then: 从 Copilot server 模型列表解析默认 chat 模型，并在 `conversation/create` payload 中包含 `modelInfo.id` 字段
 
 ## US-0070: 依赖兼容性检查
 

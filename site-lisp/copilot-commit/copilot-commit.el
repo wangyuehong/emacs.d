@@ -7,6 +7,7 @@
 ;;; Code:
 
 (require 'copilot)
+(require 'cl-lib)
 (require 'copilot-commit-core)
 
 (defvar copilot--ignore-response)
@@ -16,6 +17,7 @@
 
 (defconst copilot-commit--required-functions
   '(copilot--connection-alivep
+    copilot--request
     copilot--async-request
     copilot--dbind
     copilot-on-notification
@@ -50,7 +52,7 @@ Sets `copilot-commit--available' and returns the list of missing symbols."
 
 (defcustom copilot-commit-model nil
   "Model ID for commit message generation.
-When nil, the server decides which model to use."
+When nil, resolve a default chat model from the Copilot server."
   :type '(choice (const :tag "Server default" nil)
                  (string :tag "Model ID"))
   :group 'copilot-commit)
@@ -75,6 +77,12 @@ When nil, the server decides which model to use."
 Each entry is (token buffer prompt chunk-index acc-ref).
 CHUNK-INDEX is the chunk index for summarize requests (nil otherwise).
 ACC-REF is a cons cell (nil . \"\") for accumulating content.")
+
+(defvar copilot-commit--resolved-model nil
+  "Cached default chat model id resolved from the server.")
+
+(defvar copilot-commit--model-resolved nil
+  "Non-nil once a default model has been resolved this session.")
 
 (defvar-local copilot-commit--conversation-id nil
   "Current conversation ID for this commit buffer.")
@@ -109,6 +117,87 @@ Most recent pair is at the front.")
 
 (defvar-local copilot-commit--git-status nil
   "Cached git status string used during chunked generation.")
+
+;;; Model selection
+
+(defun copilot-commit--request-models ()
+  "Return the model list from the Copilot server."
+  (copilot--request 'copilot/models nil :timeout 5))
+
+(defun copilot-commit--chat-models ()
+  "Return Copilot models scoped for chat conversations."
+  (condition-case err
+      (cl-remove-if-not
+       (lambda (model)
+         (cl-find "chat-panel" (plist-get model :scopes) :test #'equal))
+       (copilot-commit--request-models))
+    (user-error (signal (car err) (cdr err)))
+    (error
+     (user-error "Copilot commit: failed to resolve chat model: %s"
+                 (error-message-string err)))))
+
+(defun copilot-commit--resolve-default-model ()
+  "Resolve the default chat model id from the Copilot server."
+  (let ((models (copilot-commit--chat-models)))
+    (or (plist-get (cl-find-if (lambda (model)
+                                 (eq (plist-get model :isChatDefault) t))
+                               models)
+                   :id)
+        (plist-get (cl-find-if (lambda (model)
+                                 (equal (plist-get model :id) "auto"))
+                               models)
+                   :id)
+        (plist-get (car models) :id)
+        (user-error "Copilot commit: no chat model is available"))))
+
+(defun copilot-commit--default-model ()
+  "Return the cached or server-resolved default chat model id."
+  (unless copilot-commit--model-resolved
+    (setq copilot-commit--resolved-model
+          (copilot-commit--resolve-default-model)
+          copilot-commit--model-resolved t))
+  (or copilot-commit--resolved-model
+      (user-error "Copilot commit: no chat model is available")))
+
+(defun copilot-commit--model ()
+  "Return the model id used for commit message generation."
+  (or copilot-commit-model (copilot-commit--default-model)))
+
+(defun copilot-commit--model-payload ()
+  "Return the model payload required by `conversation/create'."
+  (let ((model (copilot-commit--model)))
+    (list :modelInfo (list :id model)
+          :model model)))
+
+(defun copilot-commit--last-round-reply (value)
+  "Return the last edit-agent reply from progress VALUE."
+  (when-let* ((rounds (plist-get value :editAgentRounds))
+              ((vectorp rounds))
+              ((> (length rounds) 0)))
+    (plist-get (aref rounds (1- (length rounds))) :reply)))
+
+(defun copilot-commit--error-text (err)
+  "Return a human-readable string for server ERR, or nil."
+  (cond
+   ((null err) nil)
+   ((stringp err) err)
+   ((and (listp err) (stringp (plist-get err :message)))
+    (plist-get err :message))
+   (t (format "%S" err))))
+
+(defun copilot-commit--end-error-message (value)
+  "Return server error message from an end-event VALUE, or nil."
+  (let* ((result (plist-get value :result))
+         (err (or (plist-get value :error)
+                  (and (listp result) (plist-get result :error)))))
+    (copilot-commit--error-text err)))
+
+(defun copilot-commit--end-content (value)
+  "Return final text content from an end-event VALUE, or nil."
+  (let ((result (plist-get value :result)))
+    (or (and (stringp result) result)
+        (and (listp result) (plist-get result :reply))
+        (copilot-commit--last-round-reply value))))
 
 ;;; Logging
 
@@ -151,7 +240,7 @@ Most recent pair is at the front.")
             copilot-commit--model-token-limits))))
 
 (defun copilot-commit--cache-valid-p ()
-  "Return non-nil if the cache entry for the current model exists and is not expired."
+  "Return non-nil when the current model cache entry is valid."
   (let* ((key (or copilot-commit-model "default"))
          (entry (cdr (assoc key copilot-commit--model-token-limits))))
     (and entry
@@ -186,14 +275,14 @@ The result is cached for future use via the progress begin handler."
                            copilot-commit--active-requests)))
     (let* ((token (copilot-commit--generate-token))
            (turns (copilot-commit--build-turns nil "hi"))
-           (params (list :workDoneToken token
-                         :turns turns
-                         :capabilities (list :skills (vector "current-editor")
-                                             :allSkills t)
-                         :source "panel"
-                         :workspaceFolders (copilot-commit--workspace-folders))))
-      (when copilot-commit-model
-        (setq params (plist-put params :model copilot-commit-model)))
+           (params (append
+                    (list :workDoneToken token
+                          :turns turns
+                          :capabilities (list :skills (vector "current-editor")
+                                              :allSkills t)
+                          :source "panel"
+                          :workspaceFolders (copilot-commit--workspace-folders))
+                    (copilot-commit--model-payload))))
       (copilot-commit--log "probe-token-limit: token=%s" token)
       ;; Register a probe entry (nil buffer means probe-only, no commit buffer)
       (push (list token nil nil nil nil) copilot-commit--active-requests)
@@ -241,14 +330,15 @@ template comments, scissor line, and diff are never touched."
 BUF is the commit buffer for error handling.
 TURNS is a vector of turn objects (from `copilot-commit--build-turns').
 CALLBACK is called with the conversation ID on success."
-  (let ((params (list :workDoneToken token
-                      :turns turns
-                      :capabilities (list :skills (vector "current-editor")
-                                          :allSkills t)
-                      :source "panel"
-                      :workspaceFolders (copilot-commit--workspace-folders))))
-    (when copilot-commit-model
-      (setq params (plist-put params :model copilot-commit-model)))
+  (ignore buf)
+  (let ((params (append
+                 (list :workDoneToken token
+                       :turns turns
+                       :capabilities (list :skills (vector "current-editor")
+                                           :allSkills t)
+                       :source "panel"
+                       :workspaceFolders (copilot-commit--workspace-folders))
+                 (copilot-commit--model-payload))))
     (copilot--async-request
      'conversation/create params
      :success-fn (lambda (result)
@@ -257,19 +347,28 @@ CALLBACK is called with the conversation ID on success."
                                         (plist-get result :conversationId))
                    (funcall callback (plist-get result :conversationId)))
      :error-fn (lambda (err)
-                 (copilot-commit--cleanup-request token)
-                 (when (buffer-live-p buf)
-                   (with-current-buffer buf
-                     (let ((phase copilot-commit--phase)
-                           (chunk-idx copilot-commit--chunk-index)
-                           (total (length copilot-commit--chunks)))
-                       (setq copilot-commit--streaming-p nil)
-                       (copilot-commit--reset-chunk-state)
-                       (copilot-commit--log "conversation creation failed: %S" err)
-                       (if (eq phase 'summarizing)
-                           (message "Copilot commit: failed during chunk %d/%d summarization: %S"
-                                    (1+ chunk-idx) total err)
-                         (message "Copilot commit: conversation creation failed: %S" err)))))))))
+                 (copilot-commit--conversation-create-error token buf err)))))
+
+(defun copilot-commit--conversation-create-error (token buf err)
+  "Clean up TOKEN and report conversation/create ERR for BUF."
+  (when (assoc token copilot-commit--active-requests)
+    (if (buffer-live-p buf)
+        (progn
+          (copilot-commit--cleanup-buffer-requests buf)
+          (with-current-buffer buf
+            (let ((phase copilot-commit--phase)
+                  (chunk-idx copilot-commit--chunk-index)
+                  (total (length copilot-commit--chunks)))
+              (setq copilot-commit--streaming-p nil)
+              (copilot-commit--reset-chunk-state)
+              (copilot-commit--log "conversation creation failed: %S" err)
+              (if (eq phase 'summarizing)
+                  (user-error
+                   "Copilot commit: failed during chunk %d/%d summarization: %S"
+                   (1+ chunk-idx) total err)
+                (user-error "Copilot commit: conversation creation failed: %S" err)))))
+      (copilot-commit--cleanup-request token)
+      (user-error "Copilot commit: conversation creation failed: %S" err))))
 
 (defun copilot-commit--destroy-conversation (conv-id)
   "Destroy conversation CONV-ID."
@@ -285,6 +384,12 @@ CALLBACK is called with the conversation ID on success."
   "Remove TOKEN from active requests."
   (setq copilot-commit--active-requests
         (assoc-delete-all token copilot-commit--active-requests)))
+
+(defun copilot-commit--cleanup-buffer-requests (buf)
+  "Remove all active requests associated with BUF."
+  (setq copilot-commit--active-requests
+        (cl-remove-if (lambda (entry) (eq (cadr entry) buf))
+                      copilot-commit--active-requests)))
 
 (defun copilot-commit--handle-progress-1 (token value)
   "Core progress handling logic with TOKEN and VALUE already destructured."
@@ -319,7 +424,7 @@ CALLBACK is called with the conversation ID on success."
             (copilot-commit--cleanup-request token))
           (let* ((rounds (plist-get value :editAgentRounds))
                  (reply (when (and (vectorp rounds) (> (length rounds) 0))
-                          (plist-get (aref rounds 0) :reply))))
+                          (plist-get (aref rounds (1- (length rounds))) :reply))))
             (when (and reply (not (string-empty-p reply)))
               (cond
                ;; Summarizing phase: accumulate in per-request acc-ref
@@ -334,63 +439,64 @@ CALLBACK is called with the conversation ID on success."
                    buf (or copilot-commit--accumulated ""))))))))
 
          ((equal kind "end")
-          (cond
-           ;; Summarizing phase: store summary at correct index
-           ((and (buffer-live-p buf) (eq phase 'summarizing) chunk-index)
-            (with-current-buffer buf
-              ;; Get final content from end event or acc-ref
-              (let* ((result (plist-get value :result))
-                     (rounds (plist-get value :editAgentRounds))
-                     (round-reply (when (and (vectorp rounds)
-                                             (> (length rounds) 0))
-                                    (plist-get (aref rounds 0) :reply)))
-                     (end-content (or result round-reply))
-                     (final (if (and end-content (not (string-empty-p end-content)))
-                                end-content
-                              (cdr acc-ref))))
-                (aset copilot-commit--summaries chunk-index (or final "")))
-              (cl-incf copilot-commit--chunks-completed)
-              (cl-decf copilot-commit--chunks-inflight)
-              (let ((total (length copilot-commit--chunks)))
-                (copilot-commit--log "chunk %d/%d summarized (completed=%d inflight=%d)"
-                                     (1+ chunk-index) total
-                                     copilot-commit--chunks-completed
-                                     copilot-commit--chunks-inflight)
-                (copilot-commit--show-chunk-progress
-                 buf copilot-commit--chunks-completed total)
-                (if (= copilot-commit--chunks-completed total)
-                    (progn
-                      (setq copilot-commit--streaming-p nil)
-                      (copilot-commit--send-final-prompt buf))
-                  (copilot-commit--dispatch-chunks buf)))))
-
-           ;; Finalizing or normal: update buffer and save history
-           ((buffer-live-p buf)
-            (with-current-buffer buf
-              (let* ((result (plist-get value :result))
-                     (rounds (plist-get value :editAgentRounds))
-                     (round-reply (when (and (vectorp rounds)
-                                             (> (length rounds) 0))
-                                    (plist-get (aref rounds 0) :reply)))
-                     (final (or result round-reply)))
-                (when (and final (not (string-empty-p final)))
-                  (setq copilot-commit--accumulated final)))
-              (setq copilot-commit--streaming-p nil)
-              (if (or (null copilot-commit--accumulated)
-                      (string-empty-p copilot-commit--accumulated))
-                  (progn
+          (unwind-protect
+              (cond
+               ;; Summarizing phase: store summary at correct index
+               ((and (buffer-live-p buf) (eq phase 'summarizing) chunk-index)
+                (with-current-buffer buf
+                  (when-let* ((error-msg (copilot-commit--end-error-message value)))
+                    (setq copilot-commit--streaming-p nil)
+                    (copilot-commit--reset-chunk-state)
                     (copilot-commit--update-input-region buf "")
-                    (user-error "Copilot commit: server returned empty response"))
-                (push (cons prompt copilot-commit--accumulated)
-                      copilot-commit--history)
-                (copilot-commit--update-input-region
-                 buf copilot-commit--accumulated)
-                (when (eq phase 'finalizing)
-                  (setq copilot-commit--phase nil
-                        copilot-commit--chunks nil
-                        copilot-commit--chunk-index 0))
-                (message nil)))))
-          (copilot-commit--cleanup-request token)))))))
+                    (user-error "Copilot commit: %s" error-msg))
+                  ;; Get final content from end event or acc-ref
+                  (let* ((end-content (copilot-commit--end-content value))
+                         (final (if (and end-content
+                                         (not (string-empty-p end-content)))
+                                    end-content
+                                  (cdr acc-ref))))
+                    (aset copilot-commit--summaries chunk-index (or final "")))
+                  (cl-incf copilot-commit--chunks-completed)
+                  (cl-decf copilot-commit--chunks-inflight)
+                  (let ((total (length copilot-commit--chunks)))
+                    (copilot-commit--log "chunk %d/%d summarized (completed=%d inflight=%d)"
+                                         (1+ chunk-index) total
+                                         copilot-commit--chunks-completed
+                                         copilot-commit--chunks-inflight)
+                    (copilot-commit--show-chunk-progress
+                     buf copilot-commit--chunks-completed total)
+                    (if (= copilot-commit--chunks-completed total)
+                        (progn
+                          (setq copilot-commit--streaming-p nil)
+                          (copilot-commit--send-final-prompt buf))
+                      (copilot-commit--dispatch-chunks buf)))))
+
+               ;; Finalizing or normal: update buffer and save history
+               ((buffer-live-p buf)
+                (with-current-buffer buf
+                  (when-let* ((error-msg (copilot-commit--end-error-message value)))
+                    (setq copilot-commit--streaming-p nil)
+                    (copilot-commit--update-input-region buf "")
+                    (user-error "Copilot commit: %s" error-msg))
+                  (let ((final (copilot-commit--end-content value)))
+                    (when (and final (not (string-empty-p final)))
+                      (setq copilot-commit--accumulated final)))
+                  (setq copilot-commit--streaming-p nil)
+                  (if (or (null copilot-commit--accumulated)
+                          (string-empty-p copilot-commit--accumulated))
+                      (progn
+                        (copilot-commit--update-input-region buf "")
+                        (user-error "Copilot commit: server returned empty response"))
+                    (push (cons prompt copilot-commit--accumulated)
+                          copilot-commit--history)
+                    (copilot-commit--update-input-region
+                     buf copilot-commit--accumulated)
+                    (when (eq phase 'finalizing)
+                      (setq copilot-commit--phase nil
+                            copilot-commit--chunks nil
+                            copilot-commit--chunk-index 0))
+                    (message nil)))))
+            (copilot-commit--cleanup-request token))))))))
 
 (defun copilot-commit--handle-progress (msg)
   "Handle `$/progress' notification MSG for commit generation."
@@ -643,10 +749,7 @@ reuse them instead of re-analyzing the diff."
    (t
     (setq copilot-commit--streaming-p nil)
     ;; Remove all requests for this buffer
-    (let ((buf (current-buffer)))
-      (setq copilot-commit--active-requests
-            (cl-remove-if (lambda (entry) (eq (cadr entry) buf))
-                          copilot-commit--active-requests)))
+    (copilot-commit--cleanup-buffer-requests (current-buffer))
     ;; Destroy the conversation
     (when copilot-commit--conversation-id
       (copilot-commit--destroy-conversation copilot-commit--conversation-id)
