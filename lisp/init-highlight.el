@@ -48,7 +48,7 @@
 
 (use-package display-line-numbers
   :ensure nil
-  :hook ((prog-mode yaml-ts-mode markdown-mode conf-mode toml-ts-mode html-ts-mode) . display-line-numbers-mode))
+  :hook ((prog-mode yaml-ts-mode markdown-mode conf-mode toml-ts-mode html-ts-mode md-tui-preview-mode) . display-line-numbers-mode))
 
 (use-package whitespace
   :ensure nil

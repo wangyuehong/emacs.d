@@ -47,6 +47,11 @@
   (markdown-asymmetric-header t)
   (markdown-fontify-code-blocks-natively t))
 
+(use-package md-tui-preview
+  :ensure nil
+  :demand t
+  :if (and (not (display-graphic-p)) (executable-find "glow")))
+
 (use-package mermaid-mode)
 
 (use-package editorconfig
