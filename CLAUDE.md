@@ -48,16 +48,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 测试
 
-`copilot-commit`, `code-ref`, `md-tui-preview` 等 site-lisp 包有独立的 `Makefile`，在对应包目录下运行：
+`copilot-commit`, `code-ref`, `agentmux`, `md-tui-preview` 这几个 site-lisp 包有独立的 `Makefile`，在对应包目录下运行 `make all`（跑测试 + 字节编译 + 文档检查）：
 
 ```sh
-cd site-lisp/copilot-commit && make test
-cd site-lisp/code-ref && make test
-cd site-lisp/md-tui-preview && make test
-
-# 字节编译和文档检查（在各包目录下运行）
-cd site-lisp/copilot-commit && make compile
-cd site-lisp/code-ref && make checkdoc
+cd site-lisp/copilot-commit && make all
+cd site-lisp/code-ref && make all
+cd site-lisp/agentmux && make all
 cd site-lisp/md-tui-preview && make all
 ```
 

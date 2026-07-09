@@ -33,10 +33,10 @@ compile: ## 字节编译
 	  -f batch-byte-compile $(ELISP_FILES)
 
 .PHONY: checkdoc
-checkdoc: ## 检查文档字符串
-	$(EMACS_BATCH) \
-	  --eval '(checkdoc-file "copilot-commit-core.el")' \
-	  --eval '(checkdoc-file "copilot-commit.el")'
+checkdoc: ## 检查文档字符串，有告警则失败
+	@for f in $(ELISP_FILES); do \
+	  $(EMACS_BATCH) --eval "(let ((ok t)) (advice-add 'display-warning :before (lambda (&rest _) (setq ok nil))) (checkdoc-file \"$$f\") (kill-emacs (if ok 0 1)))" || exit 1; \
+	done
 
 .PHONY: clean
 clean: ## 清理字节编译产物

@@ -99,7 +99,7 @@ This is the position just before the first line starting with `#'
 (defun copilot-commit--split-diff (diff threshold)
   "Split DIFF into chunks, each at most THRESHOLD characters.
 Splits by file boundaries (diff --git), then by hunk boundaries
-(@@) if a single file diff exceeds THRESHOLD.  Uses greedy merging."
+\(@@) if a single file diff exceeds THRESHOLD.  Uses greedy merging."
   (let ((file-diffs (copilot-commit--split-by-file diff)))
     (copilot-commit--greedy-merge file-diffs threshold)))
 
