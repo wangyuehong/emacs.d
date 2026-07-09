@@ -1,6 +1,6 @@
 # site-lisp 公共约束
 
-`site-lisp/` 下的所有自定义包（`agentmux`、`code-ref`、`copilot-commit`、`im-bridge`、`vbnet-mode`）共同遵守以下约束。包级 SPEC / CLAUDE.md 与本文件冲突时按子目录优先。
+`site-lisp/` 下的所有自定义包（`agentmux`、`code-ref`、`copilot-commit`、`evil-iedit-state`、`im-bridge`、`md-tui-preview`、`vbnet-mode`）共同遵守以下约束。包级 SPEC / CLAUDE.md 与本文件冲突时按子目录优先。
 
 ## 失败语义：fail-fast，禁止 fallback
 

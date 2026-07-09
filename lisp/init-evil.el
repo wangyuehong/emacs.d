@@ -120,8 +120,18 @@
 (use-package evil-collection
   :after evil
   :hook (evil-mode . evil-collection-init)
+  :functions (evil-collection-define-key)
+  :preface
+  (defun my/evil-collection-fix-eglot-xref (mode keymaps &rest _)
+    "Rebind eglot's \"pop-definition\" off the obsolete `xref-pop-marker-stack'."
+    (when (eq mode 'eglot)
+      (dolist (keymap keymaps)
+        (evil-collection-define-key 'normal keymap
+          (kbd "C-t") #'xref-go-back))))
   :custom
-  (evil-collection-want-unimpaired-p nil))
+  (evil-collection-want-unimpaired-p nil)
+  :config
+  (add-hook 'evil-collection-setup-hook #'my/evil-collection-fix-eglot-xref))
 
 (use-package evil-surround
   :after evil
@@ -130,6 +140,7 @@
 (use-package evil-nerd-commenter :after evil)
 
 (use-package evil-iedit-state
+  :ensure nil
   :after evil
   :commands (evil-iedit-state evil-iedit-state/iedit-mode))
 

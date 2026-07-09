@@ -34,6 +34,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `agentmux` - 通过 tmux 向 AI agent CLI（Claude Code 等）发送文件上下文。快捷键：`C-c a`
 - `code-ref` - 以多种路径格式复制代码引用（绝对路径，git 相对路径，文件名，含/不含内容）。为 `init-general` 中的 transient 菜单提供支持
 - `im-bridge` - 输入法切换与 Evil mode 集成
+- `md-tui-preview` - 在终端 Emacs 中把当前 `.md` buffer 切换成 Glow 渲染的只读预览，配色跟随主题。快捷键：`C-c C-c g`（进入）, `C-c C-c`（预览态内退出）
+- `vbnet-mode` - Visual Basic .NET 编辑 mode（vendor 自第三方，非本仓库原创）
+- `evil-iedit-state` - 为 `iedit` 提供 Evil 风格的 normal/insert state 交互（vendor 自
+  syl20bnr/evil-iedit-state，本地维护，已用 `advice-add` 替换原版已废弃的 `defadvice`）
 
 ### 自定义变量系统
 
@@ -44,15 +48,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 测试
 
-`copilot-commit`, `code-ref` 两个 site-lisp 包有独立的 `Makefile`，在对应包目录下运行：
+`copilot-commit`, `code-ref`, `md-tui-preview` 等 site-lisp 包有独立的 `Makefile`，在对应包目录下运行：
 
 ```sh
 cd site-lisp/copilot-commit && make test
 cd site-lisp/code-ref && make test
+cd site-lisp/md-tui-preview && make test
 
 # 字节编译和文档检查（在各包目录下运行）
 cd site-lisp/copilot-commit && make compile
 cd site-lisp/code-ref && make checkdoc
+cd site-lisp/md-tui-preview && make all
 ```
 
 无顶层测试命令，各包独立测试。
