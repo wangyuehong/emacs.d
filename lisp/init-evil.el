@@ -88,8 +88,16 @@
                 (comint-mode . emacs)
                 (dashboard-mode . motion)
                 (help-mode . motion)
+                (md-tui-preview-mode . motion)
                 (messages-buffer-mode . motion)))
     (evil-set-initial-state (car p) (cdr p)))
+
+  ;; `evil-motion-state-map' binds RET to `evil-ret', which otherwise
+  ;; shadows `md-tui-preview-mode-map''s own RET binding: evil's state
+  ;; keymaps are consulted before a buffer's major-mode map.
+  (with-eval-after-load 'md-tui-preview
+    (evil-define-key 'motion md-tui-preview-mode-map
+      (kbd "RET") #'md-tui-preview-follow-link-at-point))
 
   (defun my/evil-set-tab-for-completion ()
     "Set `tab-always-indent' to 'complete for edit mode."
