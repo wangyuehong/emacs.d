@@ -89,16 +89,84 @@ other hook functions at the default depth -- notably
 `md-tui-preview--effective-width' measures the window correctly."
   (let ((source md-tui-preview--source)
         (was-modified md-tui-preview--source-modified-p)
+        (source-file-name md-tui-preview--source-file-name)
         (inhibit-read-only t))
     (erase-buffer)
     (md-tui-preview--with-theme-ansi-colors
      (lambda ()
        (insert (md-tui-preview--render-string source (md-tui-preview--effective-width)))
-       (ansi-color-apply-on-region (point-min) (point-max))))
+       (ansi-color-apply-on-region (point-min) (point-max))
+       (md-tui-preview--strip-margin)
+       (md-tui-preview--attach-link-properties
+        (md-tui-preview--parse-links source) source-file-name)))
     (set-buffer-modified-p was-modified))
   (goto-char (point-min)))
 
 (add-hook 'md-tui-preview-mode-hook #'md-tui-preview--finish-setup 90)
+
+;;; Link Navigation
+
+(defun md-tui-preview--resolve-link-value (link source-file-name)
+  "Return the (KIND . VALUE) pair to store for LINK.
+LINK is a plist as returned by `md-tui-preview--parse-links'.  A `file'
+target has any \"file://\" prefix stripped and, when relative, is
+expanded against SOURCE-FILE-NAME's directory."
+  (let ((target (plist-get link :target)))
+    (pcase (plist-get link :kind)
+      ('url (cons 'url target))
+      ('file
+       (let ((path (if (string-prefix-p "file://" target)
+                       (substring target (length "file://"))
+                     target)))
+         (cons 'file
+               (expand-file-name
+                path (and source-file-name (file-name-directory source-file-name))))))
+      (kind (error "Unknown link kind: %s" kind)))))
+
+(defun md-tui-preview--attach-link-properties (links source-file-name)
+  "Attach `md-tui-preview-link-target' properties in the current buffer.
+LINKS is an ordered list as returned by `md-tui-preview--parse-links',
+located in the current buffer's rendered text by literal label and
+target substring search, advancing through the buffer in order --
+duplicate labels or targets do not get confused with each other, since
+each search resumes from where the previous one ended.
+SOURCE-FILE-NAME resolves relative file targets.
+When a link's label or target text cannot be found (e.g. glow wrapped
+it across lines in a way the search does not tolerate), that link is
+silently left unclickable; this does not affect any other link."
+  (goto-char (point-min))
+  (dolist (link links)
+    (let* ((label (plist-get link :label))
+           (target (plist-get link :target))
+           (value (md-tui-preview--resolve-link-value link source-file-name))
+           (label-found
+            (if (not label)
+                t
+              (when (re-search-forward (md-tui-preview--search-regexp label t) nil t)
+                (put-text-property (match-beginning 0) (match-end 0)
+                                    'md-tui-preview-link-target value)
+                t))))
+      (when (and label-found
+                 (re-search-forward (md-tui-preview--search-regexp target) nil t))
+        (put-text-property (match-beginning 0) (match-end 0)
+                            'md-tui-preview-link-target value)))))
+
+;;;###autoload
+(defun md-tui-preview-follow-link-at-point ()
+  "Open the link at point: a URL in the browser, a file in Emacs.
+Signals `user-error' when point is not on a link recognized by
+`md-tui-preview--parse-links', or when a local file target does not
+exist."
+  (interactive)
+  (let ((target (get-text-property (point) 'md-tui-preview-link-target)))
+    (unless target
+      (user-error "Not on a link"))
+    (pcase (car target)
+      ('url (browse-url (cdr target)))
+      ('file
+       (unless (file-exists-p (cdr target))
+         (user-error "Link target does not exist: %s" (cdr target)))
+       (find-file (cdr target))))))
 
 ;;;###autoload
 (defun md-tui-preview-toggle ()
@@ -132,6 +200,7 @@ another buffer or window."
   (define-key markdown-mode-command-map (kbd "g") #'md-tui-preview-toggle))
 
 (define-key md-tui-preview-mode-map (kbd "C-c C-c") #'md-tui-preview-toggle)
+(define-key md-tui-preview-mode-map (kbd "RET") #'md-tui-preview-follow-link-at-point)
 
 (provide 'md-tui-preview)
 ;;; md-tui-preview.el ends here

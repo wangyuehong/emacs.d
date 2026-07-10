@@ -158,6 +158,18 @@
 > 这保证了其他 depth 0 的 hook 函数（包括 `display-line-numbers-mode`）已经跑完，`--effective-width` 才去测量窗口宽度。
 > depth 90 是当前实现选择的手段，不是本 AC 承诺的契约——只要时序正确，实现可以调整。
 
+### AC-0025-0030：不保留 glow 自带的左侧留白
+
+- Given：buffer 显示在某个窗口中
+- When：进入预览
+- Then：渲染内容左对齐到 buffer 最左列，不出现 glow「dark」风格自带的左侧留白列
+
+> 说明：glow「dark」风格给每一行内容前都加了 2 列固定留白（glamour style 的 `document.margin`），
+> 且 glow 没有对应的命令行 flag 可以关闭它（只有 `--style` 可选名称或完整 style JSON 路径）。
+> 实现上是在 `ansi-color-apply-on-region` 跑完、转义序列已清空之后，对每一行检查开头是否恰好是这
+> 2 个字面空格字符，若是则删除；空行或不以该留白开头的行不受影响。
+> 这是当前实现选择的手段，不是本 AC 承诺的契约——只要渲染内容不再带有这段左侧留白，实现可以调整。
+
 ## US-0030：glow 参数可配置
 
 作为用户，我希望能调整 Glow 的渲染参数（如换 style、加宽度限制），不改代码。
@@ -183,3 +195,82 @@
 - Given：`PATH` 中找不到 `glow`
 - When：启动
 - Then：本包不加载，`.md` 文件行为与未安装该包时完全一致，无报错
+
+## US-0050：预览态中通过链接跳转到目标
+
+作为用户，我希望在预览态阅读 Markdown 时，光标移到链接文字上按 RET 就能直接打开链接目标。
+外部网址用浏览器打开，本地文件用 Emacs 打开，不必退出预览手动查找。
+
+### Background
+
+- Given：当前 buffer 处于 `md-tui-preview-mode`
+- Given：渲染内容中包含至少一条可解析的链接
+
+### AC-0050-0010：光标在外部链接文字上按 RET 打开浏览器
+
+- Given：光标位于某条外部链接（http/https/mailto）渲染出的文字范围内
+- When：按 RET
+- Then：以该链接的目标地址调用 `browse-url` 打开
+
+- Examples:
+  | 源 Markdown 写法 | 目标地址 |
+  | --- | --- |
+  | `[文字](https://example.com)` | `https://example.com` |
+  | `<https://example.com>` | `https://example.com` |
+  | `[文字](mailto:a@b.com)` | `mailto:a@b.com` |
+  | `[文字][ref]` + `[ref]: https://example.com` | `https://example.com` |
+
+### AC-0050-0020：光标在本地文件链接文字上按 RET 打开该文件
+
+- Given：光标位于某条本地文件链接（相对路径或绝对路径）渲染出的文字范围内，且目标文件存在
+- When：按 RET
+- Then：用 `find-file` 打开该目标文件，相对路径以当前源 Markdown 文件所在目录解析
+
+- Examples:
+  | 源 Markdown 写法 | 解析后目标 |
+  | --- | --- |
+  | `[文字](relative/file.md)` | 源文件所在目录 + `relative/file.md` |
+  | `[文字](/absolute/file.md)` | `/absolute/file.md` |
+  | `[文字][ref]` + `[ref]: relative/file.md` | 源文件所在目录 + `relative/file.md` |
+
+### AC-0050-0030：光标不在链接上按 RET 不触发导航
+
+- Given：光标位于预览态中不属于任何已解析链接的位置
+- When：按 RET
+- Then：以 `user-error` 终止，不调用 `browse-url` 或 `find-file`
+
+### AC-0050-0040：本地目标不存在时按 RET 报错而不新建文件
+
+- Given：光标位于某条本地文件链接渲染出的文字范围内，且解析后的目标路径不存在
+- When：按 RET
+- Then：以 `user-error` 终止，不调用 `find-file`（避免其新建空文件）
+
+### AC-0050-0050：图片链接不可导航
+
+- Given：渲染内容中包含图片语法（行内 `![alt](target)` 或引用式 `![alt][ref]`）渲染出的目标文字
+- When：光标位于该目标文字范围内按 RET
+- Then：以 `user-error` 终止，与「光标不在链接上」一致（图片不生成可跳转链接）
+
+### 补充说明
+
+- 边界情况：
+  - 以下写法均不在本期支持范围内，不生成可跳转链接：
+    - 标签内嵌套方括号（如 `[a[b]c](url)`）
+    - shortcut 引用式 `[text]`（无显式 `[ref]`）
+    - 标题片段 `file.md#heading`
+    - 当前文档内 `#heading` 跳转
+  - 未知协议（如 `javascript:`、`ftp:`）不生成可跳转链接。
+  - 悬空引用（`[text][ref]` 无对应 `[ref]: target` 定义）不生成可跳转链接。
+  - 若某条链接的标签或目标文字因渲染换行而未能在渲染后文本中准确定位，该条链接静默不可跳转，不影响其他链接。
+
+> 说明：链接可跳转性建立在「渲染后文本里，链接标签与解析出的目标文字按源码顺序原样出现」这一观察之上。
+>
+> 该观察针对 `glow --style dark` 验证：不使用 OSC 8（glow 未产生），也不向源文本注入唤醒标记。
+>
+> 按源码链接顺序，在渲染完成的纯文本中顺次正向搜索标签与目标文字（对内部空白容忍换行），命中区间打上内部文本属性。
+>
+> 搜索位置单调前进，重复标签/重复目标不会互相误配。
+>
+> 这是当前实现选择的手段，不是本 US 承诺的契约。
+>
+> 只要「光标在链接文字上按 RET 能跳转，不在链接上不跳转」这一结果成立即可。

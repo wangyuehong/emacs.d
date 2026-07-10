@@ -121,6 +121,31 @@ marker."
       (md-tui-preview--render-string "# Hi")
       (should-not (member "--width" captured-args)))))
 
+;;; Margin Tests
+
+(ert-deftest md-tui-preview-test-strip-margin-removes-leading-spaces ()
+  "Lines that start with glow's margin have exactly that many leading
+spaces removed."
+  (with-temp-buffer
+    (insert "  Hello\n  World\n")
+    (md-tui-preview--strip-margin)
+    (should (string= (buffer-string) "Hello\nWorld\n"))))
+
+(ert-deftest md-tui-preview-test-strip-margin-leaves-blank-lines-untouched ()
+  "A blank line, which has no margin to strip, is left as-is."
+  (with-temp-buffer
+    (insert "  Hello\n\n  World\n")
+    (md-tui-preview--strip-margin)
+    (should (string= (buffer-string) "Hello\n\nWorld\n"))))
+
+(ert-deftest md-tui-preview-test-strip-margin-leaves-short-lines-untouched ()
+  "A line with fewer leading spaces than the margin width is untouched,
+rather than deleting into its content."
+  (with-temp-buffer
+    (insert " Hi\n")
+    (md-tui-preview--strip-margin)
+    (should (string= (buffer-string) " Hi\n"))))
+
 ;;; Width Tests
 
 (ert-deftest md-tui-preview-test-effective-width-without-line-numbers ()
@@ -380,6 +405,275 @@ leaves the buffer's mode and content untouched."
     (should (eq major-mode 'fundamental-mode))
     (should (string= (buffer-string) "not markdown"))))
 
+;;; Link Parsing Tests
+
+(ert-deftest md-tui-preview-test-parse-links-inline ()
+  "An inline link yields its label and target, classified as `url'."
+  (should (equal (md-tui-preview--parse-links "[text](https://example.com)")
+                 '((:label "text" :target "https://example.com" :kind url)))))
+
+(ert-deftest md-tui-preview-test-parse-links-autolink ()
+  "An autolink yields a nil label and its target, classified as `url'."
+  (should (equal (md-tui-preview--parse-links "<https://example.com>")
+                 '((:label nil :target "https://example.com" :kind url)))))
+
+(ert-deftest md-tui-preview-test-parse-links-reference-resolves-definition ()
+  "A reference-style link resolves to its definition's target."
+  (should (equal (md-tui-preview--parse-links
+                  "[text][1]\n\n[1]: https://example.com")
+                 '((:label "text" :target "https://example.com" :kind url)))))
+
+(ert-deftest md-tui-preview-test-parse-links-excludes-images ()
+  "Image syntax (leading \"!\"), inline or reference-style, is not a
+navigable link."
+  (should-not (md-tui-preview--parse-links "![alt](https://example.com/img.png)"))
+  (should-not (md-tui-preview--parse-links
+               "![alt][1]\n\n[1]: https://example.com/img.png")))
+
+(ert-deftest md-tui-preview-test-parse-links-excludes-dangling-reference ()
+  "A reference id with no matching definition is excluded."
+  (should-not (md-tui-preview--parse-links "[text][missing]")))
+
+(ert-deftest md-tui-preview-test-parse-links-excludes-collapsed-reference ()
+  "The collapsed reference form \"[text][]\" is excluded."
+  (should-not (md-tui-preview--parse-links "[text][]\n\n[text]: https://example.com")))
+
+(ert-deftest md-tui-preview-test-parse-links-excludes-nested-bracket-label ()
+  "A label containing a nested, unescaped \"[\" is a known limitation
+\(SPEC.md US-0050): the malformed construct matches nothing, rather
+than being parsed as some other link."
+  (should-not (md-tui-preview--parse-links "[a[b]c](https://example.com)")))
+
+(ert-deftest md-tui-preview-test-parse-links-excludes-shortcut-reference ()
+  "The shortcut reference form \"[text]\" (no explicit \"[ref]\") is
+excluded, per SPEC.md US-0050's declared out-of-scope forms."
+  (should-not (md-tui-preview--parse-links "[text]\n\n[text]: https://example.com")))
+
+(ert-deftest md-tui-preview-test-parse-links-excludes-unsupported-scheme ()
+  "An unsupported scheme (e.g. \"javascript:\") is excluded."
+  (should-not (md-tui-preview--parse-links "[text](javascript:alert(1))")))
+
+(ert-deftest md-tui-preview-test-parse-links-duplicate-labels-preserve-order ()
+  "Two links sharing the same label are both returned, each with its
+own target, in source order."
+  (should (equal (md-tui-preview--parse-links
+                  "[same](https://example.com/a) [same](https://example.com/b)")
+                 '((:label "same" :target "https://example.com/a" :kind url)
+                   (:label "same" :target "https://example.com/b" :kind url)))))
+
+(ert-deftest md-tui-preview-test-parse-links-mailto-kind ()
+  "A mailto target is classified as `url', not `file'."
+  (should (equal (md-tui-preview--parse-links "[mail](mailto:a@b.com)")
+                 '((:label "mail" :target "mailto:a@b.com" :kind url)))))
+
+(ert-deftest md-tui-preview-test-parse-links-relative-and-absolute-path-kind ()
+  "Relative and absolute paths are both classified as `file'."
+  (should (equal (md-tui-preview--parse-links "[rel](a/b.md) [abs](/a/b.md)")
+                 '((:label "rel" :target "a/b.md" :kind file)
+                   (:label "abs" :target "/a/b.md" :kind file)))))
+
+(ert-deftest md-tui-preview-test-parse-links-reference-style-file-kind ()
+  "A reference-style link resolving to a relative path is classified as
+`file', not `url' -- AC-0050-0020's reference-style example."
+  (should (equal (md-tui-preview--parse-links
+                  "[text][1]\n\n[1]: relative/file.md")
+                 '((:label "text" :target "relative/file.md" :kind file)))))
+
+(ert-deftest md-tui-preview-test-parse-links-inline-target-nested-parens ()
+  "An inline target containing balanced parentheses (e.g. a Wikipedia-
+style URL) is captured whole, not truncated at the first \")\"."
+  (should (equal (md-tui-preview--parse-links
+                  "[wiki](https://en.wikipedia.org/wiki/Foo_(bar))")
+                 '((:label "wiki"
+                    :target "https://en.wikipedia.org/wiki/Foo_(bar)"
+                    :kind url)))))
+
+(ert-deftest md-tui-preview-test-parse-links-inline-target-strips-title ()
+  "An inline link's optional trailing title is not part of the target."
+  (should (equal (md-tui-preview--parse-links "[t](https://example.com \"a title\")")
+                 '((:label "t" :target "https://example.com" :kind url)))))
+
+(ert-deftest md-tui-preview-test-parse-links-excludes-heading-fragment ()
+  "A bare \"#heading\", a \"file.md#heading\", and a \"file://\"-prefixed
+target with a heading fragment are all excluded, per SPEC.md US-0050's
+declared out-of-scope forms -- the fragment check applies regardless of
+whether the target also happens to use the file:// scheme."
+  (should-not (md-tui-preview--parse-links "[text](#heading)"))
+  (should-not (md-tui-preview--parse-links "[text](file.md#heading)"))
+  (should-not (md-tui-preview--parse-links "[text](file:///a/file.md#heading)")))
+
+(ert-deftest md-tui-preview-test-parse-links-skips-unbalanced-paren ()
+  "An inline link with an unbalanced opening parenthesis in its target
+is silently skipped -- not treated as a link -- without aborting the
+rest of the document: a later, well-formed link is still found."
+  (should (equal (md-tui-preview--parse-links
+                  "[bad](https://example.com/( [good](https://example.com/b)")
+                 '((:label "good" :target "https://example.com/b" :kind url)))))
+
+(ert-deftest md-tui-preview-test-parse-links-reference-definition-strips-angle-brackets ()
+  "A reference definition whose target is wrapped in angle brackets
+(\"[id]: <url>\", permitted by CommonMark to allow whitespace) resolves
+to the unwrapped target."
+  (should (equal (md-tui-preview--parse-links "[text][1]\n\n[1]: <https://example.com>")
+                 '((:label "text" :target "https://example.com" :kind url)))))
+
+;;; Attach Link Properties Tests
+
+(ert-deftest md-tui-preview-test-attach-marks-label-and-target ()
+  "Both the label text and the target text get the property, so RET
+works whether point is on the label or on the visible target."
+  (with-temp-buffer
+    (insert "click here https://example.com/a")
+    (md-tui-preview--attach-link-properties
+     '((:label "click here" :target "https://example.com/a" :kind url)) nil)
+    (goto-char (point-min))
+    (should (equal (get-text-property (point) 'md-tui-preview-link-target)
+                   '(url . "https://example.com/a")))
+    (goto-char (point-max))
+    (should (equal (get-text-property (1- (point)) 'md-tui-preview-link-target)
+                   '(url . "https://example.com/a")))))
+
+(ert-deftest md-tui-preview-test-attach-duplicate-labels-do-not-cross-match ()
+  "Two links sharing the same label each get their own target, matched
+positionally in order, not confused with each other."
+  (with-temp-buffer
+    (insert "click here https://example.com/a and click here https://example.com/b")
+    (md-tui-preview--attach-link-properties
+     '((:label "click here" :target "https://example.com/a" :kind url)
+       (:label "click here" :target "https://example.com/b" :kind url))
+     nil)
+    (goto-char (point-min))
+    (should (equal (get-text-property (point) 'md-tui-preview-link-target)
+                   '(url . "https://example.com/a")))
+    (goto-char (point-max))
+    (should (equal (get-text-property (1- (point)) 'md-tui-preview-link-target)
+                   '(url . "https://example.com/b")))))
+
+(ert-deftest md-tui-preview-test-attach-skips-unmatched-link-without-affecting-others ()
+  "A link whose label cannot be found in the buffer is silently left
+unclickable, and does not prevent a later link from being attached."
+  (with-temp-buffer
+    (insert "click here https://example.com/b")
+    (md-tui-preview--attach-link-properties
+     '((:label "missing label" :target "https://example.com/a" :kind url)
+       (:label "click here" :target "https://example.com/b" :kind url))
+     nil)
+    (goto-char (point-min))
+    (should (equal (get-text-property (point) 'md-tui-preview-link-target)
+                   '(url . "https://example.com/b")))))
+
+(ert-deftest md-tui-preview-test-attach-tolerates-wrapped-label ()
+  "A label split across a line wrap by re-wrapping is still found."
+  (with-temp-buffer
+    (insert "this is a\nwrapped label https://example.com/c")
+    (md-tui-preview--attach-link-properties
+     '((:label "this is a wrapped label" :target "https://example.com/c" :kind url))
+     nil)
+    (goto-char (point-min))
+    (should (equal (get-text-property (point) 'md-tui-preview-link-target)
+                   '(url . "https://example.com/c")))))
+
+(ert-deftest md-tui-preview-test-attach-autolink-has-no-label-to-match ()
+  "An autolink (nil label) attaches the property straight to its target
+text, without requiring a separate label match first."
+  (with-temp-buffer
+    (insert "https://example.com/i")
+    (md-tui-preview--attach-link-properties
+     '((:label nil :target "https://example.com/i" :kind url)) nil)
+    (goto-char (point-min))
+    (should (equal (get-text-property (point) 'md-tui-preview-link-target)
+                   '(url . "https://example.com/i")))))
+
+(ert-deftest md-tui-preview-test-attach-resolves-relative-file-against-source-dir ()
+  "A `file' target's relative path is resolved against SOURCE-FILE-NAME's
+directory, and any \"file://\" prefix is stripped."
+  (with-temp-buffer
+    (insert "relfile relative/file.md")
+    (md-tui-preview--attach-link-properties
+     '((:label "relfile" :target "relative/file.md" :kind file))
+     "/tmp/fake/source.md")
+    (goto-char (point-min))
+    (should (equal (get-text-property (point) 'md-tui-preview-link-target)
+                   '(file . "/tmp/fake/relative/file.md")))))
+
+;;; Follow Link At Point Tests
+
+(ert-deftest md-tui-preview-test-follow-link-opens-url ()
+  "Point on a `url' link calls `browse-url' with its target."
+  (with-temp-buffer
+    (insert "x")
+    (put-text-property (point-min) (point-max) 'md-tui-preview-link-target
+                        '(url . "https://example.com"))
+    (goto-char (point-min))
+    (let (called-with)
+      (cl-letf (((symbol-function 'browse-url)
+                 (lambda (url) (setq called-with url))))
+        (md-tui-preview-follow-link-at-point))
+      (should (string= called-with "https://example.com")))))
+
+(ert-deftest md-tui-preview-test-follow-link-opens-existing-file ()
+  "Point on a `file' link whose target exists calls `find-file' with it."
+  (let ((file (make-temp-file "md-tui-preview-test-")))
+    (unwind-protect
+        (with-temp-buffer
+          (insert "x")
+          (put-text-property (point-min) (point-max) 'md-tui-preview-link-target
+                              (cons 'file file))
+          (goto-char (point-min))
+          (let (called-with)
+            (cl-letf (((symbol-function 'find-file)
+                       (lambda (f) (setq called-with f))))
+              (md-tui-preview-follow-link-at-point))
+            (should (string= called-with file))))
+      (delete-file file))))
+
+(ert-deftest md-tui-preview-test-follow-link-rejects-point-off-link ()
+  "Point not on any link signals `user-error' and calls neither
+`browse-url' nor `find-file'."
+  (with-temp-buffer
+    (insert "plain text")
+    (goto-char (point-min))
+    (let (browse-url-called find-file-called)
+      (cl-letf (((symbol-function 'browse-url) (lambda (&rest _) (setq browse-url-called t)))
+                ((symbol-function 'find-file) (lambda (&rest _) (setq find-file-called t))))
+        (should-error (md-tui-preview-follow-link-at-point) :type 'user-error))
+      (should-not browse-url-called)
+      (should-not find-file-called))))
+
+(ert-deftest md-tui-preview-test-follow-link-rejects-missing-file-target ()
+  "A `file' link whose target does not exist signals `user-error' and
+does not call `find-file' (which would otherwise create an empty
+file)."
+  (with-temp-buffer
+    (insert "x")
+    (put-text-property (point-min) (point-max) 'md-tui-preview-link-target
+                        (cons 'file "/nonexistent/md-tui-preview-test-file.md"))
+    (goto-char (point-min))
+    (let (find-file-called)
+      (cl-letf (((symbol-function 'find-file) (lambda (&rest _) (setq find-file-called t))))
+        (should-error (md-tui-preview-follow-link-at-point) :type 'user-error))
+      (should-not find-file-called))))
+
+(ert-deftest md-tui-preview-test-follow-link-rejects-image-target ()
+  "AC-0050-0050: point on an image's rendered target text signals
+`user-error' through the actual RET entry point, not merely as an
+inference from `md-tui-preview--parse-links' excluding images.  The
+buffer text mimics glow's rendering of \"![alt](url)\" (label, then the
+target rendered as plain visible text) to show the target text being
+present in the buffer is not enough to make it navigable."
+  (with-temp-buffer
+    (insert "Image: alt icon https://example.com/img.png")
+    (md-tui-preview--attach-link-properties
+     (md-tui-preview--parse-links "![alt](https://example.com/img.png)") nil)
+    (goto-char (point-max))
+    (backward-char 3)
+    (let (browse-url-called find-file-called)
+      (cl-letf (((symbol-function 'browse-url) (lambda (&rest _) (setq browse-url-called t)))
+                ((symbol-function 'find-file) (lambda (&rest _) (setq find-file-called t))))
+        (should-error (md-tui-preview-follow-link-at-point) :type 'user-error))
+      (should-not browse-url-called)
+      (should-not find-file-called))))
+
 ;;; Keybinding Tests
 
 (ert-deftest md-tui-preview-test-command-map-binding ()
@@ -389,6 +683,11 @@ leaves the buffer's mode and content untouched."
 (ert-deftest md-tui-preview-test-preview-map-binding ()
   "`C-c C-c' inside the preview resolves to the toggle command."
   (should (eq (lookup-key md-tui-preview-mode-map (kbd "C-c C-c")) #'md-tui-preview-toggle)))
+
+(ert-deftest md-tui-preview-test-preview-map-ret-binding ()
+  "RET inside the preview resolves to the link-follow command."
+  (should (eq (lookup-key md-tui-preview-mode-map (kbd "RET"))
+              #'md-tui-preview-follow-link-at-point)))
 
 (provide 'md-tui-preview-test)
 ;;; md-tui-preview-test.el ends here

@@ -142,6 +142,29 @@ the current buffer."
          (+ 2 (ceiling (line-number-display-width 'columns)))
        0)))
 
+;;; Margin
+
+(defconst md-tui-preview--glow-margin-width 2
+  "Left-margin columns glow's \"dark\" style pads every content line with.
+Glow has no CLI flag to disable this (only `--style', a name or a full
+custom style JSON path), so `md-tui-preview--strip-margin' removes it
+from the buffer instead.")
+
+(defun md-tui-preview--strip-margin ()
+  "Remove glow's left margin from every line in the current buffer.
+Only removes `md-tui-preview--glow-margin-width' literal leading space
+characters from a line that actually starts with them, leaving blank
+lines and any line without that margin untouched.  Must run after the
+buffer's ANSI escape sequences have already been stripped (e.g. by
+`ansi-color-apply-on-region'), since a line can start with escape bytes
+rather than the margin spaces before that point."
+  (let ((prefix (make-string md-tui-preview--glow-margin-width ?\s)))
+    (goto-char (point-min))
+    (while (not (eobp))
+      (when (looking-at-p (regexp-quote prefix))
+        (delete-char md-tui-preview--glow-margin-width))
+      (forward-line 1))))
+
 ;;; Rendering
 
 (defun md-tui-preview--render-string (markdown-text &optional width)
@@ -162,6 +185,196 @@ Signals `user-error' if the glow process exits with a non-zero status."
       (unless (and (integerp status) (zerop status))
         (user-error "Glow failed to render (%s): %s" status (buffer-string)))
       (buffer-string))))
+
+;;; Link Parsing
+;;
+;; Modeled after markdown-mode's own link recognition (its bracket/
+;; parenthesis shape for inline and reference links, its bracket shape
+;; for autolinks, and its use of `scan-sexps' in `markdown-link-at-pos'
+;; to find an inline target's true closing parenthesis even when the
+;; target itself contains balanced parentheses, e.g. a Wikipedia-style
+;; URL) but reimplemented here rather than depending on markdown-mode at
+;; runtime: entering the preview requires the buffer's real major mode
+;; to already be `markdown-mode', but this package's test suite
+;; deliberately stays independent of whichever markdown-mode version
+;; (if any) happens to be installed -- see run-tests.el's own stub.
+
+(defconst md-tui-preview--link-regexp
+  "\\(!?\\)\\[\\(\\(?:\\\\\\]\\|[^]\n]\\)*\\)\\]\\(?:(\\|\\[\\([^]\n]*\\)\\]\\)"
+  "Regexp matching the start of an inline or reference link/image.
+Group 1: optional \"!\" image marker.  Group 2: label text (an escaped
+\"\\]\" does not end it early).  For the inline form, matches only
+through the opening \"(\" -- `md-tui-preview--inline-link-target' takes
+over from there via `scan-sexps'.  Group 3: reference id, present only
+for the reference form.")
+
+(defconst md-tui-preview--angle-uri-regexp
+  "<\\(\\(?:https?\\|mailto\\):[^<>\n ]+\\)>"
+  "Regexp matching an autolink.
+Restricted to http/https/mailto per SPEC.md US-0050.  Group 1: the
+target.")
+
+(defconst md-tui-preview--reference-def-regexp
+  "^[ \t]\\{0,3\\}\\[\\([^]\n]+\\)\\]:[ \t]*\\(<[^>\n]*>\\|\\S-+\\)"
+  "Regexp matching a Markdown reference definition line.
+Group 1: reference id.  Group 2: target, still wrapped in angle
+brackets when written that way (a trailing title, if any, is not part
+of this group and is ignored).")
+
+(defun md-tui-preview--collect-reference-defs ()
+  "Return a hash table mapping downcased reference ids to targets.
+Scans the current buffer for lines of the form \"[id]: target\" or
+\"[id]: <target>\", unwrapping the latter's angle brackets."
+  (let ((defs (make-hash-table :test #'equal)))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward md-tui-preview--reference-def-regexp nil t)
+        (let ((target (match-string 2)))
+          (puthash (downcase (match-string 1))
+                   (if (string-match "\\`<\\(.*\\)>\\'" target)
+                       (match-string 1 target)
+                     target)
+                   defs))))
+    defs))
+
+(defun md-tui-preview--link-kind (target)
+  "Return the navigation kind for TARGET, or nil if unsupported.
+Returns `url' for http/https/mailto targets, and `file' for file://
+URIs, absolute paths, and relative paths.  Returns nil for any other
+scheme (e.g. \"javascript:\", \"ftp:\") and for a target containing a
+\"#\" heading fragment (\"file.md#heading\" or a bare \"#heading\"),
+per SPEC.md US-0050's declared out-of-scope forms."
+  (cond
+   ((string-match-p "\\`\\(https?\\|mailto\\):" target) 'url)
+   ((string-match-p "#" target) nil)
+   ((string-match-p "\\`file://" target) 'file)
+   ((string-match-p "\\`[a-zA-Z][a-zA-Z0-9+.-]*:" target) nil)
+   (t 'file)))
+
+(defun md-tui-preview--inline-link-target ()
+  "Return (TARGET . END) for the inline link parenthesis group at point.
+Returns nil when the parenthesis is unbalanced (no matching close paren
+before the end of the buffer) -- that single malformed construct is
+then simply not treated as a link, per SPEC.md US-0050's silent-skip
+handling of an unmatched candidate; scanning continues, rather than a
+`scan-sexps' failure aborting the rest of the document.
+Point must sit right after its opening \"(\", as
+`md-tui-preview--link-regexp' leaves it.  Finds the true closing
+parenthesis via `scan-sexps' even when TARGET itself contains balanced
+parentheses, splits off and discards an optional trailing title in
+double quotes, and unwraps a target wrapped in angle brackets to permit
+whitespace -- the same handling markdown-mode's own
+`markdown-link-at-pos' applies to inline links."
+  (let ((end (condition-case nil (scan-sexps (1- (point)) 1) (scan-error nil))))
+    (when end
+      (let ((inside (string-trim
+                     (buffer-substring-no-properties (point) (max (point) (1- end))))))
+        (cons
+         (cond
+          ((string-match "\\`<\\(.+\\)>\\'" inside) (match-string 1 inside))
+          ((string-match "\\`\\([^ \t\n]+\\)[ \t\n]" inside) (match-string 1 inside))
+          (t inside))
+         end)))))
+
+(defun md-tui-preview--next-link-match (limit)
+  "Move point to the start of the next link-like construct before LIMIT.
+Tries `md-tui-preview--link-regexp' and `md-tui-preview--angle-uri-regexp'
+independently from point and returns the symbol `bracket' or `angle'
+for whichever matches earliest, with match data set for that regexp.
+Returns nil, and does not move point, when neither matches."
+  (let ((bracket-pos (save-excursion
+                       (save-match-data
+                         (and (re-search-forward md-tui-preview--link-regexp limit t)
+                              (match-beginning 0)))))
+        (angle-pos (save-excursion
+                    (save-match-data
+                      (and (re-search-forward md-tui-preview--angle-uri-regexp limit t)
+                           (match-beginning 0))))))
+    (cond
+     ((and bracket-pos (or (not angle-pos) (<= bracket-pos angle-pos)))
+      (goto-char bracket-pos)
+      (re-search-forward md-tui-preview--link-regexp limit t)
+      'bracket)
+     (angle-pos
+      (goto-char angle-pos)
+      (re-search-forward md-tui-preview--angle-uri-regexp limit t)
+      'angle))))
+
+(defun md-tui-preview--parse-links (markdown-text)
+  "Return an ordered list of navigable links found in MARKDOWN-TEXT.
+Each element is a plist (:label LABEL-OR-NIL :target TARGET :kind KIND),
+in the order the links appear in MARKDOWN-TEXT.  Recognizes inline
+links, reference-style links (together with their definitions), and
+http/https/mailto autolinks.  Image syntax, dangling references (a
+reference id with no matching definition), the collapsed reference form
+\"[text][]\", and unsupported schemes are excluded from the result."
+  (with-temp-buffer
+    (insert markdown-text)
+    (goto-char (point-min))
+    (let ((defs (md-tui-preview--collect-reference-defs))
+          links match-kind)
+      (while (setq match-kind (md-tui-preview--next-link-match (point-max)))
+        (if (eq match-kind 'angle)
+            (let* ((target (match-string 1))
+                   (kind (md-tui-preview--link-kind target))
+                   (on-def-line (save-excursion
+                                  (goto-char (line-beginning-position))
+                                  (looking-at-p md-tui-preview--reference-def-regexp))))
+              ;; An angle-bracket target on a reference definition line
+              ;; (e.g. "[id]: <url>") is that definition's target, already
+              ;; captured by `md-tui-preview--collect-reference-defs' --
+              ;; not a second, standalone autolink at the same position.
+              (when (and kind (not on-def-line))
+                (push (list :label nil :target target :kind kind) links)))
+          (let ((bang (match-string 1))
+                (label (match-string 2))
+                (ref-id (match-string 3)))
+            (cond
+             ;; Image ("!" marker): matched only to consume it, never a link.
+             ((and bang (not (string-empty-p bang))))
+             ((not ref-id)
+              (let ((result (md-tui-preview--inline-link-target)))
+                (when result
+                  (pcase-let ((`(,target . ,end) result))
+                    (let ((kind (and (not (string-empty-p target))
+                                      (md-tui-preview--link-kind target))))
+                      (when kind
+                        (push (list :label label :target target :kind kind) links)))
+                    (goto-char (max end (point)))))))
+             ((not (string-empty-p ref-id))
+              (let* ((target (gethash (downcase ref-id) defs))
+                     (kind (and target (md-tui-preview--link-kind target))))
+                (when kind
+                  (push (list :label label :target target :kind kind) links))))))))
+      (nreverse links))))
+
+;;; Rendered-Text Search
+
+(defun md-tui-preview--strip-inline-markup (word)
+  "Strip leading/trailing Markdown emphasis/code markup from WORD.
+Removes any run of `*', `_', `~', or backtick characters immediately at
+the start or end of WORD.  Approximates how glow renders emphasis,
+strong emphasis, strikethrough, and inline code: the markup characters
+are dropped, and only the enclosed text remains visible."
+  (replace-regexp-in-string "\\`[*_~`]+\\|[*_~`]+\\'" "" word))
+
+(defun md-tui-preview--search-regexp (text &optional strip-markup)
+  "Return a regexp that finds TEXT in glow's rendered output.
+Splits TEXT on whitespace and joins the tokens with a pattern matching
+one or more whitespace characters of any kind, including newlines, so
+the result still matches after glow re-wraps TEXT onto different
+lines.  When STRIP-MARKUP is non-nil (for a link label, never for a
+target), also strips Markdown emphasis/code markup from each token's
+edges via `md-tui-preview--strip-inline-markup', since glow renders
+that markup as ANSI styling rather than literal characters."
+  (mapconcat
+   #'regexp-quote
+   (seq-remove
+    #'string-empty-p
+    (mapcar (lambda (word)
+              (if strip-markup (md-tui-preview--strip-inline-markup word) word))
+            (split-string text "[ \t\n]+" t)))
+   "[ \t\n]+"))
 
 (provide 'md-tui-preview-core)
 ;;; md-tui-preview-core.el ends here
