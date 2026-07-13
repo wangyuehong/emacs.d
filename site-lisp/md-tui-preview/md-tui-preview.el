@@ -90,15 +90,25 @@ other hook functions at the default depth -- notably
   (let ((source md-tui-preview--source)
         (was-modified md-tui-preview--source-modified-p)
         (source-file-name md-tui-preview--source-file-name)
+        ;; Measure the width while the buffer still holds the Markdown
+        ;; source, before `erase-buffer' below.  `display-line-numbers-mode's
+        ;; gutter then reserves room for the document's own line count.
+        ;; Measuring after the erase would size the gutter for an empty
+        ;; (1-line) buffer and under-reserve it; since glow fills every
+        ;; line to `--width', those full-width lines would overflow the
+        ;; real (wider-gutter) text area and soft-wrap once the rendered
+        ;; content is inserted.
+        (width (md-tui-preview--effective-width))
         (inhibit-read-only t))
     (erase-buffer)
     (md-tui-preview--with-theme-ansi-colors
      (lambda ()
-       (insert (md-tui-preview--render-string source (md-tui-preview--effective-width)))
+       (insert (md-tui-preview--render-string source width))
        (ansi-color-apply-on-region (point-min) (point-max))
-       (md-tui-preview--strip-margin)
        (md-tui-preview--attach-link-properties
-        (md-tui-preview--parse-links source) source-file-name)))
+        (md-tui-preview--parse-links source) source-file-name)
+       (md-tui-preview--attach-code-block-backgrounds
+        (md-tui-preview--parse-code-blocks source))))
     (set-buffer-modified-p was-modified))
   (goto-char (point-min)))
 
@@ -168,6 +178,50 @@ exist."
          (user-error "Link target does not exist: %s" (cdr target)))
        (find-file (cdr target))))))
 
+;;; Code Block Background
+
+(defun md-tui-preview--attach-code-block-backgrounds (blocks)
+  "Overlay a distinguishing background on each block in BLOCKS.
+BLOCKS is an ordered list as returned by `md-tui-preview--parse-code-blocks'.
+Each block's rendered region is located by matching its content lines
+one after another, searching forward from where the previous match
+ended (monotonic, like the link locator).  Advancing line by line is
+what keeps duplicate content lines apart: a line repeated within the
+block matches its own rendered occurrence rather than the first one, so
+the span reaches the block's real end instead of stopping at an earlier
+copy.  When every content line is found the overlay covers from the
+first through the last; if any line cannot be located the block is left
+unshaded rather than partially shaded (AC-0070-0010 promises the full
+block).  Overlays only set a `:background', so glow's syntax-highlight
+foregrounds show through unchanged; glow pads every rendered line to the
+full width passed to it (`md-tui-preview--effective-width'), so the
+covered space cells already carry the background out to the window's
+right edge without needing an `:extend' face.  Does nothing when
+`md-tui-preview--code-block-background' resolves to nil."
+  (when-let* ((bg (md-tui-preview--code-block-background)))
+    ;; Clear any prior code-block overlays first, so the function is
+    ;; idempotent -- safe to call on a buffer that already carries them,
+    ;; independent of the toggle path's own cleanup.
+    (remove-overlays (point-min) (point-max) 'md-tui-preview-code-block t)
+    (goto-char (point-min))
+    (dolist (block blocks)
+      (let ((start nil) (end nil) (all-found t))
+        (dolist (line (plist-get block :lines))
+          (if (re-search-forward (md-tui-preview--search-regexp line) nil t)
+              (progn
+                (unless start
+                  (setq start (save-excursion (goto-char (match-beginning 0))
+                                              (line-beginning-position))))
+                ;; End at the next line's start so the overlay covers the
+                ;; matched line in full; updated per match to track the
+                ;; furthest-reached line.
+                (setq end (line-beginning-position 2)))
+            (setq all-found nil)))
+        (when (and all-found start end)
+          (let ((ov (make-overlay start end)))
+            (overlay-put ov 'face (list :background bg))
+            (overlay-put ov 'md-tui-preview-code-block t)))))))
+
 ;;;###autoload
 (defun md-tui-preview-toggle ()
   "Toggle between editing this Markdown buffer and previewing it with Glow.
@@ -183,6 +237,7 @@ another buffer or window."
           (auto-save-name md-tui-preview--source-auto-save-file-name)
           (saved-mode md-tui-preview--source-major-mode)
           (inhibit-read-only t))
+      (remove-overlays (point-min) (point-max) 'md-tui-preview-code-block t)
       (erase-buffer)
       (insert source)
       (funcall saved-mode)

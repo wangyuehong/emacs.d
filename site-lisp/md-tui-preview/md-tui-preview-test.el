@@ -121,30 +121,39 @@ marker."
       (md-tui-preview--render-string "# Hi")
       (should-not (member "--width" captured-args)))))
 
-;;; Margin Tests
+;;; Bundled Style Tests
 
-(ert-deftest md-tui-preview-test-strip-margin-removes-leading-spaces ()
-  "Lines that start with glow's margin have exactly that many leading
-spaces removed."
-  (with-temp-buffer
-    (insert "  Hello\n  World\n")
-    (md-tui-preview--strip-margin)
-    (should (string= (buffer-string) "Hello\nWorld\n"))))
+(ert-deftest md-tui-preview-test-style-file-exists ()
+  "The bundled glow style file ships with the package and is readable."
+  (should (file-readable-p md-tui-preview--style-file)))
 
-(ert-deftest md-tui-preview-test-strip-margin-leaves-blank-lines-untouched ()
-  "A blank line, which has no margin to strip, is left as-is."
-  (with-temp-buffer
-    (insert "  Hello\n\n  World\n")
-    (md-tui-preview--strip-margin)
-    (should (string= (buffer-string) "Hello\n\nWorld\n"))))
+(ert-deftest md-tui-preview-test-default-glow-args-reference-style-file ()
+  "The default `md-tui-preview-glow-args' point `--style' at the bundled
+style file."
+  (let ((tail (member "--style" md-tui-preview-glow-args)))
+    (should tail)
+    (should (string= (cadr tail) md-tui-preview--style-file))))
 
-(ert-deftest md-tui-preview-test-strip-margin-leaves-short-lines-untouched ()
-  "A line with fewer leading spaces than the margin width is untouched,
-rather than deleting into its content."
-  (with-temp-buffer
-    (insert " Hi\n")
-    (md-tui-preview--strip-margin)
-    (should (string= (buffer-string) " Hi\n"))))
+(ert-deftest md-tui-preview-test-style-file-strips-layout-artifacts ()
+  "AC-0060: the bundled style regularizes glow's decorative layout at
+the source -- no left margin, no document top/bottom blank line, and
+the H1 gets a `# ' marker prefix (consistent with h2-h6) with no
+banner padding suffix.  This guards the override mechanism (a
+regeneration that dropped the overrides would fail here); the rendered
+visual outcome depends on the real glow binary and is not batch
+observable, mirroring the theme-color tests above."
+  (let* ((style (json-parse-string
+                 (with-temp-buffer
+                   (insert-file-contents md-tui-preview--style-file)
+                   (buffer-string))
+                 :object-type 'alist))
+         (document (alist-get 'document style))
+         (h1 (alist-get 'h1 style)))
+    (should (= (alist-get 'margin document) 0))
+    (should (string= (alist-get 'block_prefix document) ""))
+    (should (string= (alist-get 'block_suffix document) ""))
+    (should (string= (alist-get 'prefix h1) "# "))
+    (should (string= (alist-get 'suffix h1) ""))))
 
 ;;; Width Tests
 
@@ -163,6 +172,20 @@ padding columns) is subtracted from the window's body width, since
             ((symbol-function 'line-number-display-width) (lambda (&rest _) 4.0)))
     (let ((display-line-numbers-mode t))
       (should (= (md-tui-preview--effective-width) 74)))))
+
+(ert-deftest md-tui-preview-test-width-measured-before-erase ()
+  "AC-0025-0030: the render width is measured while the buffer still
+holds the Markdown source (so a line-number gutter is sized for the
+document), not after `erase-buffer' when the buffer is empty.  A stub
+records the buffer size at measurement time; a non-zero size means the
+source was still present."
+  (md-tui-preview-test-with-mock-glow
+    (md-tui-preview-test-with-markdown-buffer "line1\nline2\nline3\nline4\nline5"
+      (let (size-at-measure)
+        (cl-letf (((symbol-function 'md-tui-preview--effective-width)
+                   (lambda () (setq size-at-measure (buffer-size)) 80)))
+          (md-tui-preview-toggle))
+        (should (> size-at-measure 0))))))
 
 ;;; Theme Color Mapping Tests
 
@@ -673,6 +696,145 @@ present in the buffer is not enough to make it navigable."
         (should-error (md-tui-preview-follow-link-at-point) :type 'user-error))
       (should-not browse-url-called)
       (should-not find-file-called))))
+
+;;; Code Block Tests
+
+(ert-deftest md-tui-preview-test-parse-code-blocks-basic ()
+  "A fenced block yields its non-blank content lines in order."
+  (should (equal (md-tui-preview--parse-code-blocks "```python\ndef f():\n    return 1\n```")
+                 '((:lines ("def f():" "    return 1"))))))
+
+(ert-deftest md-tui-preview-test-parse-code-blocks-single-line ()
+  "A block with a single non-blank content line yields a one-element list."
+  (should (equal (md-tui-preview--parse-code-blocks "```\nsolo\n```")
+                 '((:lines ("solo"))))))
+
+(ert-deftest md-tui-preview-test-parse-code-blocks-skips-blank-edges ()
+  "Blank content lines are dropped, keeping only the non-blank ones."
+  (should (equal (md-tui-preview--parse-code-blocks "```\n\na\n\nb\n\n```")
+                 '((:lines ("a" "b"))))))
+
+(ert-deftest md-tui-preview-test-parse-code-blocks-tilde-fence ()
+  "Tilde fences are recognized like backtick fences."
+  (should (equal (md-tui-preview--parse-code-blocks "~~~\ncode\n~~~")
+                 '((:lines ("code"))))))
+
+(ert-deftest md-tui-preview-test-parse-code-blocks-ignores-inner-shorter-fence ()
+  "A shorter run of the fence character inside the block does not close it."
+  (should (equal (md-tui-preview--parse-code-blocks "````\n```\ninner\n````")
+                 '((:lines ("```" "inner"))))))
+
+(ert-deftest md-tui-preview-test-parse-code-blocks-unclosed-at-eof ()
+  "A block left unclosed at end of text is still reported."
+  (should (equal (md-tui-preview--parse-code-blocks "```\nx\ny")
+                 '((:lines ("x" "y"))))))
+
+(ert-deftest md-tui-preview-test-parse-code-blocks-empty-block-omitted ()
+  "A block with no non-blank content line is omitted."
+  (should-not (md-tui-preview--parse-code-blocks "```\n\n```")))
+
+(ert-deftest md-tui-preview-test-color-dark-p ()
+  "Luminance below the midpoint is dark, above is light."
+  (should (md-tui-preview--color-dark-p "#000000"))
+  (should-not (md-tui-preview--color-dark-p "#ffffff")))
+
+(ert-deftest md-tui-preview-test-code-block-background-resolves ()
+  "`auto' derives a color, a color string passes through, nil disables."
+  (let ((md-tui-preview-code-block-background nil))
+    (should-not (md-tui-preview--code-block-background)))
+  (let ((md-tui-preview-code-block-background "#123456"))
+    (should (string= (md-tui-preview--code-block-background) "#123456")))
+  ;; `auto' reads `default's background; stub it to a parseable color so
+  ;; the derivation is deterministic without a real display.
+  (let ((md-tui-preview-code-block-background 'auto))
+    (cl-letf (((symbol-function 'face-attribute) (lambda (&rest _) "#1c1c1c")))
+      (let ((derived (md-tui-preview--code-block-background)))
+        (should (stringp derived))
+        (should-not (string= derived "#1c1c1c"))))))
+
+(ert-deftest md-tui-preview-test-attach-code-block-overlays-region ()
+  "AC-0070-0010/0020: the located block span gets a tagged overlay that
+carries only a `:background', leaving foregrounds to the text's own
+faces.  The rendered visual outcome (background shows, syntax colors
+survive on top) resolves only at redisplay and is not batch
+observable; this asserts the overlay mechanism, mirroring the
+theme-color tests above."
+  (let ((md-tui-preview-code-block-background "#222222"))
+    (with-temp-buffer
+      (insert "prose\ndef f():\n    return 1\nmore prose")
+      (md-tui-preview--attach-code-block-backgrounds
+       '((:lines ("def f():" "    return 1"))))
+      (let ((ovs (seq-filter (lambda (o) (overlay-get o 'md-tui-preview-code-block))
+                             (overlays-in (point-min) (point-max)))))
+        (should (= (length ovs) 1))
+        (let ((ov (car ovs)))
+          ;; The overlay carries an anonymous face that sets only the
+          ;; resolved background and no foreground, so glow's
+          ;; syntax-highlight foregrounds show through.  glow pads each
+          ;; line to the full render width, so the covered space cells
+          ;; already carry the background to the window edge -- no
+          ;; `:extend' needed.
+          (should (equal (overlay-get ov 'face) '(:background "#222222")))
+          ;; Span covers the two code lines through the trailing newline
+          ;; (so the last line extends too), stopping before the next
+          ;; prose line.
+          (should (string= (buffer-substring-no-properties
+                            (overlay-start ov) (overlay-end ov))
+                           "def f():\n    return 1\n")))))))
+
+(ert-deftest md-tui-preview-test-attach-code-block-disabled-adds-no-overlay ()
+  "With the background disabled (nil), no overlay is created."
+  (let ((md-tui-preview-code-block-background nil))
+    (with-temp-buffer
+      (insert "def f():\n    return 1")
+      (md-tui-preview--attach-code-block-backgrounds
+       '((:lines ("def f():" "    return 1"))))
+      (should-not (seq-filter (lambda (o) (overlay-get o 'md-tui-preview-code-block))
+                              (overlays-in (point-min) (point-max)))))))
+
+(ert-deftest md-tui-preview-test-attach-code-block-single-line-overlays-that-line ()
+  "A single-line block overlays exactly its one line."
+  (let ((md-tui-preview-code-block-background "#222222"))
+    (with-temp-buffer
+      (insert "prose\nsolo-code-line\nmore prose")
+      (md-tui-preview--attach-code-block-backgrounds
+       '((:lines ("solo-code-line"))))
+      (let ((ovs (seq-filter (lambda (o) (overlay-get o 'md-tui-preview-code-block))
+                             (overlays-in (point-min) (point-max)))))
+        (should (= (length ovs) 1))
+        (should (string= (buffer-substring-no-properties
+                          (overlay-start (car ovs)) (overlay-end (car ovs)))
+                         "solo-code-line\n"))))))
+
+(ert-deftest md-tui-preview-test-attach-code-block-skips-when-a-line-missing ()
+  "A block with a content line that cannot be located gets no overlay,
+rather than shading only the lines found before it (AC-0070-0010
+promises the full block)."
+  (let ((md-tui-preview-code-block-background "#222222"))
+    (with-temp-buffer
+      (insert "def f():\n    return 1")
+      (md-tui-preview--attach-code-block-backgrounds
+       '((:lines ("def f():" "no such trailing line"))))
+      (should-not (seq-filter (lambda (o) (overlay-get o 'md-tui-preview-code-block))
+                              (overlays-in (point-min) (point-max)))))))
+
+(ert-deftest md-tui-preview-test-attach-code-block-duplicate-last-line-spans-full-block ()
+  "AC-0070-0010: when a block's last content line is identical to an
+earlier one, the overlay reaches the block's real end (the second
+occurrence), not the first.  Matching lines one after another advances
+past the earlier copy; a two-point first/last search would instead stop
+the span at the earlier occurrence, shading only the block's top."
+  (let ((md-tui-preview-code-block-background "#222222"))
+    (with-temp-buffer
+      (insert "prose\nhead-a\nshared-tail\nhead-b\nshared-tail\nmore prose")
+      (md-tui-preview--attach-code-block-backgrounds
+       '((:lines ("head-a" "shared-tail" "head-b" "shared-tail"))))
+      (let ((ovs (seq-filter (lambda (o) (overlay-get o 'md-tui-preview-code-block))
+                             (overlays-in (point-min) (point-max)))))
+        (should (= (length ovs) 1))
+        (should (string= (buffer-substring-no-properties
+                          (overlay-start (car ovs)) (overlay-end (car ovs)))
+                         "head-a\nshared-tail\nhead-b\nshared-tail\n"))))))
 
 ;;; Keybinding Tests
 
