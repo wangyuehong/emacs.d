@@ -87,28 +87,38 @@ other hook functions at the default depth -- notably
 `display-line-numbers-mode', added by this config's
 `init-highlight.el' -- have already reserved their gutter, so
 `md-tui-preview--effective-width' measures the window correctly."
-  (let ((source md-tui-preview--source)
-        (was-modified md-tui-preview--source-modified-p)
-        (source-file-name md-tui-preview--source-file-name)
-        ;; Measure the width while the buffer still holds the Markdown
-        ;; source, before `erase-buffer' below.  `display-line-numbers-mode's
-        ;; gutter then reserves room for the document's own line count.
-        ;; Measuring after the erase would size the gutter for an empty
-        ;; (1-line) buffer and under-reserve it; since glow fills every
-        ;; line to `--width', those full-width lines would overflow the
-        ;; real (wider-gutter) text area and soft-wrap once the rendered
-        ;; content is inserted.
-        (width (md-tui-preview--effective-width))
-        (inhibit-read-only t))
+  (let* ((source md-tui-preview--source)
+         ;; Fenced ```mermaid blocks (if any) are replaced by their
+         ;; mermaid-ascii rendering before glow ever sees the text (see
+         ;; SPEC.md US-0080).  `render-source', not `source', is what
+         ;; glow actually renders below, so it is also what the link
+         ;; and code-block locators below must search -- they work by
+         ;; finding literal source substrings in the rendered output,
+         ;; which no longer contains the original Mermaid diagram text.
+         ;; `md-tui-preview--source' itself (restored byte-for-byte on
+         ;; toggle-back) is untouched by this.
+         (render-source (md-tui-preview--substitute-mermaid-blocks source))
+         (was-modified md-tui-preview--source-modified-p)
+         (source-file-name md-tui-preview--source-file-name)
+         ;; Measure the width while the buffer still holds the Markdown
+         ;; source, before `erase-buffer' below.  `display-line-numbers-mode's
+         ;; gutter then reserves room for the document's own line count.
+         ;; Measuring after the erase would size the gutter for an empty
+         ;; (1-line) buffer and under-reserve it; since glow fills every
+         ;; line to `--width', those full-width lines would overflow the
+         ;; real (wider-gutter) text area and soft-wrap once the rendered
+         ;; content is inserted.
+         (width (md-tui-preview--effective-width))
+         (inhibit-read-only t))
     (erase-buffer)
     (md-tui-preview--with-theme-ansi-colors
      (lambda ()
-       (insert (md-tui-preview--render-string source width))
+       (insert (md-tui-preview--render-string render-source width))
        (ansi-color-apply-on-region (point-min) (point-max))
        (md-tui-preview--attach-link-properties
-        (md-tui-preview--parse-links source) source-file-name)
+        (md-tui-preview--parse-links render-source) source-file-name)
        (md-tui-preview--attach-code-block-backgrounds
-        (md-tui-preview--parse-code-blocks source))))
+        (md-tui-preview--parse-code-blocks render-source))))
     (set-buffer-modified-p was-modified))
   (goto-char (point-min)))
 

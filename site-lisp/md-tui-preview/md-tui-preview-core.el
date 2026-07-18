@@ -58,6 +58,16 @@ used literally.  nil disables the code-block background entirely."
                  (color :tag "Explicit color"))
   :group 'md-tui-preview)
 
+(defcustom md-tui-preview-mermaid-ascii-args nil
+  "Command-line arguments passed to the `mermaid-ascii' executable.
+Used when rendering fenced Mermaid code blocks into diagrams; see
+`md-tui-preview--substitute-mermaid-blocks'.  The default (empty)
+leaves the tool's own defaults in effect, including Unicode
+box-drawing characters; pass \"--ascii\" here to render with plain
+ASCII characters instead."
+  :type '(repeat string)
+  :group 'md-tui-preview)
+
 ;;; Theme Color Mapping
 ;;
 ;; In Emacs 28+, `ansi-color-apply-on-region' no longer reads the
@@ -135,18 +145,16 @@ See the commentary above this section for how each slot's color is
 sourced."
   (let* ((default-bg (face-attribute 'default :background nil t))
          (default-fg (face-attribute 'default :foreground nil t))
+         (base-pairs (append `((ansi-color-black . ,default-bg)
+                                (ansi-color-white . ,default-fg))
+                              (cl-loop for base-face in md-tui-preview--ansi-vector-faces
+                                       for color across (seq-subseq ansi-color-names-vector 1 7)
+                                       collect (cons base-face color))))
          result)
-    (dolist (pair `((ansi-color-black . ,default-bg)
-                    (ansi-color-white . ,default-fg)))
+    (dolist (pair base-pairs result)
       (push pair result)
       (push (cons (alist-get (car pair) md-tui-preview--ansi-bright-face-alist) (cdr pair))
-            result))
-    (cl-loop for base-face in md-tui-preview--ansi-vector-faces
-             for color across (seq-subseq ansi-color-names-vector 1 7)
-             do (push (cons base-face color) result)
-                (push (cons (alist-get base-face md-tui-preview--ansi-bright-face-alist) color)
-                      result))
-    result))
+            result))))
 
 (defun md-tui-preview--with-theme-ansi-colors (thunk)
   "Call THUNK with the 16 base ansi-color faces recolored to match the theme.
@@ -188,24 +196,34 @@ the current buffer."
 
 ;;; Rendering
 
+(defun md-tui-preview--call-process-piping (program args text)
+  "Run PROGRAM with ARGS, piping TEXT to its stdin, and return (STATUS . OUTPUT).
+STATUS is the process's exit status; OUTPUT is everything it wrote to
+stdout (stderr merged in, per `call-process-region''s single-buffer
+target).  Never signals -- callers decide what a failing STATUS means,
+the shared subprocess mechanics behind both `md-tui-preview--render-string'
+and `md-tui-preview--call-mermaid-ascii'."
+  (with-temp-buffer
+    (insert text)
+    (let ((status (apply #'call-process-region (point-min) (point-max) program t t nil args)))
+      (cons status (buffer-string)))))
+
 (defun md-tui-preview--render-string (markdown-text &optional width)
   "Return MARKDOWN-TEXT rendered by glow as raw ANSI-escaped text.
 WIDTH, when non-nil, is passed to glow as `--width' so it wraps to that
 many columns instead of its own tty-less default guess.
 Signals `user-error' if the glow process exits with a non-zero status."
-  (with-temp-buffer
-    (insert markdown-text)
-    (let* ((process-environment
-            (append '("CLICOLOR_FORCE=1" "FORCE_COLOR=1" "TERM=xterm-256color")
-                    process-environment))
-           (args (append md-tui-preview-glow-args
-                         (when width (list "--width" (number-to-string width)))
-                         '("-")))
-           (status (apply #'call-process-region
-                           (point-min) (point-max) "glow" t t nil args)))
-      (unless (and (integerp status) (zerop status))
-        (user-error "Glow failed to render (%s): %s" status (buffer-string)))
-      (buffer-string))))
+  (let* ((process-environment
+          (append '("CLICOLOR_FORCE=1" "FORCE_COLOR=1" "TERM=xterm-256color")
+                  process-environment))
+         (args (append md-tui-preview-glow-args
+                       (when width (list "--width" (number-to-string width)))
+                       '("-")))
+         (result (md-tui-preview--call-process-piping "glow" args markdown-text))
+         (status (car result)))
+    (unless (and (integerp status) (zerop status))
+      (user-error "Glow failed to render (%s): %s" status (cdr result)))
+    (cdr result)))
 
 ;;; Link Parsing
 ;;
@@ -444,6 +462,59 @@ character and be at least as long, with nothing but whitespace after."
   (format "\\`[ \t]\\{0,3\\}%c\\{%d,\\}[ \t]*\\'"
           (aref marker 0) (length marker)))
 
+(defun md-tui-preview--scan-fenced-blocks (markdown-text)
+  "Return an ordered list of every fenced code block in MARKDOWN-TEXT.
+Each element is a plist (:begin BEGIN :end END :info INFO :closed CLOSED
+:body-begin BODY-BEGIN :body-end BODY-END).  BEGIN/END are 0-based
+character offsets into MARKDOWN-TEXT spanning the whole block,
+including both fence lines; BODY-BEGIN/BODY-END bound the block's raw
+content between the two fence lines, blank lines and indentation
+included verbatim.  When CLOSED is nil (an unclosed block trailing off
+at end of text), END and BODY-END both equal the end of MARKDOWN-TEXT.
+INFO is the opening fence's info string exactly as written, untrimmed.
+
+This is the shared primitive behind `md-tui-preview--parse-code-blocks'
+and `md-tui-preview--find-mermaid-blocks': each projects this list down
+to whatever slice of MARKDOWN-TEXT (via `substring') and whichever
+subset of blocks (open/closed, tagged/untagged) its own contract needs,
+rather than re-walking the buffer independently."
+  (with-temp-buffer
+    (insert markdown-text)
+    (goto-char (point-min))
+    (let (blocks close-regexp info block-begin body-begin)
+      (while (not (eobp))
+        (let ((line-start (point))
+              (line (buffer-substring-no-properties (point) (line-end-position))))
+          (cond
+           ;; Inside a block: a closing fence ends it.  Tracking
+           ;; close-regexp for every fence (not just ones a caller cares
+           ;; about) keeps a nested/shorter fence run inside an unrelated
+           ;; block from being misread as a new fence opener.
+           (close-regexp
+            (forward-line 1)
+            (when (string-match-p close-regexp line)
+              (push (list :begin (1- block-begin) :end (1- (point))
+                          :info info :closed t
+                          :body-begin (1- body-begin) :body-end (1- line-start))
+                    blocks)
+              (setq close-regexp nil)))
+           ;; Outside a block: an opening fence starts one.
+           ((string-match md-tui-preview--code-fence-open-regexp line)
+            (setq close-regexp (md-tui-preview--code-fence-close-regexp (match-string 1 line))
+                  info (substring line (match-end 0))
+                  block-begin line-start)
+            (forward-line 1)
+            (setq body-begin (point)))
+           (t (forward-line 1)))))
+      ;; A block left unclosed at end of text is still reported, trailing
+      ;; off at end of text -- matching how glow renders it.
+      (when close-regexp
+        (push (list :begin (1- block-begin) :end (1- (point-max))
+                    :info info :closed nil
+                    :body-begin (1- body-begin) :body-end (1- (point-max)))
+              blocks))
+      (nreverse blocks))))
+
 (defun md-tui-preview--parse-code-blocks (markdown-text)
   "Return an ordered list of fenced code blocks in MARKDOWN-TEXT.
 Each element is a plist (:lines LINES): LINES is the block's non-blank
@@ -452,36 +523,156 @@ content lines, in source order.  Blank lines inside a block are dropped
 line to the last, so it already covers any blank rows between them.
 Blocks with no non-blank content line are omitted.  A block left
 unclosed at end of text is still reported, matching how glow renders it."
-  (with-temp-buffer
-    (insert markdown-text)
-    (goto-char (point-min))
-    (let (blocks close-regexp lines)
-      ;; Emit the block currently being collected, if any, and reset for
-      ;; the next.  `lines' is only non-nil while a block is open, so the
-      ;; guard doubles as the "are we inside a block" test at end of text.
-      (cl-flet ((flush ()
-                  (when lines
-                    (push (list :lines (nreverse lines)) blocks)
-                    (setq lines nil))))
-        (while (not (eobp))
-          (let ((line (buffer-substring-no-properties
-                       (line-beginning-position) (line-end-position))))
-            (cond
-             ;; Inside a block: a closing fence ends it, otherwise collect
-             ;; non-blank content lines.
-             (close-regexp
-              (if (string-match-p close-regexp line)
-                  (progn (flush) (setq close-regexp nil))
-                (unless (string-blank-p line) (push line lines))))
-             ;; Outside a block: an opening fence starts one.
-             ((string-match md-tui-preview--code-fence-open-regexp line)
-              (setq close-regexp (md-tui-preview--code-fence-close-regexp
-                                  (match-string 1 line))
-                    lines nil))))
-          (forward-line 1))
-        ;; A block left unclosed at end of text is still emitted.
-        (flush)
-        (nreverse blocks)))))
+  (let (blocks)
+    (dolist (block (md-tui-preview--scan-fenced-blocks markdown-text))
+      (let* ((body (substring markdown-text
+                               (plist-get block :body-begin) (plist-get block :body-end)))
+             (lines (seq-remove #'string-blank-p (split-string body "\n"))))
+        (when lines
+          (push (list :lines lines) blocks))))
+    (nreverse blocks)))
+
+;;; Mermaid Diagrams
+;;
+;; glow has no notion of Mermaid diagram syntax; a fenced ```mermaid
+;; block renders as inert source text.  This package pipes that block's
+;; content through the external `mermaid-ascii' tool before handing the
+;; Markdown to glow, so the block renders as a diagram instead.  See
+;; SPEC.md US-0080.
+
+(defconst md-tui-preview--mermaid-info-token-regexp
+  "\\`[ \t]*\\([^ \t\n]+\\)"
+  "Regexp matching a fenced code block's first info-string token.
+Group 1 is the token itself, compared case-insensitively against
+\"mermaid\" by `md-tui-preview--mermaid-fence-info-p'.")
+
+(defun md-tui-preview--mermaid-fence-info-p (info)
+  "Return non-nil when INFO's first whitespace-delimited token is \"mermaid\".
+Comparison is case-insensitive.  INFO is the text following a fenced
+code block's opening marker run, e.g. \"mermaid\" or
+\"mermaid title=\\='x\\='\" -- a trailing token does not exclude the
+block, only the first one is compared."
+  (and (string-match md-tui-preview--mermaid-info-token-regexp info)
+       (string-equal (downcase (match-string 1 info)) "mermaid")))
+
+(defun md-tui-preview--find-mermaid-blocks (markdown-text)
+  "Return an ordered list of closed Mermaid-tagged fenced blocks in MARKDOWN-TEXT.
+Each element is a plist (:begin BEGIN :end END :body BODY): BEGIN/END
+and BODY are projected from `md-tui-preview--scan-fenced-blocks' --
+BODY is that scan's verbatim body span (blank lines and indentation
+preserved), unlike `md-tui-preview--parse-code-blocks', whose
+non-blank-only, language-agnostic contract only serves rendered-text
+location and is insufficient here.  A block is included only when it
+is closed and its opening fence's info string tags it as Mermaid, per
+`md-tui-preview--mermaid-fence-info-p' -- a Mermaid-tagged fence left
+unclosed at end of text is omitted, per SPEC.md US-0080's boundary
+note, left for glow to render as ordinary text rather than inventing
+behavior for a truncated fragment."
+  (let (blocks)
+    (dolist (block (md-tui-preview--scan-fenced-blocks markdown-text))
+      (when (and (plist-get block :closed)
+                 (md-tui-preview--mermaid-fence-info-p (plist-get block :info)))
+        (push (list :begin (plist-get block :begin) :end (plist-get block :end)
+                    :body (substring markdown-text
+                                     (plist-get block :body-begin) (plist-get block :body-end)))
+              blocks)))
+    (nreverse blocks)))
+
+(defun md-tui-preview--call-mermaid-ascii (mermaid-text)
+  "Run mermaid-ascii on MERMAID-TEXT and return (STATUS . OUTPUT).
+Never signals: a non-zero STATUS is returned to the caller rather than
+raised, so `md-tui-preview--substitute-mermaid-blocks' can branch on it
+with an explicit `if' instead of `condition-case' (SPEC.md US-0080
+AC-0080-0030 requires the distinction to be made this way, not by
+catching a signaled error)."
+  (md-tui-preview--call-process-piping
+   "mermaid-ascii" md-tui-preview-mermaid-ascii-args mermaid-text))
+
+(defun md-tui-preview--clean-mermaid-ascii-output (output)
+  "Return OUTPUT (a successful mermaid-ascii run's stdout) ready to splice in.
+Strips any ANSI escapes -- untrusted subprocess output should not be
+allowed to inject raw control sequences into a Markdown source that is
+about to be spliced into a document already managed by
+`ansi-color-apply-on-region' -- and trims trailing whitespace to a
+single newline, so the block substituted into the Markdown source has
+a predictable shape."
+  (concat (string-trim-right (ansi-color-filter-apply output)) "\n"))
+
+(defun md-tui-preview--mermaid-render-failure-text (status output mermaid-source)
+  "Return fallback text for a Mermaid block whose render failed.
+STATUS and OUTPUT are mermaid-ascii's exit status and captured
+output (as returned by `md-tui-preview--call-mermaid-ascii').  The
+result leads with a visible failure notice quoting OUTPUT verbatim,
+followed by MERMAID-SOURCE unchanged, so the failure is never silent
+\(SPEC.md US-0080 AC-0080-0030) and the user can see and fix the
+diagram source directly in the preview."
+  (format "[mermaid-ascii failed to render (%s): %s]\n\n%s"
+          status (string-trim output) mermaid-source))
+
+(defconst md-tui-preview--mermaid-fence-marker "````"
+  "Fence marker wrapping a Mermaid block's replacement in the text handed to glow.
+Four backticks rather than three, so a diagram (or a failure notice
+quoting the tool's raw output) whose content happens to render a run
+of exactly three backtick characters cannot prematurely close the
+wrapper fence.  The opening fence additionally carries an explicit
+\"text\" info string (`md-tui-preview--mermaid-fence-open'); the
+closing fence must stay a bare marker per CommonMark, which is why
+this constant does not include that suffix itself.")
+
+(defconst md-tui-preview--mermaid-fence-open
+  (concat md-tui-preview--mermaid-fence-marker "text")
+  "Opening fence line for a Mermaid block's replacement.
+An explicit \"text\" info string, rather than no info string at all,
+is required: glow's syntax highlighter (chroma) guesses a language for
+an *unlabeled* fenced block once it has enough lines to score a
+confident guess, and a wrong guess can tokenize substrings it fails to
+parse (commonly hit by CJK characters or full-width punctuation mixed
+into the block) as an error token, painted with a jarring background
+color by the bundled style -- reproduced directly against real `glow'
+and `mermaid-ascii' binaries with both mermaid-ascii's own diagram
+output and this package's failure-notice fallback text.  An explicit
+\"text\" tag makes chroma skip that guess entirely and treat the block
+as plain, unstyled text, which is what the unlabeled fence was always
+meant to achieve.")
+
+(defun md-tui-preview--mermaid-block-replacement (body)
+  "Return the fenced replacement text for a Mermaid block whose raw content is BODY.
+On success that is mermaid-ascii's diagram; on failure it is a visible
+failure notice followed by BODY unchanged (SPEC.md US-0080
+AC-0080-0030).  Either way the result is wrapped in the `text'-tagged
+fence `md-tui-preview--mermaid-fence-open' produces, so glow treats it
+as pre-formatted, unstyled text rather than reflowing or
+syntax-highlighting it, and it still qualifies for the code-block
+background overlay in `md-tui-preview--attach-code-block-backgrounds'."
+  (let* ((result (md-tui-preview--call-mermaid-ascii body))
+         (status (car result))
+         (output (cdr result)))
+    (concat md-tui-preview--mermaid-fence-open "\n"
+            (if (and (integerp status) (zerop status))
+                (md-tui-preview--clean-mermaid-ascii-output output)
+              (md-tui-preview--mermaid-render-failure-text status output body))
+            md-tui-preview--mermaid-fence-marker "\n")))
+
+(defun md-tui-preview--substitute-mermaid-blocks (markdown-text)
+  "Return MARKDOWN-TEXT with each Mermaid-tagged fenced block replaced.
+Each block's replacement comes from
+`md-tui-preview--mermaid-block-replacement'; a block's failure does
+not affect any other block.  Returns MARKDOWN-TEXT unchanged, without
+attempting to parse it, when `executable-find' cannot locate
+`mermaid-ascii' -- the sole legal state branch decided before any
+block is located, per SPEC.md US-0080 AC-0080-0020."
+  (if (not (executable-find "mermaid-ascii"))
+      markdown-text
+    (let ((blocks (md-tui-preview--find-mermaid-blocks markdown-text))
+          (cursor 0) pieces)
+      (dolist (block blocks)
+        (let ((begin (plist-get block :begin))
+              (end (plist-get block :end)))
+          (push (substring markdown-text cursor begin) pieces)
+          (push (md-tui-preview--mermaid-block-replacement (plist-get block :body)) pieces)
+          (setq cursor end)))
+      (push (substring markdown-text cursor) pieces)
+      (apply #'concat (nreverse pieces)))))
 
 (provide 'md-tui-preview-core)
 ;;; md-tui-preview-core.el ends here

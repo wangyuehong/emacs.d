@@ -4,9 +4,10 @@
 ;; Author:  Yuehong Wang <wangyuehong@gmail.com>
 ;;
 ;;; Commentary:
-;; Unit tests for md-tui-preview.  The `glow' subprocess is mocked at the
-;; `call-process-region' boundary; `markdown-mode' is stubbed by
-;; run-tests.el, independent of any installed markdown-mode version.
+;; Unit tests for md-tui-preview.  The `glow' and `mermaid-ascii'
+;; subprocesses are mocked at the `call-process-region' boundary;
+;; `markdown-mode' is stubbed by run-tests.el, independent of any
+;; installed markdown-mode version.
 ;;
 ;;; Code:
 
@@ -42,20 +43,42 @@ status 1."
                 1)))
      ,@body))
 
+(defmacro md-tui-preview-test-with-mermaid-ascii-present (&rest body)
+  "Execute BODY with `executable-find' stubbed to report `mermaid-ascii'
+as installed, independent of the real host machine's PATH."
+  (declare (indent 0))
+  `(cl-letf (((symbol-function 'executable-find)
+              (lambda (cmd) (and (string= cmd "mermaid-ascii") "/usr/bin/mermaid-ascii"))))
+     ,@body))
+
+(defmacro md-tui-preview-test-with-mermaid-ascii-absent (&rest body)
+  "Execute BODY with `executable-find' stubbed to report `mermaid-ascii'
+as not installed, independent of the real host machine's PATH."
+  (declare (indent 0))
+  `(cl-letf (((symbol-function 'executable-find) (lambda (_cmd) nil)))
+     ,@body))
+
+(defmacro md-tui-preview-test-with-mock-glow-and-mermaid-ascii (status output &rest body)
+  "Execute BODY with `call-process-region' mocked for both `glow' and
+`mermaid-ascii', dispatching on the program argument (which the
+glow-only mocks above ignore, since only one program was ever
+invoked): a `mermaid-ascii' call replaces the piped text with OUTPUT
+and returns exit STATUS; any other program (glow) always succeeds
+with the usual red-SGR echo."
+  (declare (indent 2))
+  `(cl-letf (((symbol-function 'call-process-region)
+              (lambda (start end program _delete _buffer _display &rest _args)
+                (let ((text (buffer-substring-no-properties start end)))
+                  (delete-region start end)
+                  (if (string= program "mermaid-ascii")
+                      (progn (insert ,output) ,status)
+                    (progn (insert (format "\e[31m%s\e[0m" text)) 0))))))
+     ,@body))
+
 (defmacro md-tui-preview-test-with-ansi-color-names (colors &rest body)
   "Execute BODY with `ansi-color-names-vector' bound to COLORS."
   (declare (indent 1))
   `(let ((ansi-color-names-vector ,colors))
-     ,@body))
-
-(defmacro md-tui-preview-test-with-markdown-buffer (content &rest body)
-  "Execute BODY in a temp buffer in `markdown-mode' containing CONTENT."
-  (declare (indent 1))
-  `(with-temp-buffer
-     (markdown-mode)
-     (insert ,content)
-     (set-buffer-modified-p nil)
-     (goto-char (point-min))
      ,@body))
 
 (defmacro md-tui-preview-test-with-mode-buffer (mode content &rest body)
@@ -67,6 +90,11 @@ status 1."
      (set-buffer-modified-p nil)
      (goto-char (point-min))
      ,@body))
+
+(defmacro md-tui-preview-test-with-markdown-buffer (content &rest body)
+  "Execute BODY in a temp buffer in `markdown-mode' containing CONTENT."
+  (declare (indent 1))
+  `(md-tui-preview-test-with-mode-buffer #'markdown-mode ,content ,@body))
 
 ;;; Rendering Tests
 
@@ -835,6 +863,271 @@ the span at the earlier occurrence, shading only the block's top."
         (should (string= (buffer-substring-no-properties
                           (overlay-start (car ovs)) (overlay-end (car ovs)))
                          "head-a\nshared-tail\nhead-b\nshared-tail\n"))))))
+
+;;; Mermaid Diagram Tests
+
+(ert-deftest md-tui-preview-test-find-mermaid-blocks-basic ()
+  "A fenced block tagged \"mermaid\" is found, with its exact body text
+\(blank lines preserved) and a span covering both fence lines."
+  (let* ((text "before\n```mermaid\ngraph LR\nA-->B\n```\nafter")
+         (blocks (md-tui-preview--find-mermaid-blocks text)))
+    (should (= (length blocks) 1))
+    (let ((block (car blocks)))
+      (should (string= (plist-get block :body) "graph LR\nA-->B\n"))
+      (should (string= (substring text (plist-get block :begin) (plist-get block :end))
+                        "```mermaid\ngraph LR\nA-->B\n```\n")))))
+
+(ert-deftest md-tui-preview-test-find-mermaid-blocks-case-insensitive ()
+  "The \"mermaid\" info-string tag is matched case-insensitively."
+  (should (= (length (md-tui-preview--find-mermaid-blocks "```Mermaid\ngraph LR\n```")) 1))
+  (should (= (length (md-tui-preview--find-mermaid-blocks "```MERMAID\ngraph LR\n```")) 1)))
+
+(ert-deftest md-tui-preview-test-find-mermaid-blocks-trailing-info-content ()
+  "A trailing token after \"mermaid\" in the info string does not exclude
+the block -- only the first token is compared."
+  (should (= (length (md-tui-preview--find-mermaid-blocks
+                      "```mermaid title=\"x\"\ngraph LR\n```"))
+             1)))
+
+(ert-deftest md-tui-preview-test-find-mermaid-blocks-ignores-other-languages ()
+  "A fenced block tagged with a different language -- including one
+that merely starts with \"mermaid\" -- is not returned."
+  (should-not (md-tui-preview--find-mermaid-blocks "```python\ndef f(): pass\n```"))
+  (should-not (md-tui-preview--find-mermaid-blocks "```mermaidjs\ngraph LR\n```")))
+
+(ert-deftest md-tui-preview-test-find-mermaid-blocks-omits-unclosed ()
+  "A Mermaid-tagged fence left unclosed at end of text is omitted."
+  (should-not (md-tui-preview--find-mermaid-blocks "```mermaid\ngraph LR\nA-->B")))
+
+(ert-deftest md-tui-preview-test-find-mermaid-blocks-multiple-in-order ()
+  "Multiple Mermaid blocks are returned in source order."
+  (let ((blocks (md-tui-preview--find-mermaid-blocks
+                 "```mermaid\ngraph LR\nA-->B\n```\n\nprose\n\n```mermaid\ngraph LR\nC-->D\n```\n")))
+    (should (= (length blocks) 2))
+    (should (string= (plist-get (nth 0 blocks) :body) "graph LR\nA-->B\n"))
+    (should (string= (plist-get (nth 1 blocks) :body) "graph LR\nC-->D\n"))))
+
+(ert-deftest md-tui-preview-test-find-mermaid-blocks-preserves-blank-lines ()
+  "Blank lines inside the block body are preserved verbatim, unlike
+`md-tui-preview--parse-code-blocks'."
+  (let ((blocks (md-tui-preview--find-mermaid-blocks "```mermaid\ngraph LR\n\nA-->B\n```")))
+    (should (string= (plist-get (car blocks) :body) "graph LR\n\nA-->B\n"))))
+
+(ert-deftest md-tui-preview-test-find-mermaid-blocks-tilde-fence ()
+  "A tilde-fenced Mermaid block is recognized like a backtick-fenced one."
+  (should (= (length (md-tui-preview--find-mermaid-blocks "~~~mermaid\ngraph LR\n~~~")) 1)))
+
+(ert-deftest md-tui-preview-test-find-mermaid-blocks-skips-through-other-fenced-blocks ()
+  "A fence run inside an unrelated block does not get misread as a new
+fence opener; a Mermaid block appearing afterward is still found."
+  (let ((blocks (md-tui-preview--find-mermaid-blocks
+                 "````\n```\ninner\n````\n\n```mermaid\ngraph LR\n```\n")))
+    (should (= (length blocks) 1))
+    (should (string= (plist-get (car blocks) :body) "graph LR\n"))))
+
+(ert-deftest md-tui-preview-test-call-mermaid-ascii-success ()
+  "A successful mermaid-ascii run returns (0 . stdout), not a signal."
+  (cl-letf (((symbol-function 'call-process-region)
+             (lambda (start end _program _delete _buffer _display &rest _args)
+               (delete-region start end)
+               (insert "+--+\n|A |\n+--+\n\n")
+               0)))
+    (should (equal (md-tui-preview--call-mermaid-ascii "graph LR\nA")
+                    '(0 . "+--+\n|A |\n+--+\n\n")))))
+
+(ert-deftest md-tui-preview-test-call-mermaid-ascii-failure-does-not-signal ()
+  "A non-zero mermaid-ascii exit is returned as (STATUS . OUTPUT), not
+signaled -- callers decide what to do via an explicit branch on
+STATUS, per SPEC.md US-0080 AC-0080-0030's \"explicit condition, not
+exception-catching\" requirement."
+  (cl-letf (((symbol-function 'call-process-region)
+             (lambda (start end _program _delete _buffer _display &rest _args)
+               (delete-region start end)
+               (insert "unsupported graph type")
+               1)))
+    (should (equal (md-tui-preview--call-mermaid-ascii "classDiagram")
+                    '(1 . "unsupported graph type")))))
+
+(ert-deftest md-tui-preview-test-call-mermaid-ascii-uses-configured-args ()
+  "The configured `md-tui-preview-mermaid-ascii-args' are forwarded to
+mermaid-ascii, with no trailing stdin marker (unlike glow's call --
+mermaid-ascii has no such marker)."
+  (let ((md-tui-preview-mermaid-ascii-args '("--ascii"))
+        (captured-args nil))
+    (cl-letf (((symbol-function 'call-process-region)
+               (lambda (start end _program _delete _buffer _display &rest args)
+                 (setq captured-args args)
+                 (delete-region start end)
+                 0)))
+      (md-tui-preview--call-mermaid-ascii "graph LR\nA")
+      (should (equal captured-args '("--ascii"))))))
+
+(ert-deftest md-tui-preview-test-clean-mermaid-ascii-output-strips-ansi-and-trims ()
+  "ANSI escapes are stripped and trailing whitespace is trimmed to a
+single newline."
+  (should (string= (md-tui-preview--clean-mermaid-ascii-output "\e[31mA\e[0m") "A\n"))
+  (should (string= (md-tui-preview--clean-mermaid-ascii-output "+--+\n|A |\n+--+\n\n")
+                    "+--+\n|A |\n+--+\n")))
+
+(ert-deftest md-tui-preview-test-mermaid-render-failure-text-includes-everything ()
+  "The failure fallback text leads with the status and output verbatim,
+followed by the original Mermaid source unchanged, so nothing about
+the failure is hidden."
+  (let ((text (md-tui-preview--mermaid-render-failure-text
+               1 "unsupported graph type 'classDiagram'" "classDiagram\n")))
+    (should (string-match-p "mermaid-ascii failed to render (1)" text))
+    (should (string-match-p "unsupported graph type 'classDiagram'" text))
+    (should (string-suffix-p "classDiagram\n" text))))
+
+(ert-deftest md-tui-preview-test-substitute-mermaid-blocks-absent-binary-unchanged ()
+  "AC-0080-0020: when `mermaid-ascii' is not on PATH, the text is
+returned unchanged and the process is never invoked."
+  (md-tui-preview-test-with-mermaid-ascii-absent
+    (let ((called nil))
+      (cl-letf (((symbol-function 'call-process-region)
+                 (lambda (&rest _) (setq called t) 0)))
+        (let ((text "```mermaid\ngraph LR\nA-->B\n```\n"))
+          (should (string= (md-tui-preview--substitute-mermaid-blocks text) text))))
+      (should-not called))))
+
+(ert-deftest md-tui-preview-test-substitute-mermaid-blocks-no-mermaid-blocks-unchanged ()
+  "When the binary is present but the text has no Mermaid blocks, the
+text is returned unchanged and mermaid-ascii is never invoked."
+  (md-tui-preview-test-with-mermaid-ascii-present
+    (let ((called nil))
+      (cl-letf (((symbol-function 'call-process-region)
+                 (lambda (&rest _) (setq called t) 0)))
+        (let ((text "```python\nprint(1)\n```\n"))
+          (should (string= (md-tui-preview--substitute-mermaid-blocks text) text))))
+      (should-not called))))
+
+(ert-deftest md-tui-preview-test-substitute-mermaid-blocks-replaces-block ()
+  "AC-0080-0010: a Mermaid block is replaced by its rendering, wrapped
+in a `text'-tagged fence; surrounding prose is untouched."
+  (md-tui-preview-test-with-mermaid-ascii-present
+    (cl-letf (((symbol-function 'call-process-region)
+               (lambda (start end _program _delete _buffer _display &rest _args)
+                 (delete-region start end)
+                 (insert "DIAGRAM")
+                 0)))
+      (should (string= (md-tui-preview--substitute-mermaid-blocks
+                         "before\n```mermaid\ngraph LR\nA-->B\n```\nafter")
+                        "before\n````text\nDIAGRAM\n````\nafter")))))
+
+(ert-deftest md-tui-preview-test-mermaid-fence-open-is-marker-plus-text ()
+  "The opening fence used for a Mermaid block's replacement carries an
+explicit \"text\" info string on top of the base marker -- an
+unlabeled fence would let glow's syntax highlighter (chroma) guess a
+language for long enough content and mis-tokenize CJK-heavy spans with
+a jarring background color; regression guard for that fix."
+  (should (string= md-tui-preview--mermaid-fence-open
+                    (concat md-tui-preview--mermaid-fence-marker "text"))))
+
+(ert-deftest md-tui-preview-test-substitute-mermaid-blocks-closing-fence-has-no-info-string ()
+  "The closing fence line is a bare marker with no info string --
+CommonMark requires a closing fence to carry none, and glow would
+otherwise fail to close the block at all."
+  (md-tui-preview-test-with-mermaid-ascii-present
+    (cl-letf (((symbol-function 'call-process-region)
+               (lambda (start end _program _delete _buffer _display &rest _args)
+                 (delete-region start end)
+                 (insert "DIAGRAM")
+                 0)))
+      (let ((result (md-tui-preview--substitute-mermaid-blocks
+                     "```mermaid\ngraph LR\nA-->B\n```")))
+        (should (string-suffix-p (concat md-tui-preview--mermaid-fence-marker "\n") result))
+        (should-not (string-suffix-p (concat md-tui-preview--mermaid-fence-open "\n") result))))))
+
+(ert-deftest md-tui-preview-test-substitute-mermaid-blocks-failed-block-shows-notice-and-source ()
+  "AC-0080-0030: a mermaid-ascii render failure does not signal -- the
+failing block is replaced by a visible failure notice (quoting the
+tool's status and output) followed by its own original source, still
+wrapped in the text-tagged fence."
+  (md-tui-preview-test-with-mermaid-ascii-present
+    (cl-letf (((symbol-function 'call-process-region)
+               (lambda (start end _program _delete _buffer _display &rest _args)
+                 (delete-region start end)
+                 (insert "boom")
+                 1)))
+      (should (string= (md-tui-preview--substitute-mermaid-blocks "```mermaid\nclassDiagram\n```")
+                        "````text\n[mermaid-ascii failed to render (1): boom]\n\nclassDiagram\n````\n")))))
+
+(ert-deftest md-tui-preview-test-substitute-mermaid-blocks-failure-does-not-affect-other-blocks ()
+  "One block's render failure is isolated: an earlier block that
+renders successfully still shows its diagram, unaffected by a later
+block's failure."
+  (md-tui-preview-test-with-mermaid-ascii-present
+    (let ((n 0))
+      (cl-letf (((symbol-function 'call-process-region)
+                 (lambda (start end _program _delete _buffer _display &rest _args)
+                   (delete-region start end)
+                   (setq n (1+ n))
+                   (if (= n 1)
+                       (progn (insert "DIAGRAM") 0)
+                     (progn (insert "boom") 1)))))
+        (should (string= (md-tui-preview--substitute-mermaid-blocks
+                           "```mermaid\ngraph LR\nA-->B\n```\nmiddle\n```mermaid\nclassDiagram\n```")
+                          (concat "````text\nDIAGRAM\n````\nmiddle\n"
+                                  "````text\n[mermaid-ascii failed to render (1): boom]\n\n"
+                                  "classDiagram\n````\n")))))))
+
+(ert-deftest md-tui-preview-test-substitute-mermaid-blocks-multiple-blocks-in-order ()
+  "Multiple Mermaid blocks, interleaved with prose, are all replaced
+correctly and in source order."
+  (md-tui-preview-test-with-mermaid-ascii-present
+    (let ((n 0))
+      (cl-letf (((symbol-function 'call-process-region)
+                 (lambda (start end _program _delete _buffer _display &rest _args)
+                   (delete-region start end)
+                   (setq n (1+ n))
+                   (insert (format "DIAGRAM-%d" n))
+                   0)))
+        (should (string= (md-tui-preview--substitute-mermaid-blocks
+                           "```mermaid\ngraph LR\nA-->B\n```\nmiddle\n```mermaid\ngraph LR\nC-->D\n```")
+                          "````text\nDIAGRAM-1\n````\nmiddle\n````text\nDIAGRAM-2\n````\n"))))))
+
+(ert-deftest md-tui-preview-test-toggle-mermaid-present-shows-diagram-with-background ()
+  "AC-0080-0010: when `mermaid-ascii' is installed, a mermaid block is
+shown as its rendering (ANSI-stripped), not the original diagram
+source, and gets a US-0070 code-block-background overlay by
+inheriting the replacement's own fence."
+  (let ((md-tui-preview-code-block-background "#222222"))
+    (md-tui-preview-test-with-mermaid-ascii-present
+      (md-tui-preview-test-with-mock-glow-and-mermaid-ascii 0 "DIAGRAM"
+        (md-tui-preview-test-with-markdown-buffer "before\n```mermaid\ngraph LR\nA-->B\n```\nafter"
+          (md-tui-preview-toggle)
+          (should (string-match-p "DIAGRAM" (buffer-string)))
+          (should-not (string-match-p "graph LR" (buffer-string)))
+          (should (seq-filter (lambda (o) (overlay-get o 'md-tui-preview-code-block))
+                              (overlays-in (point-min) (point-max)))))))))
+
+(ert-deftest md-tui-preview-test-toggle-mermaid-absent-binary-shows-raw-source ()
+  "AC-0080-0020: when `mermaid-ascii' is absent, entering the preview
+renders the mermaid block as plain (unrendered) text, exactly as
+before this feature existed, and prints no message about it."
+  (md-tui-preview-test-with-mermaid-ascii-absent
+    (md-tui-preview-test-with-mock-glow
+      (md-tui-preview-test-with-markdown-buffer "```mermaid\ngraph LR\nA-->B\n```"
+        (let ((messaged nil))
+          (cl-letf (((symbol-function 'message) (lambda (&rest _) (setq messaged t))))
+            (md-tui-preview-toggle))
+          (should-not messaged))
+        (should (string-match-p "graph LR" (buffer-string)))))))
+
+(ert-deftest md-tui-preview-test-toggle-mermaid-render-failure-shows-notice-without-aborting ()
+  "AC-0080-0030: a mermaid-ascii render failure does not abort entry
+into the preview -- the buffer still enters `md-tui-preview-mode' and
+shows a visible failure notice for that block, rather than signaling
+and getting stuck (contrast with the glow-failure recovery tests,
+where a failure at the final render stage still aborts entirely)."
+  (md-tui-preview-test-with-mermaid-ascii-present
+    (md-tui-preview-test-with-mock-glow-and-mermaid-ascii 1 "boom"
+      (md-tui-preview-test-with-markdown-buffer "```mermaid\nclassDiagram\n```"
+        (md-tui-preview-toggle)
+        (should (derived-mode-p 'md-tui-preview-mode))
+        (should buffer-read-only)
+        (should (string-match-p "mermaid-ascii failed to render" (buffer-string)))
+        (should (string-match-p "classDiagram" (buffer-string)))))))
 
 ;;; Keybinding Tests
 
