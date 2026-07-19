@@ -62,6 +62,7 @@
 
 - `markdown-mode` 中 `C-c C-c g`（`markdown-mode-command-map` 新增的 `g` 条目）触发 `md-tui-preview-toggle`
 - 预览态中 `C-c C-c` 触发 `md-tui-preview-toggle`
+- 预览态中 `q` 触发 `md-tui-preview-toggle`
 
 ### AC-0010-0070：预览态禁止 `save-buffer` 污染源文件
 

@@ -1139,6 +1139,10 @@ where a failure at the final render stage still aborts entirely)."
   "`C-c C-c' inside the preview resolves to the toggle command."
   (should (eq (lookup-key md-tui-preview-mode-map (kbd "C-c C-c")) #'md-tui-preview-toggle)))
 
+(ert-deftest md-tui-preview-test-preview-map-q-binding ()
+  "`q' inside the preview resolves to the toggle command."
+  (should (eq (lookup-key md-tui-preview-mode-map (kbd "q")) #'md-tui-preview-toggle)))
+
 (ert-deftest md-tui-preview-test-preview-map-ret-binding ()
   "RET inside the preview resolves to the link-follow command."
   (should (eq (lookup-key md-tui-preview-mode-map (kbd "RET"))

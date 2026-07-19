@@ -12,10 +12,10 @@
 ;; current buffer in place.
 ;;
 ;; Bound as `C-c C-c g' in `markdown-mode' (added to
-;; `markdown-mode-command-map') and as `C-c C-c' inside the preview
-;; itself.  Requires the `glow' executable; see `init-edit.el' for the
-;; `:if' gate that only loads this package in a terminal frame with
-;; `glow' installed.
+;; `markdown-mode-command-map') and as `C-c C-c' or `q' inside the
+;; preview itself.  Requires the `glow' executable; see `init-edit.el'
+;; for the `:if' gate that only loads this package in a terminal frame
+;; with `glow' installed.
 ;;
 ;;; Code:
 
@@ -265,6 +265,7 @@ another buffer or window."
   (define-key markdown-mode-command-map (kbd "g") #'md-tui-preview-toggle))
 
 (define-key md-tui-preview-mode-map (kbd "C-c C-c") #'md-tui-preview-toggle)
+(define-key md-tui-preview-mode-map (kbd "q") #'md-tui-preview-toggle)
 (define-key md-tui-preview-mode-map (kbd "RET") #'md-tui-preview-follow-link-at-point)
 
 (provide 'md-tui-preview)
