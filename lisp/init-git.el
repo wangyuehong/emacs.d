@@ -3,6 +3,7 @@
 ;;; Code:
 
 (use-package magit
+  :commands magit-worktree-status
   :bind(:map magit-status-mode-map
          ("RET" . magit-diff-visit-worktree-file))
   :custom

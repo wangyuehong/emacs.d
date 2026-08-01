@@ -99,6 +99,7 @@
     "d" '(diff-hl-command-map               :wk "diff-hl")
     "e" '(evil-iedit-state/iedit-mode       :wk "iedit")
     "g" 'magit-status
+    "G" '(magit-worktree-status             :wk "worktree-status")
     "h" 'symbol-overlay-put
     "i" 'imenu
     "K" '(my/kill-other-buffers       :wk "kill-other-buffers")
