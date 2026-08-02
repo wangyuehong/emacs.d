@@ -4,10 +4,9 @@
 ;; Author:  Yuehong Wang <wangyuehong@gmail.com>
 ;;
 ;;; Commentary:
-;; Unit tests for md-tui-preview.  The `glow' and `mermaid-ascii'
-;; subprocesses are mocked at the `call-process-region' boundary;
-;; `markdown-mode' is stubbed by run-tests.el, independent of any
-;; installed markdown-mode version.
+;; Unit tests for md-tui-preview.  The `glow' subprocess is mocked at the
+;; `call-process-region' boundary; `markdown-mode' is stubbed by
+;; run-tests.el, independent of any installed markdown-mode version.
 ;;
 ;;; Code:
 
@@ -41,38 +40,6 @@ status 1."
                 (delete-region start end)
                 (insert "boom")
                 1)))
-     ,@body))
-
-(defmacro md-tui-preview-test-with-mermaid-ascii-present (&rest body)
-  "Execute BODY with `executable-find' stubbed to report `mermaid-ascii'
-as installed, independent of the real host machine's PATH."
-  (declare (indent 0))
-  `(cl-letf (((symbol-function 'executable-find)
-              (lambda (cmd) (and (string= cmd "mermaid-ascii") "/usr/bin/mermaid-ascii"))))
-     ,@body))
-
-(defmacro md-tui-preview-test-with-mermaid-ascii-absent (&rest body)
-  "Execute BODY with `executable-find' stubbed to report `mermaid-ascii'
-as not installed, independent of the real host machine's PATH."
-  (declare (indent 0))
-  `(cl-letf (((symbol-function 'executable-find) (lambda (_cmd) nil)))
-     ,@body))
-
-(defmacro md-tui-preview-test-with-mock-glow-and-mermaid-ascii (status output &rest body)
-  "Execute BODY with `call-process-region' mocked for both `glow' and
-`mermaid-ascii', dispatching on the program argument (which the
-glow-only mocks above ignore, since only one program was ever
-invoked): a `mermaid-ascii' call replaces the piped text with OUTPUT
-and returns exit STATUS; any other program (glow) always succeeds
-with the usual red-SGR echo."
-  (declare (indent 2))
-  `(cl-letf (((symbol-function 'call-process-region)
-              (lambda (start end program _delete _buffer _display &rest _args)
-                (let ((text (buffer-substring-no-properties start end)))
-                  (delete-region start end)
-                  (if (string= program "mermaid-ascii")
-                      (progn (insert ,output) ,status)
-                    (progn (insert (format "\e[31m%s\e[0m" text)) 0))))))
      ,@body))
 
 (defmacro md-tui-preview-test-with-ansi-color-names (colors &rest body)
@@ -113,7 +80,7 @@ with the usual red-SGR echo."
     (should-error (md-tui-preview--render-string "# Hi") :type 'user-error)))
 
 (ert-deftest md-tui-preview-test-render-string-uses-configured-args ()
-  "The configured `md-tui-preview-glow-args' are forwarded to glow, with
+  "AC-0030-0010: The configured `md-tui-preview-glow-args' are forwarded to glow, with
 the stdin marker appended."
   (let ((md-tui-preview-glow-args '("--style" "light"))
         (captured-args nil))
@@ -126,7 +93,7 @@ the stdin marker appended."
       (should (equal captured-args '("--style" "light" "-"))))))
 
 (ert-deftest md-tui-preview-test-render-string-passes-width ()
-  "A non-nil WIDTH is forwarded to glow as `--width', before the stdin
+  "AC-0025-0010: A non-nil WIDTH is forwarded to glow as `--width', before the stdin
 marker."
   (let ((captured-args nil))
     (cl-letf (((symbol-function 'call-process-region)
@@ -139,7 +106,7 @@ marker."
                      (append md-tui-preview-glow-args '("--width" "100" "-")))))))
 
 (ert-deftest md-tui-preview-test-render-string-omits-width-when-nil ()
-  "A nil WIDTH does not add a `--width' flag."
+  "AC-0025-0010: A nil WIDTH does not add a `--width' flag."
   (let ((captured-args nil))
     (cl-letf (((symbol-function 'call-process-region)
                (lambda (start end _program _delete _buffer _display &rest args)
@@ -148,6 +115,22 @@ marker."
                  0)))
       (md-tui-preview--render-string "# Hi")
       (should-not (member "--width" captured-args)))))
+
+(ert-deftest md-tui-preview-test-colorize-ansi-uses-text-properties ()
+  "AC-0070-0010: the ANSI colors land in `face' text properties, not in
+overlays.  `ansi-color-apply-on-region' defaults to overlays, and an
+overlay's face wins over a text property's -- the code-block syntax faces
+markdown-mode puts on the same text would then be computed and covered up."
+  (with-temp-buffer
+    (insert "plain \e[31mred\e[0m tail")
+    (md-tui-preview--colorize-ansi (point-min) (point-max))
+    (should-not (overlays-in (point-min) (point-max)))
+    (goto-char (point-min))
+    (should (search-forward "red" nil t))
+    (should (get-text-property (match-beginning 0) 'face))
+    ;; What the display resolves to is the text property, nothing on top.
+    (should (equal (get-char-property (match-beginning 0) 'face)
+                   (get-text-property (match-beginning 0) 'face)))))
 
 ;;; Bundled Style Tests
 
@@ -163,7 +146,7 @@ style file."
     (should (string= (cadr tail) md-tui-preview--style-file))))
 
 (ert-deftest md-tui-preview-test-style-file-strips-layout-artifacts ()
-  "AC-0060: the bundled style regularizes glow's decorative layout at
+  "AC-0060-0010, AC-0060-0030: the bundled style regularizes glow's decorative layout at
 the source -- no left margin, no document top/bottom blank line, and
 the H1 gets a `# ' marker prefix (consistent with h2-h6) with no
 banner padding suffix.  This guards the override mechanism (a
@@ -183,18 +166,35 @@ observable, mirroring the theme-color tests above."
     (should (string= (alist-get 'prefix h1) "# "))
     (should (string= (alist-get 'suffix h1) ""))))
 
+(ert-deftest md-tui-preview-test-style-file-leaves-code-blocks-plain ()
+  "AC-0070-0030: the bundled style asks glow for nothing at all on a code
+block -- no syntax colors, no block color, no indent.  The chroma section
+would color it with fixed 256 colors that ignore the theme (and paint a background
+block on an Error token); the block's own `color' downsamples to bright
+black, which the theme mapping resolves to the buffer's background; the
+margin is glow-side decoration the preview does not want (AC-0060-0010)."
+  (let* ((style (json-parse-string
+                 (with-temp-buffer
+                   (insert-file-contents md-tui-preview--style-file)
+                   (buffer-string))
+                 :object-type 'alist))
+         (code-block (alist-get 'code_block style)))
+    (dolist (field '(chroma color margin))
+      (should-not (alist-get field code-block)))))
+
 ;;; Width Tests
 
 (ert-deftest md-tui-preview-test-effective-width-without-line-numbers ()
-  "Without `display-line-numbers-mode', the effective width is just the
-window's body width."
+  "AC-0025-0010: without `display-line-numbers-mode' there is no gutter to
+subtract, only the right-edge margin."
   (cl-letf (((symbol-function 'window-body-width) (lambda (&rest _) 80)))
     (let ((display-line-numbers-mode nil))
-      (should (= (md-tui-preview--effective-width) 80)))))
+      (should (= (md-tui-preview--effective-width)
+                 (- 80 md-tui-preview--width-margin))))))
 
 (ert-deftest md-tui-preview-test-effective-width-subtracts-line-number-gutter ()
-  "With `display-line-numbers-mode' on, the gutter width (plus its 2
-padding columns) is subtracted from the window's body width, since
+  "AC-0025-0010: with `display-line-numbers-mode' on, the gutter width and the
+right-edge margin are both subtracted from the window's body width, since
 `window-body-width' does not do this itself."
   (cl-letf (((symbol-function 'window-body-width) (lambda (&rest _) 80))
             ((symbol-function 'line-number-display-width) (lambda (&rest _) 4.0)))
@@ -218,7 +218,7 @@ source was still present."
 ;;; Theme Color Mapping Tests
 
 (ert-deftest md-tui-preview-test-theme-ansi-foregrounds-vector-source ()
-  "Red/green/yellow/blue/magenta/cyan foregrounds come from the matching
+  "AC-0020-0010: Red/green/yellow/blue/magenta/cyan foregrounds come from the matching
 slot in `ansi-color-names-vector'."
   (md-tui-preview-test-with-ansi-color-names
       ["#000000" "#ff0000" "#00ff00" "#ffff00" "#0000ff" "#ff00ff" "#00ffff" "#ffffff"]
@@ -231,7 +231,7 @@ slot in `ansi-color-names-vector'."
       (should (equal (alist-get 'ansi-color-cyan colors) "#00ffff")))))
 
 (ert-deftest md-tui-preview-test-theme-ansi-foregrounds-black-white-from-default ()
-  "Black and white foregrounds come from the `default' face, not from
+  "AC-0020-0010: Black and white foregrounds come from the `default' face, not from
 `ansi-color-names-vector' (whose \"white\" slot many themes reserve for
 a dim/muted shade)."
   (md-tui-preview-test-with-ansi-color-names
@@ -244,7 +244,7 @@ a dim/muted shade)."
       (should-not (equal (alist-get 'ansi-color-white colors) "#585858")))))
 
 (ert-deftest md-tui-preview-test-theme-ansi-foregrounds-bright-matches-base ()
-  "Bright variants reuse the same color as their base counterpart."
+  "AC-0020-0010: Bright variants reuse the same color as their base counterpart."
   (md-tui-preview-test-with-ansi-color-names
       ["#000000" "#ff0000" "#00ff00" "#ffff00" "#0000ff" "#ff00ff" "#00ffff" "#ffffff"]
     (let ((colors (md-tui-preview--theme-ansi-foregrounds)))
@@ -252,7 +252,7 @@ a dim/muted shade)."
                      (alist-get 'ansi-color-red colors))))))
 
 (ert-deftest md-tui-preview-test-with-theme-ansi-colors-overrides-and-restores ()
-  "Foregrounds follow the theme and backgrounds follow the buffer's own
+  "AC-0020-0010, AC-0020-0020, AC-0020-0030: Foregrounds follow the theme and backgrounds follow the buffer's own
 background for the duration of the thunk; both are restored after."
   (md-tui-preview-test-with-ansi-color-names
       ["#000000" "#ff0000" "#00ff00" "#ffff00" "#0000ff" "#ff00ff" "#00ffff" "#ffffff"]
@@ -270,7 +270,7 @@ background for the duration of the thunk; both are restored after."
       (should (equal (face-attribute 'ansi-color-red :background nil t) original-bg)))))
 
 (ert-deftest md-tui-preview-test-with-theme-ansi-colors-neutralizes-heading-background ()
-  "The slot Glow's H1 background uses (bright blue) is overridden to the
+  "AC-0020-0020: The slot Glow's H1 background uses (bright blue) is overridden to the
 buffer's own background, not a theme color.  This checks the face
 override mechanism, not the rendered visual outcome (no banner bar),
 which batch Emacs cannot observe."
@@ -284,7 +284,7 @@ which batch Emacs cannot observe."
       (should-not (equal seen-bg "#0000ff")))))
 
 (ert-deftest md-tui-preview-test-with-theme-ansi-colors-restores-on-error ()
-  "Faces are restored even when the thunk signals an error."
+  "AC-0020-0030: Faces are restored even when the thunk signals an error."
   (let ((original-fg (face-attribute 'ansi-color-red :foreground nil t)))
     (should-error (md-tui-preview--with-theme-ansi-colors (lambda () (error "boom"))))
     (should (equal (face-attribute 'ansi-color-red :foreground nil t) original-fg))))
@@ -292,7 +292,7 @@ which batch Emacs cannot observe."
 ;;; Toggle Tests
 
 (ert-deftest md-tui-preview-test-toggle-enters-read-only-preview ()
-  "Toggling from markdown-mode enters `md-tui-preview-mode', read-only,
+  "AC-0010-0020: Toggling from markdown-mode enters `md-tui-preview-mode', read-only,
 with the rendered (ANSI-stripped) content."
   (md-tui-preview-test-with-mock-glow
     (md-tui-preview-test-with-markdown-buffer "# Hello"
@@ -303,7 +303,7 @@ with the rendered (ANSI-stripped) content."
       (should-not (string-match-p "\e" (buffer-string))))))
 
 (ert-deftest md-tui-preview-test-toggle-roundtrip-restores-content ()
-  "Toggling back from the preview restores the exact original text,
+  "AC-0010-0030: Toggling back from the preview restores the exact original text,
 major mode, and modified flag."
   (md-tui-preview-test-with-mock-glow
     (md-tui-preview-test-with-markdown-buffer "# Hello\n\nWorld"
@@ -315,7 +315,7 @@ major mode, and modified flag."
       (should-not (buffer-modified-p)))))
 
 (ert-deftest md-tui-preview-test-toggle-roundtrip-preserves-unsaved-edits ()
-  "Unsaved edits made before entering the preview survive the round
+  "AC-0010-0040: Unsaved edits made before entering the preview survive the round
 trip, and the buffer is still marked modified afterward."
   (md-tui-preview-test-with-mock-glow
     (md-tui-preview-test-with-markdown-buffer "one\ntwo"
@@ -328,7 +328,7 @@ trip, and the buffer is still marked modified afterward."
       (should (buffer-modified-p)))))
 
 (ert-deftest md-tui-preview-test-toggle-does-not-mark-clean-buffer-modified ()
-  "Entering and leaving the preview on an unmodified buffer leaves it
+  "AC-0010-0050: Entering and leaving the preview on an unmodified buffer leaves it
 unmodified."
   (md-tui-preview-test-with-mock-glow
     (md-tui-preview-test-with-markdown-buffer "clean"
@@ -339,7 +339,7 @@ unmodified."
       (should-not (buffer-modified-p)))))
 
 (ert-deftest md-tui-preview-test-toggle-restores-point-position ()
-  "After returning from the preview, point returns to where it was
+  "AC-0010-0030: After returning from the preview, point returns to where it was
 before entering."
   (md-tui-preview-test-with-mock-glow
     (md-tui-preview-test-with-markdown-buffer "one\ntwo\nthree"
@@ -351,7 +351,7 @@ before entering."
         (should (= (point) pos))))))
 
 (ert-deftest md-tui-preview-test-toggle-clears-and-restores-file-name ()
-  "Entering the preview clears variable `buffer-file-name' (so
+  "AC-0010-0070: Entering the preview clears variable `buffer-file-name' (so
 `save-buffer' cannot silently overwrite the real file with rendered
 text); leaving it restores the original value."
   (md-tui-preview-test-with-mock-glow
@@ -398,7 +398,7 @@ in place before entering the preview, matching AC-0010-0040."
         (delete-file redirect-file)))))
 
 (ert-deftest md-tui-preview-test-toggle-clears-and-restores-auto-save-file-name ()
-  "Entering the preview also clears variable `buffer-auto-save-file-name'
+  "AC-0010-0070: Entering the preview also clears variable `buffer-auto-save-file-name'
 \(an idle auto-save would otherwise write the rendered text into the
 source file's auto-save file); leaving it restores the original value."
   (md-tui-preview-test-with-mock-glow
@@ -419,7 +419,7 @@ back to `gfm-mode', not a downgraded plain `markdown-mode'."
       (should (eq major-mode 'gfm-mode)))))
 
 (ert-deftest md-tui-preview-test-toggle-recovers-after-render-failure ()
-  "If glow fails while entering the preview, `md-tui-preview-mode's body
+  "AC-0010-0090: If glow fails while entering the preview, `md-tui-preview-mode's body
 has already run (it captures `md-tui-preview--source-major-mode' before
 `md-tui-preview--finish-setup' can fail), leaving the buffer stuck in
 `md-tui-preview-mode' but with valid `--source-*' state.  Toggling
@@ -434,7 +434,7 @@ again must recover to `markdown-mode', not crash."
     (should (string= (buffer-string) "# Hello"))))
 
 (ert-deftest md-tui-preview-test-toggle-recovers-gfm-mode-after-render-failure ()
-  "The same recovery path preserves `gfm-mode' rather than downgrading
+  "AC-0010-0090: The same recovery path preserves `gfm-mode' rather than downgrading
 to plain `markdown-mode' -- `md-tui-preview--source-major-mode' is
 captured from the real original mode before the failure, not defaulted
 after the fact."
@@ -446,7 +446,7 @@ after the fact."
     (should (eq major-mode 'gfm-mode))))
 
 (ert-deftest md-tui-preview-test-toggle-rejects-non-markdown-buffer ()
-  "Calling the toggle outside `markdown-mode' and outside the preview
+  "AC-0010-0080: Calling the toggle outside `markdown-mode' and outside the preview
 signals `user-error' instead of rendering an unrelated buffer, and
 leaves the buffer's mode and content untouched."
   (with-temp-buffer
@@ -459,23 +459,23 @@ leaves the buffer's mode and content untouched."
 ;;; Link Parsing Tests
 
 (ert-deftest md-tui-preview-test-parse-links-inline ()
-  "An inline link yields its label and target, classified as `url'."
+  "AC-0050-0010: An inline link yields its label and target, classified as `url'."
   (should (equal (md-tui-preview--parse-links "[text](https://example.com)")
-                 '((:label "text" :target "https://example.com" :kind url)))))
+                 '(("text" . "https://example.com")))))
 
 (ert-deftest md-tui-preview-test-parse-links-autolink ()
-  "An autolink yields a nil label and its target, classified as `url'."
+  "AC-0050-0010: An autolink yields a nil label and its target, classified as `url'."
   (should (equal (md-tui-preview--parse-links "<https://example.com>")
-                 '((:label nil :target "https://example.com" :kind url)))))
+                 '((nil . "https://example.com")))))
 
 (ert-deftest md-tui-preview-test-parse-links-reference-resolves-definition ()
-  "A reference-style link resolves to its definition's target."
+  "AC-0050-0010: A reference-style link resolves to its definition's target."
   (should (equal (md-tui-preview--parse-links
                   "[text][1]\n\n[1]: https://example.com")
-                 '((:label "text" :target "https://example.com" :kind url)))))
+                 '(("text" . "https://example.com")))))
 
 (ert-deftest md-tui-preview-test-parse-links-excludes-images ()
-  "Image syntax (leading \"!\"), inline or reference-style, is not a
+  "AC-0050-0050: Image syntax (leading \"!\"), inline or reference-style, is not a
 navigable link."
   (should-not (md-tui-preview--parse-links "![alt](https://example.com/img.png)"))
   (should-not (md-tui-preview--parse-links
@@ -509,40 +509,38 @@ excluded, per SPEC.md US-0050's declared out-of-scope forms."
 own target, in source order."
   (should (equal (md-tui-preview--parse-links
                   "[same](https://example.com/a) [same](https://example.com/b)")
-                 '((:label "same" :target "https://example.com/a" :kind url)
-                   (:label "same" :target "https://example.com/b" :kind url)))))
+                 '(("same" . "https://example.com/a")
+                   ("same" . "https://example.com/b")))))
 
 (ert-deftest md-tui-preview-test-parse-links-mailto-kind ()
-  "A mailto target is classified as `url', not `file'."
+  "AC-0050-0010: A mailto target is classified as `url', not `file'."
   (should (equal (md-tui-preview--parse-links "[mail](mailto:a@b.com)")
-                 '((:label "mail" :target "mailto:a@b.com" :kind url)))))
+                 '(("mail" . "mailto:a@b.com")))))
 
 (ert-deftest md-tui-preview-test-parse-links-relative-and-absolute-path-kind ()
-  "Relative and absolute paths are both classified as `file'."
+  "AC-0050-0020: Relative and absolute paths are both classified as `file'."
   (should (equal (md-tui-preview--parse-links "[rel](a/b.md) [abs](/a/b.md)")
-                 '((:label "rel" :target "a/b.md" :kind file)
-                   (:label "abs" :target "/a/b.md" :kind file)))))
+                 '(("rel" . "a/b.md")
+                   ("abs" . "/a/b.md")))))
 
 (ert-deftest md-tui-preview-test-parse-links-reference-style-file-kind ()
-  "A reference-style link resolving to a relative path is classified as
+  "AC-0050-0020: A reference-style link resolving to a relative path is classified as
 `file', not `url' -- AC-0050-0020's reference-style example."
   (should (equal (md-tui-preview--parse-links
                   "[text][1]\n\n[1]: relative/file.md")
-                 '((:label "text" :target "relative/file.md" :kind file)))))
+                 '(("text" . "relative/file.md")))))
 
 (ert-deftest md-tui-preview-test-parse-links-inline-target-nested-parens ()
-  "An inline target containing balanced parentheses (e.g. a Wikipedia-
+  "AC-0050-0010: An inline target containing balanced parentheses (e.g. a Wikipedia-
 style URL) is captured whole, not truncated at the first \")\"."
   (should (equal (md-tui-preview--parse-links
                   "[wiki](https://en.wikipedia.org/wiki/Foo_(bar))")
-                 '((:label "wiki"
-                    :target "https://en.wikipedia.org/wiki/Foo_(bar)"
-                    :kind url)))))
+                 '(("wiki" . "https://en.wikipedia.org/wiki/Foo_(bar)")))))
 
 (ert-deftest md-tui-preview-test-parse-links-inline-target-strips-title ()
-  "An inline link's optional trailing title is not part of the target."
+  "AC-0050-0010: An inline link's optional trailing title is not part of the target."
   (should (equal (md-tui-preview--parse-links "[t](https://example.com \"a title\")")
-                 '((:label "t" :target "https://example.com" :kind url)))))
+                 '(("t" . "https://example.com")))))
 
 (ert-deftest md-tui-preview-test-parse-links-excludes-heading-fragment ()
   "A bare \"#heading\", a \"file.md#heading\", and a \"file://\"-prefixed
@@ -559,46 +557,46 @@ is silently skipped -- not treated as a link -- without aborting the
 rest of the document: a later, well-formed link is still found."
   (should (equal (md-tui-preview--parse-links
                   "[bad](https://example.com/( [good](https://example.com/b)")
-                 '((:label "good" :target "https://example.com/b" :kind url)))))
+                 '(("good" . "https://example.com/b")))))
 
 (ert-deftest md-tui-preview-test-parse-links-reference-definition-strips-angle-brackets ()
   "A reference definition whose target is wrapped in angle brackets
 (\"[id]: <url>\", permitted by CommonMark to allow whitespace) resolves
 to the unwrapped target."
   (should (equal (md-tui-preview--parse-links "[text][1]\n\n[1]: <https://example.com>")
-                 '((:label "text" :target "https://example.com" :kind url)))))
+                 '(("text" . "https://example.com")))))
 
 ;;; Attach Link Properties Tests
 
 (ert-deftest md-tui-preview-test-attach-marks-label-and-target ()
-  "Both the label text and the target text get the property, so RET
+  "AC-0050-0010: Both the label text and the target text get the property, so RET
 works whether point is on the label or on the visible target."
   (with-temp-buffer
     (insert "click here https://example.com/a")
     (md-tui-preview--attach-link-properties
-     '((:label "click here" :target "https://example.com/a" :kind url)) nil)
+     '(("click here" . "https://example.com/a")) nil)
     (goto-char (point-min))
     (should (equal (get-text-property (point) 'md-tui-preview-link-target)
-                   '(url . "https://example.com/a")))
+                   "https://example.com/a"))
     (goto-char (point-max))
     (should (equal (get-text-property (1- (point)) 'md-tui-preview-link-target)
-                   '(url . "https://example.com/a")))))
+                   "https://example.com/a"))))
 
 (ert-deftest md-tui-preview-test-attach-duplicate-labels-do-not-cross-match ()
-  "Two links sharing the same label each get their own target, matched
+  "AC-0050-0010: Two links sharing the same label each get their own target, matched
 positionally in order, not confused with each other."
   (with-temp-buffer
     (insert "click here https://example.com/a and click here https://example.com/b")
     (md-tui-preview--attach-link-properties
-     '((:label "click here" :target "https://example.com/a" :kind url)
-       (:label "click here" :target "https://example.com/b" :kind url))
+     '(("click here" . "https://example.com/a")
+       ("click here" . "https://example.com/b"))
      nil)
     (goto-char (point-min))
     (should (equal (get-text-property (point) 'md-tui-preview-link-target)
-                   '(url . "https://example.com/a")))
+                   "https://example.com/a"))
     (goto-char (point-max))
     (should (equal (get-text-property (1- (point)) 'md-tui-preview-link-target)
-                   '(url . "https://example.com/b")))))
+                   "https://example.com/b"))))
 
 (ert-deftest md-tui-preview-test-attach-skips-unmatched-link-without-affecting-others ()
   "A link whose label cannot be found in the buffer is silently left
@@ -606,34 +604,34 @@ unclickable, and does not prevent a later link from being attached."
   (with-temp-buffer
     (insert "click here https://example.com/b")
     (md-tui-preview--attach-link-properties
-     '((:label "missing label" :target "https://example.com/a" :kind url)
-       (:label "click here" :target "https://example.com/b" :kind url))
+     '(("missing label" . "https://example.com/a")
+       ("click here" . "https://example.com/b"))
      nil)
     (goto-char (point-min))
     (should (equal (get-text-property (point) 'md-tui-preview-link-target)
-                   '(url . "https://example.com/b")))))
+                   "https://example.com/b"))))
 
 (ert-deftest md-tui-preview-test-attach-tolerates-wrapped-label ()
   "A label split across a line wrap by re-wrapping is still found."
   (with-temp-buffer
     (insert "this is a\nwrapped label https://example.com/c")
     (md-tui-preview--attach-link-properties
-     '((:label "this is a wrapped label" :target "https://example.com/c" :kind url))
+     '(("this is a wrapped label" . "https://example.com/c"))
      nil)
     (goto-char (point-min))
     (should (equal (get-text-property (point) 'md-tui-preview-link-target)
-                   '(url . "https://example.com/c")))))
+                   "https://example.com/c"))))
 
 (ert-deftest md-tui-preview-test-attach-autolink-has-no-label-to-match ()
-  "An autolink (nil label) attaches the property straight to its target
+  "AC-0050-0010: An autolink (nil label) attaches the property straight to its target
 text, without requiring a separate label match first."
   (with-temp-buffer
     (insert "https://example.com/i")
     (md-tui-preview--attach-link-properties
-     '((:label nil :target "https://example.com/i" :kind url)) nil)
+     '((nil . "https://example.com/i")) nil)
     (goto-char (point-min))
     (should (equal (get-text-property (point) 'md-tui-preview-link-target)
-                   '(url . "https://example.com/i")))))
+                   "https://example.com/i"))))
 
 (ert-deftest md-tui-preview-test-attach-resolves-relative-file-against-source-dir ()
   "A `file' target's relative path is resolved against SOURCE-FILE-NAME's
@@ -641,20 +639,20 @@ directory, and any \"file://\" prefix is stripped."
   (with-temp-buffer
     (insert "relfile relative/file.md")
     (md-tui-preview--attach-link-properties
-     '((:label "relfile" :target "relative/file.md" :kind file))
+     '(("relfile" . "relative/file.md"))
      "/tmp/fake/source.md")
     (goto-char (point-min))
     (should (equal (get-text-property (point) 'md-tui-preview-link-target)
-                   '(file . "/tmp/fake/relative/file.md")))))
+                   "/tmp/fake/relative/file.md"))))
 
 ;;; Follow Link At Point Tests
 
 (ert-deftest md-tui-preview-test-follow-link-opens-url ()
-  "Point on a `url' link calls `browse-url' with its target."
+  "AC-0050-0010: Point on a `url' link calls `browse-url' with its target."
   (with-temp-buffer
     (insert "x")
     (put-text-property (point-min) (point-max) 'md-tui-preview-link-target
-                        '(url . "https://example.com"))
+                        "https://example.com")
     (goto-char (point-min))
     (let (called-with)
       (cl-letf (((symbol-function 'browse-url)
@@ -663,13 +661,13 @@ directory, and any \"file://\" prefix is stripped."
       (should (string= called-with "https://example.com")))))
 
 (ert-deftest md-tui-preview-test-follow-link-opens-existing-file ()
-  "Point on a `file' link whose target exists calls `find-file' with it."
+  "AC-0050-0020: Point on a `file' link whose target exists calls `find-file' with it."
   (let ((file (make-temp-file "md-tui-preview-test-")))
     (unwind-protect
         (with-temp-buffer
           (insert "x")
           (put-text-property (point-min) (point-max) 'md-tui-preview-link-target
-                              (cons 'file file))
+                              file)
           (goto-char (point-min))
           (let (called-with)
             (cl-letf (((symbol-function 'find-file)
@@ -679,7 +677,7 @@ directory, and any \"file://\" prefix is stripped."
       (delete-file file))))
 
 (ert-deftest md-tui-preview-test-follow-link-rejects-point-off-link ()
-  "Point not on any link signals `user-error' and calls neither
+  "AC-0050-0030: Point not on any link signals `user-error' and calls neither
 `browse-url' nor `find-file'."
   (with-temp-buffer
     (insert "plain text")
@@ -692,13 +690,13 @@ directory, and any \"file://\" prefix is stripped."
       (should-not find-file-called))))
 
 (ert-deftest md-tui-preview-test-follow-link-rejects-missing-file-target ()
-  "A `file' link whose target does not exist signals `user-error' and
+  "AC-0050-0040: A `file' link whose target does not exist signals `user-error' and
 does not call `find-file' (which would otherwise create an empty
 file)."
   (with-temp-buffer
     (insert "x")
     (put-text-property (point-min) (point-max) 'md-tui-preview-link-target
-                        (cons 'file "/nonexistent/md-tui-preview-test-file.md"))
+                        "/nonexistent/md-tui-preview-test-file.md")
     (goto-char (point-min))
     (let (find-file-called)
       (cl-letf (((symbol-function 'find-file) (lambda (&rest _) (setq find-file-called t))))
@@ -727,424 +725,176 @@ present in the buffer is not enough to make it navigable."
 
 ;;; Code Block Tests
 
-(ert-deftest md-tui-preview-test-parse-code-blocks-basic ()
-  "A fenced block yields its non-blank content lines in order."
-  (should (equal (md-tui-preview--parse-code-blocks "```python\ndef f():\n    return 1\n```")
-                 '((:lines ("def f():" "    return 1"))))))
+(ert-deftest md-tui-preview-test-mask-code-blocks-returns-block-source ()
+  "AC-0070-0010: A fenced block comes back as its own source text, both fence lines
+included, and what glow gets carries a placeholder in its place."
+  (pcase-let ((`(,masked . ,blocks)
+               (md-tui-preview--mask-code-blocks
+                "before\n```python\ndef f():\n    return 1\n```\nafter\n")))
+    (should (equal blocks '("```python\ndef f():\n    return 1\n```\n")))
+    (should (string-match-p "\\`before\n" masked))
+    (should (string-match-p "after\n\\'" masked))
+    (should-not (string-match-p "def f()" masked))
+    ;; The placeholder stands alone as its own paragraph.
+    (should (string-match-p (concat "\n\n" (regexp-quote (md-tui-preview--placeholder 0))
+                                    "\n\n")
+                            masked))))
 
-(ert-deftest md-tui-preview-test-parse-code-blocks-single-line ()
-  "A block with a single non-blank content line yields a one-element list."
-  (should (equal (md-tui-preview--parse-code-blocks "```\nsolo\n```")
-                 '((:lines ("solo"))))))
+(ert-deftest md-tui-preview-test-mask-code-blocks-tilde-fence ()
+  "AC-0070-0010: Tilde fences are recognized like backtick fences."
+  (should (equal (cdr (md-tui-preview--mask-code-blocks "~~~\ncode\n~~~"))
+                 '("~~~\ncode\n~~~"))))
 
-(ert-deftest md-tui-preview-test-parse-code-blocks-skips-blank-edges ()
-  "Blank content lines are dropped, keeping only the non-blank ones."
-  (should (equal (md-tui-preview--parse-code-blocks "```\n\na\n\nb\n\n```")
-                 '((:lines ("a" "b"))))))
+(ert-deftest md-tui-preview-test-mask-code-blocks-ignores-inner-shorter-fence ()
+  "AC-0070-0010: A shorter run of the fence character inside the block does not close it."
+  (should (equal (cdr (md-tui-preview--mask-code-blocks "````\n```\ninner\n````"))
+                 '("````\n```\ninner\n````"))))
 
-(ert-deftest md-tui-preview-test-parse-code-blocks-tilde-fence ()
-  "Tilde fences are recognized like backtick fences."
-  (should (equal (md-tui-preview--parse-code-blocks "~~~\ncode\n~~~")
-                 '((:lines ("code"))))))
+(ert-deftest md-tui-preview-test-mask-code-blocks-unclosed-at-eof ()
+  "AC-0070-0010: A block left unclosed at end of text is masked too, ending there."
+  (should (equal (cdr (md-tui-preview--mask-code-blocks "```\nx\ny"))
+                 '("```\nx\ny"))))
 
-(ert-deftest md-tui-preview-test-parse-code-blocks-ignores-inner-shorter-fence ()
-  "A shorter run of the fence character inside the block does not close it."
-  (should (equal (md-tui-preview--parse-code-blocks "````\n```\ninner\n````")
-                 '((:lines ("```" "inner"))))))
+(ert-deftest md-tui-preview-test-mask-code-blocks-multiple-in-order ()
+  "AC-0070-0010: Blocks come back in source order, numbered to match their placeholders."
+  (pcase-let ((`(,masked . ,blocks)
+               (md-tui-preview--mask-code-blocks
+                "```\nfirst\n```\n\nprose\n\n```\nsecond\n```\n")))
+    (should (equal blocks '("```\nfirst\n```\n" "```\nsecond\n```\n")))
+    (should (string-match-p (concat (regexp-quote (md-tui-preview--placeholder 0))
+                                    "\\(.\\|\n\\)*"
+                                    (regexp-quote (md-tui-preview--placeholder 1)))
+                            masked))))
 
-(ert-deftest md-tui-preview-test-parse-code-blocks-unclosed-at-eof ()
-  "A block left unclosed at end of text is still reported."
-  (should (equal (md-tui-preview--parse-code-blocks "```\nx\ny")
-                 '((:lines ("x" "y"))))))
+(ert-deftest md-tui-preview-test-mask-code-blocks-leaves-prose-alone ()
+  "AC-0070-0010: Text with no fenced block is handed to glow unchanged."
+  (let ((text "prose with ```inline``` ticks in the middle\n"))
+    (should (equal (md-tui-preview--mask-code-blocks text) (cons text nil)))))
 
-(ert-deftest md-tui-preview-test-parse-code-blocks-empty-block-omitted ()
-  "A block with no non-blank content line is omitted."
-  (should-not (md-tui-preview--parse-code-blocks "```\n\n```")))
+(ert-deftest md-tui-preview-test-mask-code-blocks-inline-span-at-line-start ()
+  "AC-0070-0010: a line opening with an inline code span is not a fence.  A
+backtick fence's info string may not contain a backtick (CommonMark), and
+reading such a line as a fence would swallow the rest of the document into
+one unrendered block."
+  (let ((text "```code``` is an inline span at line start.\n\nmore prose\n"))
+    (should (equal (md-tui-preview--mask-code-blocks text) (cons text nil)))))
 
-(ert-deftest md-tui-preview-test-color-dark-p ()
-  "Luminance below the midpoint is dark, above is light."
-  (should (md-tui-preview--color-dark-p "#000000"))
-  (should-not (md-tui-preview--color-dark-p "#ffffff")))
+(ert-deftest md-tui-preview-test-mask-code-blocks-indented-fence ()
+  "AC-0070-0010: a fence carrying a list item's indentation is a fence --
+markdown-mode fontifies those blocks, so the preview must route them around
+glow like any other."
+  (should (equal (cdr (md-tui-preview--mask-code-blocks
+                       "- outer\n  - inner\n\n    ```elisp\n    (foo)\n    ```\n"))
+                 '("    ```elisp\n    (foo)\n    ```\n"))))
 
-(ert-deftest md-tui-preview-test-code-block-background-resolves ()
-  "`auto' derives a color, a color string passes through, nil disables."
-  (let ((md-tui-preview-code-block-background nil))
-    (should-not (md-tui-preview--code-block-background)))
-  (let ((md-tui-preview-code-block-background "#123456"))
-    (should (string= (md-tui-preview--code-block-background) "#123456")))
-  ;; `auto' reads `default's background; stub it to a parseable color so
-  ;; the derivation is deterministic without a real display.
-  (let ((md-tui-preview-code-block-background 'auto))
-    (cl-letf (((symbol-function 'face-attribute) (lambda (&rest _) "#1c1c1c")))
-      (let ((derived (md-tui-preview--code-block-background)))
-        (should (stringp derived))
-        (should-not (string= derived "#1c1c1c"))))))
+(ert-deftest md-tui-preview-test-restore-code-blocks-replaces-placeholder-line ()
+  "AC-0070-0010: the rendered placeholder line -- padding and all -- becomes the
+block's own source text, fences included, leaving the surrounding text alone."
+  (with-temp-buffer
+    (insert "prose above\n"
+            "  " (md-tui-preview--placeholder 0) "                    \n"
+            "prose below\n")
+    (md-tui-preview--restore-code-blocks '("```python\ndef f():\n```\n"))
+    (should (string= (buffer-string)
+                     "prose above\n```python\ndef f():\n```\nprose below\n"))))
 
-(ert-deftest md-tui-preview-test-attach-code-block-overlays-region ()
-  "AC-0070-0010/0020: the located block span gets a tagged overlay that
-carries only a `:background', leaving foregrounds to the text's own
-faces.  The rendered visual outcome (background shows, syntax colors
-survive on top) resolves only at redisplay and is not batch
-observable; this asserts the overlay mechanism, mirroring the
-theme-color tests above."
-  (let ((md-tui-preview-code-block-background "#222222"))
-    (with-temp-buffer
-      (insert "prose\ndef f():\n    return 1\nmore prose")
-      (md-tui-preview--attach-code-block-backgrounds
-       '((:lines ("def f():" "    return 1"))))
-      (let ((ovs (seq-filter (lambda (o) (overlay-get o 'md-tui-preview-code-block))
-                             (overlays-in (point-min) (point-max)))))
-        (should (= (length ovs) 1))
-        (let ((ov (car ovs)))
-          ;; The overlay carries an anonymous face that sets only the
-          ;; resolved background and no foreground, so glow's
-          ;; syntax-highlight foregrounds show through.  glow pads each
-          ;; line to the full render width, so the covered space cells
-          ;; already carry the background to the window edge -- no
-          ;; `:extend' needed.
-          (should (equal (overlay-get ov 'face) '(:background "#222222")))
-          ;; Span covers the two code lines through the trailing newline
-          ;; (so the last line extends too), stopping before the next
-          ;; prose line.
-          (should (string= (buffer-substring-no-properties
-                            (overlay-start ov) (overlay-end ov))
-                           "def f():\n    return 1\n")))))))
+(ert-deftest md-tui-preview-test-restore-code-blocks-in-order ()
+  "AC-0070-0010: Blocks go back to their own placeholders, in order."
+  (with-temp-buffer
+    (insert (md-tui-preview--placeholder 0) "\nmiddle\n"
+            (md-tui-preview--placeholder 1) "\n")
+    (md-tui-preview--restore-code-blocks
+     '("```\nfirst\n```\n" "```\nsecond\n```\n"))
+    (should (string= (buffer-string)
+                     "```\nfirst\n```\nmiddle\n```\nsecond\n```\n"))))
 
-(ert-deftest md-tui-preview-test-attach-code-block-disabled-adds-no-overlay ()
-  "With the background disabled (nil), no overlay is created."
-  (let ((md-tui-preview-code-block-background nil))
-    (with-temp-buffer
-      (insert "def f():\n    return 1")
-      (md-tui-preview--attach-code-block-backgrounds
-       '((:lines ("def f():" "    return 1"))))
-      (should-not (seq-filter (lambda (o) (overlay-get o 'md-tui-preview-code-block))
-                              (overlays-in (point-min) (point-max)))))))
+(ert-deftest md-tui-preview-test-restore-code-blocks-missing-placeholder-skipped ()
+  "AC-0070-0040: A placeholder that cannot be found leaves that block out without disturbing
+the rest of the buffer or the other blocks."
+  (with-temp-buffer
+    (insert "prose\n" (md-tui-preview--placeholder 1) "\n")
+    (md-tui-preview--restore-code-blocks
+     '("```\nfirst\n```\n" "```\nsecond\n```\n"))
+    (should (string= (buffer-string) "prose\n```\nsecond\n```\n"))))
 
-(ert-deftest md-tui-preview-test-attach-code-block-single-line-overlays-that-line ()
-  "A single-line block overlays exactly its one line."
-  (let ((md-tui-preview-code-block-background "#222222"))
-    (with-temp-buffer
-      (insert "prose\nsolo-code-line\nmore prose")
-      (md-tui-preview--attach-code-block-backgrounds
-       '((:lines ("solo-code-line"))))
-      (let ((ovs (seq-filter (lambda (o) (overlay-get o 'md-tui-preview-code-block))
-                             (overlays-in (point-min) (point-max)))))
-        (should (= (length ovs) 1))
-        (should (string= (buffer-substring-no-properties
-                          (overlay-start (car ovs)) (overlay-end (car ovs)))
-                         "solo-code-line\n"))))))
+(ert-deftest md-tui-preview-test-restore-code-blocks-adds-missing-final-newline ()
+  "AC-0070-0010: A block whose source text has no trailing newline (unclosed at end of the
+document) still ends in one, so the following line stays on its own line."
+  (with-temp-buffer
+    (insert (md-tui-preview--placeholder 0) "\ntail\n")
+    (md-tui-preview--restore-code-blocks '("```\nx"))
+    (should (string= (buffer-string) "```\nx\ntail\n"))))
 
-(ert-deftest md-tui-preview-test-attach-code-block-skips-when-a-line-missing ()
-  "A block with a content line that cannot be located gets no overlay,
-rather than shading only the lines found before it (AC-0070-0010
-promises the full block)."
-  (let ((md-tui-preview-code-block-background "#222222"))
-    (with-temp-buffer
-      (insert "def f():\n    return 1")
-      (md-tui-preview--attach-code-block-backgrounds
-       '((:lines ("def f():" "no such trailing line"))))
-      (should-not (seq-filter (lambda (o) (overlay-get o 'md-tui-preview-code-block))
-                              (overlays-in (point-min) (point-max)))))))
+(ert-deftest md-tui-preview-test-fontify-markdown-faces-offsets-into-text ()
+  "AC-0070-0010: Face spans come back as 0-based offsets into the text handed in, which is
+what lets them be transferred onto identical text elsewhere."
+  ;; The suite's markdown-mode stub does no fontification of its own, so this
+  ;; asserts the contract's shape against a mode that does: any span returned
+  ;; must be within the text's bounds and carry a face.
+  (let* ((text ";; comment\n(defun f ())")
+         (spans (cl-letf (((symbol-function 'markdown-mode)
+                           (symbol-function 'emacs-lisp-mode)))
+                  (md-tui-preview--fontify-markdown-faces text))))
+    (should spans)
+    (pcase-dolist (`(,begin ,end ,face) spans)
+      (should (<= 0 begin))
+      (should (<= end (length text)))
+      (should (< begin end))
+      (should face))))
 
-(ert-deftest md-tui-preview-test-attach-code-block-duplicate-last-line-spans-full-block ()
-  "AC-0070-0010: when a block's last content line is identical to an
-earlier one, the overlay reaches the block's real end (the second
-occurrence), not the first.  Matching lines one after another advances
-past the earlier copy; a two-point first/last search would instead stop
-the span at the earlier occurrence, shading only the block's top."
-  (let ((md-tui-preview-code-block-background "#222222"))
-    (with-temp-buffer
-      (insert "prose\nhead-a\nshared-tail\nhead-b\nshared-tail\nmore prose")
-      (md-tui-preview--attach-code-block-backgrounds
-       '((:lines ("head-a" "shared-tail" "head-b" "shared-tail"))))
-      (let ((ovs (seq-filter (lambda (o) (overlay-get o 'md-tui-preview-code-block))
-                             (overlays-in (point-min) (point-max)))))
-        (should (= (length ovs) 1))
-        (should (string= (buffer-substring-no-properties
-                          (overlay-start (car ovs)) (overlay-end (car ovs)))
-                         "head-a\nshared-tail\nhead-b\nshared-tail\n"))))))
+(ert-deftest md-tui-preview-test-toggle-shows-code-block-source ()
+  "AC-0070-0010: after entering the preview, a fenced block appears as its own
+source text -- opening fence with its language, content, closing fence."
+  (md-tui-preview-test-with-mock-glow
+    (md-tui-preview-test-with-markdown-buffer "# Hi\n\n```elisp\n(foo)\n```\n"
+      (md-tui-preview-toggle)
+      (should (string-match-p "```elisp\n(foo)\n```" (buffer-string)))
+      ;; The placeholder itself is gone from the preview.
+      (should-not (string-match-p (regexp-quote (md-tui-preview--placeholder 0))
+                                  (buffer-string))))))
 
-;;; Mermaid Diagram Tests
+(ert-deftest md-tui-preview-test-toggle-shows-unknown-language-block-verbatim ()
+  "AC-0070-0020: a block whose language has no mode still shows as its own
+source -- fences, language label and content all present."
+  (md-tui-preview-test-with-mock-glow
+    (md-tui-preview-test-with-markdown-buffer "```zzz-no-such-language\nplain\n```\n"
+      (md-tui-preview-toggle)
+      (should (string-match-p "```zzz-no-such-language\nplain\n```" (buffer-string))))))
 
-(ert-deftest md-tui-preview-test-find-mermaid-blocks-basic ()
-  "A fenced block tagged \"mermaid\" is found, with its exact body text
-\(blank lines preserved) and a span covering both fence lines."
-  (let* ((text "before\n```mermaid\ngraph LR\nA-->B\n```\nafter")
-         (blocks (md-tui-preview--find-mermaid-blocks text)))
-    (should (= (length blocks) 1))
-    (let ((block (car blocks)))
-      (should (string= (plist-get block :body) "graph LR\nA-->B\n"))
-      (should (string= (substring text (plist-get block :begin) (plist-get block :end))
-                        "```mermaid\ngraph LR\nA-->B\n```\n")))))
-
-(ert-deftest md-tui-preview-test-find-mermaid-blocks-case-insensitive ()
-  "The \"mermaid\" info-string tag is matched case-insensitively."
-  (should (= (length (md-tui-preview--find-mermaid-blocks "```Mermaid\ngraph LR\n```")) 1))
-  (should (= (length (md-tui-preview--find-mermaid-blocks "```MERMAID\ngraph LR\n```")) 1)))
-
-(ert-deftest md-tui-preview-test-find-mermaid-blocks-trailing-info-content ()
-  "A trailing token after \"mermaid\" in the info string does not exclude
-the block -- only the first token is compared."
-  (should (= (length (md-tui-preview--find-mermaid-blocks
-                      "```mermaid title=\"x\"\ngraph LR\n```"))
-             1)))
-
-(ert-deftest md-tui-preview-test-find-mermaid-blocks-ignores-other-languages ()
-  "A fenced block tagged with a different language -- including one
-that merely starts with \"mermaid\" -- is not returned."
-  (should-not (md-tui-preview--find-mermaid-blocks "```python\ndef f(): pass\n```"))
-  (should-not (md-tui-preview--find-mermaid-blocks "```mermaidjs\ngraph LR\n```")))
-
-(ert-deftest md-tui-preview-test-find-mermaid-blocks-omits-unclosed ()
-  "A Mermaid-tagged fence left unclosed at end of text is omitted."
-  (should-not (md-tui-preview--find-mermaid-blocks "```mermaid\ngraph LR\nA-->B")))
-
-(ert-deftest md-tui-preview-test-find-mermaid-blocks-multiple-in-order ()
-  "Multiple Mermaid blocks are returned in source order."
-  (let ((blocks (md-tui-preview--find-mermaid-blocks
-                 "```mermaid\ngraph LR\nA-->B\n```\n\nprose\n\n```mermaid\ngraph LR\nC-->D\n```\n")))
-    (should (= (length blocks) 2))
-    (should (string= (plist-get (nth 0 blocks) :body) "graph LR\nA-->B\n"))
-    (should (string= (plist-get (nth 1 blocks) :body) "graph LR\nC-->D\n"))))
-
-(ert-deftest md-tui-preview-test-find-mermaid-blocks-preserves-blank-lines ()
-  "Blank lines inside the block body are preserved verbatim, unlike
-`md-tui-preview--parse-code-blocks'."
-  (let ((blocks (md-tui-preview--find-mermaid-blocks "```mermaid\ngraph LR\n\nA-->B\n```")))
-    (should (string= (plist-get (car blocks) :body) "graph LR\n\nA-->B\n"))))
-
-(ert-deftest md-tui-preview-test-find-mermaid-blocks-tilde-fence ()
-  "A tilde-fenced Mermaid block is recognized like a backtick-fenced one."
-  (should (= (length (md-tui-preview--find-mermaid-blocks "~~~mermaid\ngraph LR\n~~~")) 1)))
-
-(ert-deftest md-tui-preview-test-find-mermaid-blocks-skips-through-other-fenced-blocks ()
-  "A fence run inside an unrelated block does not get misread as a new
-fence opener; a Mermaid block appearing afterward is still found."
-  (let ((blocks (md-tui-preview--find-mermaid-blocks
-                 "````\n```\ninner\n````\n\n```mermaid\ngraph LR\n```\n")))
-    (should (= (length blocks) 1))
-    (should (string= (plist-get (car blocks) :body) "graph LR\n"))))
-
-(ert-deftest md-tui-preview-test-call-mermaid-ascii-success ()
-  "A successful mermaid-ascii run returns (0 . stdout), not a signal."
+(ert-deftest md-tui-preview-test-toggle-trims-leading-blank-line ()
+  "AC-0060-0020: glow puts a blank first line in front of a document opening
+with a list or a block quote; the preview starts at the content instead."
   (cl-letf (((symbol-function 'call-process-region)
              (lambda (start end _program _delete _buffer _display &rest _args)
                (delete-region start end)
-               (insert "+--+\n|A |\n+--+\n\n")
+               (insert "   \n• a\n")
                0)))
-    (should (equal (md-tui-preview--call-mermaid-ascii "graph LR\nA")
-                    '(0 . "+--+\n|A |\n+--+\n\n")))))
+    (md-tui-preview-test-with-markdown-buffer "- a\n"
+      (md-tui-preview-toggle)
+      (should (string= (buffer-string) "• a\n")))))
 
-(ert-deftest md-tui-preview-test-call-mermaid-ascii-failure-does-not-signal ()
-  "A non-zero mermaid-ascii exit is returned as (STATUS . OUTPUT), not
-signaled -- callers decide what to do via an explicit branch on
-STATUS, per SPEC.md US-0080 AC-0080-0030's \"explicit condition, not
-exception-catching\" requirement."
-  (cl-letf (((symbol-function 'call-process-region)
-             (lambda (start end _program _delete _buffer _display &rest _args)
-               (delete-region start end)
-               (insert "unsupported graph type")
-               1)))
-    (should (equal (md-tui-preview--call-mermaid-ascii "classDiagram")
-                    '(1 . "unsupported graph type")))))
-
-(ert-deftest md-tui-preview-test-call-mermaid-ascii-uses-configured-args ()
-  "The configured `md-tui-preview-mermaid-ascii-args' are forwarded to
-mermaid-ascii, with no trailing stdin marker (unlike glow's call --
-mermaid-ascii has no such marker)."
-  (let ((md-tui-preview-mermaid-ascii-args '("--ascii"))
-        (captured-args nil))
-    (cl-letf (((symbol-function 'call-process-region)
-               (lambda (start end _program _delete _buffer _display &rest args)
-                 (setq captured-args args)
-                 (delete-region start end)
-                 0)))
-      (md-tui-preview--call-mermaid-ascii "graph LR\nA")
-      (should (equal captured-args '("--ascii"))))))
-
-(ert-deftest md-tui-preview-test-clean-mermaid-ascii-output-strips-ansi-and-trims ()
-  "ANSI escapes are stripped and trailing whitespace is trimmed to a
-single newline."
-  (should (string= (md-tui-preview--clean-mermaid-ascii-output "\e[31mA\e[0m") "A\n"))
-  (should (string= (md-tui-preview--clean-mermaid-ascii-output "+--+\n|A |\n+--+\n\n")
-                    "+--+\n|A |\n+--+\n")))
-
-(ert-deftest md-tui-preview-test-mermaid-render-failure-text-includes-everything ()
-  "The failure fallback text leads with the status and output verbatim,
-followed by the original Mermaid source unchanged, so nothing about
-the failure is hidden."
-  (let ((text (md-tui-preview--mermaid-render-failure-text
-               1 "unsupported graph type 'classDiagram'" "classDiagram\n")))
-    (should (string-match-p "mermaid-ascii failed to render (1)" text))
-    (should (string-match-p "unsupported graph type 'classDiagram'" text))
-    (should (string-suffix-p "classDiagram\n" text))))
-
-(ert-deftest md-tui-preview-test-substitute-mermaid-blocks-absent-binary-unchanged ()
-  "AC-0080-0020: when `mermaid-ascii' is not on PATH, the text is
-returned unchanged and the process is never invoked."
-  (md-tui-preview-test-with-mermaid-ascii-absent
-    (let ((called nil))
-      (cl-letf (((symbol-function 'call-process-region)
-                 (lambda (&rest _) (setq called t) 0)))
-        (let ((text "```mermaid\ngraph LR\nA-->B\n```\n"))
-          (should (string= (md-tui-preview--substitute-mermaid-blocks text) text))))
-      (should-not called))))
-
-(ert-deftest md-tui-preview-test-substitute-mermaid-blocks-no-mermaid-blocks-unchanged ()
-  "When the binary is present but the text has no Mermaid blocks, the
-text is returned unchanged and mermaid-ascii is never invoked."
-  (md-tui-preview-test-with-mermaid-ascii-present
-    (let ((called nil))
-      (cl-letf (((symbol-function 'call-process-region)
-                 (lambda (&rest _) (setq called t) 0)))
-        (let ((text "```python\nprint(1)\n```\n"))
-          (should (string= (md-tui-preview--substitute-mermaid-blocks text) text))))
-      (should-not called))))
-
-(ert-deftest md-tui-preview-test-substitute-mermaid-blocks-replaces-block ()
-  "AC-0080-0010: a Mermaid block is replaced by its rendering, wrapped
-in a `text'-tagged fence; surrounding prose is untouched."
-  (md-tui-preview-test-with-mermaid-ascii-present
-    (cl-letf (((symbol-function 'call-process-region)
-               (lambda (start end _program _delete _buffer _display &rest _args)
-                 (delete-region start end)
-                 (insert "DIAGRAM")
-                 0)))
-      (should (string= (md-tui-preview--substitute-mermaid-blocks
-                         "before\n```mermaid\ngraph LR\nA-->B\n```\nafter")
-                        "before\n````text\nDIAGRAM\n````\nafter")))))
-
-(ert-deftest md-tui-preview-test-mermaid-fence-open-is-marker-plus-text ()
-  "The opening fence used for a Mermaid block's replacement carries an
-explicit \"text\" info string on top of the base marker -- an
-unlabeled fence would let glow's syntax highlighter (chroma) guess a
-language for long enough content and mis-tokenize CJK-heavy spans with
-a jarring background color; regression guard for that fix."
-  (should (string= md-tui-preview--mermaid-fence-open
-                    (concat md-tui-preview--mermaid-fence-marker "text"))))
-
-(ert-deftest md-tui-preview-test-substitute-mermaid-blocks-closing-fence-has-no-info-string ()
-  "The closing fence line is a bare marker with no info string --
-CommonMark requires a closing fence to carry none, and glow would
-otherwise fail to close the block at all."
-  (md-tui-preview-test-with-mermaid-ascii-present
-    (cl-letf (((symbol-function 'call-process-region)
-               (lambda (start end _program _delete _buffer _display &rest _args)
-                 (delete-region start end)
-                 (insert "DIAGRAM")
-                 0)))
-      (let ((result (md-tui-preview--substitute-mermaid-blocks
-                     "```mermaid\ngraph LR\nA-->B\n```")))
-        (should (string-suffix-p (concat md-tui-preview--mermaid-fence-marker "\n") result))
-        (should-not (string-suffix-p (concat md-tui-preview--mermaid-fence-open "\n") result))))))
-
-(ert-deftest md-tui-preview-test-substitute-mermaid-blocks-failed-block-shows-notice-and-source ()
-  "AC-0080-0030: a mermaid-ascii render failure does not signal -- the
-failing block is replaced by a visible failure notice (quoting the
-tool's status and output) followed by its own original source, still
-wrapped in the text-tagged fence."
-  (md-tui-preview-test-with-mermaid-ascii-present
-    (cl-letf (((symbol-function 'call-process-region)
-               (lambda (start end _program _delete _buffer _display &rest _args)
-                 (delete-region start end)
-                 (insert "boom")
-                 1)))
-      (should (string= (md-tui-preview--substitute-mermaid-blocks "```mermaid\nclassDiagram\n```")
-                        "````text\n[mermaid-ascii failed to render (1): boom]\n\nclassDiagram\n````\n")))))
-
-(ert-deftest md-tui-preview-test-substitute-mermaid-blocks-failure-does-not-affect-other-blocks ()
-  "One block's render failure is isolated: an earlier block that
-renders successfully still shows its diagram, unaffected by a later
-block's failure."
-  (md-tui-preview-test-with-mermaid-ascii-present
-    (let ((n 0))
-      (cl-letf (((symbol-function 'call-process-region)
-                 (lambda (start end _program _delete _buffer _display &rest _args)
-                   (delete-region start end)
-                   (setq n (1+ n))
-                   (if (= n 1)
-                       (progn (insert "DIAGRAM") 0)
-                     (progn (insert "boom") 1)))))
-        (should (string= (md-tui-preview--substitute-mermaid-blocks
-                           "```mermaid\ngraph LR\nA-->B\n```\nmiddle\n```mermaid\nclassDiagram\n```")
-                          (concat "````text\nDIAGRAM\n````\nmiddle\n"
-                                  "````text\n[mermaid-ascii failed to render (1): boom]\n\n"
-                                  "classDiagram\n````\n")))))))
-
-(ert-deftest md-tui-preview-test-substitute-mermaid-blocks-multiple-blocks-in-order ()
-  "Multiple Mermaid blocks, interleaved with prose, are all replaced
-correctly and in source order."
-  (md-tui-preview-test-with-mermaid-ascii-present
-    (let ((n 0))
-      (cl-letf (((symbol-function 'call-process-region)
-                 (lambda (start end _program _delete _buffer _display &rest _args)
-                   (delete-region start end)
-                   (setq n (1+ n))
-                   (insert (format "DIAGRAM-%d" n))
-                   0)))
-        (should (string= (md-tui-preview--substitute-mermaid-blocks
-                           "```mermaid\ngraph LR\nA-->B\n```\nmiddle\n```mermaid\ngraph LR\nC-->D\n```")
-                          "````text\nDIAGRAM-1\n````\nmiddle\n````text\nDIAGRAM-2\n````\n"))))))
-
-(ert-deftest md-tui-preview-test-toggle-mermaid-present-shows-diagram-with-background ()
-  "AC-0080-0010: when `mermaid-ascii' is installed, a mermaid block is
-shown as its rendering (ANSI-stripped), not the original diagram
-source, and gets a US-0070 code-block-background overlay by
-inheriting the replacement's own fence."
-  (let ((md-tui-preview-code-block-background "#222222"))
-    (md-tui-preview-test-with-mermaid-ascii-present
-      (md-tui-preview-test-with-mock-glow-and-mermaid-ascii 0 "DIAGRAM"
-        (md-tui-preview-test-with-markdown-buffer "before\n```mermaid\ngraph LR\nA-->B\n```\nafter"
-          (md-tui-preview-toggle)
-          (should (string-match-p "DIAGRAM" (buffer-string)))
-          (should-not (string-match-p "graph LR" (buffer-string)))
-          (should (seq-filter (lambda (o) (overlay-get o 'md-tui-preview-code-block))
-                              (overlays-in (point-min) (point-max)))))))))
-
-(ert-deftest md-tui-preview-test-toggle-mermaid-absent-binary-shows-raw-source ()
-  "AC-0080-0020: when `mermaid-ascii' is absent, entering the preview
-renders the mermaid block as plain (unrendered) text, exactly as
-before this feature existed, and prints no message about it."
-  (md-tui-preview-test-with-mermaid-ascii-absent
-    (md-tui-preview-test-with-mock-glow
-      (md-tui-preview-test-with-markdown-buffer "```mermaid\ngraph LR\nA-->B\n```"
-        (let ((messaged nil))
-          (cl-letf (((symbol-function 'message) (lambda (&rest _) (setq messaged t))))
-            (md-tui-preview-toggle))
-          (should-not messaged))
-        (should (string-match-p "graph LR" (buffer-string)))))))
-
-(ert-deftest md-tui-preview-test-toggle-mermaid-render-failure-shows-notice-without-aborting ()
-  "AC-0080-0030: a mermaid-ascii render failure does not abort entry
-into the preview -- the buffer still enters `md-tui-preview-mode' and
-shows a visible failure notice for that block, rather than signaling
-and getting stuck (contrast with the glow-failure recovery tests,
-where a failure at the final render stage still aborts entirely)."
-  (md-tui-preview-test-with-mermaid-ascii-present
-    (md-tui-preview-test-with-mock-glow-and-mermaid-ascii 1 "boom"
-      (md-tui-preview-test-with-markdown-buffer "```mermaid\nclassDiagram\n```"
-        (md-tui-preview-toggle)
-        (should (derived-mode-p 'md-tui-preview-mode))
-        (should buffer-read-only)
-        (should (string-match-p "mermaid-ascii failed to render" (buffer-string)))
-        (should (string-match-p "classDiagram" (buffer-string)))))))
+(ert-deftest md-tui-preview-test-mode-is-not-a-command ()
+  "AC-0010-0080: `md-tui-preview-mode' is not reachable by `M-x'.  Entering it
+directly would capture and blank out the state of a buffer that was never
+Markdown, bypassing the toggle's own check."
+  (should-not (commandp 'md-tui-preview-mode)))
 
 ;;; Keybinding Tests
 
 (ert-deftest md-tui-preview-test-command-map-binding ()
-  "`C-c C-c g' in markdown-mode resolves to the toggle command."
+  "AC-0010-0060: `C-c C-c g' in markdown-mode resolves to the toggle command."
   (should (eq (lookup-key markdown-mode-command-map (kbd "g")) #'md-tui-preview-toggle)))
 
 (ert-deftest md-tui-preview-test-preview-map-binding ()
-  "`C-c C-c' inside the preview resolves to the toggle command."
+  "AC-0010-0060: `C-c C-c' inside the preview resolves to the toggle command."
   (should (eq (lookup-key md-tui-preview-mode-map (kbd "C-c C-c")) #'md-tui-preview-toggle)))
 
 (ert-deftest md-tui-preview-test-preview-map-q-binding ()
-  "`q' inside the preview resolves to the toggle command."
+  "AC-0010-0060: `q' inside the preview resolves to the toggle command."
   (should (eq (lookup-key md-tui-preview-mode-map (kbd "q")) #'md-tui-preview-toggle)))
 
 (ert-deftest md-tui-preview-test-preview-map-ret-binding ()
-  "RET inside the preview resolves to the link-follow command."
+  "AC-0050-0010: RET inside the preview resolves to the link-follow command."
   (should (eq (lookup-key md-tui-preview-mode-map (kbd "RET"))
               #'md-tui-preview-follow-link-at-point)))
 

@@ -1,4 +1,7 @@
 ;;; run-tests.el --- Batch test runner for md-tui-preview -*- lexical-binding: t; -*-
+;; SPDX-License-Identifier: GPL-3.0-or-later
+;;
+;; Author:  Yuehong Wang <wangyuehong@gmail.com>
 
 ;;; Commentary:
 ;; Provides a minimal `markdown-mode' stub so the test suite is

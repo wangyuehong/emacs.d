@@ -8,7 +8,6 @@ MAKEFLAGS += --no-print-directory
 EMACS ?= emacs
 EMACS_BATCH := $(EMACS) --batch --eval '(setq load-prefer-newer t)'
 ELISP_FILES := md-tui-preview-core.el md-tui-preview.el
-ELC_FILES := $(ELISP_FILES:.el=.elc)
 
 # 自带 glow 风格文件由 glamour 上游 "dark" 风格叠加布局覆盖生成。
 # GLAMOUR_REF pin 住上游版本（对应 glow 2.1.2 所依赖的 glamour），
@@ -27,7 +26,7 @@ help: ## 列出所有可用目标
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "%-30s %s\n", $$1, $$2}'
 
 .PHONY: all
-all: compile test checkdoc ## 跑完整检查
+all: compile test checkdoc trace ## 跑完整检查
 
 .PHONY: test
 test: ## 跑测试
@@ -43,6 +42,10 @@ checkdoc: ## 检查文档字符串，有告警则失败
 	  $(EMACS_BATCH) --eval "(let ((ok t)) (advice-add 'display-warning :before (lambda (&rest _) (setq ok nil))) (checkdoc-file \"$$f\") (kill-emacs (if ok 0 1)))" || exit 1; \
 	done
 
+.PHONY: trace
+trace: ## 逐条列出 SPEC 的 AC 与覆盖它的测试（AC 编号写错则失败）
+	@$(EMACS_BATCH) -l trace-ac.el
+
 .PHONY: style
 style: ## 从 pin 住的 glamour 上游风格重新生成自带风格文件
 	@# 先写临时文件再 mv：curl/jq 失败时不截断已提交的运行时 $(STYLE_JSON)
@@ -56,6 +59,8 @@ style-check: ## 校验自带风格与「上游 + 覆盖」一致（防 drift；�
 
 .PHONY: clean
 clean: ## 清理字节编译产物
-	@for f in $(ELC_FILES); do \
+	@# glob 在 recipe 的 shell 里展开，而不是 make 解析期：$(wildcard) 会漏掉
+	@# 同一次调用内新产生的 .elc（`make compile clean` 就什么都清不掉）。
+	@for f in *.elc; do \
 	  [ ! -e "$$f" ] || trash "$$f"; \
 	done

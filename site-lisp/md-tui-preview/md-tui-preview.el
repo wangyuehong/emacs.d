@@ -24,7 +24,7 @@
 (declare-function markdown-mode "markdown-mode")
 (defvar markdown-mode-command-map)
 
-(defvar-local md-tui-preview--source nil
+(defvar-local md-tui-preview--source-text nil
   "Markdown source text captured before switching into `md-tui-preview-mode'.")
 
 (defvar-local md-tui-preview--source-modified-p nil
@@ -68,8 +68,14 @@ returns.")
 Call `md-tui-preview-toggle' to return to editing.  Rendering itself
 happens in `md-tui-preview--finish-setup', once other mode-hook
 functions (e.g. `display-line-numbers-mode') have run; see its
-docstring for why."
-  (setq md-tui-preview--source (buffer-string)
+docstring for why.
+
+Not a command: reaching this mode any way other than
+`md-tui-preview-toggle' would capture and blank out the state of a buffer
+that was never Markdown to begin with."
+  :interactive nil
+  (setq md-tui-preview--source-text (buffer-substring-no-properties
+                                     (point-min) (point-max))
         md-tui-preview--source-modified-p (buffer-modified-p)
         md-tui-preview--source-point (point)
         md-tui-preview--source-file-name buffer-file-name
@@ -87,61 +93,55 @@ other hook functions at the default depth -- notably
 `display-line-numbers-mode', added by this config's
 `init-highlight.el' -- have already reserved their gutter, so
 `md-tui-preview--effective-width' measures the window correctly."
-  (let* ((source md-tui-preview--source)
-         ;; Fenced ```mermaid blocks (if any) are replaced by their
-         ;; mermaid-ascii rendering before glow ever sees the text (see
-         ;; SPEC.md US-0080).  `render-source', not `source', is what
-         ;; glow actually renders below, so it is also what the link
-         ;; and code-block locators below must search -- they work by
-         ;; finding literal source substrings in the rendered output,
-         ;; which no longer contains the original Mermaid diagram text.
-         ;; `md-tui-preview--source' itself (restored byte-for-byte on
-         ;; toggle-back) is untouched by this.
-         (render-source (md-tui-preview--substitute-mermaid-blocks source))
-         (was-modified md-tui-preview--source-modified-p)
-         (source-file-name md-tui-preview--source-file-name)
-         ;; Measure the width while the buffer still holds the Markdown
-         ;; source, before `erase-buffer' below.  `display-line-numbers-mode's
-         ;; gutter then reserves room for the document's own line count.
-         ;; Measuring after the erase would size the gutter for an empty
-         ;; (1-line) buffer and under-reserve it; since glow fills every
-         ;; line to `--width', those full-width lines would overflow the
-         ;; real (wider-gutter) text area and soft-wrap once the rendered
-         ;; content is inserted.
-         (width (md-tui-preview--effective-width))
-         (inhibit-read-only t))
+  (pcase-let* ((`(,render-source . ,blocks)
+                (md-tui-preview--mask-code-blocks md-tui-preview--source-text))
+               (was-modified md-tui-preview--source-modified-p)
+               (source-file-name md-tui-preview--source-file-name)
+               ;; Measure while the buffer still holds the Markdown source:
+               ;; the line-number gutter then reserves room for the
+               ;; document's own line count, not for an emptied buffer.
+               (width (md-tui-preview--effective-width))
+               ;; Render before erasing, so a failing glow leaves the source
+               ;; on screen instead of an empty buffer.
+               (rendered (md-tui-preview--render-string render-source width))
+               (inhibit-read-only t))
     (erase-buffer)
     (md-tui-preview--with-theme-ansi-colors
-     (lambda ()
-       (insert (md-tui-preview--render-string render-source width))
-       (ansi-color-apply-on-region (point-min) (point-max))
-       (md-tui-preview--attach-link-properties
-        (md-tui-preview--parse-links render-source) source-file-name)
-       (md-tui-preview--attach-code-block-backgrounds
-        (md-tui-preview--parse-code-blocks render-source))))
+     (lambda () (insert rendered)
+       (md-tui-preview--colorize-ansi (point-min) (point-max))))
+    (md-tui-preview--trim-leading-blank-line)
+    (md-tui-preview--attach-link-properties
+     (md-tui-preview--parse-links render-source) source-file-name)
+    (md-tui-preview--restore-code-blocks blocks)
     (set-buffer-modified-p was-modified))
   (goto-char (point-min)))
+
+(defun md-tui-preview--trim-leading-blank-line ()
+  "Delete the rendered content's leading blank line, if glow emitted one.
+A document opening with a list or a block quote comes back with a blank
+first line: glamour puts it there itself, and unlike the document-level
+prefixes the bundled style zeroes, no style field reaches it (AC-0060-0020)."
+  (goto-char (point-min))
+  (when (and (looking-at-p "^[ \t]*$") (< (line-end-position) (point-max)))
+    (delete-region (point) (line-beginning-position 2))))
 
 (add-hook 'md-tui-preview-mode-hook #'md-tui-preview--finish-setup 90)
 
 ;;; Link Navigation
 
-(defun md-tui-preview--resolve-link-value (link source-file-name)
-  "Return the (KIND . VALUE) pair to store for LINK.
-LINK is a plist as returned by `md-tui-preview--parse-links'.  A `file'
-target has any \"file://\" prefix stripped and, when relative, is
-expanded against SOURCE-FILE-NAME's directory."
-  (let ((target (plist-get link :target)))
-    (pcase (plist-get link :kind)
-      ('url (cons 'url target))
-      ('file
-       (let ((path (if (string-prefix-p "file://" target)
-                       (substring target (length "file://"))
-                     target)))
-         (cons 'file
-               (expand-file-name
-                path (and source-file-name (file-name-directory source-file-name))))))
-      (kind (error "Unknown link kind: %s" kind)))))
+(defun md-tui-preview--link-destination (target source-file-name)
+  "Return what to open for link TARGET, resolved for navigation.
+A URL is returned unchanged.  A local path has any \"file://\" prefix
+stripped and, when relative, is expanded against SOURCE-FILE-NAME's
+directory -- the document's own location, which is what a relative
+Markdown link is relative to."
+  (if (eq (md-tui-preview--link-kind target) 'url)
+      target
+    (let ((path (if (string-prefix-p "file://" target)
+                    (substring target (length "file://"))
+                  target)))
+      (expand-file-name
+       path (and source-file-name (file-name-directory source-file-name))))))
 
 (defun md-tui-preview--attach-link-properties (links source-file-name)
   "Attach `md-tui-preview-link-target' properties in the current buffer.
@@ -155,10 +155,8 @@ When a link's label or target text cannot be found (e.g. glow wrapped
 it across lines in a way the search does not tolerate), that link is
 silently left unclickable; this does not affect any other link."
   (goto-char (point-min))
-  (dolist (link links)
-    (let* ((label (plist-get link :label))
-           (target (plist-get link :target))
-           (value (md-tui-preview--resolve-link-value link source-file-name))
+  (pcase-dolist (`(,label . ,target) links)
+    (let* ((value (md-tui-preview--link-destination target source-file-name))
            (label-found
             (if (not label)
                 t
@@ -178,59 +176,47 @@ Signals `user-error' when point is not on a link recognized by
 `md-tui-preview--parse-links', or when a local file target does not
 exist."
   (interactive)
-  (let ((target (get-text-property (point) 'md-tui-preview-link-target)))
-    (unless target
+  (let ((destination (get-text-property (point) 'md-tui-preview-link-target)))
+    (unless destination
       (user-error "Not on a link"))
-    (pcase (car target)
-      ('url (browse-url (cdr target)))
-      ('file
-       (unless (file-exists-p (cdr target))
-         (user-error "Link target does not exist: %s" (cdr target)))
-       (find-file (cdr target))))))
+    (if (eq (md-tui-preview--link-kind destination) 'url)
+        (browse-url destination)
+      (unless (file-exists-p destination)
+        (user-error "Link target does not exist: %s" destination))
+      (find-file destination))))
 
-;;; Code Block Background
+;;; Code Blocks
 
-(defun md-tui-preview--attach-code-block-backgrounds (blocks)
-  "Overlay a distinguishing background on each block in BLOCKS.
-BLOCKS is an ordered list as returned by `md-tui-preview--parse-code-blocks'.
-Each block's rendered region is located by matching its content lines
-one after another, searching forward from where the previous match
-ended (monotonic, like the link locator).  Advancing line by line is
-what keeps duplicate content lines apart: a line repeated within the
-block matches its own rendered occurrence rather than the first one, so
-the span reaches the block's real end instead of stopping at an earlier
-copy.  When every content line is found the overlay covers from the
-first through the last; if any line cannot be located the block is left
-unshaded rather than partially shaded (AC-0070-0010 promises the full
-block).  Overlays only set a `:background', so glow's syntax-highlight
-foregrounds show through unchanged; glow pads every rendered line to the
-full width passed to it (`md-tui-preview--effective-width'), so the
-covered space cells already carry the background out to the window's
-right edge without needing an `:extend' face.  Does nothing when
-`md-tui-preview--code-block-background' resolves to nil."
-  (when-let* ((bg (md-tui-preview--code-block-background)))
-    ;; Clear any prior code-block overlays first, so the function is
-    ;; idempotent -- safe to call on a buffer that already carries them,
-    ;; independent of the toggle path's own cleanup.
-    (remove-overlays (point-min) (point-max) 'md-tui-preview-code-block t)
-    (goto-char (point-min))
-    (dolist (block blocks)
-      (let ((start nil) (end nil) (all-found t))
-        (dolist (line (plist-get block :lines))
-          (if (re-search-forward (md-tui-preview--search-regexp line) nil t)
-              (progn
-                (unless start
-                  (setq start (save-excursion (goto-char (match-beginning 0))
-                                              (line-beginning-position))))
-                ;; End at the next line's start so the overlay covers the
-                ;; matched line in full; updated per match to track the
-                ;; furthest-reached line.
-                (setq end (line-beginning-position 2)))
-            (setq all-found nil)))
-        (when (and all-found start end)
-          (let ((ov (make-overlay start end)))
-            (overlay-put ov 'face (list :background bg))
-            (overlay-put ov 'md-tui-preview-code-block t)))))))
+(defun md-tui-preview--insert-code-block (text)
+  "Replace the placeholder line at point's line with a code block's TEXT.
+TEXT is the block's own source, both fence lines included, as
+`md-tui-preview--mask-code-blocks' collected it.  Point must be somewhere
+on the rendered placeholder's line, which is deleted whole -- glow pads it
+out to the render width, and none of that padding belongs to the block.
+The inserted text is then given markdown-mode's own faces: identical text
+fontified by markdown-mode means the spans transfer by offset, with no
+searching or alignment in between."
+  (delete-region (line-beginning-position) (line-beginning-position 2))
+  (let ((begin (point)))
+    (insert text)
+    (unless (bolp) (insert "\n"))
+    (pcase-dolist (`(,span-begin ,span-end ,face)
+                   (md-tui-preview--fontify-markdown-faces text))
+      (put-text-property (+ begin span-begin) (+ begin span-end) 'face face))))
+
+(defun md-tui-preview--restore-code-blocks (blocks)
+  "Put every code block in BLOCKS back where its placeholder was rendered.
+BLOCKS is the source-order list `md-tui-preview--mask-code-blocks' returns,
+numbered the same way it numbered the placeholders.  Each is located by
+searching for its own token, so a placeholder glow moved or indented is
+still found; one that cannot be found leaves that block out of the preview
+rather than affecting any other."
+  (let ((index 0))
+    (dolist (text blocks)
+      (goto-char (point-min))
+      (when (search-forward (md-tui-preview--placeholder index) nil t)
+        (md-tui-preview--insert-code-block text))
+      (setq index (1+ index)))))
 
 ;;;###autoload
 (defun md-tui-preview-toggle ()
@@ -240,14 +226,13 @@ another buffer or window."
   (interactive)
   (cond
    ((derived-mode-p 'md-tui-preview-mode)
-    (let ((source md-tui-preview--source)
+    (let ((source md-tui-preview--source-text)
           (was-modified md-tui-preview--source-modified-p)
           (pos md-tui-preview--source-point)
           (file-name md-tui-preview--source-file-name)
           (auto-save-name md-tui-preview--source-auto-save-file-name)
           (saved-mode md-tui-preview--source-major-mode)
           (inhibit-read-only t))
-      (remove-overlays (point-min) (point-max) 'md-tui-preview-code-block t)
       (erase-buffer)
       (insert source)
       (funcall saved-mode)
