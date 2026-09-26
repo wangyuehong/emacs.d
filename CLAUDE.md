@@ -100,6 +100,11 @@ cd site-lisp/tmpl && make all
 - `user-error`: 环境、配置、用户操作导致的预期错误，不触发 debugger，适用于 hook 和交互命令中的 fail-fast
 - `message`: 仅用于非阻断的信息通知，不中断执行流程
 
+## 提交
+
+- 不开 PR，直接在当前的 master 上提交
+- 原因：个人单人维护的仓库，没有他人审阅，PR 不带来价值；历史一直是在 master 上直接提交
+
 ## Elisp 编辑须知
 
 - 新增 `init-*.el` 模块时，必须在 `init.el` 中按正确位置添加 `require`
