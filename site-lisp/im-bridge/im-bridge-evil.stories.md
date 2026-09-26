@@ -2,7 +2,10 @@
 
 ## US-0010: Evil 模式输入法自动切换
 
-作为 Evil 用户，我希望在退出 insert state 时自动切换到英文输入法，进入 insert state 时自动恢复之前的输入法，以便在 normal state 下流畅使用 Vim 快捷键。
+作为 Evil 用户，我希望切换 insert state 时自动管理输入法，以便在 normal state 下流畅使用 Vim 快捷键：
+
+- 退出 insert state 时自动切换到英文输入法
+- 进入 insert state 时自动恢复之前的输入法
 
 ### 验收标准
 
@@ -50,7 +53,7 @@
 
 ## US-0020: 输入法状态 buffer 隔离
 
-作为用户，我希望每个 buffer 独立保存输入法状态（包括系统输入法和 Emacs 输入法），以便在不同 buffer 间切换时各自保持输入法上下文。
+作为用户，我希望每个 buffer 独立保存系统与 Emacs 两种输入法状态，以便切换 buffer 时各自保持输入法上下文。
 
 ### 验收标准
 

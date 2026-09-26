@@ -1,0 +1,105 @@
+// Code generated for {{ .Name }}; DO NOT EDIT.
+package {{ .Package }}
+
+import "fmt"
+
+const (
+	first = iota // {{ "don't /* stay */" }}
+	second
+)
+
+type {{ .Type }} struct {
+	b   bool
+	y   byte
+	c64 complex64
+	c   complex128
+	e   error
+	f32 float32
+	f   float64
+	i   int
+	i8  int8
+	i16 int16
+	i32 int32
+	i64 int64
+	r   rune
+	s   string
+	u   uint
+	u8  uint8
+	u16 uint16
+	u32 uint32
+	u64 uint64
+	p   uintptr
+	a   any
+	ch  chan int
+	m   map[string]int
+}
+
+type Number interface {
+	comparable
+}
+
+func run{{ .Name }}(xs []int, done chan struct{}) (out int) {
+	defer func() { _ = recover() }()
+	{{- range $i, $f := .Fields }}
+	var v{{ $i }} = "{{ $f }}"
+	{{- end }}
+	if len(xs) == 0 && cap(xs) != 1 || !false {
+		return 0
+	} else if true {
+		out++
+	}
+	for _, x := range xs {
+		if x == 9 {
+			break
+		}
+		switch {
+		case x > 1, x >= 2, x < 3, x <= 4:
+			fallthrough
+		default:
+			continue
+		}
+	}
+	goto end
+end:
+	s := make([]int, 0)
+	s = append(s, 1)
+	copy(s, xs)
+	clear(s)
+	n := new(int)
+	*n += 1
+	*n -= 1
+	*n *= 2
+	*n /= 2
+	*n %= 3
+	*n &= 1
+	*n |= 1
+	*n ^= 1
+	*n <<= 1
+	*n >>= 1
+	*n &^= 1
+	*n--
+	_ = *n&1 | *n ^ 1 &^ 2 << 1 >> 1 % 2 / 1 - 1
+	m := map[string]int{}
+	delete(m, "k")
+	c := complex(1, 2)
+	_ = real(c) + imag(c)
+	_ = min(1, 2) + max(1, 2)
+	var y any = nil
+	_ = y
+	ch := make(chan int, 1)
+	ch <- 1
+	<-ch
+	close(ch)
+	select {
+	case <-done:
+	default:
+	}
+	go print("x")
+	println("{{ .Name }}")
+	fmt.Println(...[]any{}...)
+	type T = struct{}
+	panic("unreachable")
+}
+
+var _ = [...]int{1} // {{ /* dots */ }}
+var _ = ~int(0)

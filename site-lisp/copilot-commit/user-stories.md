@@ -2,7 +2,7 @@
 
 ## US-0010: 生成 commit message
 
-作为开发者，我希望在 commit buffer 中通过命令生成符合 Conventional Commits 规范的 commit message，以便快速完成 git commit 流程。
+作为开发者，我希望在 commit buffer 中用命令生成符合 Conventional Commits 的 commit message，以便快速完成 git commit。
 
 ### 验收标准
 
@@ -16,7 +16,8 @@
 
 - Given: 生成命令已触发
 - When: 服务端返回流式 chunk
-- Then: commit buffer 中用户输入区域 (第一个 `#` 注释行之前) 被替换为当前累积的生成内容，`#` 注释行、scissor 线、verbose diff 等完全不受影响
+- Then: commit buffer 中用户输入区域 (第一个 `#` 注释行之前) 被替换为当前累积的生成内容
+- And: `#` 注释行、scissor 线、verbose diff 等完全不受影响
 
 #### AC-0010-0030: 覆盖已有内容
 
@@ -170,7 +171,7 @@
 
 ## US-0070: 依赖兼容性检查
 
-作为升级 copilot 包的用户，我希望 `copilot-commit` 能优雅地处理缺失或改名的内部 API，以便 Emacs 启动不中断且能获得清晰的诊断信息。
+作为升级 copilot 包的用户，我希望 `copilot-commit` 优雅处理缺失或改名的内部 API，以便 Emacs 启动不中断并得到清晰诊断。
 
 ### 验收标准
 
@@ -208,7 +209,9 @@
 
 - Given: 分块处理正在进行
 - When: 命令触发时及每个 chunk 完成时
-- Then: commit buffer 用户输入区域初始显示 `Analyzing changes (0/M)...`,每个 chunk 完成后更新为 `Analyzing changes (N/M)...`,所有 chunk 完成后显示 `Generating commit message...` 并流式替换为最终内容
+- Then: commit buffer 用户输入区域初始显示 `Analyzing changes (0/M)...`
+- And: 每个 chunk 完成后更新为 `Analyzing changes (N/M)...`
+- And: 所有 chunk 完成后显示 `Generating commit message...` 并流式替换为最终内容
 
 #### AC-0080-0030: 小 diff 不受影响
 
@@ -274,7 +277,7 @@
 
 - Given: 缓存存在对应模型的 token limit
 - When: 获取 chunk threshold
-- Then: threshold = max(10000, (floor(max_tokens * 0.9) - 3000) * 4)
+- Then: threshold = `max(10000, (floor(max_tokens * 0.9) - 3000) * 4)`
 
 #### AC-0090-0020: 无缓存时使用默认值
 
@@ -286,7 +289,8 @@
 
 - Given: 首次使用，无缓存
 - When: 触发 probe
-- Then: 发送最小 payload 的 `conversation/create`,从 progress report 的 `contextSize.totalTokenLimit` 提取并缓存，请求完成后 destroy conversation
+- Then: 发送最小 payload 的 `conversation/create`，从 progress report 的 `contextSize.totalTokenLimit` 提取并缓存
+- And: 请求完成后 destroy conversation
 
 #### AC-0090-0040: progress report 按需更新缓存
 

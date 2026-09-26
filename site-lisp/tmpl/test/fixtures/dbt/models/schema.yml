@@ -1,0 +1,8 @@
+version: 2
+models:
+  - name: orders
+    description: "{{ doc('orders') }}"
+    columns:
+      - name: amount
+        data_tests:
+          - is_positive

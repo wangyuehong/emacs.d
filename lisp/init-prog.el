@@ -35,8 +35,39 @@
                    (js-json-mode . json-ts-mode)
                    (python-mode . python-ts-mode)
                    (go-mode . go-ts-mode)
-                   (go-dot-mod-mode . go-mod-ts-mode)))
+                   (go-dot-mod-mode . go-mod-ts-mode)
+                   (mhtml-mode . html-ts-mode)))
     (add-to-list 'major-mode-remap-alist entry)))
+
+(use-package html-ts-mode
+  :ensure nil
+  :preface
+  (defface my-html-bracket-face '((t :inherit font-lock-comment-face :slant normal))
+    "Face for the angle brackets of HTML tags.
+The name has no `my/' prefix because tree-sitter capture names cannot
+contain a slash."
+    :group 'my)
+
+  (defun my/html-ts-tag-colors ()
+    "Color HTML tags the way web-mode does.
+Brackets take the comment color, tag names the builtin face and
+attribute names the function-name face, matching how themes such as
+srcery style web-mode's tag faces."
+    (treesit-add-font-lock-rules
+      (treesit-font-lock-rules
+        :language 'html
+        :override t
+        :feature 'definition
+        '(["<" ">" "</" "/>" "<!"] @my-html-bracket-face)
+        :language 'html
+        :override t
+        :feature 'definition
+        '((tag_name) @font-lock-builtin-face)
+        :language 'html
+        :override t
+        :feature 'property
+        '((attribute_name) @font-lock-function-name-face))))
+  :hook (html-ts-mode . my/html-ts-tag-colors))
 
 (use-package breadcrumb
   :hook ((prog-mode yaml-ts-mode) . breadcrumb-mode))
@@ -70,6 +101,12 @@
   (dumb-jump-aggressive t)
   (dumb-jump-force-searcher 'rg)
   (dumb-jump-selector 'completing-read))
+
+(use-package tmpl
+  :ensure nil
+  :demand t
+  :config
+  (tmpl-global-mode 1))
 
 (use-package quickrun
   :commands quickrun

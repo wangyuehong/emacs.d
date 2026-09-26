@@ -1,0 +1,6 @@
+{{ template "header" . }}
+{{ $who := .User }}
+{{ $who = .Other }}
+Hello {{ $who }},
+{{ template "footer" . }}
+{{ template "missing" . }}

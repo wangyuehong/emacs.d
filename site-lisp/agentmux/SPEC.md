@@ -13,9 +13,13 @@
 ## 全局约束
 
 - 所有 tmux 交互通过 `emamux:tmux-run-command`；失败以 `user-error` 上抛
-- 「提交 / 换行」语义映射建立在 readline 共有约定上：Enter 提交；多行内容通过 bracketed paste 协议承载，paste 内的 `\n` 由 agent 解释为 in-input 换行而非提交
+- 「提交 / 换行」语义映射建立在 readline 共有约定上：Enter 提交；多行内容通过 bracketed paste 协议承载
+  - paste 内的 `\n` 由 agent 解释为 in-input 换行而非提交
 - 不依赖定时等待或 TUI 内部时序
-- 不针对个别 agent 做 hack 或 workaround：发送链路、识别机制、按键契约都建立在通用终端协议（bracketed paste、Enter 字节）和 POSIX 共有约定（kernel `p_comm`、`ps`）之上，代码路径不出现 `if-agent-X` 分支。`agentmux-agent-cli-commands` 等纯配置可枚举具体 agent 名，但属于数据，不是逻辑分支
+- 不针对个别 agent 做 hack 或 workaround，代码路径不出现 `if-agent-X` 分支
+  - 发送链路、识别机制、按键契约都建立在通用终端协议与 POSIX 共有约定之上
+  - 通用终端协议指 bracketed paste、Enter 字节；POSIX 共有约定指 kernel `p_comm`、`ps`
+  - `agentmux-agent-cli-commands` 等纯配置可枚举具体 agent 名，但属于数据，不是逻辑分支
 
 ## US-0010：发送纯文本到 Agent
 
@@ -49,7 +53,11 @@
 
 - Given：任意文本长度或系统负载
 - When：调用发送
-- Then：实现不含 sleep 或等待；正确性不受 TUI render 时序或负载影响。此处「时序依赖」指 `sleep` / `sit-for` / `accept-process-output` 等显式等待，不包括 AC-0010-0100 要求的两次独立 tmux 调用之间天然存在的进程边界（OS / runtime 层面的事实，无须 sleep）
+- Then：实现不含 sleep 或等待；正确性不受 TUI render 时序或负载影响
+
+> 说明：「时序依赖」指 `sleep` / `sit-for` / `accept-process-output` 等显式等待。
+>
+> AC-0010-0100 要求的两次独立 tmux 调用之间天然存在的进程边界是 OS / runtime 层面的事实，无须 sleep，不在此列。
 
 ### AC-0010-0060：不污染共享粘贴状态
 
@@ -73,13 +81,15 @@
 
 - Given：文本包含 `\r\n`（CRLF）或独立 `\r`（裸 CR，例如来自系统剪贴板、特殊 coding 的 buffer 或文件选中内容）
 - When：调用发送
-- Then：`\r\n` 与 `\r` 在发送前统一归一为 `\n`，再映射为输入框换行；不会出现任何 `\r` 字节被送到 Agent 导致提前提交的情况
+- Then：`\r\n` 与 `\r` 在发送前统一归一为 `\n`，再映射为输入框换行
+- And：不会出现任何 `\r` 字节被送到 Agent 导致提前提交的情况
 
 ### AC-0010-0100：发送恰好分为「写入」与「提交」两次 tmux 调用
 
 - Given：非空文本 + 非暂存
 - When：调用发送
-- Then：触发恰好 2 次 tmux 命令调用——1 次写入内容（paste），1 次提交（Enter）；行数不影响调用次数；两次调用不得 chain 在同一次 tmux 进程内（详见历史决策「为什么写入与提交必须分两次调用」）
+- Then：触发恰好 2 次 tmux 命令调用——1 次写入内容（paste），1 次提交（Enter）；行数不影响调用次数
+- And：两次调用不得 chain 在同一次 tmux 进程内（详见历史决策「为什么写入与提交必须分两次调用」）
 - 暂存模式：仅 1 次写入调用，无提交调用
 - 空输入：按 AC-0010-0070 / 0080 缩减为 0 或 1 次
 
@@ -213,7 +223,10 @@
 
 ## US-0070：目标选择的智能默认
 
-作为在 tmux 中运行 Emacs 的用户，我希望首次或手动选择目标时系统给出与我当前上下文匹配的默认值，避免每次都手翻 session/window 列表，也避免误选到 Emacs 自己所在的 pane。
+作为在 tmux 中运行 Emacs 的用户，我希望首次或手动选择目标时，系统给出与我当前上下文匹配的默认值：
+
+- 避免每次都手翻 session/window 列表
+- 避免误选到 Emacs 自己所在的 pane
 
 ### AC-0070-0010：默认 window 指向 Emacs 所在 window
 
@@ -237,7 +250,9 @@
 
 - Given：Emacs 未在 tmux 中运行（`TMUX_PANE` 环境变量缺失或为空）
 - When：调用目标设置
-- Then：跳过「Emacs 所在 window / pane」相关的智能排序与排除，但其余排序规则继续生效——tmux-active 优先（active window / active pane 仍排在前列），且 AC-0070-0030 的 Agent CLI 优先排序仍对所有候选 pane 生效（与 `TMUX_PANE` 无依赖）
+- Then：跳过「Emacs 所在 window / pane」相关的智能排序与排除
+- And：其余排序规则继续生效——tmux-active 优先（active window / active pane 仍排在前列）
+- And：AC-0070-0030 的 Agent CLI 优先排序仍对所有候选 pane 生效（与 `TMUX_PANE` 无依赖）
 
 ### AC-0070-0050：显示顺序的稳定性
 
@@ -277,7 +292,9 @@
 
 - Given：调用入口菜单
 - When：菜单打开重置选项默认值
-- Then：内容模式默认重置为 `auto`（含内容且自动缩略）；持久 defcustom `agentmux-context-include-content` 默认仍为 `nil`（非菜单的程序级调用默认不含内容），二者分层互不依赖
+- Then：内容模式默认重置为 `auto`（含内容且自动缩略）
+- And：持久 defcustom `agentmux-context-include-content` 默认仍为 `nil`（非菜单的程序级调用默认不含内容）
+- And：二者分层，互不依赖
 
 ### AC-0080-0030：路径风格候选依赖项目结构
 
@@ -298,7 +315,8 @@
 
 - Status: Accepted
 - Context: 需要从 tmux pane 识别其内运行的 agent CLI，作为目标选择的智能默认依据。
-- Decision: 以 tmux `pane_pid` 为根，调用 `ps -axo pid=,ppid=,comm=` 取全量进程表，BFS 后裔，匹配 `comm` basename 与 `agentmux-agent-cli-commands`。
+- Decision: 以 tmux `pane_pid` 为根 BFS 后裔进程，以 `comm` basename 匹配 `agentmux-agent-cli-commands`。
+  - 全量进程表取自 `ps -axo pid=,ppid=,comm=`
 - Consequences:
   - 默认识别 `claude` 与 `codex` 等已知 Agent CLI；新增 Agent CLI 只需扩展 `agentmux-agent-cli-commands`
   - 读 kernel `p_comm`（`exec` 后不可变），不受 `process.title` 改写影响
@@ -306,13 +324,15 @@
   - macOS 与 Linux `ps` 调用签名一致
   - 每次目标选择多一次 `ps` 调用（约几十毫秒）；对系统 `ps` 可执行文件存在隐性依赖
 - Rejected alternatives:
-  - tmux `pane_current_command` / Emacs `process-attributes` 的 `comm`：在 macOS 读 `pbi_name`，受 `setproctitle` 污染（Claude Code 等 Node TUI 会把 `process.title` 改写为版本号）
+  - tmux `pane_current_command` / Emacs `process-attributes` 的 `comm`：在 macOS 读 `pbi_name`，受 `setproctitle` 污染
+    - 例：Claude Code 等 Node TUI 会把 `process.title` 改写为版本号
 
 ### ADR-002: 候选顺序对 minibuffer 完成框架透明
 
 - Status: Accepted
 - Context: vertico / ivy 等完成框架默认按字母 / 历史 / 长度重排候选，会打乱 agentmux 计算的智能排序。
-- Decision: 所有 `read-parameter-*` 命令通过自定义 completion table 的 `metadata` 把 `display-sort-function` 与 `cycle-sort-function` 设为 `identity`，强制保留传入顺序。
+- Decision: 所有 `read-parameter-*` 命令用自定义 completion table 强制保留传入顺序。
+  - 手段：table 的 `metadata` 把 `display-sort-function` 与 `cycle-sort-function` 设为 `identity`
 
 ### ADR-003: Emacs 自身 pane 从候选列表移除
 
@@ -326,24 +346,38 @@
 ### ADR-004: 失败语义 fail-fast，禁止 fallback
 
 - Status: Accepted
-- Decision: 遵守 `site-lisp/CLAUDE.md`「失败语义」约束（fail-fast，禁止 `ignore-errors` / 空值兜底，`condition-case` 仅用于透传或带业务上下文的 user-error 包装）
-- Project-specific exception: 唯一允许的「回退」是 AC-0070-0040「Emacs 不在 tmux」，由 `TMUX_PANE` 是否为 nil 显式条件区分（不属于异常捕获）
+- Decision: 遵守 `site-lisp/CLAUDE.md`「失败语义」约束
+  - fail-fast，禁止 `ignore-errors` / 空值兜底
+  - `condition-case` 仅用于透传或带业务上下文的 user-error 包装
+- Project-specific exception: 唯一允许的「回退」是 AC-0070-0040「Emacs 不在 tmux」
+  - 由 `TMUX_PANE` 是否为 nil 显式条件区分，不属于异常捕获
 
 ### ADR-005: 发送链路用命名 paste-buffer，写入与提交分两次 tmux 调用
 
 - Status: Accepted
-- Context: 需要把多行内容作为单条消息送进 agent 输入框并提交。约束：不得污染用户默认 paste stack；不得违反 AC-0010-0100「至多 2 次 tmux 调用」；不得依赖 sleep（AC-0010-0050）；不得让 React Ink 的 `usePaste`/`useInput` race 吞掉提交。
+- Context: 需要把多行内容作为单条消息送进 agent 输入框并提交。约束：
+  - 不得污染用户默认 paste stack
+  - 不得违反 AC-0010-0100「至多 2 次 tmux 调用」
+  - 不得依赖 sleep（AC-0010-0050）
+  - 不得让 React Ink 的 `usePaste`/`useInput` race 吞掉提交
 - Decision:
-  - 写入：`set-buffer -b agentmux-private DATA ; paste-buffer -p -d -b agentmux-private -t T` 在同一次 `process-file` 内 chain；命名 buffer 用 `-d` 即时删除
+  - 写入：在同一次 `process-file` 内 chain 执行下面的命令，命名 buffer 用 `-d` 即时删除
+
+    ```sh
+    set-buffer -b agentmux-private DATA ; paste-buffer -p -d -b agentmux-private -t T
+    ```
+
   - 提交：单独一次 `process-file` 跑 `send-keys -t T Enter`
   - 写入与提交不得 chain 在同一次 tmux 调用
 - Consequences:
   - 每次发送恰好 2 次 `process-file`（暂存 1 次，空输入 0 或 1 次），与行数无关
   - bracketed paste（`-p`）让 agent 把整段当 in-input 字节，多行映射为输入框换行而非多消息
   - 命名 buffer + `-d` 不污染默认 paste stack
-  - 两次 `process-file` 之间的 emacs lisp 调度 + 第二次 fork 的进程边界足以让 React 完成 `usePaste` setState commit，`useInput` 拿 Enter 时正确捕获 input；属于 OS / runtime 的天然边界，不是 sleep
+  - 两次 `process-file` 之间的进程边界让 `useInput` 拿 Enter 时正确捕获 input；属于 OS / runtime 的天然边界，不是 sleep
+    - 边界由 emacs lisp 调度与第二次 fork 构成，足以让 React 完成 `usePaste` setState commit
 - Rejected alternatives:
-  - chain 1-call（`set-buffer ; paste-buffer ; send-keys Enter`）：tmux 在同一 client tick 连续写字节流，无间隙让 React commit，`useInput` 提交空字符串，paste 内容残留输入框
+  - chain 1-call（`set-buffer ; paste-buffer ; send-keys Enter`）：`useInput` 提交空字符串，paste 内容残留输入框
+    - 原因：tmux 在同一 client tick 连续写字节流，无间隙让 React commit
   - 每行一次 `send-keys -l LINE` + 行间 `M-Enter`：违反 AC-0010-0100，且 argv 体积随行数线性增长
   - `send-keys -l` body 内联 `\e\r` 字面字节：ESC 字节让 Ink 输入状态机进入 escape sequence 等待，吞掉后续 Enter
   - `paste-buffer` 不带 `-p`：默认把 `\n` 转 `\r`，每行触发提交导致拆分

@@ -7,7 +7,9 @@
 - 源文件：当前 buffer 关联的文件
   - file-visiting buffer：取 `buffer-file-name`
   - dired buffer：取光标所在条目；若光标不在任何条目上（目录头、空行等），取当前 dired 子目录本身
-- Style：路径格式化风格，包括 `absolute`（绝对路径）、`git`（相对 git 根）、`filename`（仅文件名）、`project`（相对 project 根）、`display`（git 优先，无 git 则绝对）
+- Style：路径格式化风格，包括以下取值
+  - `absolute`（绝对路径）、`git`（相对 git 根）、`filename`（仅文件名）
+  - `project`（相对 project 根）、`display`（git 优先，无 git 则绝对）
 - 位置串：形如 `@<path>#L<n>` 或 `@<path>#L<n>-L<m>` 的行号标注片段
 
 ## 全局约束
@@ -15,7 +17,8 @@
 - 路径解析失败以 `user-error` 终止并指明原因；禁止用 `condition-case` 把异常压成 buffer 名等默认值
 - dired-mode 与 file-visiting buffer 走同一条 style 格式化链路，行为差异仅在「源文件如何取到」这一步
 - 源文件路径在格式化前统一经过 `file-truename` 规整
-- 写入剪贴板：优先 `xclip-set-selection`；不可用时回退到 `kill-ring`，消息中以「to kill-ring」后缀标明。此为显式条件分支，不是异常兜底
+- 写入剪贴板：优先 `xclip-set-selection`；不可用时回退到 `kill-ring`，消息中以「to kill-ring」后缀标明
+  - 此为显式条件分支，不是异常兜底
 
 ## US-0010：复制当前 buffer 关联的路径
 
@@ -139,4 +142,8 @@
 - When：请求任何 region / 行位置复制（含/不含内容均适用）
 - Then：操作以 `user-error` 终止，剪贴板与 `kill-ring` 均不被写入
 
-> 说明：region 引用的语义是「某文件的某几行」。dired 列表行号、临时 buffer 内容都不构成可被其他读者打开的「文件 + 行号」坐标，直接复用路径解析会得到语义错误的 `@entry#L<list-line>`，因此显式拒绝。
+> 说明：region 引用的语义是「某文件的某几行」。
+>
+> dired 列表行号、临时 buffer 内容都不构成可被其他读者打开的「文件 + 行号」坐标。
+>
+> 直接复用路径解析会得到语义错误的 `@entry#L<list-line>`，因此显式拒绝。

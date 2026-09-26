@@ -1,0 +1,7 @@
+{% import "shop/macros.html" as ui %}
+{% from "shop/helpers.html" import badge %}
+<p>{{ price(1) }}</p>
+{% call price(2) %}{% endcall %}
+<p>{{ total }} {{ banner }}</p>
+<p>{{ ui.price(3) }} {{ badge("new") }}</p>
+<p>{{ nowhere_defined }}</p>

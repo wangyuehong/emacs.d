@@ -4,37 +4,55 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 概览
 
-面向 Emacs 31+ 的个人配置。使用内置 `use-package` 搭配 MELPA/GNU ELPA/NonGNU ELPA 包源。灵感来自 purcell, redguardtoo 和 Centaur Emacs。
+面向 Emacs 31+ 的个人配置。使用内置 `use-package` 搭配 MELPA/GNU ELPA/NonGNU ELPA 包源。
+
+灵感来自 purcell, redguardtoo 和 Centaur Emacs。
 
 ## 架构
 
 ### 启动流程
 
-`early-init.el` -> `init.el` -> `lisp/init-package.el` -> 其余 `lisp/init-*.el` 按依赖顺序加载 -> `init-local.el`（可选覆盖）-> `custom.el`（仅在文件存在时加载）
+```text
+early-init.el -> init.el -> lisp/init-package.el -> 其余 lisp/init-*.el（按依赖顺序）
+  -> init-local.el（可选覆盖）-> custom.el（仅在文件存在时加载）
+```
 
 ### 模块组织（`lisp/`）
 
-每个 `init-*.el` 是独立模块，通过 `require` 加载。`init.el` 中的加载顺序有依赖关系（例如 `init-general` 依赖 `init-evil`）。
+每个 `init-*.el` 是独立模块，通过 `require` 加载。
+
+`init.el` 中的加载顺序有依赖关系（例如 `init-general` 依赖 `init-evil`）。
 
 模块分组：
 - 核心：`init-package`, `init-custom`, `init-env`, `init-basic`（repeat-echo 内置）, `init-clipboard`
 - 界面：`init-theme`（srcery）, `init-highlight`, `init-ui`（doom-modeline, dashboard, nerd-icons）
-- Evil：`init-evil`（vim 键绑定 + evil-collection）, `init-keybind`（which-key，Emacs 30+ 内置）, `init-general`（SPC leader via general.el + transient 菜单）
-- 补全：`init-search`（avy, ripgrep）, `init-completion`（vertico, consult, embark, company, orderless）, `init-yasnippet`
+- Evil：
+  - `init-evil`（vim 键绑定 + evil-collection）
+  - `init-keybind`（which-key，Emacs 30+ 内置）
+  - `init-general`（SPC leader via general.el + transient 菜单）
+- 补全：
+  - `init-search`（avy, ripgrep）
+  - `init-completion`（vertico, consult, embark, company, orderless）
+  - `init-yasnippet`
 - 窗口/文件/会话：`init-window`, `init-dired`, `init-session`
 - 编辑增强：`init-edit`（expreg, iedit, markdown-mode）
-- 编程：`init-prog`（多语言 mode, flymake, breadcrumb）, `init-lsp`（eglot）, `init-go`, `init-python`
+- 编程：`init-prog`（多语言 mode, flymake, breadcrumb, tmpl）, `init-lsp`（eglot）, `init-go`, `init-python`
 - 集成：`init-git`（magit, diff-hl）, `init-term`, `init-im`, `init-ai`（copilot, copilot-commit, agentmux）
 - 工具：`init-utils`（`my/open-junk-file` 等自定义命令）
 - 覆盖：`init-local`（机器级配置，最后加载，可选）
 
 ### 自定义包（`site-lisp/`）
 
-- `copilot-commit` - 通过 Copilot LSP chat API 生成 conventional commit 消息。支持多语言（en/zh/ja）。快捷键：`C-c i`（插入）, `C-c I`（重新生成）
+- `copilot-commit` - 通过 Copilot LSP chat API 生成 conventional commit 消息。支持多语言（en/zh/ja）
+  - 快捷键：`C-c i`（插入）, `C-c I`（重新生成）
 - `agentmux` - 通过 tmux 向 AI agent CLI（Claude Code 等）发送文件上下文。快捷键：`C-c a`
-- `code-ref` - 以多种路径格式复制代码引用（绝对路径，git 相对路径，文件名，含/不含内容）。为 `init-general` 中的 transient 菜单提供支持
+- `code-ref` - 以多种路径格式复制代码引用（绝对路径，git 相对路径，文件名，含/不含内容）
+  - 为 `init-general` 中的 transient 菜单提供支持
 - `im-bridge` - 输入法切换与 Evil mode 集成
-- `md-tui-preview` - 在终端 Emacs 中把当前 `.md` buffer 切换成 Glow 渲染的只读预览，配色跟随主题。快捷键：`C-c C-c g`（进入）, `C-c C-c`/`q`（预览态内退出）
+- `md-tui-preview` - 在终端 Emacs 中把当前 `.md` buffer 切换成 Glow 渲染的只读预览，配色跟随主题
+  - 快捷键：`C-c C-c g`（进入）, `C-c C-c`/`q`（预览态内退出）
+- `tmpl` - 在宿主 major mode 之上为 Jinja、Django、dbt、Go 模板按语法类别着色，按项目标记文件自动识别引擎
+  - 可用文件局部变量或 `.dir-locals.el` 的 `tmpl-engine` 显式指定；dumb-jump 已加载时可跳到模板内的定义
 - `vbnet-mode` - Visual Basic .NET 编辑 mode（vendor 自第三方，非本仓库原创）
 - `evil-iedit-state` - 为 `iedit` 提供 Evil 风格的 normal/insert state 交互（vendor 自
   syl20bnr/evil-iedit-state，本地维护，已用 `advice-add` 替换原版已废弃的 `defadvice`）
@@ -48,13 +66,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 测试
 
-`copilot-commit`, `code-ref`, `agentmux`, `md-tui-preview` 这几个 site-lisp 包有独立的 `Makefile`，在对应包目录下运行 `make all`（跑测试 + 字节编译 + 文档检查）：
+`copilot-commit`, `code-ref`, `agentmux`, `md-tui-preview`, `tmpl` 这几个 site-lisp 包有独立的 `Makefile`。
+
+在对应包目录下运行 `make all`（跑测试 + 字节编译 + 文档检查）：
 
 ```sh
 cd site-lisp/copilot-commit && make all
 cd site-lisp/code-ref && make all
 cd site-lisp/agentmux && make all
 cd site-lisp/md-tui-preview && make all
+cd site-lisp/tmpl && make all
 ```
 
 无顶层测试命令，各包独立测试。

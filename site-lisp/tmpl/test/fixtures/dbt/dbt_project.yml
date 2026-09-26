@@ -1,0 +1,7 @@
+name: shop
+version: "1.0.0"
+profile: shop
+model-paths: ["models"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+test-paths: ["tests"]

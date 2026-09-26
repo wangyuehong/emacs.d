@@ -1,0 +1,39 @@
+%YAML 1.2
+---
+# YAML 1.2 core schema words, anchors, aliases, tags and markers {{ note }}
+version: 2
+flags:
+  a: true
+  b: True
+  c: TRUE
+  d: false
+  e: False
+  f: FALSE
+  g: null
+  h: Null
+  i: NULL
+  j: ~
+  k: "{{ var('k') }}"
+{% if target.name == 'prod' %}
+  l: yes
+{% endif %}
+base: &base
+  name: "{{ ref('orders') }}"
+copy: *base
+typed: !!str "{# c #}42"
+words: "{{ a and b or not c in d is e }}" # and or not in is if else end select range
+homographs:
+  and: 1
+  or: 2
+  not: 3
+  in: 4
+  is: 5
+  if: 6
+  else: 7
+  end: 8
+  select: 9
+  range: 10
+...
+---
+second: {{ config(bind=false) }}
+...

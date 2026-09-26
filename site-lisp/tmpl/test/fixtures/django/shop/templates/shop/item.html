@@ -1,0 +1,3 @@
+<h1>{{ item.name|title }}</h1>
+{% if item.price > 0 %}<p class="{% if sale %}sale{% endif %}">{{ item.price }}</p>{% endif %}
+<a href="{% url 'shop:item' item.id %}">{{ item.name }}</a>

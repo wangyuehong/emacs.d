@@ -1,0 +1,27 @@
+{{ if .A }}a{{ else if .B }}b{{ else with .C }}c{{ else }}d{{ end }}
+{{ range $i, $v := .Items }}{{ if $v }}{{ break }}{{ end }}{{ continue }}{{ end }}
+{{ with .D }}{{ . }}{{ end }}
+{{ define "part" }}p{{ end }}{{ template "part" . }}{{ block "blk" . }}b{{ end }}
+{{ and .X }}
+{{ call .X }}
+{{ html .X }}
+{{ index .X }}
+{{ slice .X }}
+{{ js .X }}
+{{ len .X }}
+{{ not .X }}
+{{ or .X }}
+{{ print .X }}
+{{ printf .X }}
+{{ println .X }}
+{{ urlquery .X }}
+{{ eq .X }}
+{{ ge .X }}
+{{ gt .X }}
+{{ le .X }}
+{{ lt .X }}
+{{ ne .X }}
+{{ true }}
+{{ false }}
+{{ nil }}
+{{/* note */}} {{ $x := .Name }}{{ $x | upper "a" `raw` 3 1.5 }}{{ $ }}

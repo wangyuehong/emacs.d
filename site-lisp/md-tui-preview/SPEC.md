@@ -1,6 +1,7 @@
 # md-tui-preview SPEC
 
 本文件是 md-tui-preview 包的行为契约，是代码变更的权威参照。所有修改必须保证 spec、代码、测试三者一致。
+
 只描述使用者可观测的行为；实现手段与「为何这样实现」在源码注释里，不在本文件。
 
 ## 术语
@@ -181,6 +182,7 @@
 - Then：以该链接的目标地址调用 `browse-url` 打开
 
 - Examples:
+
   | 源 Markdown 写法 | 目标地址 |
   | --- | --- |
   | `[文字](https://example.com)` | `https://example.com` |
@@ -195,6 +197,7 @@
 - Then：用 `find-file` 打开该目标文件，相对路径以当前源 Markdown 文件所在目录解析
 
 - Examples:
+
   | 源 Markdown 写法 | 解析后目标 |
   | --- | --- |
   | `[文字](relative/file.md)` | 源文件所在目录 + `relative/file.md` |
