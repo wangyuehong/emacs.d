@@ -16,7 +16,8 @@
 
 - Given: 生成命令已触发
 - When: 服务端返回流式 chunk
-- Then: commit buffer 中用户输入区域 (第一个 `#` 注释行之前) 被替换为当前累积的生成内容
+- Then: 回复中的 `text` 代码块出现非空内容之前，用户输入区域 (第一个 `#` 注释行之前) 保持进度文字
+- And: 此后用户输入区域被替换为代码块内当前已到达的文本，代码块前后的文字与围栏行都不出现
 - And: `#` 注释行、scissor 线、verbose diff 等完全不受影响
 
 #### AC-0010-0030: 覆盖已有内容
@@ -59,13 +60,34 @@
 
 - Given: copilot LSP 连接正常，生成已触发
 - When: `conversation/create` 返回异步错误
-- Then: 清理当前 buffer 的活跃请求和进度状态，通过 `user-error` 提示创建会话失败原因
+- Then: 清理当前 buffer 的活跃请求和进度状态，清空用户输入区域，通过 `user-error` 提示创建会话失败原因
 
 #### AC-0010-0100: 过期创建错误
 
 - Given: 当前请求已被取消或被同 buffer 的其他失败请求清理
 - When: 该请求的 `conversation/create` 错误回调延迟到达
 - Then: 忽略该过期回调，不改变 buffer 状态，不再次提示错误
+
+#### AC-0010-0110: 从代码块提取 commit message
+
+- Given: 生成已触发
+- When: 服务端返回 "end" 事件，回复中含完整的 `text` 代码块
+- Then: buffer 用户输入区域与会话历史只留下代码块内的文本 (去掉首尾空白)，代码块前后的文字与围栏行都不出现
+- And: 代码块从第一个「3 个或更多反引号 + 语言标识 `text`」的行开始，回复中其他代码块不作为起点
+- And: 代码块到最后一个只由同样数量反引号组成的行结束，message 正文中的内嵌代码块原样保留
+
+#### AC-0010-0120: 回复不含代码块
+
+- Given: 生成已触发
+- When: 服务端返回 "end" 事件，回复非空，但不含完整的 `text` 代码块、代码块内容为空，或代码块内容里有未闭合的代码块
+- Then: 清空 buffer 用户输入区域，通过 `user-error` 提示 "response has no commit message code block"
+- And: 不写入会话历史，原始回复写入 `*copilot-commit-log*`
+
+#### AC-0010-0130: 一次 undo 恢复生成前内容
+
+- Given: 用户输入区域原有内容 X，一次生成已结束 (成功、报错或取消均适用)
+- When: 在 commit buffer 中执行一次 `undo`
+- Then: 用户输入区域恢复为 X，生成过程中的进度文字与流式中间内容不作为独立的 undo 步骤出现
 
 ## US-0020: 重新生成 commit message
 
@@ -78,6 +100,7 @@
 - Given: 已有一次成功生成的 commit message(历史记录存在)
 - When: 执行 `copilot-commit-regenerate-message`
 - Then: 弹出 minibuffer 输入额外指示，销毁旧会话，在新会话的 turns 中包含完整历史和新指示，流式替换当前内容
+- And: 请求结尾同 AC-0050-0030
 
 #### AC-0020-0020: 无前次生成
 
@@ -118,20 +141,20 @@
 #### AC-0040-0010: 字符串后缀
 
 - Given: `copilot-commit-prompt-suffix` 设置为字符串
-- When: 执行生成命令
-- Then: 该字符串追加到 prompt 末尾
+- When: 执行生成或重新生成命令
+- Then: 该字符串追加到请求末尾
 
 #### AC-0040-0020: 函数后缀
 
 - Given: `copilot-commit-prompt-suffix` 设置为函数
-- When: 执行生成命令
-- Then: 调用该函数，将返回值追加到 prompt 末尾
+- When: 执行生成或重新生成命令
+- Then: 调用该函数，将返回值追加到请求末尾
 
 #### AC-0040-0030: 默认无后缀
 
 - Given: `copilot-commit-prompt-suffix` 为默认值 `""`
-- When: 执行生成命令
-- Then: 不附加任何内容
+- When: 执行生成或重新生成命令
+- Then: 不附加后缀
 
 ## US-0050: 可定制 prompt
 
@@ -150,6 +173,13 @@
 - Given: 通过 `setopt` 或 Emacs customize 设置了自定义 `copilot-commit-prompt`
 - When: 执行生成命令
 - Then: 使用用户自定义的 prompt 内容
+
+#### AC-0050-0030: 输出格式约定不可定制
+
+- Given: 任意 `copilot-commit-prompt` 与 `copilot-commit-prompt-suffix`
+- When: 发送 commit message 请求 (首次生成、分块后的最终生成、重新生成)
+- Then: 请求在 prompt 后缀之前附加固定的输出格式约定
+- And: 约定要求只输出一个 ```` ```text ```` 代码块、不写其他文字，并附格式示例
 
 ## US-0060: 可定制模型
 
@@ -223,7 +253,8 @@
 
 - Given: 分块生成已完成，summaries 缓存在 buffer-local 变量中
 - When: 执行 `copilot-commit-regenerate-message`
-- Then: 使用缓存的 summaries 重建 final prompt，不重复分块过程
+- Then: 不重复分块过程，新会话的 turns 以基于缓存 summaries 的 final prompt 开头
+- And: 此前各轮重新生成的指示都保留在 turns 中
 
 #### AC-0080-0050: 按文件边界拆分
 

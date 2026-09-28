@@ -294,10 +294,14 @@
       (should-not (string-match-p "^# M " result)))))
 
 (ert-deftest cc-test-build-prompt/suffix-string ()
+  "AC-0040-0010, AC-0050-0030: the contract precedes the suffix at the end."
   (let ((copilot-commit-prompt "prompt")
         (copilot-commit-prompt-suffix "\n\nWrite in Japanese."))
     (let ((result (copilot-commit--build-prompt "diff" "status")))
-      (should (string-match-p "Write in Japanese\\." result)))))
+      (should (string-suffix-p (concat "</git_context>"
+                                       copilot-commit--output-contract
+                                       "\n\nWrite in Japanese.")
+                               result)))))
 
 (ert-deftest cc-test-build-prompt/suffix-function ()
   (let ((copilot-commit-prompt "prompt")
@@ -309,7 +313,9 @@
   (let ((copilot-commit-prompt "prompt")
         (copilot-commit-prompt-suffix ""))
     (let ((result (copilot-commit--build-prompt "diff" "status")))
-      (should (string-suffix-p "</git_context>" result)))))
+      (should (string-suffix-p (concat "</git_context>"
+                                       copilot-commit--output-contract)
+                               result)))))
 
 ;; ---------------------------------------------------------------------------
 ;;; build-chunk-prompt tests
@@ -349,10 +355,14 @@
       (should (string-match-p "# M file.el" result)))))
 
 (ert-deftest cc-test-build-final-prompt/prompt-suffix ()
+  "AC-0050-0030: the final prompt ends with the contract, then the suffix."
   (let ((copilot-commit-prompt "prompt")
         (copilot-commit-prompt-suffix "\n\nWrite in Japanese."))
     (let ((result (copilot-commit--build-final-prompt '("sum") "")))
-      (should (string-match-p "Write in Japanese\\." result)))))
+      (should (string-suffix-p (concat "</git_context>"
+                                       copilot-commit--output-contract
+                                       "\n\nWrite in Japanese.")
+                               result)))))
 
 (ert-deftest cc-test-build-final-prompt/part-count ()
   (let ((copilot-commit-prompt "prompt")
@@ -390,6 +400,101 @@
          (last-turn (aref turns (1- (length turns)))))
     (should (equal (plist-get last-turn :request) "final"))
     (should (equal (plist-get last-turn :response) ""))))
+
+;; ---------------------------------------------------------------------------
+;;; extract-message tests (AC-0010-0110)
+;; ---------------------------------------------------------------------------
+
+(ert-deftest cc-test-extract-message/block-only ()
+  (should (string= (copilot-commit--extract-message
+                    "```text\nfix: typo\n\n- detail\n```")
+                   "fix: typo\n\n- detail")))
+
+(ert-deftest cc-test-extract-message/drops-surrounding-prose ()
+  (should (string= (copilot-commit--extract-message
+                    "Here is the message:\n\n```text\nfeat!: drop api\n\n- a\n```\nHope it helps.")
+                   "feat!: drop api\n\n- a")))
+
+(ert-deftest cc-test-extract-message/requires-text-info-string ()
+  (should (null (copilot-commit--extract-message "```\nchore: bump\n```")))
+  (should (null (copilot-commit--extract-message "```plaintext\nchore: bump\n```"))))
+
+(ert-deftest cc-test-extract-message/skips-code-block-in-prose ()
+  (let ((prose "Diff shows:\n```elisp\n(defconst x 1)\n```\nSo:\n\n"))
+    (should (string= (copilot-commit--extract-message
+                      (concat prose "```text\nfeat: add x\n```"))
+                     "feat: add x"))
+    (should (string= (copilot-commit--extract-message
+                      (concat prose "````text\nfeat: add x\n````"))
+                     "feat: add x"))))
+
+(ert-deftest cc-test-extract-message/longer-fence-keeps-inner-block ()
+  (should (string= (copilot-commit--extract-message
+                    "````text\ndocs: x\n\n```sh\nmake\n```\n````")
+                   "docs: x\n\n```sh\nmake\n```")))
+
+(ert-deftest cc-test-extract-message/same-fence-keeps-inner-block ()
+  (should (string= (copilot-commit--extract-message
+                    "```text\ndocs: x\n\n```sh\nmake\n```\n```")
+                   "docs: x\n\n```sh\nmake\n```")))
+
+(ert-deftest cc-test-extract-message/rejects-unclosed-inner-block ()
+  "AC-0010-0120: an inner block left open by a missing outer close is rejected."
+  (should (null (copilot-commit--extract-message
+                 "```text\nfeat: a\n\n```sh\nmake\n```\nmore")))
+  (should (string= (copilot-commit--extract-message
+                    "```text\nfeat: a\n\n````sh\nmake\n```\n````\n```")
+                   "feat: a\n\n````sh\nmake\n```\n````")))
+
+(ert-deftest cc-test-fences-closed-p/pairs-by-length ()
+  (should (copilot-commit--fences-closed-p "feat: a"))
+  (should (copilot-commit--fences-closed-p "a\n```sh\nx\n```"))
+  (should-not (copilot-commit--fences-closed-p "a\n```sh\nx"))
+  (should-not (copilot-commit--fences-closed-p "a\n````sh\nx\n```")))
+
+(ert-deftest cc-test-extract-message/no-block ()
+  (should (null (copilot-commit--extract-message "feat: plain message")))
+  (should (null (copilot-commit--extract-message "Sure.\n```text\nfeat: unclosed")))
+  (should (null (copilot-commit--extract-message "```text\n\n```"))))
+
+;; ---------------------------------------------------------------------------
+;;; common-affixes tests
+;; ---------------------------------------------------------------------------
+
+(ert-deftest cc-test-common-affixes/growing-text ()
+  (should (equal (copilot-commit--common-affixes "feat: a\n\n" "feat: ab\n\n")
+                 '(7 . 2))))
+
+(ert-deftest cc-test-common-affixes/identical-and-disjoint ()
+  (should (equal (copilot-commit--common-affixes "abc" "abc") '(3 . 0)))
+  (should (equal (copilot-commit--common-affixes "abc" "xyz") '(0 . 0)))
+  (should (equal (copilot-commit--common-affixes "" "abc") '(0 . 0))))
+
+(ert-deftest cc-test-common-affixes/suffix-never-overlaps-prefix ()
+  (should (equal (copilot-commit--common-affixes "aa" "aaa") '(2 . 0)))
+  (should (equal (copilot-commit--common-affixes "Generating...\n\n" "\n\n")
+                 '(0 . 2))))
+
+;; ---------------------------------------------------------------------------
+;;; streaming-message tests (AC-0010-0020)
+;; ---------------------------------------------------------------------------
+
+(ert-deftest cc-test-streaming-message/nil-before-block-content ()
+  (should (null (copilot-commit--streaming-message "Let me analyze.")))
+  (should (null (copilot-commit--streaming-message "Sure:\n```text")))
+  (should (null (copilot-commit--streaming-message "Sure:\n```text\n")))
+  (should (null (copilot-commit--streaming-message "Sure:\n```text\n``"))))
+
+(ert-deftest cc-test-streaming-message/partial-content ()
+  (should (string= (copilot-commit--streaming-message "Sure:\n```text\nfeat: a")
+                   "feat: a"))
+  (should (string= (copilot-commit--streaming-message "```text\nfeat: a\n\n- b\n``")
+                   "feat: a\n\n- b")))
+
+(ert-deftest cc-test-streaming-message/ignores-text-after-block ()
+  (should (string= (copilot-commit--streaming-message
+                    "```text\nfeat: a\n```\nHope it helps.")
+                   "feat: a")))
 
 ;; ---------------------------------------------------------------------------
 ;;; input-region-end tests
@@ -464,20 +569,40 @@
       (with-current-buffer buf
         (should (eq copilot-commit--streaming-p t))))))
 
-(ert-deftest cc-test-handle-progress-1/report-accumulates ()
+(defun cc-test--report (token reply)
+  "Send a report progress event with REPLY for TOKEN."
+  (copilot-commit--handle-progress-1
+   token (list :kind "report"
+               :editAgentRounds (vector (list :roundId 1 :reply reply)))))
+
+(ert-deftest cc-test-handle-progress-1/report-shows-block-content-only ()
+  "AC-0010-0020: progress text stays until the text block streams content."
   (cc-test--with-progress-buf
+    (with-current-buffer buf
+      (erase-buffer)
+      (insert "Generating...\n\n# template comment\n"))
     (let* ((token "tok1")
            (copilot-commit--active-requests
             (list (list token buf "prompt" nil nil))))
-      (copilot-commit--handle-progress-1
-       token (list :kind "report" :editAgentRounds (vector (list :roundId 1 :reply "hello "))))
-      (copilot-commit--handle-progress-1
-       token (list :kind "report" :editAgentRounds (vector (list :roundId 1 :reply "world"))))
+      (cc-test--report token "Let me analyze the diff.\n")
+      (cc-test--report token "```te")
+      (cc-test--report token "xt\n")
       (with-current-buffer buf
-        (should (string= copilot-commit--accumulated "hello world"))
-        ;; Buffer should be updated (not in summarizing phase)
-        (goto-char (point-min))
-        (should (string-match-p "hello world" (buffer-string)))))))
+        (should (string= (buffer-string) "Generating...\n\n# template comment\n")))
+      (cc-test--report token "feat: add x\n\n- a")
+      (with-current-buffer buf
+        (should (string= (buffer-string)
+                         "feat: add x\n\n- a\n\n# template comment\n")))
+      (cc-test--report token "\n``")
+      (with-current-buffer buf
+        (should (string= (buffer-string)
+                         "feat: add x\n\n- a\n\n# template comment\n")))
+      (cc-test--report token "`\nHope it helps.")
+      (with-current-buffer buf
+        (should (string= copilot-commit--accumulated
+                         "Let me analyze the diff.\n```text\nfeat: add x\n\n- a\n```\nHope it helps."))
+        (should (string= (buffer-string)
+                         "feat: add x\n\n- a\n\n# template comment\n"))))))
 
 (ert-deftest cc-test-handle-progress-1/report-silent-during-summarizing ()
   (cc-test--with-progress-buf
@@ -488,8 +613,7 @@
            (copilot-commit--active-requests
             (list (list token buf "prompt" 0 acc-ref)))
            (original-content (with-current-buffer buf (buffer-string))))
-      (copilot-commit--handle-progress-1
-       token (list :kind "report" :editAgentRounds (vector (list :roundId 1 :reply "chunk summary"))))
+      (cc-test--report token "chunk summary")
       ;; Content accumulated in acc-ref, not buffer-local accumulated
       (should (string= (cdr acc-ref) "chunk summary"))
       (with-current-buffer buf
@@ -503,8 +627,7 @@
     (let* ((token "tok1")
            (copilot-commit--active-requests
             (list (list token buf "prompt" nil nil))))
-      (copilot-commit--handle-progress-1
-       token (list :kind "report" :editAgentRounds (vector (list :roundId 1 :reply ""))))
+      (cc-test--report token "")
       (with-current-buffer buf
         (should (string= copilot-commit--accumulated "pre-existing"))))))
 
@@ -529,7 +652,7 @@
 (ert-deftest cc-test-handle-progress-1/end-normal-clears-minibuffer ()
   (cc-test--with-progress-buf
     (with-current-buffer buf
-      (setq copilot-commit--accumulated "final message"))
+      (setq copilot-commit--accumulated "```text\nfinal message\n```"))
     (let* ((token "tok1")
            (copilot-commit--active-requests
             (list (list token buf "the prompt" nil nil))))
@@ -542,7 +665,7 @@
   (cc-test--with-progress-buf
     (with-current-buffer buf
       (setq copilot-commit--phase 'finalizing
-            copilot-commit--accumulated "commit message"))
+            copilot-commit--accumulated "```text\ncommit message\n```"))
     (let* ((token "tok1")
            (copilot-commit--active-requests
             (list (list token buf "final prompt" nil nil))))
@@ -554,7 +677,7 @@
 (ert-deftest cc-test-handle-progress-1/end-normal-saves-history ()
   (cc-test--with-progress-buf
     (with-current-buffer buf
-      (setq copilot-commit--accumulated "final message"))
+      (setq copilot-commit--accumulated "```text\nfinal message\n```"))
     (let* ((token "tok1")
            (copilot-commit--active-requests
             (list (list token buf "the prompt" nil nil))))
@@ -654,7 +777,7 @@
   (cc-test--with-progress-buf
     (with-current-buffer buf
       (setq copilot-commit--phase 'finalizing
-            copilot-commit--accumulated "commit message"))
+            copilot-commit--accumulated "```text\ncommit message\n```"))
     (let* ((token "tok1")
            (copilot-commit--active-requests
             (list (list token buf "final prompt" nil nil))))
@@ -675,10 +798,203 @@
            (copilot-commit--active-requests
             (list (list token buf "prompt" nil nil))))
       (copilot-commit--handle-progress-1
-       token (list :kind "end" :result "final result"))
+       token (list :kind "end" :result "```text\nfinal result\n```"))
       (with-current-buffer buf
         ;; result should override accumulated
         (should (string= (cdar copilot-commit--history) "final result"))))))
+
+(ert-deftest cc-test-handle-progress-1/end-extracts-code-block ()
+  "AC-0010-0110: only the code block content reaches buffer and history."
+  (cc-test--with-progress-buf
+    (with-current-buffer buf
+      (setq copilot-commit--accumulated
+            "根据提供的 Git diff，生成以下提交信息：\n\n```text\nfeat(core): 新增功能\n\n- 细节\n```\n"))
+    (let* ((token "tok1")
+           (copilot-commit--active-requests
+            (list (list token buf "prompt" nil nil))))
+      (copilot-commit--handle-progress-1
+       token (list :kind "end"))
+      (with-current-buffer buf
+        (should (string= (cdar copilot-commit--history)
+                         "feat(core): 新增功能\n\n- 细节"))
+        (should (string= (buffer-string)
+                         "feat(core): 新增功能\n\n- 细节\n\n# template comment\n"))))))
+
+(ert-deftest cc-test-handle-progress-1/end-without-code-block-signals-error ()
+  "AC-0010-0120: a reply without a code block is rejected and logged."
+  (cc-test--with-progress-buf
+    (with-current-buffer buf
+      (erase-buffer)
+      (insert "Generating...\n\n# template comment\n")
+      (setq copilot-commit--accumulated "feat: prose without block"))
+    (let* ((token "tok1")
+           (copilot-commit--active-requests
+            (list (list token buf "prompt" nil nil)))
+           (logged nil))
+      (cl-letf (((symbol-function 'copilot-commit--log)
+                 (lambda (fmt &rest args) (push (apply #'format fmt args) logged))))
+        (let ((err (should-error (copilot-commit--handle-progress-1
+                                  token (list :kind "end"))
+                                 :type 'user-error)))
+          (should (string-match-p "response has no commit message code block"
+                                  (cadr err)))))
+      (with-current-buffer buf
+        (should (string= (buffer-string) "\n\n# template comment\n"))
+        (should (null copilot-commit--history))
+        (should (null copilot-commit--streaming-p)))
+      (should (cl-some (lambda (line) (string-match-p "feat: prose without block" line))
+                       logged))
+      (should (null (assoc token copilot-commit--active-requests))))))
+
+(defun cc-test--undo-after-generation (end-event)
+  "Run a generation ending with END-EVENT from input \"draft\", then undo once.
+Return the buffer content after the undo."
+  (cc-test--with-progress-buf
+    (with-current-buffer buf
+      (buffer-enable-undo)
+      (erase-buffer)
+      (insert "draft\n\n# template comment\n")
+      (undo-boundary)
+      (let* ((token "tok1")
+             (copilot-commit--active-requests
+              (list (list token buf "prompt" nil nil))))
+        (copilot-commit--update-input-region buf "Generating...")
+        (undo-boundary)
+        (cc-test--report token "```text\nfeat: a")
+        (undo-boundary)
+        (cc-test--report token "\n```")
+        (undo-boundary)
+        (condition-case nil
+            (copilot-commit--handle-progress-1 token end-event)
+          (user-error nil)))
+      (should-not copilot-commit--change-group)
+      (undo-boundary)
+      (let ((last-command nil))
+        (undo))
+      (buffer-string))))
+
+(ert-deftest cc-test-undo/restores-input-after-success ()
+  "AC-0010-0130: one undo after a successful generation restores the draft."
+  (should (string= (cc-test--undo-after-generation (list :kind "end"))
+                   "draft\n\n# template comment\n")))
+
+(ert-deftest cc-test-undo/restores-input-after-error ()
+  "AC-0010-0130: one undo after a failed generation restores the draft."
+  (should (string= (cc-test--undo-after-generation
+                    (list :kind "end" :error (list :message "boom")))
+                   "draft\n\n# template comment\n")))
+
+(ert-deftest cc-test-undo/consecutive-generations-are-separate-steps ()
+  "AC-0010-0130: undo after a second generation restores the first message."
+  (cc-test--with-progress-buf
+    (with-current-buffer buf
+      (buffer-enable-undo)
+      (erase-buffer)
+      (insert "draft\n\n# template comment\n")
+      (dolist (message '("feat: first" "feat: second"))
+        (let* ((token "tok1")
+               (copilot-commit--active-requests
+                (list (list token buf "prompt" nil nil))))
+          (setq copilot-commit--accumulated nil)
+          (copilot-commit--update-input-region buf "Generating...")
+          (cc-test--report token (format "```text\n%s\n```" message))
+          (copilot-commit--handle-progress-1 token (list :kind "end"))))
+      (undo-boundary)
+      (let ((last-command nil))
+        (undo))
+      (should (string= (buffer-string) "feat: first\n\n# template comment\n")))))
+
+(ert-deftest cc-test-undo/long-stream-within-undo-limit ()
+  "AC-0010-0130: a stream larger than `undo-limit' still undoes to the draft."
+  (cc-test--with-progress-buf
+    (with-current-buffer buf
+      (buffer-enable-undo)
+      (erase-buffer)
+      (insert "draft\n\n# template comment\n")
+      (undo-boundary)
+      (let* ((undo-limit 2000)
+             (undo-strong-limit 3000)
+             (token "tok1")
+             (copilot-commit--active-requests
+              (list (list token buf "prompt" nil nil))))
+        (copilot-commit--update-input-region buf "Generating...")
+        (undo-boundary)
+        (cc-test--report token "```text\n")
+        (dotimes (i 300)
+          (cc-test--report token "- change line x\n")
+          (when (zerop (% i 50))
+            (garbage-collect)))
+        (cc-test--report token "```")
+        (copilot-commit--handle-progress-1 token (list :kind "end"))
+        (garbage-collect)
+        (undo-boundary)
+        (let ((last-command nil))
+          (undo)))
+      (should (string= (buffer-string) "draft\n\n# template comment\n")))))
+
+(ert-deftest cc-test-undo/restores-input-after-cancel ()
+  "AC-0010-0130: one undo after cancelling restores the draft."
+  (cc-test--with-progress-buf
+    (with-current-buffer buf
+      (buffer-enable-undo)
+      (erase-buffer)
+      (insert "draft\n\n# template comment\n")
+      (undo-boundary)
+      (copilot-commit--update-input-region buf "Generating...")
+      (undo-boundary)
+      (setq copilot-commit--streaming-p t)
+      (let ((copilot-commit--active-requests nil))
+        (copilot-commit-cancel))
+      (should-not copilot-commit--change-group)
+      (undo-boundary)
+      (let ((last-command nil))
+        (undo))
+      (should (string= (buffer-string) "draft\n\n# template comment\n")))))
+
+(ert-deftest cc-test-regenerate/chunked-keeps-earlier-instructions ()
+  "AC-0080-0040: turns start with the final prompt and keep earlier instructions."
+  (cc-test--with-progress-buf
+    (with-current-buffer buf
+      (setq copilot-commit--summaries (vector "summary")
+            copilot-commit--history '(("first instruction" . "feat: b")
+                                      ("final prompt" . "feat: a")))
+      (let (turns)
+        (cl-letf (((symbol-function 'copilot--connection-alivep) (lambda () t))
+                  ((symbol-function 'read-string) (lambda (&rest _) "second"))
+                  ((symbol-function 'copilot-commit--create-conversation)
+                   (lambda (sent-turns &rest _) (setq turns sent-turns))))
+          (copilot-commit-regenerate-message))
+        (should (equal (mapcar (lambda (turn) (plist-get turn :request)) turns)
+                       (list "final prompt" "first instruction"
+                             (copilot-commit--build-regenerate-message "second"))))))))
+
+(defun cc-test--regenerate-request (instruction)
+  "Return the request `copilot-commit-regenerate-message' sends for INSTRUCTION."
+  (cc-test--with-progress-buf
+    (with-current-buffer buf
+      (setq copilot-commit--history '(("prompt" . "feat: x")))
+      (let ((copilot-commit-prompt-suffix "\n\nWrite in Japanese.")
+            sent)
+        (cl-letf (((symbol-function 'copilot--connection-alivep) (lambda () t))
+                  ((symbol-function 'read-string)
+                   (lambda (_prompt &optional _initial _history default &rest _)
+                     (if (string-empty-p instruction) default instruction)))
+                  ((symbol-function 'copilot-commit--start-generation)
+                   (lambda (prompt _buf) (setq sent prompt))))
+          (copilot-commit-regenerate-message))
+        sent))))
+
+(ert-deftest cc-test-regenerate/sends-instruction-with-request-tail ()
+  "AC-0020-0010: the regenerate turn ends with contract and suffix."
+  (should (string= (cc-test--regenerate-request "shorter")
+                   (concat "shorter" copilot-commit--output-contract
+                           "\n\nWrite in Japanese."))))
+
+(ert-deftest cc-test-regenerate/empty-instruction-uses-default ()
+  "AC-0020-0030: an empty instruction sends the default with the tail."
+  (should (string= (cc-test--regenerate-request "")
+                   (concat "Please regenerate" copilot-commit--output-contract
+                           "\n\nWrite in Japanese."))))
 
 (ert-deftest cc-test-handle-progress-1/unknown-token ()
   (cc-test--with-progress-buf
@@ -698,8 +1014,7 @@
       ;; Should not error on dead buffer
       (copilot-commit--handle-progress-1
        "tok1" (list :kind "begin"))
-      (copilot-commit--handle-progress-1
-       "tok1" (list :kind "report" :editAgentRounds (vector (list :roundId 1 :reply "x"))))
+      (cc-test--report "tok1" "x")
       (copilot-commit--handle-progress-1
        "tok1" (list :kind "end")))))
 
@@ -817,9 +1132,11 @@
         (should (equal (plist-get captured-params :model) "gpt-4.1"))))))
 
 (ert-deftest cc-test-create-conversation/error-cleans-up-and-signals ()
-  "conversation/create async errors clean state and surface user-error."
+  "AC-0010-0090: async create errors clean state, input and surface user-error."
   (cc-test--with-progress-buf
     (with-current-buffer buf
+      (erase-buffer)
+      (insert "Generating...\n\n# template comment\n")
       (setq copilot-commit--streaming-p t))
     (let ((other-buf (generate-new-buffer " *cc-other*")))
       (unwind-protect
@@ -844,7 +1161,8 @@
               (should (null (assoc sibling-token copilot-commit--active-requests)))
               (should (assoc other-token copilot-commit--active-requests))
               (with-current-buffer buf
-                (should-not copilot-commit--streaming-p))))
+                (should-not copilot-commit--streaming-p)
+                (should (string= (buffer-string) "\n\n# template comment\n")))))
         (kill-buffer other-buf)))))
 
 (ert-deftest cc-test-conversation-create-error/ignores-stale-token ()

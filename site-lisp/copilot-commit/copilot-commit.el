@@ -118,6 +118,9 @@ Most recent pair is at the front.")
 (defvar-local copilot-commit--git-status nil
   "Cached git status string used during chunked generation.")
 
+(defvar-local copilot-commit--change-group nil
+  "Change group holding the input region edits of the current generation.")
+
 ;;; Model selection
 
 (defun copilot-commit--request-models ()
@@ -168,7 +171,6 @@ Most recent pair is at the front.")
   (let ((model (copilot-commit--model)))
     (list :modelInfo (list :id model)
           :model model)))
-
 (defun copilot-commit--last-round-reply (value)
   "Return the last edit-agent reply from progress VALUE."
   (when-let* ((rounds (plist-get value :editAgentRounds))
@@ -216,9 +218,7 @@ Most recent pair is at the front.")
     (with-temp-buffer
       (call-process "git" nil t nil
                     "--no-pager" "diff" "--cached" "--no-color")
-      (let ((output (string-trim (buffer-string))))
-        (unless (string-empty-p output)
-          output)))))
+      (copilot-commit--nonblank (buffer-string)))))
 
 (defun copilot-commit--get-git-status ()
   "Return short git status as a string."
@@ -303,17 +303,47 @@ The result is cached for future use via the progress begin handler."
 (defun copilot-commit--update-input-region (buf content)
   "Replace the user input region in BUF with CONTENT.
 Only modifies text before the first `#' comment line;
-template comments, scissor line, and diff are never touched."
+template comments, scissor line, and diff are never touched.
+Only the text between the common prefix and suffix of the old and new
+content is replaced, so a streaming update is a small insertion and
+the edits of a generation stay within `undo-limit'.
+The first update of a generation opens the change group that
+`copilot-commit--finish-edits' merges into one undo step."
   (when (buffer-live-p buf)
     (with-current-buffer buf
+      (unless copilot-commit--change-group
+        (undo-boundary)
+        (setq copilot-commit--change-group (prepare-change-group))
+        (activate-change-group copilot-commit--change-group))
       (let ((inhibit-read-only t))
         (save-excursion
-          (let ((end (copilot-commit--input-region-end)))
+          (pcase-let* ((end (copilot-commit--input-region-end))
+                       (old (buffer-substring-no-properties (point-min) end))
+                       (new (concat content "\n\n"))
+                       (`(,prefix . ,suffix)
+                        (copilot-commit--common-affixes old new)))
             (copilot-commit--log "update-input-region: end=%d content-len=%d"
                                  end (length content))
-            (delete-region (point-min) end)
-            (goto-char (point-min))
-            (insert content "\n\n")))))))
+            (delete-region (+ (point-min) prefix) (- end suffix))
+            (goto-char (+ (point-min) prefix))
+            (insert (substring new prefix (- (length new) suffix)))))))))
+
+(defun copilot-commit--finish-edits (buf)
+  "Merge the input region edits of the finished generation in BUF.
+A single `undo' then restores the content from before the generation."
+  (when (buffer-live-p buf)
+    (with-current-buffer buf
+      (when-let* ((group copilot-commit--change-group))
+        (setq copilot-commit--change-group nil)
+        (undo-amalgamate-change-group group)
+        (accept-change-group group)))))
+
+(defun copilot-commit--abort (buf format-string &rest args)
+  "Clear the input region of BUF and signal a `user-error'.
+The message is FORMAT-STRING with ARGS, prefixed with \"Copilot commit: \"."
+  (copilot-commit--update-input-region buf "")
+  (copilot-commit--finish-edits buf)
+  (apply #'user-error (concat "Copilot commit: " format-string) args))
 
 ;;; LSP conversation management
 
@@ -363,10 +393,11 @@ CALLBACK is called with the conversation ID on success."
               (copilot-commit--reset-chunk-state)
               (copilot-commit--log "conversation creation failed: %S" err)
               (if (eq phase 'summarizing)
-                  (user-error
-                   "Copilot commit: failed during chunk %d/%d summarization: %S"
+                  (copilot-commit--abort
+                   buf "failed during chunk %d/%d summarization: %S"
                    (1+ chunk-idx) total err)
-                (user-error "Copilot commit: conversation creation failed: %S" err)))))
+                (copilot-commit--abort
+                 buf "conversation creation failed: %S" err)))))
       (copilot-commit--cleanup-request token)
       (user-error "Copilot commit: conversation creation failed: %S" err))))
 
@@ -422,21 +453,21 @@ CALLBACK is called with the conversation ID on success."
           ;; For probe requests (nil buf), clean up after caching
           (when (and (not buf) entry)
             (copilot-commit--cleanup-request token))
-          (let* ((rounds (plist-get value :editAgentRounds))
-                 (reply (when (and (vectorp rounds) (> (length rounds) 0))
-                          (plist-get (aref rounds (1- (length rounds))) :reply))))
+          (let ((reply (copilot-commit--last-round-reply value)))
             (when (and reply (not (string-empty-p reply)))
               (cond
                ;; Summarizing phase: accumulate in per-request acc-ref
                ((and acc-ref (eq phase 'summarizing))
                 (setcdr acc-ref (concat (cdr acc-ref) reply)))
-               ;; Non-summarizing: accumulate in buffer-local and update display
+               ;; Non-summarizing: accumulate in buffer-local and show the
+               ;; commit message part; progress text stays until it starts
                ((buffer-live-p buf)
                 (with-current-buffer buf
                   (setq copilot-commit--accumulated
                         (concat (or copilot-commit--accumulated "") reply))
-                  (copilot-commit--update-input-region
-                   buf (or copilot-commit--accumulated ""))))))))
+                  (when-let* ((partial (copilot-commit--streaming-message
+                                        copilot-commit--accumulated)))
+                    (copilot-commit--update-input-region buf partial))))))))
 
          ((equal kind "end")
           (unwind-protect
@@ -447,8 +478,7 @@ CALLBACK is called with the conversation ID on success."
                   (when-let* ((error-msg (copilot-commit--end-error-message value)))
                     (setq copilot-commit--streaming-p nil)
                     (copilot-commit--reset-chunk-state)
-                    (copilot-commit--update-input-region buf "")
-                    (user-error "Copilot commit: %s" error-msg))
+                    (copilot-commit--abort buf "%s" error-msg))
                   ;; Get final content from end event or acc-ref
                   (let* ((end-content (copilot-commit--end-content value))
                          (final (if (and end-content
@@ -476,21 +506,24 @@ CALLBACK is called with the conversation ID on success."
                 (with-current-buffer buf
                   (when-let* ((error-msg (copilot-commit--end-error-message value)))
                     (setq copilot-commit--streaming-p nil)
-                    (copilot-commit--update-input-region buf "")
-                    (user-error "Copilot commit: %s" error-msg))
+                    (copilot-commit--abort buf "%s" error-msg))
                   (let ((final (copilot-commit--end-content value)))
                     (when (and final (not (string-empty-p final)))
                       (setq copilot-commit--accumulated final)))
                   (setq copilot-commit--streaming-p nil)
-                  (if (or (null copilot-commit--accumulated)
-                          (string-empty-p copilot-commit--accumulated))
-                      (progn
-                        (copilot-commit--update-input-region buf "")
-                        (user-error "Copilot commit: server returned empty response"))
-                    (push (cons prompt copilot-commit--accumulated)
-                          copilot-commit--history)
-                    (copilot-commit--update-input-region
-                     buf copilot-commit--accumulated)
+                  (when (or (null copilot-commit--accumulated)
+                            (string-empty-p copilot-commit--accumulated))
+                    (copilot-commit--abort buf "server returned empty response"))
+                  (let ((extracted (copilot-commit--extract-message
+                                    copilot-commit--accumulated)))
+                    (unless extracted
+                      (copilot-commit--log "reply without code block: %s"
+                                           copilot-commit--accumulated)
+                      (copilot-commit--abort
+                       buf "response has no commit message code block"))
+                    (push (cons prompt extracted) copilot-commit--history)
+                    (copilot-commit--update-input-region buf extracted)
+                    (copilot-commit--finish-edits buf)
                     (when (eq phase 'finalizing)
                       (setq copilot-commit--phase nil
                             copilot-commit--chunks nil
@@ -699,8 +732,8 @@ and registering progress tracking."
 ;;;###autoload
 (defun copilot-commit-regenerate-message ()
   "Regenerate commit message with additional instructions.
-When cached summaries exist from a previous chunked generation,
-reuse them instead of re-analyzing the diff."
+The new conversation replays the history, whose oldest request is the
+prompt of the first generation, so a chunked diff is not analyzed again."
   (interactive)
   (cond
    ((not copilot-commit--available)
@@ -713,25 +746,12 @@ reuse them instead of re-analyzing the diff."
    (copilot-commit--streaming-p
     (message "Copilot commit: generation already in progress"))
    (t
-    (let* ((instruction (read-string "Additional instructions: "))
-           (message-text (if (string-empty-p instruction)
-                             "Please regenerate"
-                           instruction)))
-      (if copilot-commit--summaries
-          ;; Chunked generation: rebuild final prompt with summaries + instruction
-          (let ((prompt (copilot-commit--build-final-prompt
-                         (append copilot-commit--summaries nil)
-                         copilot-commit--git-status)))
-            ;; Replace the first history entry (the final prompt) to include instruction
-            (when copilot-commit--history
-              (setcar (car copilot-commit--history) prompt))
-            (copilot-commit--update-input-region (current-buffer) "Regenerating...")
-            (message "Copilot commit: regenerating...")
-            (copilot-commit--start-generation message-text (current-buffer)))
-        ;; Normal single-turn regenerate
-        (copilot-commit--update-input-region (current-buffer) "Regenerating...")
-        (message "Copilot commit: regenerating...")
-        (copilot-commit--start-generation message-text (current-buffer)))))))
+    (let ((message-text (copilot-commit--build-regenerate-message
+                         (read-string "Additional instructions: "
+                                      nil nil "Please regenerate"))))
+      (copilot-commit--update-input-region (current-buffer) "Regenerating...")
+      (message "Copilot commit: regenerating...")
+      (copilot-commit--start-generation message-text (current-buffer))))))
 
 (defun copilot-commit-streaming-p ()
   "Return non-nil if commit message generation is in progress."
@@ -758,6 +778,7 @@ reuse them instead of re-analyzing the diff."
     (copilot-commit--reset-chunk-state)
     ;; Clear progress text from buffer
     (copilot-commit--update-input-region (current-buffer) "")
+    (copilot-commit--finish-edits (current-buffer))
     (message "Copilot commit: cancelled"))))
 
 (provide 'copilot-commit)
