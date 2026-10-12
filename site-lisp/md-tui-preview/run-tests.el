@@ -42,7 +42,6 @@
 
 ;;; Run tests
 
-(let ((stats (ert-run-tests-batch "^md-tui-preview-test-")))
-  (kill-emacs (if (zerop (ert-stats-completed-unexpected stats)) 0 1)))
+(ert-run-tests-batch-and-exit "^md-tui-preview-test-")
 
 ;;; run-tests.el ends here

@@ -49,23 +49,27 @@ environment parameter is restored."
 (defmacro tmux-popup-test--with-tty-frame (frame env &rest body)
   "Run BODY with FRAME bound to a new frame with environment ENV.
 The frame is on a pseudo terminal of 80 columns and 24 lines and is not
-selected.  It is deleted afterwards."
+selected.  The frame and the process holding the terminal are deleted
+afterwards, also when making the frame fails."
   (declare (indent 2) (debug t))
-  `(let* ((pty (make-process :name "tmux-popup-test-tty"
-                             :command '("sleep" "60")
-                             :connection-type 'pty :noquery t))
-          (,frame (progn
-                    (set-process-window-size pty 24 80)
-                    (make-terminal-frame
-                     (list (cons 'tty (process-tty-name pty))
-                           (cons 'tty-type "xterm-256color")
-                           (cons 'environment ,env))))))
+  `(let ((pty nil)
+         (,frame nil))
      (unwind-protect
          (progn
+           (setq pty (make-process :name "tmux-popup-test-tty"
+                                   :command '("sleep" "60")
+                                   :connection-type 'pty :noquery t))
+           (set-process-window-size pty 24 80)
+           (setq ,frame (make-terminal-frame
+                         (list (cons 'tty (process-tty-name pty))
+                               (cons 'tty-type "xterm-256color")
+                               (cons 'environment ,env))))
            (should-not (eq ,frame (selected-frame)))
            ,@body)
-       (delete-frame ,frame t)
-       (delete-process pty))))
+       (when (frame-live-p ,frame)
+         (delete-frame ,frame t))
+       (when pty
+         (delete-process pty)))))
 
 (defun tmux-popup-test--redisplay (&optional frame)
   "Run what redisplay runs after the windows of FRAME changed.
@@ -255,8 +259,8 @@ whichever frame is selected."
 (ert-deftest tmux-popup-test-buffer-header-line-kept ()
   "AC-0010-0050: the buffer's own header line shows below the button.
 Neither the header line nor its width depends on the button, so each
-row of the Examples table, too wide for the narrower window it is shown
-in, is left as it is."
+row of the Examples table is left as it is, whether it is wider than
+the window or aligned up to its right edge."
   (dolist (own (list '(:eval (concat "src › a.el : " (make-string 200 ?c)))
                      (make-string 200 ?中)
                      (concat "CRM Buffer"

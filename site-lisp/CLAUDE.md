@@ -2,18 +2,6 @@
 
 `site-lisp/` 下的所有自定义包共同遵守以下约束。
 
-包：
-
-- `agentmux`
-- `code-ref`
-- `copilot-commit`
-- `evil-iedit-state`
-- `im-bridge`
-- `md-tui-preview`
-- `tmpl`
-- `tmux-popup`
-- `vbnet-mode`
-
 包级 SPEC / CLAUDE.md 与本文件冲突时按子目录优先。
 
 ## 失败语义：fail-fast，禁止 fallback

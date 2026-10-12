@@ -70,8 +70,6 @@
 
 ;;; Run tests
 
-(unless (bound-and-true-p copilot-commit-test-load-only)
-  (let ((stats (ert-run-tests-batch "^cc-test-")))
-    (kill-emacs (if (zerop (ert-stats-completed-unexpected stats)) 0 1))))
+(ert-run-tests-batch-and-exit "^cc-test-")
 
 ;;; run-tests.el ends here

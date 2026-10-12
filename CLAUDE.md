@@ -67,20 +67,15 @@ early-init.el -> init.el -> lisp/init-package.el -> 其余 lisp/init-*.el（按�
 
 ## 测试
 
-`copilot-commit`, `code-ref`, `agentmux`, `md-tui-preview`, `tmpl`, `tmux-popup` 这些 site-lisp 包有独立的 `Makefile`。
+带 `Makefile` 的 site-lisp 包各自独立测试，没有顶层测试命令。
 
-在对应包目录下运行 `make all`（跑测试 + 字节编译 + 文档检查）：
+在包目录下运行 `make all`：
 
 ```sh
-cd site-lisp/copilot-commit && make all
-cd site-lisp/code-ref && make all
-cd site-lisp/agentmux && make all
-cd site-lisp/md-tui-preview && make all
-cd site-lisp/tmpl && make all
-cd site-lisp/tmux-popup && make all
+cd site-lisp/<包名> && make all
 ```
 
-无顶层测试命令，各包独立测试。
+`make help` 列出全部目标，包括不在 `all` 中的。
 
 ## 包选型原则
 

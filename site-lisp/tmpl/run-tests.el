@@ -25,7 +25,6 @@
   (load (expand-file-name "tmpl") nil t)
   (load (expand-file-name "tmpl-test") nil t))
 
-(let ((stats (ert-run-tests-batch "^tmpl-test-")))
-  (kill-emacs (if (zerop (ert-stats-completed-unexpected stats)) 0 1)))
+(ert-run-tests-batch-and-exit "^tmpl-test-")
 
 ;;; run-tests.el ends here

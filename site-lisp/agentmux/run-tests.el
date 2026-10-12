@@ -73,7 +73,6 @@
 ;; hands off to `batch-byte-compile').
 
 (unless (bound-and-true-p agentmux-test-load-only)
-  (let ((stats (ert-run-tests-batch "^agentmux-test-")))
-    (kill-emacs (if (zerop (ert-stats-completed-unexpected stats)) 0 1))))
+  (ert-run-tests-batch-and-exit "^agentmux-test-"))
 
 ;;; run-tests.el ends here
