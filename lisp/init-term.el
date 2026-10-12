@@ -18,5 +18,12 @@
 (unless (display-graphic-p)
   (xterm-mouse-mode 1))
 
+(use-package tmux-popup
+  :ensure nil
+  :demand t
+  :if (not (display-graphic-p))
+  :config
+  (tmux-popup-mode 1))
+
 (provide 'init-term)
 ;;; init-term.el ends here

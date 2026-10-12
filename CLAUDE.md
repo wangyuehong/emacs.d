@@ -53,6 +53,7 @@ early-init.el -> init.el -> lisp/init-package.el -> 其余 lisp/init-*.el（按�
   - 快捷键：`C-c C-c g`（进入）, `C-c C-c`/`q`（预览态内退出）
 - `tmpl` - 在宿主 major mode 之上为 Jinja、Django、dbt、Go 模板按语法类别着色，按项目标记文件自动识别引擎
   - 可用文件局部变量或 `.dir-locals.el` 的 `tmpl-engine` 显式指定；dumb-jump 已加载时可跳到模板内的定义
+- `tmux-popup` - 在 tmux popup 中打开的 emacsclient frame 右上角显示 `×`，点击与在该 frame 中按 `C-x C-c` 相同
 - `vbnet-mode` - Visual Basic .NET 编辑 mode（vendor 自第三方，非本仓库原创）
 - `evil-iedit-state` - 为 `iedit` 提供 Evil 风格的 normal/insert state 交互（vendor 自
   syl20bnr/evil-iedit-state，本地维护，已用 `advice-add` 替换原版已废弃的 `defadvice`）
@@ -66,7 +67,7 @@ early-init.el -> init.el -> lisp/init-package.el -> 其余 lisp/init-*.el（按�
 
 ## 测试
 
-`copilot-commit`, `code-ref`, `agentmux`, `md-tui-preview`, `tmpl` 这几个 site-lisp 包有独立的 `Makefile`。
+`copilot-commit`, `code-ref`, `agentmux`, `md-tui-preview`, `tmpl`, `tmux-popup` 这些 site-lisp 包有独立的 `Makefile`。
 
 在对应包目录下运行 `make all`（跑测试 + 字节编译 + 文档检查）：
 
@@ -76,6 +77,7 @@ cd site-lisp/code-ref && make all
 cd site-lisp/agentmux && make all
 cd site-lisp/md-tui-preview && make all
 cd site-lisp/tmpl && make all
+cd site-lisp/tmux-popup && make all
 ```
 
 无顶层测试命令，各包独立测试。
