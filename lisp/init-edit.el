@@ -49,8 +49,11 @@
 
 (use-package md-tui-preview
   :ensure nil
-  :demand t
-  :if (and (not (display-graphic-p)) (executable-find "terminal-browser")))
+  :if (and (not (display-graphic-p)) (executable-find "terminal-browser"))
+  :commands md-tui-preview-toggle
+  :init
+  (with-eval-after-load 'markdown-mode
+    (keymap-set markdown-mode-command-map "p" #'md-tui-preview-toggle)))
 
 (use-package mermaid-mode)
 

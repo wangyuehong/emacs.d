@@ -7,8 +7,6 @@
 (require 'url)
 (require 'md-tui-preview)
 
-(defvar evil-buffer-regexps)
-
 (ert-deftest md-tui-preview-test-ac-0010-0020-cleanup-after-terminal-error ()
   "AC-0010-0020: terminal failure cannot skip owned resource cleanup."
   (save-window-excursion
@@ -78,7 +76,8 @@
                                (my/md-preview-process state)
                                (make-pipe-process :name "md-preview-test-server" :noquery t))))
                       ((symbol-function 'my/terminal-browser-open-url)
-                       (lambda (url mode on-close)
+                       (lambda (url mode on-close companion)
+                         (should (process-live-p companion))
                          (setq captured (list url mode on-close))
                          (make-my/tb-browser :buffer (current-buffer)))))
               (md-tui-preview-toggle)
@@ -131,8 +130,8 @@
 (ert-deftest md-tui-preview-test-ac-0020-0020-stylesheet ()
   "AC-0020-0020: CSS follows configured font and Emacs face colors."
   (let* ((directory (make-temp-file "md-preview-css-" t))
-         (css (expand-file-name "preview.css" directory))
-         (state (make-my/md-preview :directory directory :css css))
+         (state (make-my/md-preview :directory directory))
+         (css (my/md-css-file state))
          (my/md-preview-font-family "Maple Mono Normal NL NF CN")
          (my/md-preview-font-size 12))
     (unwind-protect
@@ -178,9 +177,8 @@
          (file (expand-file-name "source.md" directory))
          (linked (expand-file-name "linked.md" directory))
          (resource-directory (make-temp-file "mdv-live-css-" t))
-         (css (expand-file-name "preview.css" resource-directory))
-         (state (make-my/md-preview :file file :directory resource-directory
-                                    :css css :stdout (generate-new-buffer " *mdv-live-stdout*"))))
+         (state (make-my/md-preview :file file :directory resource-directory))
+         (css (my/md-css-file state)))
     (unwind-protect
         (progn
           (with-temp-file file (insert "# Main\n\n[Linked](linked.md)\n\n```go\nfunc main() {}\n```\n\n```mermaid\ngraph LR; A-->B\n```\n"))
@@ -245,7 +243,7 @@
               ((symbol-function 'display-color-cells) (lambda (&optional _) #x1000000))
               ((symbol-function 'my/tb-terminal-cell) (lambda (&rest _) [8 16]))
               ((symbol-function 'my/md-start) (lambda (&rest _) (ert-fail "generic layer started mdv")))
-              ((symbol-function 'my/tb-start) (lambda (_state target &optional _mode) (setq captured target))))
+              ((symbol-function 'my/tb-start) (lambda (_state target &optional _mode _companion) (setq captured target))))
       (setq state (my/terminal-browser-open-url url)))
     (unwind-protect
         (progn
@@ -285,10 +283,32 @@
 
 (ert-deftest md-tui-preview-test-ac-0030-0020-navigation-bindings ()
   "AC-0030-0020: Markdown keymap forwards navigation, but generic mode does not."
+  ;; A derived mode's keymap gains its parent when the mode first runs.
+  (with-temp-buffer (md-tui-preview-mode))
   (should (eq (lookup-key md-tui-preview-mode-map (kbd "h")) #'my/tb-browser-back))
   (should (eq (lookup-key md-tui-preview-mode-map (kbd "l")) #'my/tb-browser-forward))
-  (should (eq (lookup-key md-tui-preview-mode-map (kbd "q")) #'md-tui-preview-toggle))
-  (should-not (lookup-key terminal-browser-embed-mode-map (kbd "h"))))
+  (should (eq (keymap-lookup md-tui-preview-mode-map "q") #'my/tb-close))
+  (should (eq (keymap-lookup md-tui-preview-mode-map "C-c C-c") #'md-tui-preview-toggle))
+  (should (eq (keymap-lookup md-tui-preview-mode-map "g r") #'my/md-refresh))
+  (should-not (eq (keymap-lookup terminal-browser-embed-mode-map "h") #'my/tb-browser-back))
+  (let ((my/tb-browser-state (make-my/tb-browser)) sent)
+    (cl-letf (((symbol-function 'my/tb-send)
+               (lambda (_state message) (push (plist-get message :key) sent))))
+      (dolist (key '("j" "k" "C-b" "C-f" "g g" "G" "<down>" "RET"))
+        (funcall (keymap-lookup md-tui-preview-mode-map key))))
+    (should (equal (nreverse sent)
+                   '("down" "up" "pageup" "pagedown" "home" "end" "down" "enter")))))
+
+(ert-deftest md-tui-preview-test-ac-0040-0020-companion-exit ()
+  "AC-0040-0020: a dead server process stops the browser before it opens."
+  (let* ((companion (make-pipe-process :name "md-preview-test-dead" :noquery t))
+         (directory (make-temp-file "browser-companion-" t))
+         (state (make-my/tb-browser :buffer (generate-new-buffer " *companion-test*")
+                                    :directory directory)))
+    (delete-process companion)
+    (should-error (my/tb-start state "http://127.0.0.1:1/x" nil companion) :type 'user-error)
+    (my/tb-stop state)
+    (should-not (file-exists-p directory))))
 
 (provide 'md-tui-preview-test)
 ;;; md-tui-preview-test.el ends here

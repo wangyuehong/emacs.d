@@ -88,7 +88,8 @@
                 (comint-mode . emacs)
                 (dashboard-mode . motion)
                 (help-mode . motion)
-                (messages-buffer-mode . motion)))
+                (messages-buffer-mode . motion)
+                (terminal-browser-embed-mode . emacs)))
     (evil-set-initial-state (car p) (cdr p)))
 
   (defun my/evil-set-tab-for-completion ()

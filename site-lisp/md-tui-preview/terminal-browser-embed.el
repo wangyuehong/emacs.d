@@ -12,15 +12,9 @@
 (require 'term/xterm)
 (require 'xt-mouse)
 
-(defvar evil-buffer-regexps)
-
-(with-eval-after-load 'evil
-  (add-to-list 'evil-buffer-regexps
-               '("^\\*Terminal browser\\*\\(<[0-9]+>\\)?$" . nil)))
-
 (cl-defstruct my/tb-browser
   origin point buffer window frame environment tmux cell size image directory
-  socket server connection child relay timer mouse-owned log stderr
+  socket server connection child relay timer mouse-owned stderr
   (graphics "") (pending "") visible stopping on-close)
 
 (defvar-local my/tb-browser-state nil
@@ -73,7 +67,7 @@
 (defun my/tb-terminal-sequence (sequence tmux)
   "Wrap SEQUENCE in TMUX passthrough when non-nil."
   (if tmux
-      (concat "\ePtmux;" (replace-regexp-in-string "\e" "\e\e" sequence t t) "\e\\")
+      (concat "\ePtmux;" (string-replace "\e" "\e\e" sequence) "\e\\")
     sequence))
 
 (defun my/tb-frame-environment (frame)
@@ -195,8 +189,7 @@ Discard OSC metadata; forward bounded-format OSC 52 clipboard writes."
                                    (list :imageId (my/tb-browser-image state)
                                          :transport "file" :focused t))))
         ("placed" (my/tb-place state message))
-        ("title" nil)
-        ((or "pointer" "clipboard") nil)
+        ((or "title" "pointer" "clipboard") nil)
         (_ (user-error "Unexpected Terminal browser message: %S" message))))))
 
 (cl-defmethod my/tb-tick ((state my/tb-browser))
@@ -259,10 +252,7 @@ Discard OSC metadata; forward bounded-format OSC 52 clipboard writes."
           (progn
             (dolist (proc (list (my/tb-browser-connection state) (my/tb-browser-server state)
                                 (my/tb-browser-relay state)))
-              (when (processp proc)
-                (when (timerp (process-get proc 'deadline))
-                  (cancel-timer (process-get proc 'deadline)))
-                (delete-process proc)))
+              (when (processp proc) (delete-process proc)))
             (when (frame-live-p (my/tb-browser-frame state))
               (when (my/tb-browser-image state)
                 (send-string-to-terminal
@@ -287,8 +277,7 @@ Discard OSC metadata; forward bounded-format OSC 52 clipboard writes."
           (unwind-protect
               (when (and (my/tb-browser-directory state) (file-directory-p (my/tb-browser-directory state)))
                 (delete-directory (my/tb-browser-directory state) t))
-            (dolist (buffer (list (my/tb-browser-log state) (my/tb-browser-stderr state)
-                                  (my/tb-browser-buffer state)))
+            (dolist (buffer (list (my/tb-browser-stderr state) (my/tb-browser-buffer state)))
               (when (buffer-live-p buffer) (kill-buffer buffer)))
             (when (my/tb-browser-on-close state)
               (funcall (my/tb-browser-on-close state)))))))))
@@ -309,8 +298,13 @@ Discard OSC metadata; forward bounded-format OSC 52 clipboard writes."
 (defun my/tb-stop-all ()
   "Release all preview resources before Emacs exits."
   (dolist (state (copy-sequence my/tb-browsers)) (my/tb-stop state)))
-(cl-defmethod my/tb-start ((state my/tb-browser) url &optional mode)
-  "Start STATE's relays and browser at URL, using display MODE."
+(cl-defmethod my/tb-start ((state my/tb-browser) url &optional mode companion)
+  "Start STATE's relays and browser at URL, using display MODE.
+When COMPANION is a process, stop the browser if it exits."
+  (when companion
+    (unless (process-live-p companion)
+      (user-error "Companion process %s exited" (process-name companion)))
+    (my/tb-watch state companion (format "companion %s stopped" (process-name companion))))
   (with-current-buffer (my/tb-browser-buffer state)
     (funcall (or mode #'terminal-browser-embed-mode))
     (setq my/tb-browser-state state))
@@ -343,7 +337,7 @@ Discard OSC metadata; forward bounded-format OSC 52 clipboard writes."
     (setenv "TERMINAL_BROWSER_NO_CHROME" "1")
     (setf (my/tb-browser-child state)
           (make-process :name "terminal-browser-client" :connection-type 'pipe :noquery t
-                        :buffer (my/tb-browser-log state) :stderr (my/tb-browser-stderr state)
+                        :stderr (my/tb-browser-stderr state)
                         :command (list (executable-find "terminal-browser") "open" url))))
   (my/tb-watch state (my/tb-browser-child state) "browser stopped")
   (setf (my/tb-browser-timer state) (run-at-time 0.2 0.2 #'my/tb-tick state)))
@@ -370,9 +364,10 @@ Discard OSC metadata; forward bounded-format OSC 52 clipboard writes."
     cell))
 
 ;;;###autoload
-(defun my/terminal-browser-open-url (url &optional mode on-close)
+(defun my/terminal-browser-open-url (url &optional mode on-close companion)
   "Show URL in this TUI Emacs window using MODE and ON-CLOSE callback.
-Return the owned browser state.  MODE defaults to `terminal-browser-embed-mode'."
+Return the owned browser state.  MODE defaults to `terminal-browser-embed-mode'.
+COMPANION is a process the page depends on; its exit stops the browser."
   (interactive "sURL: ")
   (unless (and (stringp url) (not (string-empty-p url)))
     (user-error "Terminal browser URL must be nonempty"))
@@ -399,68 +394,56 @@ Return the owned browser state.  MODE defaults to `terminal-browser-embed-mode'.
                      :environment environment :tmux tmux :cell cell :image image
                      :directory directory :socket (expand-file-name "embed.sock" directory)
                      :buffer (generate-new-buffer "*Terminal browser*")
-                     :log (generate-new-buffer " *Terminal browser output*")
                      :stderr (generate-new-buffer " *Terminal browser errors*")
                      :on-close on-close)))
         (push state my/tb-browsers)
         (condition-case err
-            (my/tb-start state url mode)
+            (my/tb-start state url mode companion)
           (error
            (my/tb-stop state)
            (user-error "Cannot open terminal browser: %s" (error-message-string err))))
         state))))
 
-(defun my/tb-key ()
-  "Forward a navigation key from this preview to the browser."
-  (interactive)
-  (let ((key (pcase last-command-event
-               (2 "pageup") (6 "pagedown")
-               ('next "pagedown") ('prior "pageup")
-               ((or 'down ?j) "down") ((or 'up ?k) "up")
-               ('left "left") ('right "right") ('home "home") ('end "end")
-               (?g "home") (?G "end")
-               (13 "enter") (9 "tab")
-               (_ (user-error "Unsupported Terminal browser key: %S" last-command-event)))))
+(defun my/tb-press (key &optional command)
+  "Send browser KEY to the current preview.
+With COMMAND, add the platform command modifier (super on macOS, else ctrl)."
+  (let ((darwin (eq system-type 'darwin)))
     (my/tb-send my/tb-browser-state
                 (list :type "key" :key key :kind "press"
-                      :mods '(:shift :false :alt :false :ctrl :false :super :false)))))
+                      :mods (list :shift :false :alt :false
+                                  :ctrl (if (and command (not darwin)) t :false)
+                                  :super (if (and command darwin) t :false))))))
 
-(defun my/tb-half-page (direction)
-  "Scroll half a preview page in DIRECTION, either up or down."
-  (let ((key (if (eq direction 'down) "down" "up"))
-        (count (max 1 (/ (window-body-height (my/tb-browser-window my/tb-browser-state)) 2))))
-    (dotimes (_ count)
-      (my/tb-send my/tb-browser-state
-                  (list :type "key" :key key :kind "press"
-                        :mods '(:shift :false :alt :false :ctrl :false :super :false))))))
+(defun my/tb-forward-keys (map bindings)
+  "Bind each (EMACS-KEY . BROWSER-KEY) in BINDINGS in MAP to send BROWSER-KEY."
+  (pcase-dolist (`(,emacs-key . ,browser-key) bindings)
+    (keymap-set map emacs-key
+                (lambda () (interactive) (my/tb-press browser-key)))))
+
+(defun my/tb-half-page (key)
+  "Send browser KEY, up or down, for half of the preview window height."
+  (dotimes (_ (max 1 (/ (window-body-height (my/tb-browser-window my/tb-browser-state)) 2)))
+    (my/tb-press key)))
 
 (defun my/tb-half-page-down ()
   "Scroll down half a preview page, like Evil `C-d'."
   (interactive)
-  (my/tb-half-page 'down))
+  (my/tb-half-page "down"))
 
 (defun my/tb-half-page-up ()
   "Scroll up half a preview page, like Evil `C-u'."
   (interactive)
-  (my/tb-half-page 'up))
-
-(defun my/tb-browser-history (key)
-  "Send browser history KEY to the current preview."
-  (my/tb-send my/tb-browser-state
-              (list :type "key" :key key :kind "press"
-                    :mods (list :shift :false :alt :false
-                                :ctrl (if (eq system-type 'darwin) :false t)
-                                :super (if (eq system-type 'darwin) t :false)))))
+  (my/tb-half-page "up"))
 
 (defun my/tb-browser-back ()
   "Move back in the current browser history."
   (interactive)
-  (my/tb-browser-history "["))
+  (my/tb-press "[" t))
 
 (defun my/tb-browser-forward ()
   "Move forward in the current browser history."
   (interactive)
-  (my/tb-browser-history "]"))
+  (my/tb-press "]" t))
 
 (defun my/tb-mouse (event)
   "Forward a click or wheel EVENT within the browser window."
@@ -501,15 +484,13 @@ Return the owned browser state.  MODE defaults to `terminal-browser-embed-mode'.
 (defun my/tb-refresh ()
   "Reload the current browser page."
   (interactive)
-  (my/tb-send my/tb-browser-state
-              (list :type "key" :key "r" :kind "press"
-                    :mods (list :shift :false :alt :false
-                                :ctrl (if (eq system-type 'darwin) :false t)
-                                :super (if (eq system-type 'darwin) t :false)))))
+  (my/tb-press "r" t))
 
-(define-key terminal-browser-embed-mode-map (kbd "q") #'my/tb-close)
-(dolist (key '("<next>" "<prior>" "<down>" "<up>" "<left>" "<right>" "<home>" "<end>" "RET" "TAB"))
-  (define-key terminal-browser-embed-mode-map (kbd key) #'my/tb-key))
+(keymap-set terminal-browser-embed-mode-map "q" #'my/tb-close)
+(my/tb-forward-keys terminal-browser-embed-mode-map
+                    '(("<next>" . "pagedown") ("<prior>" . "pageup") ("<down>" . "down")
+                      ("<up>" . "up") ("<left>" . "left") ("<right>" . "right")
+                      ("<home>" . "home") ("<end>" . "end") ("RET" . "enter") ("TAB" . "tab")))
 (dolist (event '(down-mouse-1 mouse-1 drag-mouse-1 wheel-up wheel-down mouse-4 mouse-5))
   (define-key terminal-browser-embed-mode-map (vector event) #'my/tb-mouse)
   (define-key terminal-browser-embed-mode-map
