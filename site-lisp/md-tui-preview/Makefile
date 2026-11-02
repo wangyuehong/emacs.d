@@ -38,7 +38,7 @@ trace: ## 逐条列出 SPEC 的 AC 与覆盖它的测试（AC 编号写错则失
 
 .PHONY: clean
 clean: ## 清理字节编译产物
-	@# glob 在 recipe 的 shell 里展开，而不是 make 解析期：$(wildcard) 会漏掉
+	@# glob 在 recipe 的 shell 里展开，而不是 make 解析期：make 的 wildcard 函数会漏掉
 	@# 同一次调用内新产生的 .elc（`make compile clean` 就什么都清不掉）。
 	@for f in *.elc; do \
 	  [ ! -e "$$f" ] || trash "$$f"; \
