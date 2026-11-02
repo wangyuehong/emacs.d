@@ -49,8 +49,8 @@ early-init.el -> init.el -> lisp/init-package.el -> 其余 lisp/init-*.el（按�
 - `code-ref` - 以多种路径格式复制代码引用（绝对路径，git 相对路径，文件名，含/不含内容）
   - 为 `init-general` 中的 transient 菜单提供支持
 - `im-bridge` - 输入法切换与 Evil mode 集成
-- `md-tui-preview` - 在终端 Emacs 中把当前 `.md` buffer 切换成 Glow 渲染的只读预览，配色跟随主题
-  - 快捷键：`C-c C-c g`（进入）, `C-c C-c`/`q`（预览态内退出）
+- `md-tui-preview` - 使用 mdv 为已保存的 `.md` 文件提供 HTML，并通过通用 `terminal-browser-embed` 层在当前 TUI Emacs 窗口预览
+  - 快捷键：`C-c C-c p`（进入）, `C-c C-c`/`q`（预览态内退出）
 - `tmpl` - 在宿主 major mode 之上为 Jinja、Django、dbt、Go 模板按语法类别着色，按项目标记文件自动识别引擎
   - 可用文件局部变量或 `.dir-locals.el` 的 `tmpl-engine` 显式指定；dumb-jump 已加载时可跳到模板内的定义
 - `tmux-popup` - 在 tmux popup 中打开的 emacsclient frame 右上角显示 `×`，点击与在该 frame 中按 `C-x C-c` 相同

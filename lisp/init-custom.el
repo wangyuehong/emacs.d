@@ -21,5 +21,17 @@
   :type 'string
   :group 'my)
 
+;;; Markdown Preview
+
+(defcustom my/md-preview-font-family "Maple Mono Normal NL NF CN"
+  "Font family for embedded Markdown previews."
+  :type 'string
+  :group 'my)
+
+(defcustom my/md-preview-font-size 12
+  "Font size in points for embedded Markdown previews."
+  :type 'number
+  :group 'my)
+
 (provide 'init-custom)
 ;;; init-custom.el ends here

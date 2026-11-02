@@ -6,7 +6,7 @@
 ;;; Commentary:
 ;; Provides a minimal `markdown-mode' stub so the test suite is
 ;; independent of any installed markdown-mode version, then loads
-;; `md-tui-preview-core', `md-tui-preview', and `md-tui-preview-test',
+;; `md-tui-preview' and `md-tui-preview-test',
 ;; and runs all tests.
 ;; Usage: emacs --batch -l run-tests.el
 
@@ -17,9 +17,8 @@
 
 ;;; markdown-mode stub
 ;;
-;; Just enough of the real markdown-mode package for md-tui-preview's
-;; `(markdown-mode)' call and `markdown-mode-command-map' keybinding to
-;; work in tests, without depending on the real package being installed.
+;; Just enough of markdown-mode for the source-mode checks and
+;; `markdown-mode-command-map' binding, without installing the package.
 
 (defvar markdown-mode-command-map (make-sparse-keymap)
   "Stub: minimal command map so keybinding wiring can be tested.")
@@ -36,7 +35,8 @@
 
 (let ((default-directory (file-name-directory
                           (or load-file-name buffer-file-name))))
-  (load (expand-file-name "md-tui-preview-core") nil t)
+  (add-to-list 'load-path (expand-file-name "../../lisp" default-directory))
+  (require 'init-custom)
   (load (expand-file-name "md-tui-preview") nil t)
   (load (expand-file-name "md-tui-preview-test") nil t))
 

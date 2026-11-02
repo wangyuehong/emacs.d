@@ -50,7 +50,7 @@
 (use-package md-tui-preview
   :ensure nil
   :demand t
-  :if (and (not (display-graphic-p)) (executable-find "glow")))
+  :if (and (not (display-graphic-p)) (executable-find "terminal-browser")))
 
 (use-package mermaid-mode)
 
