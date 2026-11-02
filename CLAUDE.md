@@ -49,7 +49,7 @@ early-init.el -> init.el -> lisp/init-package.el -> 其余 lisp/init-*.el（按�
 - `code-ref` - 以多种路径格式复制代码引用（绝对路径，git 相对路径，文件名，含/不含内容）
   - 为 `init-general` 中的 transient 菜单提供支持
 - `im-bridge` - 输入法切换与 Evil mode 集成
-- `md-tui-preview` - 使用 mdv 为已保存的 `.md` 文件提供 HTML，并通过通用 `terminal-browser-embed` 层在当前 TUI Emacs 窗口预览
+- `md-tui-preview` - 用 mdv 提供已保存 `.md` 文件的 HTML，通过 `terminal-browser-embed` 在 TUI Emacs 中预览
   - 快捷键：`C-c C-c p`（进入）, `C-c C-c`/`q`（预览态内退出）
 - `tmpl` - 在宿主 major mode 之上为 Jinja、Django、dbt、Go 模板按语法类别着色，按项目标记文件自动识别引擎
   - 可用文件局部变量或 `.dir-locals.el` 的 `tmpl-engine` 显式指定；dumb-jump 已加载时可跳到模板内的定义
@@ -101,6 +101,7 @@ cd site-lisp/<包名> && make all
 
 - 不开 PR，直接在当前的 master 上提交
 - 原因：个人单人维护的仓库，没有他人审阅，PR 不带来价值；历史一直是在 master 上直接提交
+- 任务完成且已获授权的提交、push 均成功后，主动用 `trash` 清理本任务的 `working/<task-name>/`，无需再次确认；保留其他任务的目录。
 
 ## Elisp 编辑须知
 
