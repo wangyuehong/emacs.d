@@ -6,7 +6,8 @@
 
 - 浏览器层：`terminal-browser-embed.el` 接收 URL，管理当前窗口、图形协议、输入和资源清理，不解析 Markdown。
 - Markdown 层：`md-tui-preview.el` 为已保存的 `.md` 文件启动本地 mdv 服务，生成样式，再把服务 URL 交给浏览器层。
-- 支持环境：Emacs 31+ TUI、tmux、支持 Kitty 图形协议的终端，以及 `terminal-browser`、`mdv`。
+- 支持环境：Emacs 31+ TUI、支持 Kitty 图形协议的终端，以及 `terminal-browser`、`mdv`。
+  - Emacs 可直接运行在该终端中，也可运行在开启 `allow-passthrough` 的 tmux 中。
 - mdv v0.1.9 提供 Markdown 到 HTML、代码高亮和官方 Mermaid 渲染；浏览器资源由 mdv 内置，离线可用。
 
 ## US-0010：从编辑进入预览
@@ -54,7 +55,7 @@
 ### AC-0030-0010：URL 嵌入边界
 
 - Given：调用 `my/terminal-browser-open-url` 并传入 URL。
-- When：当前 Emacs 是支持图形协议的 tmux TUI。
+- When：当前 Emacs 是支持图形协议的 TUI，直接运行在终端中或运行在 tmux 中。
 - Then：浏览器层在当前窗口启动无地址栏的 terminal-browser，显示该 URL，不读取 Markdown buffer，也不启动 mdv。
 - And：不支持的终端或浏览器启动失败时报告原因并释放本次资源。
 

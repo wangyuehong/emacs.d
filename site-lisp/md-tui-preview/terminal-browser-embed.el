@@ -363,7 +363,10 @@ Discard OSC metadata; forward bounded-format OSC 52 clipboard writes."
      (my/tb-terminal-sequence (format "\e_Gi=%d,s=1,v=1,a=q,t=d,f=24;AAAA\e\\" image) tmux)
      (list (cons (format "\e_Gi=%d;" image)
                  (lambda () (setq graphics (equal (xterm--read-string ?\e ?\\) "OK"))))) t)
-    (unless graphics (user-error "Terminal browser: Kitty graphics probe failed; check tmux passthrough"))
+    (unless graphics
+      (user-error "Terminal browser: Kitty graphics probe failed; %s"
+                  (if tmux "check tmux allow-passthrough and the outer terminal"
+                    "the terminal does not support Kitty graphics")))
     cell))
 
 ;;;###autoload
@@ -385,8 +388,6 @@ Return the owned browser state.  MODE defaults to `terminal-browser-embed-mode'.
          (process-environment environment)
          (tmux (getenv "TMUX"))
          (image (1+ (random #xfffffe))))
-    (unless (and tmux (getenv "TMUX_PANE"))
-      (user-error "Embedded terminal browser requires tmux and Kitty graphics"))
     (while (cl-find image my/tb-browsers :key #'my/tb-browser-image)
       (setq image (1+ (random #xfffffe))))
     (let ((cell (my/tb-terminal-cell tmux image)))

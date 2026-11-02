@@ -99,6 +99,7 @@
 
 (cl-defmethod my/md-start ((state my/md-preview))
   "Start mdv for STATE and wait for its actual listening URL."
+  (unless (executable-find "mdv") (user-error "Markdown preview requires mdv"))
   (let ((stderr-pipe
          (make-pipe-process
           :name "md-preview-mdv-stderr" :noquery t
@@ -155,8 +156,7 @@
     (user-error "Markdown preview requires a saved, readable .md file"))
    ((buffer-modified-p) (user-error "Save the Markdown buffer before previewing"))
    (t
-    (unless (executable-find "mdv") (user-error "Markdown preview requires mdv"))
-    (let* ((directory (make-temp-file "emacs-mdv-preview-" t))
+    (let*((directory (make-temp-file "emacs-mdv-preview-" t))
            (state (make-my/md-preview :file buffer-file-name :directory directory
                                       :css (expand-file-name "preview.css" directory)
                                       :stdout (generate-new-buffer " *mdv output*"))))

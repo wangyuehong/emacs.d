@@ -255,6 +255,26 @@
       (cl-letf (((symbol-function 'send-string-to-terminal) #'ignore))
         (my/tb-stop state)))))
 
+(ert-deftest md-tui-preview-test-ac-0030-0010-direct-terminal ()
+  "AC-0030-0010: outside tmux, graphics go to the terminal unwrapped."
+  (let ((process-environment (cl-remove-if (lambda (entry) (string-prefix-p "TMUX" entry))
+                                           process-environment))
+        probed state)
+    (cl-letf (((symbol-function 'display-graphic-p) (lambda (&optional _) nil))
+              ((symbol-function 'display-color-cells) (lambda (&optional _) #x1000000))
+              ((symbol-function 'my/tb-terminal-cell)
+               (lambda (tmux _image) (setq probed (list tmux)) [8 16]))
+              ((symbol-function 'my/tb-start) #'ignore))
+      (setq state (my/terminal-browser-open-url "http://127.0.0.1:4652/page.md")))
+    (unwind-protect
+        (progn
+          (should (equal probed '(nil)))
+          (should (null (my/tb-browser-tmux state)))
+          (should (equal (my/tb-terminal-sequence "\e_Ga=d\e\\" (my/tb-browser-tmux state))
+                         "\e_Ga=d\e\\")))
+      (cl-letf (((symbol-function 'send-string-to-terminal) #'ignore))
+        (my/tb-stop state)))))
+
 (ert-deftest md-tui-preview-test-ac-0030-0020-browser-protocol ()
   "AC-0030-0020: graphics relay forwards Kitty commands but discards title OSC."
   (let ((state (make-my/tb-browser :image 12)) sent)
