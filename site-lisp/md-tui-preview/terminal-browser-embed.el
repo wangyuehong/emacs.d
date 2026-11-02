@@ -257,38 +257,38 @@ Discard OSC metadata; forward bounded-format OSC 52 clipboard writes."
             (user-error "Terminal browser did not acknowledge session close")))
       (unwind-protect
           (progn
-	    (dolist (proc (list (my/tb-browser-connection state) (my/tb-browser-server state)
-				(my/tb-browser-relay state)))
+            (dolist (proc (list (my/tb-browser-connection state) (my/tb-browser-server state)
+                                (my/tb-browser-relay state)))
               (when (processp proc)
-		(when (timerp (process-get proc 'deadline))
-		  (cancel-timer (process-get proc 'deadline)))
-		(delete-process proc)))
-	    (when (frame-live-p (my/tb-browser-frame state))
+                (when (timerp (process-get proc 'deadline))
+                  (cancel-timer (process-get proc 'deadline)))
+                (delete-process proc)))
+            (when (frame-live-p (my/tb-browser-frame state))
               (when (my/tb-browser-image state)
-		(send-string-to-terminal
-		 (my/tb-terminal-sequence
-		  (format "\e_Ga=d,d=I,i=%d,q=2\e\\" (my/tb-browser-image state))
-		  (my/tb-browser-tmux state)) (my/tb-browser-frame state)))
+                (send-string-to-terminal
+                 (my/tb-terminal-sequence
+                  (format "\e_Ga=d,d=I,i=%d,q=2\e\\" (my/tb-browser-image state))
+                  (my/tb-browser-tmux state)) (my/tb-browser-frame state)))
               (when (my/tb-browser-mouse-owned state)
-		(with-selected-frame (my/tb-browser-frame state)
-		  (turn-off-xterm-mouse-tracking-on-terminal
-		   (frame-terminal (my/tb-browser-frame state)))))))
+                (with-selected-frame (my/tb-browser-frame state)
+                  (turn-off-xterm-mouse-tracking-on-terminal
+                   (frame-terminal (my/tb-browser-frame state)))))))
         (unwind-protect
             (let ((window (my/tb-browser-window state))
-		  (source (my/tb-browser-origin state)))
+                  (source (my/tb-browser-origin state)))
               (when (and (window-live-p window) (buffer-live-p source)
-			 (eq (window-buffer window) (my/tb-browser-buffer state)))
-		(set-window-buffer window source)
-		(set-window-point window (my/tb-browser-point state))
-		;; A direct q command runs with the preview as current buffer.  Move
-		;; current-buffer before killing it so Emacs does not select *scratch*.
-		(when (eq (current-buffer) (my/tb-browser-buffer state))
-		  (set-buffer source))))
-	  (unwind-protect
+                         (eq (window-buffer window) (my/tb-browser-buffer state)))
+                (set-window-buffer window source)
+                (set-window-point window (my/tb-browser-point state))
+                ;; A direct q command runs with the preview as current buffer.  Move
+                ;; current-buffer before killing it so Emacs does not select *scratch*.
+                (when (eq (current-buffer) (my/tb-browser-buffer state))
+                  (set-buffer source))))
+          (unwind-protect
               (when (and (my/tb-browser-directory state) (file-directory-p (my/tb-browser-directory state)))
                 (delete-directory (my/tb-browser-directory state) t))
             (dolist (buffer (list (my/tb-browser-log state) (my/tb-browser-stderr state)
-				  (my/tb-browser-buffer state)))
+                                  (my/tb-browser-buffer state)))
               (when (buffer-live-p buffer) (kill-buffer buffer)))
             (when (my/tb-browser-on-close state)
               (funcall (my/tb-browser-on-close state)))))))))
