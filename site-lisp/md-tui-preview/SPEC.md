@@ -55,9 +55,10 @@
 ### AC-0030-0010：URL 嵌入边界
 
 - Given：调用 `my/terminal-browser-open-url` 并传入 URL。
-- When：当前 Emacs 是支持图形协议的 TUI，直接运行在终端中或运行在 tmux 中。
+- When：当前 Emacs 是支持图形协议的 TUI，直接运行在终端中，或运行在 tmux 的 pane 或 popup 中。
 - Then：浏览器层在当前窗口启动无地址栏的 terminal-browser，显示该 URL，不读取 Markdown buffer，也不启动 mdv。
 - And：不支持的终端或浏览器启动失败时报告原因并释放本次资源。
+- And：浏览器启动慢时（如首次冷启动）预览照常建立，不因握手前收到其他消息而断开。
 
 ### AC-0030-0020：导航与图像
 
@@ -85,3 +86,4 @@
 - When：启动或退出预览。
 - Then：Markdown 层以 `--no-open` 启动 mdv，从 stderr 的启动信息取得实际端口并构造 URL；退出时只停止本次 mdv 子进程。
 - And：启动失败或服务意外退出时报告原因，释放浏览器与临时资源，不留下预览窗口。
+- And：Emacs 未经正常退出流程而终止（如被 `kill -9`）时，mdv 随之退出。

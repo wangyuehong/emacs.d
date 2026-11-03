@@ -170,6 +170,43 @@
                                  (url-hexify-string "测试 文档.md")))))
       (kill-buffer source))))
 
+(ert-deftest md-tui-preview-test-ac-0040-0020-mdv-dies-with-killed-emacs ()
+  "AC-0040-0020: mdv exits when its Emacs is killed without running hooks."
+  (skip-unless (executable-find "mdv"))
+  (let* ((directory (make-temp-file "mdv-orphan-test-" t))
+         (file (expand-file-name "source.md" directory))
+         (pid-file (expand-file-name "mdv.pid" directory))
+         (form `(progn
+                  (setq load-path ',load-path load-prefer-newer t)
+                  (require 'md-tui-preview)
+                  (let ((state (make-my/md-preview :file ,file :directory ,directory)))
+                    (with-temp-file (my/md-css-file state))
+                    (my/md-start state)
+                    (with-temp-file ,pid-file
+                      (insert (number-to-string (process-id (my/md-preview-process state))))))
+                  (sleep-for 60)))
+         (emacs (make-process :name "mdv-orphan-emacs" :noquery t :connection-type 'pipe
+                              :command (list (expand-file-name invocation-name invocation-directory)
+                                             "-Q" "--batch" "--eval" (prin1-to-string form))))
+         mdv)
+    (unwind-protect
+        (progn
+          (with-temp-file file (insert "# Orphan\n"))
+          (let ((deadline (+ (float-time) 10)))
+            (while (and (not (file-exists-p pid-file)) (process-live-p emacs) (< (float-time) deadline))
+              (accept-process-output emacs 0.05)))
+          (should (file-exists-p pid-file))
+          (setq mdv (string-to-number (with-temp-buffer (insert-file-contents pid-file) (buffer-string))))
+          (should (process-attributes mdv))
+          (signal-process emacs 'SIGKILL)
+          (let ((deadline (+ (float-time) 5)))
+            (while (and (process-attributes mdv) (< (float-time) deadline))
+              (sleep-for 0.05)))
+          (should-not (process-attributes mdv)))
+      (when (process-live-p emacs) (delete-process emacs))
+      (when (and mdv (process-attributes mdv)) (signal-process mdv 'SIGKILL))
+      (delete-directory directory t))))
+
 (ert-deftest md-tui-preview-test-ac-0040-0020-mdv-serves-saved-file ()
   "AC-0020-0010, AC-0040-0010, AC-0040-0020: real mdv serves a saved file."
   (skip-unless (executable-find "mdv"))
@@ -253,6 +290,24 @@
       (cl-letf (((symbol-function 'send-string-to-terminal) #'ignore))
         (my/tb-stop state)))))
 
+(ert-deftest md-tui-preview-test-ac-0030-0010-probes-reach-outer-terminal ()
+  "AC-0030-0010: under tmux both probes pass through, so popups get replies."
+  (dolist (tmux '(nil "/tmp/test"))
+    (let (queries)
+      (cl-letf (((symbol-function 'xterm--query)
+                 (lambda (query handlers &rest _)
+                   (push query queries)
+                   (pcase (caar handlers)
+                     ("\e[6;" (cl-letf (((symbol-function 'xterm--read-string)
+                                         (lambda (&rest _) "16;8")))
+                                (funcall (cdar handlers))))
+                     (_ (cl-letf (((symbol-function 'xterm--read-string)
+                                   (lambda (&rest _) "OK")))
+                          (funcall (cdar handlers))))))))
+        (should (equal (my/tb-terminal-cell tmux 7) [8 16])))
+      (should (equal (car (last queries)) (my/tb-terminal-sequence "\e[16t" tmux)))
+      (should (equal (string-prefix-p "\ePtmux;" (car (last queries))) (and tmux t))))))
+
 (ert-deftest md-tui-preview-test-ac-0030-0010-direct-terminal ()
   "AC-0030-0010: outside tmux, graphics go to the terminal unwrapped."
   (let ((process-environment (cl-remove-if (lambda (entry) (string-prefix-p "TMUX" entry))
@@ -280,6 +335,33 @@
                (lambda (bytes &rest _) (push bytes sent))))
       (my/tb-graphics state "\e]0;title\a\e_Ga=T;AAAA\e\\"))
     (should (equal sent '("\e_Ga=T;AAAA\e\\")))))
+
+(ert-deftest md-tui-preview-test-ac-0030-0010-init-answers-join-first ()
+  "AC-0030-0010: a connected browser receives init before any other message."
+  (save-window-excursion
+    (let* ((buffer (generate-new-buffer " *join-test*"))
+           (connection (make-pipe-process :name "browser-join-test" :noquery t))
+           (state (make-my/tb-browser :buffer buffer :window (selected-window)
+                                      :frame (selected-frame) :connection connection
+                                      :cell [8 16] :image 12))
+           sent)
+      (unwind-protect
+          (cl-letf (((symbol-function 'my/tb-measure) (lambda (_state) [80 24]))
+                    ((symbol-function 'process-send-string)
+                     (lambda (_process text)
+                       (push (alist-get 'type (json-parse-string text :object-type 'alist)) sent))))
+            (set-window-buffer (selected-window) buffer)
+            (with-current-buffer buffer
+              (setq my/tb-browser-state state)
+              (my/tb-tick state)
+              (should-error (my/tb-press "down") :type 'user-error)
+              (should-not sent)
+              (my/tb-receive state "{\"type\":\"join\"}\n")
+              (my/tb-tick state)
+              (my/tb-press "down")
+              (should (equal (nreverse sent) '("init" "key")))))
+        (delete-process connection)
+        (kill-buffer buffer)))))
 
 (ert-deftest md-tui-preview-test-ac-0030-0020-navigation-bindings ()
   "AC-0030-0020: Markdown keymap forwards navigation, but generic mode does not."

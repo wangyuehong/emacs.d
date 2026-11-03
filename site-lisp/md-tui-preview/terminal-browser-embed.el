@@ -15,7 +15,7 @@
 (cl-defstruct my/tb-browser
   origin point buffer window frame environment tmux cell size image directory
   socket server connection child relay timer mouse-owned stderr
-  (graphics "") (pending "") visible stopping on-close)
+  (graphics "") (pending "") joined visible stopping on-close)
 
 (defvar-local my/tb-browser-state nil
   "State owned by this browser buffer.")
@@ -76,10 +76,16 @@
       (if (daemonp)
           (user-error "Terminal browser cannot determine this client frame's environment")
         process-environment)))
+(cl-defmethod my/tb-ready-p ((state my/tb-browser))
+  "Return non-nil when STATE's browser has joined and is still connected.
+The browser accepts no message before the init that answers its join."
+  (and (my/tb-browser-joined state)
+       (process-live-p (my/tb-browser-connection state))))
+
 (cl-defmethod my/tb-send ((state my/tb-browser) message)
-  "Send JSON MESSAGE to STATE's connected browser."
-  (unless (process-live-p (my/tb-browser-connection state))
-    (user-error "Terminal browser is not connected"))
+  "Send JSON MESSAGE to STATE's browser once it is ready."
+  (unless (my/tb-ready-p state)
+    (user-error "Terminal browser is not ready"))
   (process-send-string (my/tb-browser-connection state)
                        (concat (json-serialize message) "\n")))
 
@@ -184,7 +190,8 @@ Discard OSC metadata; forward bounded-format OSC 52 clipboard writes."
             (substring (my/tb-browser-pending state) (1+ end)))
       (pcase (alist-get 'type message)
         ("join"
-         (setf (my/tb-browser-visible state) t)
+         (setf (my/tb-browser-joined state) t
+               (my/tb-browser-visible state) t)
          (my/tb-send state (append (my/tb-size-message state "init")
                                    (list :imageId (my/tb-browser-image state)
                                          :transport "file" :focused t))))
@@ -198,7 +205,7 @@ Discard OSC metadata; forward bounded-format OSC 52 clipboard writes."
     (if (not (and (window-live-p (my/tb-browser-window state))
                   (frame-live-p (my/tb-browser-frame state))))
         (my/tb-stop state)
-      (when (process-live-p (my/tb-browser-connection state))
+      (when (my/tb-ready-p state)
         (let ((visible (eq (window-buffer (my/tb-browser-window state))
                            (my/tb-browser-buffer state))))
           (unless (eq visible (my/tb-browser-visible state))
@@ -343,16 +350,19 @@ When COMPANION is a process, stop the browser if it exits."
   (setf (my/tb-browser-timer state) (run-at-time 0.2 0.2 #'my/tb-tick state)))
 
 (defun my/tb-terminal-cell (tmux image)
-  "Probe current terminal cell pixels and Kitty support with TMUX and IMAGE."
+  "Probe current terminal cell pixels and Kitty support with TMUX and IMAGE.
+Both probes ask the terminal that draws the images.  Under TMUX they pass
+through tmux, which answers cell size for panes but not for popups."
   (let (cell graphics)
-    (xterm--query "\e[16t"
+    (xterm--query (my/tb-terminal-sequence "\e[16t" tmux)
                   (list (cons "\e[6;" (lambda ()
                                         (let ((reply (xterm--read-string ?t)))
                                           (when (string-match "\\`\\([0-9]+\\);\\([0-9]+\\)\\'" reply)
                                             (setq cell (vector (string-to-number (match-string 2 reply))
                                                                (string-to-number (match-string 1 reply))))))))) t)
     (unless (and cell (> (aref cell 0) 0) (> (aref cell 1) 0))
-      (user-error "Terminal browser: terminal did not report cell pixel size"))
+      (user-error "Terminal browser: terminal did not report cell pixel size%s"
+                  (if tmux "; check tmux allow-passthrough and the outer terminal" "")))
     (xterm--query
      (my/tb-terminal-sequence (format "\e_Gi=%d,s=1,v=1,a=q,t=d,f=24;AAAA\e\\" image) tmux)
      (list (cons (format "\e_Gi=%d;" image)

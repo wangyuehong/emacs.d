@@ -107,9 +107,11 @@
           :name "md-preview-mdv-stderr" :noquery t
           :filter (lambda (_process text) (my/md-receive-stderr state text)))))
     (setf (my/md-preview-stderr-pipe state) stderr-pipe)
+    ;; A pty makes mdv the leader of a session whose terminal closes with Emacs,
+    ;; so the kernel hangs it up even when Emacs dies without running its hooks.
     (setf (my/md-preview-process state)
           (make-process
-           :name "md-preview-mdv" :noquery t :connection-type 'pipe
+           :name "md-preview-mdv" :noquery t :connection-type 'pty
            :stderr stderr-pipe
            :command (list (executable-find "mdv") "--no-open" "--host" "127.0.0.1"
                           "--css" (my/md-css-file state)
