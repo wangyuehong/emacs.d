@@ -99,8 +99,6 @@ cd site-lisp/<包名> && make all
 
 ## 提交
 
-- 不开 PR，直接在当前的 master 上提交
-- 原因：个人单人维护的仓库，没有他人审阅，PR 不带来价值；历史一直是在 master 上直接提交
 - 任务完成且获授权的提交、push 成功后，用 `trash` 清理本任务的 `working/<task-name>/`，无需确认；保留其他任务目录。
 
 ## Elisp 编辑须知
